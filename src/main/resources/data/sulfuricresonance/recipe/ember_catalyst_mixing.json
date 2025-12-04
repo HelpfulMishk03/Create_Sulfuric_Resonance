@@ -1,0 +1,28 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:netherrack_dust"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 100,
+      "fluid": "minecraft:lava"
+    }
+
+  ],
+  "processing_time": 130,
+  "results": [
+    {
+      "id": "sulfuricresonance:ember_catalyst",
+      "amount": 1
+    }
+    ]
+}

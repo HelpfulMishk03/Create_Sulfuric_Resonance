@@ -1,0 +1,15 @@
+{
+
+  "sulfuricresonance.configuration.title": "Create: Sulfuric Resonance Configs",
+  "sulfuricresonance.configuration.section.sulfuricresonance.common.toml": "Create: Sulfuric Resonance Configs",
+  "sulfuricresonance.configuration.section.sulfuricresonance.common.toml.title": "Create: Sulfuric Resonance Configs",
+  "sulfuricresonance.configuration.items": "Item List",
+  "sulfuricresonance.configuration.logDirtBlock": "Log Dirt Block",
+  "sulfuricresonance.configuration.magicNumberIntroduction": "Magic Number Text",
+  "sulfuricresonance.configuration.magicNumber": "Magic Number",
+  "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
+  "item.sulfuricresonance.sulfur": "Sulfur",
+  "item.sulfuricresonance.netherrack_dust": "Netherrack Dust",
+  "item.sulfuricresonance.spent_ash": "Spent Ash",
+  "item.sulfuricresonance.ember_catalyst": "Ember Catalyst"
+}
