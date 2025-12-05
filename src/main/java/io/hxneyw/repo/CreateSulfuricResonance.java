@@ -3,6 +3,7 @@ package io.hxneyw.repo;
 import com.mojang.logging.LogUtils;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.ModTabs;
+import io.hxneyw.repo.content.entities.ModEntities;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -28,7 +29,11 @@ public class CreateSulfuricResonance {
         Items.register(modEventBus);
         LOGGER.info("Items logged... ready for next batch sequence");
 
-        // Register creative tabs - ADD THIS
+        // Register entities
+        ModEntities.register(modEventBus);
+        LOGGER.info("Entities registered for Sulfuric Resonance");
+
+        // Register creative tabs
         ModTabs.register(modEventBus);
         LOGGER.info("Suit up, next batch contains harmful gasses. Creative tab registrar");
 
@@ -37,12 +42,11 @@ public class CreateSulfuricResonance {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        LOGGER.info("[{}] Common setup complete. Well done", MODID);
+        LOGGER.info("[{}] Common setup complete. Wheres your cell phone?", MODID);
     }
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("[{}] Server is starting. Time for you to plan a meetup", MODID);
+        LOGGER.info("[{}] Server is starting. Which one..", MODID);
     }
-
 }

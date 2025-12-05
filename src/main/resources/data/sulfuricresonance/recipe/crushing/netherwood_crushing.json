@@ -1,0 +1,25 @@
+{
+  "type": "create:crushing",
+  "ingredients": [
+    {
+      "item": "minecraft:crimson_stem"
+    }
+  ],
+  "processing_time": 150,
+  "results": [
+    {
+      "id": "sulfuricresonance:netherwood_dust",
+      "amount": 1
+    },
+    {
+      "id": "sulfuricresonance:netherwood_dust",
+      "amount": 1,
+      "chance": 0.75
+    },
+    {
+      "id": "sulfuricresonance:embersol",
+      "amount": 1,
+      "chance": 0.65
+    }
+  ]
+}

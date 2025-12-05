@@ -1,0 +1,23 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "sulfuricresonance:pyroclastic_powder"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 50,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "processing_time": 70,
+  "results": [
+    {
+      "id": "sulfuricresonance:pyroclast_bomb",
+      "amount": 1
+    }
+  ]
+}

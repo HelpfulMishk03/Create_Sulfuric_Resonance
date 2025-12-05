@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "minecraft:sand"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:pyroclastic_powder",
+    "count": 1
+  }
+}

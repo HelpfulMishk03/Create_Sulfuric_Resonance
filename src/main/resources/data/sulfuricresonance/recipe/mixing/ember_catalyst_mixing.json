@@ -1,0 +1,22 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:netherwood_dust"
+    },
+    {
+      "item": "sulfuricresonance:embersol"
+    }
+  ],
+  "processing_time": 130,
+  "results": [
+    {
+      "id": "sulfuricresonance:ember_catalyst",
+      "amount": 1
+    }
+    ]
+}

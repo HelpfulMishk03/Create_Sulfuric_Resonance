@@ -21,9 +21,13 @@ public class ModTabs {
                     .icon(() -> new ItemStack(Items.SULFUR.get()))
                     .displayItems((params, output) -> {
                         output.accept(Items.SULFUR.get());
-                        output.accept(Items.NETHERRACK_DUST.get());
+                        output.accept(Items.NETHERWOOD_DUST.get());
                         output.accept(Items.SPENT_ASH.get());
                         output.accept(Items.EMBER_CATALYST.get());
+                        output.accept(Items.EMBERSOL.get());
+                        output.accept(Items.BLAZE_SHARD.get());
+                        output.accept(Items.PYROCLASTIC_POWDER.get());
+                        output.accept(Items.PYROCLAST_BOMB.get());
                     })
                     .build()
             );

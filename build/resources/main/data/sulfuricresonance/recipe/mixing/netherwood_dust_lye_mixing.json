@@ -1,0 +1,24 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:netherwood_dust"
+    },
+    {
+      "item": "sulfuricresonance:netherwood_dust"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 100,
+      "fluid": "minecraft:water"
+    }
+
+  ],
+  "processing_time": 100,
+  "results": [
+    {
+      "id": "sulfuricresonance:sulfur",
+      "amount": 1
+    }
+  ]
+}

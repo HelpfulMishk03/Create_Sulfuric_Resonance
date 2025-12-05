@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "sulfuricresonance:item/pyroclastic_powder"
+  }
+}

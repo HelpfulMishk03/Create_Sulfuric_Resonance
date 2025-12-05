@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AB ",
+    "C  ",
+    "   "
+  ],
+  "key": {
+    "A": {
+      "item": "sulfuricresonance:pyroclastic_powder"
+    },
+    "B": {
+      "item": "minecraft:string"
+    },
+    "C": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:pyroclast_bomb",
+    "count": 1
+  },
+  "neoforge:results": [
+    {
+      "item": "sulfuricresonance:pyroclast_bomb"
+    },
+    {
+      "item": "minecraft:bucket"
+    }
+  ]
+}
