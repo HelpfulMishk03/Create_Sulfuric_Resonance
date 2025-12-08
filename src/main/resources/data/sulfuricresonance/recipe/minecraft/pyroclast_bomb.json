@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "sulfuricresonance:pyroclastic_powder"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:pyroclast_bomb",
+    "count": 1
+  },
+  "neoforge:results": [
+    {
+      "item": "sulfuricresonance:pyroclast_bomb",
+      "count": 1
+    },
+    {
+      "item": "minecraft:bucket",
+      "count": 1
+    }
+  ]
+}

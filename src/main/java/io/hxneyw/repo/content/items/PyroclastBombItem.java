@@ -27,8 +27,8 @@ public class PyroclastBombItem extends Item {
 
         // Play throw sound
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.SNOWBALL_THROW, SoundSource.NEUTRAL,
-                0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+                SoundEvents.TNT_PRIMED, SoundSource.NEUTRAL,
+                0.35F, 0.55F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
         // SERVER-SIDE: Spawn and throw the bomb immediately
         if (!level.isClientSide) {
@@ -42,7 +42,7 @@ public class PyroclastBombItem extends Item {
                     player.getXRot(),    // Vertical aim (pitch)
                     player.getYRot(),    // Horizontal aim (yaw)
                     0.0F,                // Roll (always 0 for normal throws)
-                    1.4F,                // Throw velocity - faster than before!
+                    1.25F,                // Throw velocity - faster than before!
                     1.0F                 // Inaccuracy (1.0 = slight randomness)
             );
 

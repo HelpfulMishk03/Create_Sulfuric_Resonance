@@ -1,0 +1,14 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:obsidian_fiber_mold_filled"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:obsidian_fiber",
+      "count": 2
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "item": "minecraft:mangrove_log"
+    }
+  ],
+  "results": [
+    {
+      "count": 2,
+      "id": "sulfuricresonance:latex_clump"
+    },
+    {
+      "chance": 0.23,
+      "count": 1,
+      "id": "sulfuricresonance:latex_clump"
+    }
+  ]
+}

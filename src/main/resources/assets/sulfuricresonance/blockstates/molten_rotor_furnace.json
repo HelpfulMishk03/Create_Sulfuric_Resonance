@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace" },
+    "facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
+    "facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
+    "facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 }
+  }
+}

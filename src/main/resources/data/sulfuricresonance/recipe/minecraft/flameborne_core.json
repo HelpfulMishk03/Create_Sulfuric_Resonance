@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:ingots/brass"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "C": {
+      "item": "sulfuricresonance:sulfur"
+    },
+    "D": {
+      "item": "sulfuricresonance:embersol"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:flameborne_core",
+    "count": 1
+  }
+}

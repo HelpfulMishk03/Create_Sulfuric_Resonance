@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AA ",
+    "BB ",
+    "CC "
+  ],
+  "key": {
+    "A": {
+      "tag": "c:dusts/obsidian"
+    },
+    "B": {
+      "item": "minecraft:string"
+    },
+    "C": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:obsidian_fiber_mold",
+    "count": 1
+  }
+}

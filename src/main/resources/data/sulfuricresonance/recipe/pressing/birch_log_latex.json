@@ -1,0 +1,19 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "item": "minecraft:birch_log"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "sulfuricresonance:latex_clump"
+    },
+    {
+      "chance": 0.15,
+      "count": 1,
+      "id": "sulfuricresonance:latex_clump"
+    }
+  ]
+}

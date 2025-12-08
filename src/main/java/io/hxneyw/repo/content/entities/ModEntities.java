@@ -58,16 +58,16 @@ public class ModEntities {
                                     MobCategory.MISC           // Our powder is miscellaneous (it's a projectile)
                             )
 
-                            // Set the hitbox size (width and height in blocks)
+                            // Set the hitbox size (width and height in block)
                             // 0.25F means 1/4 of a block (same size as a snowball)
-                            .sized(0.25F, 0.25F)               // Width: 0.25 blocks, Height: 0.25 blocks
+                            .sized(0.25F, 0.25F)               // Width: 0.25 block, Height: 0.25 block
                             // F means "float" (decimal number)
 
                             // WHAT IS CLIENT TRACKING RANGE?
                             // How far away (in chunks) clients can see this entity
-                            // 4 chunks = 64 blocks (same as thrown items like snowballs)
+                            // 4 chunks = 64 block (same as thrown items like snowballs)
                             // Lower = better performance, higher = can see entity from farther away
-                            .clientTrackingRange(4)            // Render distance: 4 chunks (64 blocks)
+                            .clientTrackingRange(4)            // Render distance: 4 chunks (64 block)
 
                             // WHAT IS UPDATE INTERVAL?
                             // How often (in ticks) the server sends position updates to clients

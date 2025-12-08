@@ -6,6 +6,7 @@ import io.hxneyw.repo.content.items.EmberCatalystItem;
 import io.hxneyw.repo.content.items.NetherwoodDustItem;
 import io.hxneyw.repo.content.items.PyroclastBombItem;
 import io.hxneyw.repo.content.items.SulfurItem;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -64,6 +65,55 @@ public class Items {
                     .stacksTo(16)
             )
     );
+    public static final DeferredItem<Item> REINFORCED_CINDER_COMPOUND = ITEMS.register("reinforced_cinder_compound",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD = ITEMS.register("obsidian_fiber_mold",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(16)
+            )
+    );
+    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD_FILLED = ITEMS.register("obsidian_fiber_mold_filled",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(16)
+            )
+    );
+    public static final DeferredItem<Item> OBSIDIAN_FIBER = ITEMS.register("obsidian_fiber",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> UNREFINED_RUBBER = ITEMS.register("unrefined_rubber",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> VULCANIZED_RUBBER = ITEMS.register("vulcanized_rubber",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> INFERNAL_IMPELLER = ITEMS.register("infernal_impeller",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> FLAMEBORNE_CORE = ITEMS.register("flameborne_core",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
+    public static final DeferredItem<Item> MOLTEN_ROTOR_FURNACE = ITEMS.register("molten_rotor_furnace",
+            () -> new BlockItem(ModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Item.Properties())
+    );
+
     public static void register(IEventBus eventBus) {
         LOGGER.info("Registering Sulfuric Resonance items");
         ITEMS.register(eventBus);

@@ -20,6 +20,15 @@ public class ModTabs {
                     .title(Component.translatable("itemGroup.sulfuricresonance.sulfuric_resonance"))
                     .icon(() -> new ItemStack(Items.SULFUR.get()))
                     .displayItems((params, output) -> {
+                        // Items
+                        output.accept(Items.REINFORCED_CINDER_COMPOUND.get());
+                        output.accept(Items.OBSIDIAN_FIBER_MOLD.get());
+                        output.accept(Items.OBSIDIAN_FIBER.get());
+                        output.accept(Items.INFERNAL_IMPELLER.get());
+                        output.accept(Items.FLAMEBORNE_CORE.get());
+                        output.accept(Items.LATEX_CLUMP.get());
+                        output.accept(Items.UNREFINED_RUBBER.get());
+                        output.accept(Items.VULCANIZED_RUBBER.get());
                         output.accept(Items.SULFUR.get());
                         output.accept(Items.NETHERWOOD_DUST.get());
                         output.accept(Items.SPENT_ASH.get());
@@ -28,6 +37,9 @@ public class ModTabs {
                         output.accept(Items.BLAZE_SHARD.get());
                         output.accept(Items.PYROCLASTIC_POWDER.get());
                         output.accept(Items.PYROCLAST_BOMB.get());
+
+                        // Blocks (via their BlockItems)
+                        output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
                     })
                     .build()
             );

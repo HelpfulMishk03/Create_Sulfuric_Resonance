@@ -49,16 +49,16 @@ public class PyroclastBombEntity extends ThrowableItemProjectile {
                     this.getX(),                       // X coordinate - exact position in world
                     this.getY(),                       // Y coordinate - vertical position
                     this.getZ(),                       // Z coordinate - depth position
-                    1.50F,                              // Explosion radius (0.8 = very small, barely breaks blocks)
+                    1.50F,                              // Explosion radius (0.8 = very small, barely breaks block)
                     false,                             // Should create fire? false = no fire spread
-                    Level.ExplosionInteraction.BLOCK   // BLOCK = destroys blocks and drops items
+                    Level.ExplosionInteraction.BLOCK   // BLOCK = destroys block and drops items
             );
 
             // Damage nearby mobs with reduced damage (1.5 hearts = 3.0F damage)
             this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(2.5))
                     .forEach(entity -> {
                         if (entity != this.getOwner()) { // Don't damage the thrower
-                            entity.hurt(this.damageSources().thrown(this, this.getOwner()), 4.75F); // 2.2ish hearts
+                            entity.hurt(this.damageSources().thrown(this, this.getOwner()), 3.8F); // 2.2ish hearts
                         }
                     });
 
