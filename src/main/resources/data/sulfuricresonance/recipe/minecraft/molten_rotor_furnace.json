@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "AEA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:sheets/brass"
+    },
+    "B": {
+      "item": "create:andesite_alloy"
+    },
+    "C": {
+      "item": "sulfuricresonance:obsidian_fiber"
+    },
+    "D": {
+    "item": "sulfuricresonance:infernal_impeller"
+    },
+    "E": {
+      "item": "sulfuricresonance:flameborne_core"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:molten_rotor_furnace",
+    "count": 1
+  }
+}

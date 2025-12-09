@@ -31,5 +31,25 @@
       <option name="name" value="MavenLocal" />
       <option name="url" value="file:/$MAVEN_REPOSITORY$/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="Modrinth" />
+      <option name="name" value="Modrinth" />
+      <option name="url" value="https://api.modrinth.com/maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="TerraformersMC" />
+      <option name="name" value="TerraformersMC" />
+      <option name="url" value="https://maven.terraformersmc.com/releases/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven" />
+      <option name="name" value="maven" />
+      <option name="url" value="https://maven.createmod.net" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="maven2" />
+      <option name="name" value="maven2" />
+      <option name="url" value="https://maven.ithundxr.dev/snapshots" />
+    </remote-repository>
   </component>
 </project>

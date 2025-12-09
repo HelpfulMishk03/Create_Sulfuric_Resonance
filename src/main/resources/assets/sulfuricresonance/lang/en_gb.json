@@ -17,5 +17,6 @@
   "item.sulfuricresonance.unrefined_rubber": "Unrefined Rubber",
   "item.sulfuricresonance.vulcanized_rubber": "Vulcanized Rubber",
   "item.sulfuricresonance.infernal_impeller": "Infernal Impeller",
-  "item.sulfuricresonance.flameborne_core": "Flameborne Core"
+  "item.sulfuricresonance.flameborne_core": "Flameborne Core",
+  "block.sulfuricresonance.molten_rotor_furnace": "Molten Rotor Furnace"
 }

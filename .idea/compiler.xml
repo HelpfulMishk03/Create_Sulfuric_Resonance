@@ -3,4 +3,9 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="21" />
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Create_Sulfuric_Resonance.main" options="--add-exports jdk.jfr/jdk.jfr.internal.periodic=ALL-UNNAMED" />
+    </option>
+  </component>
 </project>
