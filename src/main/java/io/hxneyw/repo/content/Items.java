@@ -12,6 +12,12 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item.TooltipContext;
+import net.minecraft.world.item.TooltipFlag;
+import org.jetbrains.annotations.NotNull;
+import java.util.List;
 
 public class Items {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -110,8 +116,16 @@ public class Items {
                     .stacksTo(64)
             )
     );
+
     public static final DeferredItem<Item> MOLTEN_ROTOR_FURNACE = ITEMS.register("molten_rotor_furnace",
-            () -> new BlockItem(ModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Item.Properties())
+            () -> new BlockItem(ModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Item.Properties()) {
+                @Override
+                public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
+                                            @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+                    // Intentionally empty - prevents default BlockItem tooltip that adds mod name twice
+                    // The game will still add mod name once automatically from the creative tab
+                }
+            }
     );
 
     public static void register(IEventBus eventBus) {
