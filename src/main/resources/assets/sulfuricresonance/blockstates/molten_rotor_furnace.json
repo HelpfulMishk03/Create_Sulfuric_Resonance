@@ -1,8 +1,38 @@
 {
   "variants": {
-    "facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace" },
-    "facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
-    "facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
-    "facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 }
+    "blaze=none,facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 0 },
+    "blaze=none,facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
+    "blaze=none,facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
+    "blaze=none,facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 },
+    "blaze=none,facing=up": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 270 },
+    "blaze=none,facing=down": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 90 },
+
+    "blaze=smouldering,facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 0 },
+    "blaze=smouldering,facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
+    "blaze=smouldering,facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
+    "blaze=smouldering,facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 },
+    "blaze=smouldering,facing=up": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 270 },
+    "blaze=smouldering,facing=down": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 90 },
+
+    "blaze=fading,facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 0 },
+    "blaze=fading,facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
+    "blaze=fading,facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
+    "blaze=fading,facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 },
+    "blaze=fading,facing=up": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 270 },
+    "blaze=fading,facing=down": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 90 },
+
+    "blaze=kindled,facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 0 },
+    "blaze=kindled,facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
+    "blaze=kindled,facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
+    "blaze=kindled,facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 },
+    "blaze=kindled,facing=up": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 270 },
+    "blaze=kindled,facing=down": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 90 },
+
+    "blaze=seething,facing=north": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 0 },
+    "blaze=seething,facing=south": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 180 },
+    "blaze=seething,facing=west": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 270 },
+    "blaze=seething,facing=east": { "model": "sulfuricresonance:block/molten_rotor_furnace", "y": 90 },
+    "blaze=seething,facing=up": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 270 },
+    "blaze=seething,facing=down": { "model": "sulfuricresonance:block/molten_rotor_furnace", "x": 90 }
   }
 }

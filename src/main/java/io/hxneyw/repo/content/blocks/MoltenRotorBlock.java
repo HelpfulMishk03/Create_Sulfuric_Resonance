@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
@@ -20,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -35,10 +37,13 @@ import org.jetbrains.annotations.Nullable;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+/**
+ * MOLTEN ROTOR FURNACE BLOCK
+ * A kinetic generator powered by combustion that can heat adjacent machines
+ */
 public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<MoltenRotorBlockEntity> {
 
-    public static final EnumProperty<BlazeBurnerBlock.HeatLevel> HEAT_LEVEL =
-            BlazeBurnerBlock.HEAT_LEVEL;
+    public static final EnumProperty<BlazeBurnerBlock.HeatLevel> HEAT_LEVEL = BlazeBurnerBlock.HEAT_LEVEL;
 
     public MoltenRotorBlock(Properties props) {
         super(props);
@@ -52,9 +57,13 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         builder.add(HEAT_LEVEL);
     }
 
+    // ========== KINETIC PROPERTIES ==========
+
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(FACING).getAxis();
+        Direction facing = state.getValue(FACING);
+        Direction leftSide = facing.getCounterClockWise();
+        return leftSide.getAxis();
     }
 
     @Override
@@ -86,6 +95,11 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         };
     }
 
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        return InteractionResult.SUCCESS;
+    }
+
     // ========== FUEL SYSTEM ==========
 
     @Override
@@ -100,86 +114,87 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
         ItemStack held = player.getItemInHand(hand);
 
-        // ========== BASIC FUELS ==========
-
+        // STICKS (only work with logs burning)
         if (held.is(Items.STICK)) {
-            return tryAddFuel(furnace, player, held, FuelType.STICK, held.getCount());
+            ItemInteractionResult result = tryAddFuel(furnace, player, held, FuelType.STICK);
+            if (result == ItemInteractionResult.FAIL) {
+                player.sendSystemMessage(Component.literal("§l§e✖ Sticks require logs to be burning!"));
+            }
+            return result;
         }
 
-        if (held.is(ItemTags.PLANKS)) {
-            return tryAddFuel(furnace, player, held, FuelType.PLANK, held.getCount());
-        }
-
+        // LOGS
         if (held.is(ItemTags.LOGS)) {
-            return tryAddFuel(furnace, player, held, FuelType.LOG, held.getCount());
+            return tryAddFuel(furnace, player, held, FuelType.LOG);
         }
 
+        // COAL
         if (held.is(Items.COAL)) {
-            return tryAddFuel(furnace, player, held, FuelType.COAL, held.getCount());
+            return tryAddFuel(furnace, player, held, FuelType.COAL);
         }
 
+        // CHARCOAL
         if (held.is(Items.CHARCOAL)) {
-            return tryAddFuel(furnace, player, held, FuelType.CHARCOAL, held.getCount());
+            return tryAddFuel(furnace, player, held, FuelType.CHARCOAL);
         }
 
+        // COAL BLOCK
         if (held.is(Items.COAL_BLOCK)) {
-            return tryAddFuel(furnace, player, held, FuelType.COAL_BLOCK, 1);
+            return tryAddFuel(furnace, player, held, FuelType.COAL_BLOCK);
         }
 
+        // KELP BLOCK
         if (held.is(Items.DRIED_KELP_BLOCK)) {
-            return tryAddFuel(furnace, player, held, FuelType.KELP_BLOCK, held.getCount());
+            return tryAddFuel(furnace, player, held, FuelType.KELP_BLOCK);
         }
 
-        if (held.is(Items.BLAZE_ROD)) {
-            return tryAddFuel(furnace, player, held, FuelType.BLAZE_ROD, held.getCount());
-        }
-
-        // ========== SPECIAL FUELS ==========
-
+        // LAVA BUCKET
         if (held.is(Items.LAVA_BUCKET)) {
             furnace.addSpecialFuel(FuelType.LAVA, 2000);
             if (!player.getAbilities().instabuild) {
                 held.shrink(1);
                 player.getInventory().add(new ItemStack(Items.BUCKET));
             }
-            player.sendSystemMessage(Component.literal("§d+Lava Bucket §7(+100s) §5[BLAZING PATH]"));
+            player.sendSystemMessage(Component.literal("§d+Lava Bucket §7(+100s)"));
             level.playSound(null, pos, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 1.0f, 1.0f);
             return ItemInteractionResult.SUCCESS;
         }
 
+        // BLAZE CAKE
         if (held.is(AllItems.BLAZE_CAKE.get())) {
             furnace.addSpecialFuel(FuelType.BLAZE_CAKE, 3000);
             if (!player.getAbilities().instabuild) held.shrink(1);
-            player.sendSystemMessage(Component.literal("§d+Blaze Cake §7(+150s) §5[BLAZING UNLOCKED!]"));
+            player.sendSystemMessage(Component.literal("§d+Blaze Cake §7(+150s)"));
             level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 2.0f);
             return ItemInteractionResult.SUCCESS;
         }
 
+        // TNT (explosive fuel)
         if (held.is(Items.TNT)) {
-            // 30% explosion chance
             if (level.random.nextFloat() < 0.3f) {
                 level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                        2.0f, Level.ExplosionInteraction.BLOCK);
+                        1.5f, Level.ExplosionInteraction.BLOCK);
                 player.sendSystemMessage(Component.literal("§4§l✖ FURNACE EXPLODED!"));
                 return ItemInteractionResult.SUCCESS;
             }
-            return tryAddFuel(furnace, player, held, FuelType.TNT, 1);
+            return tryAddFuel(furnace, player, held, FuelType.TNT);
         }
 
-        // ========== ULTIMATE FUELS ==========
-
+        // NETHER STAR
         if (held.is(Items.NETHER_STAR)) {
             furnace.addUltimateFuel(6000);
             if (!player.getAbilities().instabuild) held.shrink(1);
-            player.sendSystemMessage(Component.literal("§5§l★ NETHER STAR §7(+300s) §d§l[RADIANT!]"));
+            player.sendSystemMessage(Component.literal("§5§l☆ NETHER STAR §7(+300s) §d§l[RADIANT!]"));
             level.playSound(null, pos, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0f, 1.2f);
             return ItemInteractionResult.SUCCESS;
         }
 
+        // DRAGON BREATH
         if (held.is(Items.DRAGON_BREATH)) {
             furnace.addUltimateFuel(4000);
             if (!player.getAbilities().instabuild) held.shrink(1);
             player.sendSystemMessage(Component.literal("§5+Dragon Breath §7(+200s) §d[RADIANT!]"));
+            level.playSound(null, pos, SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.BLOCKS, 0.5f, 1.5f);
             return ItemInteractionResult.SUCCESS;
         }
 
@@ -187,22 +202,22 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     }
 
     private ItemInteractionResult tryAddFuel(MoltenRotorBlockEntity furnace, Player player,
-                                             ItemStack held, FuelType fuelType, int count) {
-        int used = Math.min(count, fuelType.maxStackSize);
+                                             ItemStack held, FuelType fuelType) {
+        int used = Math.min(1, fuelType.maxStackSize);
 
         if (furnace.addFuel(fuelType, used)) {
             if (!player.getAbilities().instabuild) {
                 held.shrink(used);
             }
 
-            // Display message
             String name = fuelType.name().toLowerCase().replace('_', ' ');
             float cps = fuelType.celsiusPerSecond;
-            int maxTemp = (int)fuelType.maxTempReachable;
+            int maxTemp = (int) fuelType.maxTempReachable;
+            float burnTimeSeconds = (fuelType.baseBurnTimeTicks * used) / 20f;
 
             player.sendSystemMessage(Component.literal(
-                    String.format("§6+%s x%d §8(%.1f°C/s, max %d°C)",
-                            capitalize(name), used, cps, maxTemp)
+                    String.format("§6+%s x%d §8(%.1f°C/s, max %d°C, %.1fs)",
+                            capitalize(name), used, cps, maxTemp, burnTimeSeconds)
             ));
 
             return ItemInteractionResult.SUCCESS;
@@ -216,7 +231,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    // ========== STATUS DISPLAY (FIXED) ==========
+    // ========== STATUS DISPLAY ==========
 
     @Override
     protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level,
@@ -227,38 +242,49 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         MoltenRotorBlockEntity furnace = getBlockEntity(level, pos);
         if (furnace == null) return InteractionResult.FAIL;
 
-        // Don't show status at NONE or cooling SMOULDERING with no fuel
         if (!furnace.shouldShowStatus()) {
             return InteractionResult.SUCCESS;
         }
 
         int temp = furnace.getDisplayTemperature();
         int fuel = furnace.getDisplayFuelTime();
-        int fuelSeconds = fuel / 20;
+        int retention = furnace.getDisplayRetentionTime();
+        int cooldown = furnace.getDisplayCooldownTime();
         float rpm = furnace.getGeneratedSpeed();
         float stressUnits = furnace.getTotalStressOutput();
         String tierName = furnace.getHeatTierName();
 
-        // Color based on heat tier
         String color = switch (furnace.getCurrentHeatTier()) {
             case NONE -> "§7";
             case SMOULDERING, FADING -> "§e";
             case KINDLED -> "§6";
             case SEETHING -> "§c";
-            case BLAZING -> "§d";
             case RADIANT -> "§5";
         };
 
-        // Line 1: Heat level + temperature
-        player.sendSystemMessage(Component.literal(
-                color + tierName + " §7(" + temp + "°C)"
-        ));
+        player.sendSystemMessage(Component.literal(color + tierName + " §7(" + temp + "°C)"));
 
-        // Line 2: Fuel, RPM, and SU (formatted consistently)
-        if (fuel > 0 || rpm > 0) {
+        if (fuel > 0) {
+            int fuelSeconds = fuel / 20;
             player.sendSystemMessage(Component.literal(
                     String.format("§7Fuel: %ds §8| §7RPM: %d §8| §7SU: %d",
-                            fuelSeconds, (int)rpm, (int)stressUnits)
+                            fuelSeconds, (int) rpm, (int) stressUnits)
+            ));
+        } else if (retention > 0) {
+            int retentionSeconds = retention / 20;
+            player.sendSystemMessage(Component.literal(
+                    String.format("§3Heat Retention: %ds §8| §7RPM: %d §8| §7SU: %d",
+                            retentionSeconds, (int) rpm, (int) stressUnits)
+            ));
+        } else if (cooldown > 0) {
+            int cooldownSeconds = cooldown / 20;
+            player.sendSystemMessage(Component.literal(
+                    String.format("§eCooling: %ds §8| §7RPM: %d §8| §7SU: %d",
+                            cooldownSeconds, (int) rpm, (int) stressUnits)
+            ));
+        } else if (rpm > 0) {
+            player.sendSystemMessage(Component.literal(
+                    String.format("§7RPM: %d §8| §7SU: %d", (int) rpm, (int) stressUnits)
             ));
         }
 
@@ -268,21 +294,42 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     @Nullable
     private MoltenRotorBlockEntity getBlockEntity(Level level, BlockPos pos) {
         var blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof MoltenRotorBlockEntity moltenRotor) {
-            return moltenRotor;
-        }
-        return null;
+        return blockEntity instanceof MoltenRotorBlockEntity moltenRotor ? moltenRotor : null;
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
+        Direction direction = ctx.getHorizontalDirection().getOpposite();
         return defaultBlockState()
-                .setValue(FACING, ctx.getHorizontalDirection().getOpposite())
+                .setValue(FACING, direction)
                 .setValue(HEAT_LEVEL, BlazeBurnerBlock.HeatLevel.NONE);
     }
 
-    // ========== PARTICLES (CLIENT) ==========
+    // ========== KINETIC INITIALIZATION ==========
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+
+        if (!level.isClientSide && !oldState.is(this)) {
+            level.scheduleTick(pos, this, 2);
+        }
+    }
+
+    @Override
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
+        super.tick(state, level, pos, random);
+
+        if (!level.isClientSide) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof MoltenRotorBlockEntity furnace) {
+                furnace.initializeKinetics();
+            }
+        }
+    }
+
+    // ========== PARTICLES ==========
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -293,22 +340,18 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             return;
         }
 
-        // Crackle sound
         if (random.nextInt(15) == 0) {
             level.playLocalSound(
                     pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                    SoundEvents.CAMPFIRE_CRACKLE,
-                    SoundSource.BLOCKS,
+                    SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS,
                     0.5f + random.nextFloat() * 0.2f,
                     random.nextFloat() * 0.7f + 0.6f,
                     false
             );
         }
 
-        // Smoke
         if (random.nextInt(10) == 0) {
-            level.addParticle(
-                    ParticleTypes.LARGE_SMOKE,
+            level.addParticle(ParticleTypes.LARGE_SMOKE,
                     pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.3,
                     pos.getY() + 0.8,
                     pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.3,
@@ -316,10 +359,8 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             );
         }
 
-        // Flame particles (KINDLED+)
         if (heat.isAtLeast(BlazeBurnerBlock.HeatLevel.KINDLED) && random.nextInt(5) == 0) {
-            level.addParticle(
-                    ParticleTypes.FLAME,
+            level.addParticle(ParticleTypes.FLAME,
                     pos.getX() + 0.5,
                     pos.getY() + 0.6,
                     pos.getZ() + 0.5,

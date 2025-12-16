@@ -6,32 +6,40 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import io.hxneyw.repo.content.ModBlockEntities;
 import io.hxneyw.repo.content.blocks.behaviour.CombustionHeatingBehaviour;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.ChatFormatting;
 
 import java.util.List;
 
 /**
- * FULLY FIXED MOLTEN ROTOR BLOCK ENTITY
- * All values match the design document exactly
+ * MOLTEN ROTOR BLOCK ENTITY
+ * A kinetic generator that produces rotation and heat through combustion
+ * <p>
+ * Heat Levels (for Create recipes):
+ * - NONE: No heat (< 300°C)
+ * - SMOULDERING: Basic heat (300-500°C) - Same as regular Blaze Burner
+ * - KINDLED: Medium heat (500-800°C) - Same as superheated Blaze Burner
+ * - SEETHING: High heat (800-1300°C) - Same as superheated Blaze Burner
+ * - RADIANT: Maximum heat (1300°C+) - CUSTOM "Combustion" level for special recipes
+ * <p>
+ * Note: Create only has NONE/SMOULDERING/KINDLED/SEETHING. RADIANT is mapped to SEETHING
+ * visually, but your recipes can check for the actual RADIANT heat tier via the behaviour.
  */
 public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
 
-    // Temperature thresholds (Document §3)
+    // Temperature thresholds
     private static final float TEMP_NONE_MIN = 0f;
     private static final float TEMP_SMOULDERING_MIN = 300f;
+    private static final float TEMP_FADING_MAX = 350f;
     private static final float TEMP_KINDLED_MIN = 500f;
     private static final float TEMP_SEETHING_MIN = 800f;
-    private static final float TEMP_BLAZING_MIN = 1100f;
-    private static final float TEMP_RADIANT_MIN = 1500f;
+    private static final float TEMP_RADIANT_MIN = 1300f;
 
     // State variables
     private float currentTemperature = 20f;
@@ -44,26 +52,29 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     private float baseHeatingRate = 0f;
     private float currentMaxTemp = 0f;
 
-    // Tier unlocks
-    private boolean blazingUnlocked = false;
+    // Heat retention system
+    private boolean atMaxTemp = false;
+    private int heatRetentionTime = 0;
+    private float retentionTargetTemp = 0f;
 
     // Fuel stacking flags
     private boolean hasLavaInStack = false;
-    private boolean hasBlazeRodInStack = false;
     private boolean hasSulfurInStack = false;
     private boolean hasCoalInStack = false;
     private boolean hasCharcoalInStack = false;
-    private boolean hasSticksInStack = false;
+    private boolean hasStickInStack = false;
 
-    // Heat tiers (Document §3)
+    // Kinetic initialization flag
+    private boolean kineticsInitialized = false;
+
+    // Heat tiers
     public enum RotorHeatLevel {
         NONE(0, 0f, 0f, "Unheated", 1f),
-        SMOULDERING(300, 24f, 64f, "Heated", 1f),      // 16-32 RPM range, display as 24
-        FADING(400, 24f, 64f, "Heated", 1f),           // Never shown to player
-        KINDLED(650, 64f, 1024f, "Heated", 2f),
-        SEETHING(950, 128f, 2048f, "Superheated", 3f),
-        BLAZING(1300, 200f, 4096f, "Molten", 4f),
-        RADIANT(1650, 256f, 8192f, "Combustion", 5f);
+        SMOULDERING(300, 32f, 128f, "Heated", 1f),
+        FADING(325, 24f, 128f, "Heated", 0.8f),
+        KINDLED(650, 64f, 1024f, "Heated", 1.5f),
+        SEETHING(950, 128f, 2048f, "Superheated", 2.7f),
+        RADIANT(1400, 256f, 8192f, "Combustion", 4.8f);
 
         public final int displayTemp;
         public final float rpmCap;
@@ -80,37 +91,36 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         }
     }
 
-    // Fuel types with exact values from Document §6.5
+    // Fuel types
     public enum FuelType {
-        NONE(0f, 0f, 0, 0f, 1f),
-        STICK(5f, 150f, 32, 20f, 1f),
-        PLANK(7.5f, 300f, 16, 100f, 1f),
-        LOG(8.5f, 385f, 4, 250f, 1f),
-        COAL(13f, 550f, 32, 350f, 1f),
-        CHARCOAL(14f, 650f, 32, 350f, 1f),
-        COAL_BLOCK(25f, 900f, 1, 2400f, 1f),
-        KELP_BLOCK(15.5f, 750f, 3, 400f, 1f),
-        BLAZE_ROD(15f, 785f, 32, 600f, 1f),
-        LAVA(35f, 1000f, 5, 2000f, 1f),
-        TNT(25f, 600f, 1, 750f, 1f),
-        BLAZE_CAKE(40f, 1200f, 1, 3000f, 1f);
+        NONE(0f, 0f, 0, 0f, 1f, 0),
+        STICK(2f, 150f, 16, 100f, 1f, 50),
+        LOG(8.5f, 475f, 4, 250f, 1f, 200),
+        COAL(13f, 550f, 32, 350f, 1f, 400),
+        CHARCOAL(14f, 650f, 32, 350f, 0.8f, 500),
+        COAL_BLOCK(25f, 900f, 1, 2400f, 1f, 1060),
+        KELP_BLOCK(15.5f, 750f, 3, 400f, 1f, 600),
+        LAVA(35f, 1000f, 5, 2000f, 1f, 1000),
+        TNT(25f, 600f, 1, 750f, 1.2f, 100),
+        BLAZE_CAKE(40f, 1200f, 1, 3000f, 1f, 1500);
 
         public final float celsiusPerSecond;
         public final float maxTempReachable;
         public final int maxStackSize;
         public final float baseBurnTimeTicks;
         public final float burnRateMultiplier;
+        public final int retentionTicks;
 
-        FuelType(float cps, float maxTemp, int maxStack, float ticks, float burnMult) {
+        FuelType(float cps, float maxTemp, int maxStack, float ticks, float burnMult, int retention) {
             this.celsiusPerSecond = cps;
             this.maxTempReachable = maxTemp;
             this.maxStackSize = maxStack;
             this.baseBurnTimeTicks = ticks;
             this.burnRateMultiplier = burnMult;
+            this.retentionTicks = retention;
         }
     }
 
-    // Constructors
     public MoltenRotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -122,50 +132,56 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        CombustionHeatingBehaviour heatingBehaviour = new CombustionHeatingBehaviour(this);
-        behaviours.add(heatingBehaviour);
+        behaviours.add(new CombustionHeatingBehaviour(this));
     }
 
-    // Kinetic generation (Document §4)
+    // ========== KINETIC GENERATION ==========
+
     @Override
     public float getGeneratedSpeed() {
-        if (currentHeatTier == RotorHeatLevel.SMOULDERING ||
-                currentHeatTier == RotorHeatLevel.FADING) {
-            return 24f; // 16-32 RPM range, use 24 as middle
-        }
+        // SMOULDERING = 32 RPM, FADING = 24 RPM, others use their rpmCap
         return currentHeatTier.rpmCap;
-    }
-
-    public boolean hasShaftTowards(Level world, BlockPos pos, BlockState state, Direction face) {
-        Direction facing = state.getValue(com.simibubi.create.content.kinetics.base.DirectionalKineticBlock.FACING);
-        Direction leftSide = facing.getCounterClockWise();
-        Direction rightSide = facing.getClockWise();
-        return face == leftSide || face == rightSide;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float rpm = getGeneratedSpeed();
-        if (rpm == 0) return 0f;
-        float totalSU = getTotalStressOutput();
-        return totalSU / Math.abs(rpm);
+        // Create's GeneratingKineticBlockEntity multiplies returned value by abs(speed)
+        // Formula: finalCapacity = returnedValue × abs(speed)
+        // So to get desired SU, we return: desiredSU / speed
+
+        float speed = Math.abs(getGeneratedSpeed());
+        if (speed == 0) return 0f;
+
+        float desiredSU = currentHeatTier.baseStressCapacity;
+        float adjustedCapacity = desiredSU / speed;
+
+        this.lastCapacityProvided = adjustedCapacity;
+        return adjustedCapacity;
     }
 
-    // Stress output (Document §5)
+    @Override
+    public float calculateStressApplied() {
+        return 0f;
+    }
+
     public float getTotalStressOutput() {
-        if (currentHeatTier == RotorHeatLevel.SMOULDERING ||
-                currentHeatTier == RotorHeatLevel.FADING) {
-            return switch(activeFuelType) {
-                case STICK, PLANK, LOG, KELP_BLOCK -> 64f;
-                case COAL, COAL_BLOCK, BLAZE_ROD, TNT -> 128f;
-                case CHARCOAL -> 256f;
-                default -> 64f;
-            };
-        }
+        // Return actual SU for display purposes only
         return currentHeatTier.baseStressCapacity;
     }
 
-    // Main tick logic
+    public void initializeKinetics() {
+        if (kineticsInitialized || level == null || level.isClientSide) {
+            return;
+        }
+
+        kineticsInitialized = true;
+        attachKinetics();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        setChanged();
+    }
+
+    // ========== MAIN TICK LOGIC ==========
+
     @Override
     public void tick() {
         super.tick();
@@ -173,15 +189,14 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         if (level == null || level.isClientSide) return;
 
         boolean needsUpdate = false;
+        RotorHeatLevel previousTier = currentHeatTier;
 
-        // Fuel consumption with burn rate multipliers (Document §6)
+// PHASE 1: FUEL BURNING
         if (remainingBurnTime > 0) {
-            // Apply burn rate multiplier based on heat tier
             float burnMultiplier = getBurnRateMultiplier();
             remainingBurnTime -= (int) burnMultiplier;
             if (remainingBurnTime < 0) remainingBurnTime = 0;
 
-            // Heating
             float heatingPerTick = baseHeatingRate / 20f;
             float targetTemp = calculateMaxStackedTemp();
 
@@ -189,72 +204,120 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
                 currentTemperature = Math.min(currentTemperature + heatingPerTick, targetTemp);
                 needsUpdate = true;
             }
-        } else {
-            // Tier-based cooling (2°C per second base * tier multiplier)
+
+            // ONLY prepare retention data when we've reached high temp
+            // but DO NOT activate retention yet - it only shows AFTER fuel is gone
+            if (currentTemperature >= targetTemp * 0.79f) {
+                retentionTargetTemp = targetTemp;
+                heatRetentionTime = activeFuelType.retentionTicks * activeFuelCount;
+            }
+
+            // When fuel JUST depleted, activate retention mode
+            if (remainingBurnTime == 0 && currentTemperature >= TEMP_SMOULDERING_MIN) {
+                atMaxTemp = true;
+                retentionTargetTemp = currentTemperature;
+                // Use the calculated retention time, or minimum if we didn't reach 79%
+                if (heatRetentionTime == 0) {
+                    heatRetentionTime = Math.max(100, (int)(activeFuelType.retentionTicks * 0.3f * activeFuelCount));
+                }
+            }
+        }
+        // PHASE 2: HEAT RETENTION
+        else if (atMaxTemp && heatRetentionTime > 0) {
+            heatRetentionTime--;
+            currentTemperature = retentionTargetTemp;
+            needsUpdate = true;
+
+            if (heatRetentionTime == 0) {
+                atMaxTemp = false;
+                retentionTargetTemp = 0f;
+            }
+        }
+        // PHASE 3: COOLING
+        else {
+            atMaxTemp = false;
+            heatRetentionTime = 0;
+            retentionTargetTemp = 0f;
+
             if (currentTemperature > 20f) {
-                float baseCoolingRate = 2f / 20f; // 0.1°C per tick base
+                float baseCoolingRate = 2f / 20f;
                 float tierMultiplier = currentHeatTier.coolingMultiplier;
                 float coolingRate = baseCoolingRate * tierMultiplier;
                 currentTemperature = Math.max(20f, currentTemperature - coolingRate);
                 needsUpdate = true;
             }
 
-            // Reset fuel state
             if (activeFuelType != FuelType.NONE) {
                 activeFuelType = FuelType.NONE;
                 activeFuelCount = 0;
                 baseHeatingRate = 0f;
+                currentMaxTemp = 0f;
                 clearFuelStackFlags();
                 needsUpdate = true;
             }
         }
 
-        // Calculate heat tier from temperature
+        // Update heat tier
         RotorHeatLevel newTier = calculateHeatTierFromTemp();
-        if (newTier != currentHeatTier) {
+
+        if (newTier != previousTier) {
             currentHeatTier = newTier;
             updateBlockVisuals();
-            updateGeneratedRotation();
+
+            if (tierAffectsRotation(previousTier, newTier)) {
+                notifyKineticNetworkOfChange();
+            }
+
             needsUpdate = true;
         }
 
         if (needsUpdate) {
             setChanged();
-            sendData(); // Sync to client immediately
         }
+
+        sendData();
     }
 
-    // Burn rate multipliers based on tier (Document §6)
+    private boolean tierAffectsRotation(RotorHeatLevel from, RotorHeatLevel to) {
+        if (from == RotorHeatLevel.NONE && to != RotorHeatLevel.NONE) return true;
+        if (from != RotorHeatLevel.NONE && to == RotorHeatLevel.NONE) return true;
+
+        // SMOULDERING = 32 RPM, FADING = 24 RPM - different speeds, so rotation changes
+        // Only skip update if transitioning between tiers with SAME RPM
+        return from.rpmCap != to.rpmCap;
+    }
+
+    private void notifyKineticNetworkOfChange() {
+        if (level == null || level.isClientSide || !kineticsInitialized) return;
+
+        super.updateGeneratedRotation();
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        setChanged();
+    }
+
     private float getBurnRateMultiplier() {
         return switch(currentHeatTier) {
-            case NONE, SMOULDERING, FADING -> 1f;  // x1 burn rate
-            case KINDLED -> 2f;                     // x2 burn rate
-            case SEETHING -> 3f;                    // x3 burn rate
-            case BLAZING -> 4f;                     // x4 burn rate
-            case RADIANT -> 5f;                     // x5 burn rate
+            case NONE, SMOULDERING, FADING -> 1f;
+            case KINDLED -> 2f;
+            case SEETHING -> 3f;
+            case RADIANT -> 4f;
         };
     }
 
     private RotorHeatLevel calculateHeatTierFromTemp() {
-        if (currentTemperature < TEMP_SMOULDERING_MIN) {
-            return RotorHeatLevel.NONE;
-        }
+        if (currentTemperature < TEMP_SMOULDERING_MIN) return RotorHeatLevel.NONE;
+        if (currentTemperature >= TEMP_RADIANT_MIN) return RotorHeatLevel.RADIANT;
+        if (currentTemperature >= TEMP_SEETHING_MIN) return RotorHeatLevel.SEETHING;
+        if (currentTemperature >= TEMP_KINDLED_MIN) return RotorHeatLevel.KINDLED;
 
-        if (blazingUnlocked && currentTemperature >= TEMP_RADIANT_MIN) {
-            return RotorHeatLevel.RADIANT;
-        }
-        if (blazingUnlocked && currentTemperature >= TEMP_BLAZING_MIN) {
-            return RotorHeatLevel.BLAZING;
-        }
-
-        if (currentTemperature >= TEMP_SEETHING_MIN) {
-            return RotorHeatLevel.SEETHING;
-        }
-        if (currentTemperature >= TEMP_KINDLED_MIN) {
-            return RotorHeatLevel.KINDLED;
-        }
-
-        if (currentTemperature >= TEMP_SMOULDERING_MIN && remainingBurnTime < 100) {
+        // FADING only when:
+        // 1. Temperature is between 300-350°C
+        // 2. Fuel is depleted (cooling down)
+        // 3. NOT in heat retention mode
+        if (currentTemperature >= TEMP_SMOULDERING_MIN
+                && currentTemperature < TEMP_FADING_MAX
+                && remainingBurnTime == 0
+                && !atMaxTemp) {
             return RotorHeatLevel.FADING;
         }
 
@@ -264,28 +327,32 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     private void updateBlockVisuals() {
         if (level == null) return;
 
+        // Map to Create's heat levels (RADIANT shows as SEETHING)
         BlazeBurnerBlock.HeatLevel visualHeat = switch(currentHeatTier) {
             case NONE -> BlazeBurnerBlock.HeatLevel.NONE;
             case SMOULDERING -> BlazeBurnerBlock.HeatLevel.SMOULDERING;
             case FADING -> BlazeBurnerBlock.HeatLevel.FADING;
             case KINDLED -> BlazeBurnerBlock.HeatLevel.KINDLED;
-            case SEETHING, BLAZING, RADIANT -> BlazeBurnerBlock.HeatLevel.SEETHING;
+            case SEETHING, RADIANT -> BlazeBurnerBlock.HeatLevel.SEETHING;
         };
 
         BlockState currentState = getBlockState();
-        BlazeBurnerBlock.HeatLevel currentVisual =
-                currentState.getValue(MoltenRotorBlock.HEAT_LEVEL);
+        BlazeBurnerBlock.HeatLevel currentVisual = currentState.getValue(MoltenRotorBlock.HEAT_LEVEL);
 
         if (currentVisual != visualHeat) {
-            level.setBlock(worldPosition,
-                    currentState.setValue(MoltenRotorBlock.HEAT_LEVEL, visualHeat),
-                    3);
+            level.setBlock(worldPosition, currentState.setValue(MoltenRotorBlock.HEAT_LEVEL, visualHeat), 2);
         }
     }
 
-    // Fuel management with proper stacking (Document §6.5)
+    // ========== FUEL MANAGEMENT ==========
+
     public boolean addFuel(FuelType fuelType, int count) {
         if (level == null || fuelType == FuelType.NONE) return false;
+
+        // Sticks only work with logs
+        if (fuelType == FuelType.STICK && activeFuelType != FuelType.LOG) {
+            return false;
+        }
 
         if (activeFuelType != FuelType.NONE && activeFuelType != fuelType) {
             return false;
@@ -294,23 +361,18 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         int canAdd = Math.min(count, fuelType.maxStackSize - activeFuelCount);
         if (canAdd <= 0) return false;
 
-        // Add burn time based on count
         int ticksToAdd = (int)(fuelType.baseBurnTimeTicks * canAdd);
         remainingBurnTime += ticksToAdd;
 
         activeFuelType = fuelType;
         activeFuelCount += canAdd;
-
-        // CRITICAL: Heating rate is STATIC per fuel type, NOT multiplied by count
-        // This was the bug - heating rate should never change regardless of stack size
         baseHeatingRate = fuelType.celsiusPerSecond;
         currentMaxTemp = fuelType.maxTempReachable;
 
-        // Set stacking flags
         updateFuelStackFlags(fuelType);
 
         setChanged();
-        sendData(); // Sync to client
+        sendData();
         return true;
     }
 
@@ -320,75 +382,66 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         remainingBurnTime += ticks;
         activeFuelType = fuelType;
         activeFuelCount = 1;
-
-        // STATIC heating rate - never multiplied
         baseHeatingRate = fuelType.celsiusPerSecond;
         currentMaxTemp = fuelType.maxTempReachable;
 
         updateFuelStackFlags(fuelType);
 
-        if (fuelType == FuelType.LAVA && hasBlazeRodInStack) {
-            blazingUnlocked = true;
-        } else if (fuelType == FuelType.BLAZE_CAKE) {
-            blazingUnlocked = true;
-        }
-
         setChanged();
-        sendData(); // Sync to client
+        sendData();
     }
 
     public void addUltimateFuel(int ticks) {
         if (level == null) return;
+
         remainingBurnTime += ticks;
-        blazingUnlocked = true;
+        currentTemperature = Math.max(currentTemperature, TEMP_RADIANT_MIN);
+
         setChanged();
-        sendData(); // Sync to client
+        sendData();
     }
 
     private void updateFuelStackFlags(FuelType fuelType) {
         switch(fuelType) {
-            case STICK -> hasSticksInStack = true;
             case COAL -> hasCoalInStack = true;
             case CHARCOAL -> hasCharcoalInStack = true;
-            case BLAZE_ROD -> hasBlazeRodInStack = true;
             case LAVA -> hasLavaInStack = true;
+            case STICK -> hasStickInStack = true;
         }
     }
 
     private void clearFuelStackFlags() {
         hasLavaInStack = false;
-        hasBlazeRodInStack = false;
         hasSulfurInStack = false;
         hasCoalInStack = false;
         hasCharcoalInStack = false;
-        hasSticksInStack = false;
+        hasStickInStack = false;
     }
 
-    // Temperature stacking logic (Document §6.5)
     private float calculateMaxStackedTemp() {
         float baseMax = currentMaxTemp;
 
-        // Lava + Blaze Rod = 1250°C
-        if (hasLavaInStack && hasBlazeRodInStack) {
-            return 1250f;
-        }
-
-        // Lava + Blaze Cake = 1400°C
+        // Lava + Blaze Cake
         if (hasLavaInStack && activeFuelType == FuelType.BLAZE_CAKE) {
             return 1400f;
         }
 
-        // Coal + Charcoal = max 850°C
+        // Sticks + Logs
+        if (hasStickInStack && activeFuelType == FuelType.LOG) {
+            return 550f;
+        }
+
+        // Coal + Charcoal (16+ count)
         if (hasCoalInStack && hasCharcoalInStack && activeFuelCount > 16) {
             return Math.min(850f, baseMax);
         }
 
-        // Lava + TNT = 750°C
+        // Lava + TNT
         if (hasLavaInStack && activeFuelType == FuelType.TNT) {
             return 750f;
         }
 
-        // Lava + Sulfur = 1150°C (if you add sulfur fuel)
+        // Lava + Sulfur (future)
         if (hasLavaInStack && hasSulfurInStack) {
             return 1150f;
         }
@@ -396,13 +449,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         return baseMax;
     }
 
-    // Getters
+    // ========== GETTERS ==========
+
     public RotorHeatLevel getCurrentHeatTier() {
         return currentHeatTier;
-    }
-
-    public int getRemainingBurnTime() {
-        return remainingBurnTime;
     }
 
     public int getDisplayTemperature() {
@@ -410,22 +460,34 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     }
 
     public int getDisplayFuelTime() {
-        // Fuel timer shows at SMOULDERING+ (300°C+) when rotation begins
-        if (currentTemperature < TEMP_SMOULDERING_MIN) {
+        return Math.max(remainingBurnTime, 0);
+    }
+
+    public int getDisplayCooldownTime() {
+        if (currentTemperature <= TEMP_SMOULDERING_MIN || remainingBurnTime > 0 || (atMaxTemp && heatRetentionTime > 0)) {
             return 0;
         }
-        return remainingBurnTime;
+
+        float tempDifference = currentTemperature - TEMP_SMOULDERING_MIN;
+        float baseCoolingRate = 2f / 20f;
+        float tierMultiplier = currentHeatTier.coolingMultiplier;
+        float coolingRate = baseCoolingRate * tierMultiplier;
+
+        return (int)(tempDifference / coolingRate);
+    }
+
+    public int getDisplayRetentionTime() {
+        if (atMaxTemp && heatRetentionTime > 0 && remainingBurnTime == 0) {
+            return heatRetentionTime;
+        }
+        return 0;
     }
 
     public String getHeatTierName() {
         if (currentHeatTier == RotorHeatLevel.FADING) {
-            return "Heated"; // FADING never shown (Document §3)
+            return "Heated";
         }
         return currentHeatTier.displayName;
-    }
-
-    public BlazeBurnerBlock.HeatLevel getHeatLevelFromBlock() {
-        return getBlockState().getValue(MoltenRotorBlock.HEAT_LEVEL);
     }
 
     public boolean isCombustionActive() {
@@ -433,24 +495,21 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     }
 
     public boolean shouldShowStatus() {
-        if ((currentHeatTier == RotorHeatLevel.SMOULDERING ||
-                currentHeatTier == RotorHeatLevel.FADING) &&
-                remainingBurnTime == 0) {
-            return false;
-        }
-        return currentHeatTier != RotorHeatLevel.NONE;
+        return remainingBurnTime > 0 || currentTemperature > 20f;
     }
 
-    // Goggles overlay (Document §9)
+    // ========== GOGGLES OVERLAY ==========
+
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        // Add blank line for spacing
         tooltip.add(Component.literal(""));
 
         int temp = getDisplayTemperature();
         float rpm = getGeneratedSpeed();
         float stress = getTotalStressOutput();
         int fuelTime = getDisplayFuelTime();
+        int retentionTime = getDisplayRetentionTime();
+        int cooldownTime = getDisplayCooldownTime();
         String heatName = getHeatTierName();
 
         ChatFormatting color = switch(currentHeatTier) {
@@ -458,33 +517,16 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             case SMOULDERING, FADING -> ChatFormatting.YELLOW;
             case KINDLED -> ChatFormatting.RED;
             case SEETHING -> ChatFormatting.DARK_RED;
-            case BLAZING, RADIANT -> ChatFormatting.DARK_PURPLE;
+            case RADIANT -> ChatFormatting.DARK_PURPLE;
         };
 
-        tooltip.add(Component.literal("")
-                .append(Component.literal("Heat: " + heatName + " (" + temp + "°C)").withStyle(color)));
+        tooltip.add(Component.literal("Heat: " + heatName + " (" + temp + "°C)").withStyle(color));
 
-        if (stress > 0) {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("Stress Capacity: ").withStyle(ChatFormatting.GOLD))
-                    .append(Component.literal(String.format("%.1f", stress)).withStyle(ChatFormatting.GOLD))
-                    .append(Component.literal(" su").withStyle(ChatFormatting.GOLD)));
+        if (currentHeatTier != RotorHeatLevel.NONE && stress > 0) {
+            tooltip.add(Component.literal("Stress Capacity: " + (int)stress + " su")
+                    .withStyle(ChatFormatting.GOLD));
         } else {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("Stress Capacity: 0 su").withStyle(ChatFormatting.GRAY)));
-        }
-
-        if (rpm > 0) {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("Rotation Speed: " + (int)rpm + " RPM").withStyle(ChatFormatting.AQUA)));
-
-            if (currentHeatTier.ordinal() > RotorHeatLevel.SMOULDERING.ordinal()) {
-                tooltip.add(Component.literal("")
-                        .append(Component.literal("  (Max: " + (int)currentHeatTier.rpmCap + " RPM)").withStyle(ChatFormatting.DARK_GRAY)));
-            }
-        } else {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("Rotation Speed: 0 RPM").withStyle(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Stress Capacity: 0 su").withStyle(ChatFormatting.GRAY));
         }
 
         if (fuelTime > 0) {
@@ -493,31 +535,56 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             int remainingSeconds = seconds % 60;
 
             if (minutes > 0) {
-                tooltip.add(Component.literal("")
-                        .append(Component.literal("Fuel Remaining: " + minutes + "m " + remainingSeconds + "s").withStyle(ChatFormatting.GREEN)));
+                tooltip.add(Component.literal("Fuel Remaining: " + minutes + "m " + remainingSeconds + "s")
+                        .withStyle(ChatFormatting.GREEN));
             } else {
-                tooltip.add(Component.literal("")
-                        .append(Component.literal("Fuel Remaining: " + remainingSeconds + "s").withStyle(ChatFormatting.GREEN)));
+                tooltip.add(Component.literal("Fuel Remaining: " + remainingSeconds + "s")
+                        .withStyle(ChatFormatting.GREEN));
+            }
+
+            if (atMaxTemp && heatRetentionTime > 0) {
+                int retSeconds = heatRetentionTime / 20;
+                tooltip.add(Component.literal("Heat Retention: " + retSeconds + "s")
+                        .withStyle(ChatFormatting.AQUA));
+            }
+        } else if (retentionTime > 0) {
+            int seconds = retentionTime / 20;
+            int minutes = seconds / 60;
+            int remainingSeconds = seconds % 60;
+
+            if (minutes > 0) {
+                tooltip.add(Component.literal("Heat Retention: " + minutes + "m " + remainingSeconds + "s")
+                        .withStyle(ChatFormatting.AQUA));
+            } else {
+                tooltip.add(Component.literal("Heat Retention: " + remainingSeconds + "s")
+                        .withStyle(ChatFormatting.AQUA));
+            }
+        } else if (cooldownTime > 0) {
+            int seconds = cooldownTime / 20;
+            int minutes = seconds / 60;
+            int remainingSeconds = seconds % 60;
+
+            if (minutes > 0) {
+                tooltip.add(Component.literal("Cooling Down: " + minutes + "m " + remainingSeconds + "s")
+                        .withStyle(ChatFormatting.YELLOW));
+            } else {
+                tooltip.add(Component.literal("Cooling Down: " + remainingSeconds + "s")
+                        .withStyle(ChatFormatting.YELLOW));
             }
         } else if (currentHeatTier != RotorHeatLevel.NONE) {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("Fuel Remaining: 0s").withStyle(ChatFormatting.GRAY)));
+            tooltip.add(Component.literal("Fuel Remaining: 0s").withStyle(ChatFormatting.GRAY));
         }
 
-        if (currentHeatTier == RotorHeatLevel.BLAZING) {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("✦ BLAZING TIER ACTIVE").withStyle(ChatFormatting.DARK_PURPLE)));
-        } else if (currentHeatTier == RotorHeatLevel.RADIANT) {
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("✦ RADIANT TIER ACTIVE").withStyle(ChatFormatting.DARK_PURPLE)));
-            tooltip.add(Component.literal("")
-                    .append(Component.literal("  (Combustion recipes enabled)").withStyle(ChatFormatting.DARK_GRAY)));
+        if (currentHeatTier == RotorHeatLevel.RADIANT) {
+            tooltip.add(Component.literal("✦ RADIANT TIER ACTIVE").withStyle(ChatFormatting.DARK_PURPLE));
+            tooltip.add(Component.literal("  (Combustion recipes enabled)").withStyle(ChatFormatting.DARK_GRAY));
         }
 
         return true;
     }
 
-    // NBT serialization
+    // ========== NBT SERIALIZATION ==========
+
     @Override
     protected void write(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider, boolean clientPacket) {
         super.write(tag, provider, clientPacket);
@@ -528,13 +595,15 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         tag.putInt("FuelCount", activeFuelCount);
         tag.putFloat("HeatingRate", baseHeatingRate);
         tag.putFloat("MaxTemp", currentMaxTemp);
-        tag.putBoolean("BlazingUnlocked", blazingUnlocked);
         tag.putBoolean("HasLava", hasLavaInStack);
-        tag.putBoolean("HasBlazeRod", hasBlazeRodInStack);
+        tag.putBoolean("HasStick", hasStickInStack);
         tag.putBoolean("HasSulfur", hasSulfurInStack);
         tag.putBoolean("HasCoal", hasCoalInStack);
         tag.putBoolean("HasCharcoal", hasCharcoalInStack);
-        tag.putBoolean("HasSticks", hasSticksInStack);
+        tag.putBoolean("KineticsInit", kineticsInitialized);
+        tag.putBoolean("AtMaxTemp", atMaxTemp);
+        tag.putInt("RetentionTime", heatRetentionTime);
+        tag.putFloat("RetentionTarget", retentionTargetTemp);
     }
 
     @Override
@@ -545,13 +614,15 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         activeFuelCount = tag.getInt("FuelCount");
         baseHeatingRate = tag.getFloat("HeatingRate");
         currentMaxTemp = tag.getFloat("MaxTemp");
-        blazingUnlocked = tag.getBoolean("BlazingUnlocked");
         hasLavaInStack = tag.getBoolean("HasLava");
-        hasBlazeRodInStack = tag.getBoolean("HasBlazeRod");
         hasSulfurInStack = tag.getBoolean("HasSulfur");
         hasCoalInStack = tag.getBoolean("HasCoal");
+        hasStickInStack = tag.getBoolean("HasStick");
         hasCharcoalInStack = tag.getBoolean("HasCharcoal");
-        hasSticksInStack = tag.getBoolean("HasSticks");
+        kineticsInitialized = tag.getBoolean("KineticsInit");
+        atMaxTemp = tag.getBoolean("AtMaxTemp");
+        heatRetentionTime = tag.getInt("RetentionTime");
+        retentionTargetTemp = tag.getFloat("RetentionTarget");
 
         int tierIndex = tag.getInt("HeatTier");
         currentHeatTier = tierIndex >= 0 && tierIndex < RotorHeatLevel.values().length
@@ -561,7 +632,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         activeFuelType = fuelIndex >= 0 && fuelIndex < FuelType.values().length
                 ? FuelType.values()[fuelIndex] : FuelType.NONE;
 
-        // If this is a client packet, force visual updates
         if (clientPacket && level != null && level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }

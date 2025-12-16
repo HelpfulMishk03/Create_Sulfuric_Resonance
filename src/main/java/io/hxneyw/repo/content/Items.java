@@ -118,15 +118,10 @@ public class Items {
     );
 
     public static final DeferredItem<Item> MOLTEN_ROTOR_FURNACE = ITEMS.register("molten_rotor_furnace",
-            () -> new BlockItem(ModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Item.Properties()) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context,
-                                            @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-                    // Intentionally empty - prevents default BlockItem tooltip that adds mod name twice
-                    // The game will still add mod name once automatically from the creative tab
-                }
-            }
+            () -> new BlockItem(ModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Item.Properties())
     );
+
+
 
     public static void register(IEventBus eventBus) {
         LOGGER.info("Registering Sulfuric Resonance items");

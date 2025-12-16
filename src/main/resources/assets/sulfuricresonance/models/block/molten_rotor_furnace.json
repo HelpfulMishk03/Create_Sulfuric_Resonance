@@ -1,8 +1,12 @@
 {
-  "parent": "minecraft:block/orientable",
+  "parent": "minecraft:block/cube",
   "textures": {
-    "top": "sulfuricresonance:block/molten_rotor_furnace_sides",
-    "front": "sulfuricresonance:block/molten_rotor_furnace_front",
-    "side": "sulfuricresonance:block/molten_rotor_furnace_sides"
+    "particle": "sulfuricresonance:block/molten_rotor_furnace_front",
+    "down": "sulfuricresonance:block/molten_rotor_furnace_sides",
+    "up": "sulfuricresonance:block/molten_rotor_furnace_sides",
+    "north": "sulfuricresonance:block/molten_rotor_furnace_front",
+    "east": "sulfuricresonance:block/molten_rotor_furnace_sides",
+    "south": "sulfuricresonance:block/molten_rotor_furnace_sides",
+    "west": "sulfuricresonance:block/molten_rotor_furnace_sides"
   }
 }

@@ -15,13 +15,14 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS =
             DeferredRegister.createBlocks(CreateSulfuricResonance.MODID);
 
-    // NeoForge uses DeferredBlock (NOT RegistryObject!)
     public static final DeferredBlock<Block> MOLTEN_ROTOR_FURNACE =
             BLOCKS.register("molten_rotor_furnace", () ->
                     new MoltenRotorBlock(BlockBehaviour.Properties.of()
-                            .strength(5.0f)
-                            .requiresCorrectToolForDrops()
-                            .sound(SoundType.METAL)));
+                            .strength(5.0f, 6.0f)  // Hardness 5.0, Blast resistance 6.0
+                            .requiresCorrectToolForDrops()  // Needs correct tool
+                            .sound(SoundType.METAL)
+                            .instrument(net.minecraft.world.level.block.state.properties.NoteBlockInstrument.IRON_XYLOPHONE)
+                    ));
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
