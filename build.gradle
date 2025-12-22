@@ -14,6 +14,12 @@ repositories {
     // ========== OFFICIAL CREATE REPOSITORIES ==========
     maven { url = "https://maven.createmod.net" }          // Create, Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
+
+    // ========== JEI REPOSITORY ==========
+    maven {
+        name = "BlameJared Maven (JEI)"
+        url = "https://maven.blamejared.com"
+    }
 }
 
 base {
@@ -80,7 +86,15 @@ dependencies {
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
     runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    // ========== JEI (OPTIONAL) ==========
+    // compileOnly = available at compile time but not required at runtime
+    // runtimeOnly = available at runtime for testing
+    // Users install JEI separately - not bundled with your mod
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 }
+
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
     var replaceProperties = [

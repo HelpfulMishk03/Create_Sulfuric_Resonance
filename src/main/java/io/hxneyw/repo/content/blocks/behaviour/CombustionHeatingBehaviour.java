@@ -59,7 +59,7 @@ public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
     }
 
     /**
-     * Check if this furnace is at RADIANT tier (for special combustion recipes)
+     * Check if this furnace is at RADIANT tier (for special combustion_mixing recipes)
      */
     public boolean isRadiantTier() {
         return furnace.getCurrentHeatTier() == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
@@ -73,7 +73,7 @@ public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
     }
 
     /**
-     * Check if this heat level enables combustion recipes (RADIANT only)
+     * Check if this heat level enables combustion_mixing recipes (RADIANT only)
      * Use this in custom recipe checks for special high-heat recipes
      */
     public boolean enablesCombustionRecipes() {

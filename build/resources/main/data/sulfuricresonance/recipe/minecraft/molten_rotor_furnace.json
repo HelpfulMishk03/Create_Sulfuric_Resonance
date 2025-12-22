@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ABA",
-    "CDC",
+    "ACA",
+    "BDB",
     "AEA"
   ],
   "key": {
     "A": {
-      "tag": "c:sheets/brass"
+      "item": "create:industrial_iron_block"
     },
     "B": {
       "item": "create:andesite_alloy"

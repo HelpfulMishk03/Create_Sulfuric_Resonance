@@ -1,0 +1,13 @@
+{
+  "type": "create:haunting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:corrupt_blaze_cake"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:soul_fired_blaze_cake"
+    }
+  ]
+}

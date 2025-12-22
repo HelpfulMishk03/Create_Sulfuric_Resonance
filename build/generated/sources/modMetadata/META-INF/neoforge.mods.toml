@@ -10,14 +10,16 @@ loaderVersion = "[4,)" #mandatory
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
 license = "All Rights Reserved"
+
 # A URL to refer people to when problems occur with this mod
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
+
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
 modId = "sulfuricresonance" #mandatory
 # The version number of the mod
-version = "0.0.1.2-beta-(A)" #mandatory
+version = "0.0.1.5-beta-(B)" #mandatory
 # A display name for the mod
 displayName = "Create: Sulfuric Resonance" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/
@@ -34,20 +36,24 @@ authors = "Hxney" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description = '''An attempt to connect create to the chemical imbalance of minecraft, and related.'''
 
-# The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.
-#[[mixins]]
-#config="sulfuricresonance.mixins.json"
+# ========================================
+# MIXIN CONFIGURATION - CRITICAL!
+# ========================================
+[[mixins]]
+config = "sulfuricresonance.mixins.json"
 
 # The [[accessTransformers]] block allows you to declare where your AT file is.
 # If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg
 #[[accessTransformers]]
 #file="META-INF/accesstransformer.cfg"
+
 [[dependencies."sulfuricresonance"]]
 modId="create"
 type="required"
 versionRange="[6.0.6,)"
 ordering="AFTER"
 side="BOTH"
+
 # The coremods config file path is not configurable and is always loaded from META-INF/coremods.json
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
@@ -68,6 +74,7 @@ versionRange = "[21,)" #mandatory
 ordering = "NONE"
 # Side this dependency is applied on - BOTH, CLIENT, or SERVER
 side = "BOTH"
+
 # Here's another dependency
 [[dependencies."sulfuricresonance"]]
 modId = "minecraft"
@@ -77,6 +84,13 @@ versionRange = "[1.21.1,1.22)"
 ordering = "NONE"
 side = "BOTH"
 
+# JEI is OPTIONAL - mod works without it
+[[dependencies."sulfuricresonance"]]
+modId = "jei"
+type = "optional"
+versionRange = "[19.25.0.319,)"
+ordering = "AFTER"
+side = "CLIENT"
 
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't

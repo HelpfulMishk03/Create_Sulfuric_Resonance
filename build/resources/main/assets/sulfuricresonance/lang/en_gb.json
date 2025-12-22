@@ -18,5 +18,7 @@
   "item.sulfuricresonance.vulcanized_rubber": "Vulcanized Rubber",
   "item.sulfuricresonance.infernal_impeller": "Infernal Impeller",
   "item.sulfuricresonance.flameborne_core": "Flameborne Core",
-  "block.sulfuricresonance.molten_rotor_furnace": "Molten Rotor Furnace"
+  "block.sulfuricresonance.molten_rotor_furnace": "Molten Rotor Furnace",
+  "recipe.sulfuricresonance.combustion_mixing": "Combustion Mixing",
+  "create.recipe.heat_requirement.radiant": "Combustion"
 }

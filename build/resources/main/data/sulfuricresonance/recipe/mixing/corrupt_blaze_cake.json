@@ -1,0 +1,21 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "create:blaze_cake"
+    },
+    {
+      "item": "minecraft:soul_sand"
+    },
+    {
+      "item": "sulfuricresonance:embersol"
+    }
+  ],
+  "processing_time": 150,
+  "results": [
+    {
+      "id": "sulfuricresonance:corrupt_blaze_cake",
+      "amount": 1
+    }
+  ]
+}

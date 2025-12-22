@@ -51,5 +51,10 @@
       <option name="name" value="maven2" />
       <option name="url" value="https://maven.ithundxr.dev/snapshots" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="BlameJared Maven (JEI)" />
+      <option name="name" value="BlameJared Maven (JEI)" />
+      <option name="url" value="https://maven.blamejared.com" />
+    </remote-repository>
   </component>
 </project>

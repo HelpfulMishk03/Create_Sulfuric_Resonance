@@ -1,9 +1,13 @@
 package io.hxneyw.repo.content.blocks;
 
+import com.mojang.datafixers.TypeRewriteRule;
 import com.simibubi.create.AllItems;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.block.IBE;
+import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.ModBlockEntities;
 import io.hxneyw.repo.content.blocks.MoltenRotorBlockEntity.FuelType;
 import net.minecraft.core.BlockPos;
@@ -39,7 +43,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * MOLTEN ROTOR FURNACE BLOCK
- * A kinetic generator powered by combustion that can heat adjacent machines
+ * A kinetic generator powered by combustion_mixing that can heat adjacent machines
  */
 public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<MoltenRotorBlockEntity> {
 
@@ -96,6 +100,40 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     }
 
     @Override
+    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                           @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        Direction facing = state.getValue(FACING);
+        return MoltenRotorShapes.getShape(facing);
+    }
+
+    /**
+     * Custom collision shape for entity physics
+     */
+    @Override
+    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                                    @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return getShape(state, level, pos, context);
+    }
+
+    /**
+     * Selection box when hovering with cursor
+     */
+    @Override
+    protected @NotNull VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                                      @NotNull BlockPos pos) {
+        return getShape(state, level, pos, CollisionContext.empty());
+    }
+
+
+
+    public static BlazeBurnerBlock.HeatLevel getHeatLevelOf(BlockState state) {
+        if (state.hasProperty(HEAT_LEVEL)) {
+            return state.getValue(HEAT_LEVEL);
+        }
+        return BlazeBurnerBlock.HeatLevel.NONE;
+    }
+
+    @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
         return InteractionResult.SUCCESS;
     }
@@ -148,17 +186,6 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             return tryAddFuel(furnace, player, held, FuelType.KELP_BLOCK);
         }
 
-        // LAVA BUCKET
-        if (held.is(Items.LAVA_BUCKET)) {
-            furnace.addSpecialFuel(FuelType.LAVA, 2000);
-            if (!player.getAbilities().instabuild) {
-                held.shrink(1);
-                player.getInventory().add(new ItemStack(Items.BUCKET));
-            }
-            player.sendSystemMessage(Component.literal("§d+Lava Bucket §7(+100s)"));
-            level.playSound(null, pos, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 1.0f, 1.0f);
-            return ItemInteractionResult.SUCCESS;
-        }
 
         // BLAZE CAKE
         if (held.is(AllItems.BLAZE_CAKE.get())) {
@@ -169,11 +196,34 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             return ItemInteractionResult.SUCCESS;
         }
 
+        // SOUL FIRED BLAZE CAKE (NEW - ADD THIS ENTIRE BLOCK)
+        if (held.is(io.hxneyw.repo.content.Items.SOUL_FIRED_BLAZE_CAKE.get())) {
+            // Check if furnace is at 85% of SEETHING tier minimum (800°C)
+            float seethingMin = 1200f;
+            float requiredTemp = seethingMin * 0.85f; // 1020°C
+
+            if (furnace.getDisplayTemperature() < requiredTemp) {
+                player.sendSystemMessage(Component.literal("§c✖ Requires §6SEETHING §ctier heat! §7(1015°C+)"));
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 0.5f);
+                return ItemInteractionResult.FAIL;
+            }
+
+            furnace.addSpecialFuel(FuelType.SOUL_FIRED_BLAZE_CAKE, 3500);
+            if (!player.getAbilities().instabuild) held.shrink(1);
+            player.sendSystemMessage(Component.literal("§5§l★ SOUL FIRED BLAZE CAKE §7(+175s) §d§l[MAX HEAT!]"));
+            return ItemInteractionResult.SUCCESS;
+        }
+
         // TNT (explosive fuel)
         if (held.is(Items.TNT)) {
-            if (level.random.nextFloat() < 0.3f) {
+            if (level.random.nextFloat() < 0.10f) {
+                // Destroy the furnace block WITHOUT dropping it
+                level.removeBlock(pos, false);  // false = don't drop items
+
+                // THEN create explosion
                 level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                        1.5f, Level.ExplosionInteraction.BLOCK);
+                        1.5f, Level.ExplosionInteraction.BLOCK);  // Increased radius 1.5f → 2.5f
+
                 player.sendSystemMessage(Component.literal("§4§l✖ FURNACE EXPLODED!"));
                 return ItemInteractionResult.SUCCESS;
             }

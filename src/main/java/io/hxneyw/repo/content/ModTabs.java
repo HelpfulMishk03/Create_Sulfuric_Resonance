@@ -33,6 +33,8 @@ public class ModTabs {
                         output.accept(Items.NETHERWOOD_DUST.get());
                         output.accept(Items.SPENT_ASH.get());
                         output.accept(Items.EMBER_CATALYST.get());
+                        output.accept(Items.CORRUPT_BLAZE_CAKE.get());
+                        output.accept(Items.SOUL_FIRED_BLAZE_CAKE.get());
                         output.accept(Items.EMBERSOL.get());
                         output.accept(Items.BLAZE_SHARD.get());
                         output.accept(Items.PYROCLASTIC_POWDER.get());

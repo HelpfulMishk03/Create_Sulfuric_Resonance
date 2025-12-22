@@ -121,7 +121,17 @@ public class Items {
             () -> new BlockItem(ModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Item.Properties())
     );
 
+    public static final DeferredItem<Item> CORRUPT_BLAZE_CAKE = ITEMS.register("corrupt_blaze_cake",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
 
+    public static final DeferredItem<Item> SOUL_FIRED_BLAZE_CAKE = ITEMS.register("soul_fired_blaze_cake",
+            () -> new Item(new Item.Properties()
+                    .stacksTo(64)
+            )
+    );
 
     public static void register(IEventBus eventBus) {
         LOGGER.info("Registering Sulfuric Resonance items");

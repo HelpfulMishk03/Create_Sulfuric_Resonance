@@ -17,20 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/**
- * MOLTEN ROTOR BLOCK ENTITY
- * A kinetic generator that produces rotation and heat through combustion
- * <p>
- * Heat Levels (for Create recipes):
- * - NONE: No heat (< 300°C)
- * - SMOULDERING: Basic heat (300-500°C) - Same as regular Blaze Burner
- * - KINDLED: Medium heat (500-800°C) - Same as superheated Blaze Burner
- * - SEETHING: High heat (800-1300°C) - Same as superheated Blaze Burner
- * - RADIANT: Maximum heat (1300°C+) - CUSTOM "Combustion" level for special recipes
- * <p>
- * Note: Create only has NONE/SMOULDERING/KINDLED/SEETHING. RADIANT is mapped to SEETHING
- * visually, but your recipes can check for the actual RADIANT heat tier via the behaviour.
- */
 public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
 
     // Temperature thresholds
@@ -40,10 +26,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     private static final float TEMP_KINDLED_MIN = 500f;
     private static final float TEMP_SEETHING_MIN = 800f;
     private static final float TEMP_RADIANT_MIN = 1300f;
+    private static final float TEMP_ABSOLUTE_MAX = 1599f;
 
     // State variables
     private float currentTemperature = 20f;
     private int remainingBurnTime = 0;
+    // FIX: REMOVED STATIC - each block entity needs its own heat tier!
     private RotorHeatLevel currentHeatTier = RotorHeatLevel.NONE;
 
     // Active fuel tracking
@@ -66,6 +54,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
     // Kinetic initialization flag
     private boolean kineticsInitialized = false;
+
+    // FIX: Better update throttling with separate counters
+    private int clientUpdateCounter = 0;
+    private RotorHeatLevel lastSentHeatTier = RotorHeatLevel.NONE;
 
     // Heat tiers
     public enum RotorHeatLevel {
@@ -100,9 +92,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         CHARCOAL(14f, 650f, 32, 350f, 0.8f, 500),
         COAL_BLOCK(25f, 900f, 1, 2400f, 1f, 1060),
         KELP_BLOCK(15.5f, 750f, 3, 400f, 1f, 600),
-        LAVA(35f, 1000f, 5, 2000f, 1f, 1000),
         TNT(25f, 600f, 1, 750f, 1.2f, 100),
-        BLAZE_CAKE(40f, 1200f, 1, 3000f, 1f, 1500);
+        BLAZE_CAKE(40f, 1200f, 1, 3000f, 1f, 1500),
+        SOUL_FIRED_BLAZE_CAKE(48.5f, 1599f, 1, 3500f, 1f, 2000);
 
         public final float celsiusPerSecond;
         public final float maxTempReachable;
@@ -135,20 +127,13 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         behaviours.add(new CombustionHeatingBehaviour(this));
     }
 
-    // ========== KINETIC GENERATION ==========
-
     @Override
     public float getGeneratedSpeed() {
-        // SMOULDERING = 32 RPM, FADING = 24 RPM, others use their rpmCap
         return currentHeatTier.rpmCap;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        // Create's GeneratingKineticBlockEntity multiplies returned value by abs(speed)
-        // Formula: finalCapacity = returnedValue × abs(speed)
-        // So to get desired SU, we return: desiredSU / speed
-
         float speed = Math.abs(getGeneratedSpeed());
         if (speed == 0) return 0f;
 
@@ -165,7 +150,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     }
 
     public float getTotalStressOutput() {
-        // Return actual SU for display purposes only
         return currentHeatTier.baseStressCapacity;
     }
 
@@ -179,8 +163,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
         setChanged();
     }
-
-    // ========== MAIN TICK LOGIC ==========
 
     @Override
     public void tick() {
@@ -198,25 +180,29 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             if (remainingBurnTime < 0) remainingBurnTime = 0;
 
             float heatingPerTick = baseHeatingRate / 20f;
+
+            // Rain slows heating by 50%
+            boolean isRaining = level.isRainingAt(worldPosition.above());
+            if (isRaining) {
+                heatingPerTick *= 0.5f;  // Half heating rate in rain
+            }
+
             float targetTemp = calculateMaxStackedTemp();
 
             if (currentTemperature < targetTemp) {
                 currentTemperature = Math.min(currentTemperature + heatingPerTick, targetTemp);
+                currentTemperature = Math.min(currentTemperature, TEMP_ABSOLUTE_MAX); // CAP AT 1599°C
                 needsUpdate = true;
             }
 
-            // ONLY prepare retention data when we've reached high temp
-            // but DO NOT activate retention yet - it only shows AFTER fuel is gone
             if (currentTemperature >= targetTemp * 0.79f) {
                 retentionTargetTemp = targetTemp;
                 heatRetentionTime = activeFuelType.retentionTicks * activeFuelCount;
             }
 
-            // When fuel JUST depleted, activate retention mode
             if (remainingBurnTime == 0 && currentTemperature >= TEMP_SMOULDERING_MIN) {
                 atMaxTemp = true;
                 retentionTargetTemp = currentTemperature;
-                // Use the calculated retention time, or minimum if we didn't reach 79%
                 if (heatRetentionTime == 0) {
                     heatRetentionTime = Math.max(100, (int)(activeFuelType.retentionTicks * 0.3f * activeFuelCount));
                 }
@@ -242,6 +228,13 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             if (currentTemperature > 20f) {
                 float baseCoolingRate = 2f / 20f;
                 float tierMultiplier = currentHeatTier.coolingMultiplier;
+
+                // FIX: Faster cooling when raining - 3x cooling rate
+                boolean isRaining = level.isRainingAt(worldPosition.above());
+                if (isRaining) {
+                    tierMultiplier *= 2f;
+                }
+
                 float coolingRate = baseCoolingRate * tierMultiplier;
                 currentTemperature = Math.max(20f, currentTemperature - coolingRate);
                 needsUpdate = true;
@@ -275,15 +268,27 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             setChanged();
         }
 
-        sendData();
+        // FIX: Send updates more frequently for smooth temperature display
+        // But ONLY update lastSentHeatTier when it actually changes to prevent flickering
+        clientUpdateCounter++;
+        boolean tierChanged = currentHeatTier != lastSentHeatTier;
+
+        if (tierChanged) {
+            // Heat tier changed - update immediately and reset counter
+            lastSentHeatTier = currentHeatTier;
+            clientUpdateCounter = 0;
+            sendData();
+        } else if (clientUpdateCounter >= 1) {
+            // No tier change - send temperature updates every 5 ticks (4x per second)
+            // This keeps temperature smooth without causing goggle flicker
+            clientUpdateCounter = 0;
+            sendData();
+        }
     }
 
     private boolean tierAffectsRotation(RotorHeatLevel from, RotorHeatLevel to) {
         if (from == RotorHeatLevel.NONE && to != RotorHeatLevel.NONE) return true;
         if (from != RotorHeatLevel.NONE && to == RotorHeatLevel.NONE) return true;
-
-        // SMOULDERING = 32 RPM, FADING = 24 RPM - different speeds, so rotation changes
-        // Only skip update if transitioning between tiers with SAME RPM
         return from.rpmCap != to.rpmCap;
     }
 
@@ -310,10 +315,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         if (currentTemperature >= TEMP_SEETHING_MIN) return RotorHeatLevel.SEETHING;
         if (currentTemperature >= TEMP_KINDLED_MIN) return RotorHeatLevel.KINDLED;
 
-        // FADING only when:
-        // 1. Temperature is between 300-350°C
-        // 2. Fuel is depleted (cooling down)
-        // 3. NOT in heat retention mode
         if (currentTemperature >= TEMP_SMOULDERING_MIN
                 && currentTemperature < TEMP_FADING_MAX
                 && remainingBurnTime == 0
@@ -327,7 +328,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     private void updateBlockVisuals() {
         if (level == null) return;
 
-        // Map to Create's heat levels (RADIANT shows as SEETHING)
         BlazeBurnerBlock.HeatLevel visualHeat = switch(currentHeatTier) {
             case NONE -> BlazeBurnerBlock.HeatLevel.NONE;
             case SMOULDERING -> BlazeBurnerBlock.HeatLevel.SMOULDERING;
@@ -344,18 +344,16 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         }
     }
 
-    // ========== FUEL MANAGEMENT ==========
-
     public boolean addFuel(FuelType fuelType, int count) {
         if (level == null || fuelType == FuelType.NONE) return false;
 
-        // Sticks only work with logs
         if (fuelType == FuelType.STICK && activeFuelType != FuelType.LOG) {
             return false;
         }
 
-        if (activeFuelType != FuelType.NONE && activeFuelType != fuelType) {
-            return false;
+        // ALLOW fuel changes during heat retention (when remainingBurnTime is 0)
+        if (activeFuelType != FuelType.NONE && activeFuelType != fuelType && remainingBurnTime > 0) {
+            return false;  // Only block if ACTIVELY burning different fuel
         }
 
         int canAdd = Math.min(count, fuelType.maxStackSize - activeFuelCount);
@@ -396,6 +394,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
         remainingBurnTime += ticks;
         currentTemperature = Math.max(currentTemperature, TEMP_RADIANT_MIN);
+        currentTemperature = Math.min(currentTemperature, TEMP_ABSOLUTE_MAX); // ADD THIS LINE
 
         setChanged();
         sendData();
@@ -405,7 +404,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         switch(fuelType) {
             case COAL -> hasCoalInStack = true;
             case CHARCOAL -> hasCharcoalInStack = true;
-            case LAVA -> hasLavaInStack = true;
             case STICK -> hasStickInStack = true;
         }
     }
@@ -421,35 +419,17 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     private float calculateMaxStackedTemp() {
         float baseMax = currentMaxTemp;
 
-        // Lava + Blaze Cake
-        if (hasLavaInStack && activeFuelType == FuelType.BLAZE_CAKE) {
-            return 1400f;
-        }
 
-        // Sticks + Logs
         if (hasStickInStack && activeFuelType == FuelType.LOG) {
             return 550f;
         }
 
-        // Coal + Charcoal (16+ count)
         if (hasCoalInStack && hasCharcoalInStack && activeFuelCount > 16) {
             return Math.min(850f, baseMax);
         }
 
-        // Lava + TNT
-        if (hasLavaInStack && activeFuelType == FuelType.TNT) {
-            return 750f;
-        }
-
-        // Lava + Sulfur (future)
-        if (hasLavaInStack && hasSulfurInStack) {
-            return 1150f;
-        }
-
         return baseMax;
     }
-
-    // ========== GETTERS ==========
 
     public RotorHeatLevel getCurrentHeatTier() {
         return currentHeatTier;
@@ -497,8 +477,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     public boolean shouldShowStatus() {
         return remainingBurnTime > 0 || currentTemperature > 20f;
     }
-
-    // ========== GOGGLES OVERLAY ==========
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
@@ -583,8 +561,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         return true;
     }
 
-    // ========== NBT SERIALIZATION ==========
-
     @Override
     protected void write(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider, boolean clientPacket) {
         super.write(tag, provider, clientPacket);
@@ -631,6 +607,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         int fuelIndex = tag.getInt("FuelType");
         activeFuelType = fuelIndex >= 0 && fuelIndex < FuelType.values().length
                 ? FuelType.values()[fuelIndex] : FuelType.NONE;
+
+        if (clientPacket) {
+            lastSentHeatTier = currentHeatTier;
+        }
 
         if (clientPacket && level != null && level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);

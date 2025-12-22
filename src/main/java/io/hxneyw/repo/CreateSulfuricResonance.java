@@ -6,6 +6,7 @@ import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.ModBlocks;
 import io.hxneyw.repo.content.ModBlockEntities;
 import io.hxneyw.repo.content.entities.ModEntities;
+import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -47,6 +48,10 @@ public class CreateSulfuricResonance {
         ModBlockEntities.register(modEventBus);
         LOGGER.info("========== BLOCK ENTITIES.REGISTER CALLED ==========");
 
+        // Register recipe types
+        ModRecipeTypes.register(modEventBus);
+        LOGGER.info("========== RECIPE TYPES.REGISTER CALLED ==========");
+
         NeoForge.EVENT_BUS.register(this);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -58,5 +63,6 @@ public class CreateSulfuricResonance {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("[{}] Server is starting.", MODID);
+
     }
 }
