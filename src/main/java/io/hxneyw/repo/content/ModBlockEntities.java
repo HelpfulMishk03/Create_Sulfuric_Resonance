@@ -5,16 +5,16 @@ import io.hxneyw.repo.content.blocks.MoltenRotorBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModBlockEntities {
 
-    // FIXED: Changed from ForgeRegistries to Registries (NeoForge)
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, CreateSulfuricResonance.MODID);
 
-    // The build() method in 1.21+ doesn't need the DataFixTypes parameter anymore
     @SuppressWarnings("DataFlowIssue")
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MoltenRotorBlockEntity>> MOLTEN_ROTOR =
             BLOCK_ENTITIES.register("molten_rotor", () ->
@@ -23,6 +23,24 @@ public class ModBlockEntities {
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
+
+        // CRITICAL: Register capability listener on the MOD event bus
+        eventBus.addListener(ModBlockEntities::registerCapabilities);
+
         CreateSulfuricResonance.LOGGER.info("Block entities registered for Sulfuric Resonance");
+    }
+
+    /**
+     * FIXED: Register ItemHandler capability for funnels and hoppers
+     * This is called automatically during the capability registration event
+     */
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(
+                Capabilities.ItemHandler.BLOCK,  // The capability type
+                MOLTEN_ROTOR.get(),              // Your block entity type
+                (blockEntity, side) -> blockEntity.fuelHandler  // Expose the fuel handler from all sides
+        );
+
+        CreateSulfuricResonance.LOGGER.info("Registered ItemHandler capability for Molten Rotor");
     }
 }

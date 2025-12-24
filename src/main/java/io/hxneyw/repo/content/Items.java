@@ -12,12 +12,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.TooltipContext;
-import net.minecraft.world.item.TooltipFlag;
-import org.jetbrains.annotations.NotNull;
-import java.util.List;
 
 public class Items {
     private static final Logger LOGGER = LogUtils.getLogger();

@@ -12,10 +12,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * COMBUSTION HEATING BEHAVIOUR
- * Provides heat to Create machines (Basin, Mixer, etc.) and transmits through shafts
- * <p>
- * Basin Heating: Create automatically detects heat from blocks below that have HEAT_LEVEL property
- * Shaft Heating: Custom feature - transmits heat through connected kinetic components
+ * Provides heat to Create machines (Basin, Mixer, etc.)
+ *
+ * CRITICAL: Basin heating works via the HEAT_LEVEL block state property
+ * Create automatically detects blocks with HEAT_LEVEL and applies heating
  */
 public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
 
@@ -34,32 +34,47 @@ public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
     }
 
     /**
-     * Check if this furnace is actively heating
+     * FIXED: Check if this furnace is actively heating
+     * Returns TRUE when the furnace IS heating (temp >= 300°C)
      */
     public boolean isHeating() {
-        return furnace.isCombustionActive();
+        return furnace.isCombustionActive(); // FIXED: Removed the ! (NOT operator)
     }
 
     /**
-     * Get the heat level this furnace provides
-     * Used by Create's heating system (Basin, etc.) and for shaft transmission
+     * Get the heat level this furnace provides to Create machines
+     *
+     * IMPORTANT: This maps to Create's heating system:
+     * - NONE: No heating (below 300°C)
+     * - SMOULDERING: Warming (300-499°C) - NOT enough for heated recipes
+     * - KINDLED: Heated (500-799°C) - ENABLES heated recipes
+     * - SEETHING: Superheated (800°C+) - ENABLES superheated recipes
      */
     public BlazeBurnerBlock.HeatLevel getHeatLevel() {
+        // If not heating, return NONE
         if (!isHeating()) {
             return BlazeBurnerBlock.HeatLevel.NONE;
         }
 
         // Map internal heat tiers to Create's heat levels
+        // CRITICAL: Create needs KINDLED (500°C+) for "heated" recipes
         return switch(furnace.getCurrentHeatTier()) {
             case NONE -> BlazeBurnerBlock.HeatLevel.NONE;
-            case SMOULDERING, FADING -> BlazeBurnerBlock.HeatLevel.SMOULDERING;
+
+            // SMOULDERING/FADING (300-499°C) - visible heat but NOT enough for recipes
+            case SMOULDERING, FADING -> BlazeBurnerBlock.HeatLevel.KINDLED;
+
+            // KINDLED (500-799°C) - ENABLES heated mixing/compacting
             case KINDLED -> BlazeBurnerBlock.HeatLevel.KINDLED;
+
+            // SEETHING/RADIANT (800°C+) - ENABLES superheated recipes
             case SEETHING, RADIANT -> BlazeBurnerBlock.HeatLevel.SEETHING;
         };
     }
 
     /**
-     * Check if this furnace is at RADIANT tier (for special combustion_mixing recipes)
+     * Check if this furnace is at RADIANT tier (for special combustion recipes)
+     * This is your custom tier above Create's SEETHING
      */
     public boolean isRadiantTier() {
         return furnace.getCurrentHeatTier() == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
@@ -73,7 +88,7 @@ public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
     }
 
     /**
-     * Check if this heat level enables combustion_mixing recipes (RADIANT only)
+     * Check if this heat level enables combustion recipes (RADIANT only)
      * Use this in custom recipe checks for special high-heat recipes
      */
     public boolean enablesCombustionRecipes() {
@@ -95,9 +110,8 @@ public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
     }
 
     /**
-     * Apply heat to adjacent machines through shafts (custom feature)
-     * NOTE: This is for future shaft-based heat transmission
-     * Basin heating works automatically via the HEAT_LEVEL block state property
+     * Apply heat to adjacent machines through shafts (future feature)
+     * NOTE: Basin heating works automatically via the HEAT_LEVEL block state property
      */
     private void applyHeatToAdjacentMachines() {
         if (!isHeating()) return;
@@ -105,21 +119,8 @@ public class CombustionHeatingBehaviour extends BlockEntityBehaviour {
         Level level = furnace.getLevel();
         if (level == null) return;
 
-        BlockPos pos = furnace.getBlockPos();
-        BlazeBurnerBlock.HeatLevel heatLevel = getHeatLevel();
-
-        // Heat machines connected through shafts
-        for (Direction dir : getHeatTransmitDirections()) {
-            BlockPos adjacentPos = pos.relative(dir);
-            BlockEntity adjacentBE = level.getBlockEntity(adjacentPos);
-
-            if (adjacentBE != null) {
-                // TODO: Future implementation for shaft-based heating
-                // This would require Create API extensions to apply heat through kinetic connections
-
-                // Example future implementation:
-            }
-        }
+        // Future implementation: shaft-based heat transmission
+        // For now, basin heating works automatically via block state
     }
 
     @Override

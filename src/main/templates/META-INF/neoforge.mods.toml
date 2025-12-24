@@ -50,7 +50,7 @@ config = "sulfuricresonance.mixins.json"
 [[dependencies."${mod_id}"]]
 modId="create"
 type="required"
-versionRange="[6.0.6,)"
+versionRange="[6.0.7,)"
 ordering="AFTER"
 side="BOTH"
 
