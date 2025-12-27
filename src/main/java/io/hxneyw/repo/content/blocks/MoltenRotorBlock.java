@@ -2,11 +2,10 @@ package io.hxneyw.repo.content.blocks;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.equipment.wrench.WrenchItem;
 import io.hxneyw.repo.content.blocks.behaviour.MoltenRotorShapes;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.core.particles.BlockParticleOption;
+import io.hxneyw.repo.content.registry.ModSounds;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -16,7 +15,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.block.IBE;
-import io.hxneyw.repo.content.ModBlockEntities;
+import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.blocks.MoltenRotorBlockEntity.FuelType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,6 +55,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<MoltenRotorBlockEntity>, IWrenchable {
 
     public static final EnumProperty<BlazeBurnerBlock.HeatLevel> HEAT_LEVEL = BlazeBurnerBlock.HEAT_LEVEL;
+    private BlockPlaceContext ctx;
 
     public MoltenRotorBlock(Properties props) {
         super(props);
@@ -87,6 +87,28 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     }
 
     @Override
+    public BlockState getRotatedBlockState(BlockState originalState, Direction targetedFace) {
+        // Only rotate horizontally, ignore which face was clicked
+        Direction currentFacing = originalState.getValue(FACING);
+        Direction newFacing = currentFacing.getClockWise();
+
+        // Keep rotating until we get a horizontal direction
+        while (newFacing.getAxis().isVertical()) {
+            newFacing = newFacing.getClockWise();
+        }
+
+        return originalState.setValue(FACING, newFacing);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(@NotNull BlockPlaceContext ctx) {
+        Direction direction = ctx.getHorizontalDirection().getOpposite();
+        return defaultBlockState()
+                .setValue(FACING, direction)
+                .setValue(HEAT_LEVEL, BlazeBurnerBlock.HeatLevel.NONE);
+    }
+
+    @Override
     public Class<MoltenRotorBlockEntity> getBlockEntityClass() {
         return MoltenRotorBlockEntity.class;
     }
@@ -108,6 +130,13 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     }
 
     @Override
+    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                                    @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        return Shapes.box(0.0625, 0, 0.0625, 0.9375, 1, 0.9375);
+    }
+
+    // 2. Keep detailed visual shape
+    @Override
     protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level,
                                            @NotNull BlockPos pos, @NotNull CollisionContext context) {
         Direction facing = state.getValue(FACING);
@@ -116,14 +145,14 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean addLandingEffects(BlockState state1, ServerLevel level, BlockPos pos, BlockState state2,
-                                     LivingEntity entity, int numberOfParticles) {
+    public boolean addLandingEffects(@NotNull BlockState state1, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull BlockState state2,
+                                     @NotNull LivingEntity entity, int numberOfParticles) {
         return true; // Prevent landing particles
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean addRunningEffects(BlockState state, Level level, BlockPos pos, Entity entity) {
+    public boolean addRunningEffects(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Entity entity) {
         return true; // Prevent running particles
     }
 
@@ -132,47 +161,11 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos,
                               @NotNull BlockState state, @javax.annotation.Nullable BlockEntity blockEntity,
                               @NotNull ItemStack tool) {
+        VoxelShape shape = getCollisionShape(state, level, pos, CollisionContext.empty());
+        System.out.println("Collision shape boxes: " + shape.toAabbs().size());
         super.playerDestroy(level, player, pos, state, blockEntity, tool);
-        ParticleEngine manager = net.minecraft.client.Minecraft.getInstance().particleEngine;
-
-        // Spawn minimal particles manually on client side
-        if (level.isClientSide) {
-            for (int i = 0; i < 6; i++) {
-                double x = pos.getX() + 0.5 + (level.random.nextDouble() - 0.5) * 0.6;
-                double y = pos.getY() + 0.5 + (level.random.nextDouble() - 0.5) * 0.6;
-                double z = pos.getZ() + 0.5 + (level.random.nextDouble() - 0.5) * 0.6;
-
-                manager.createParticle(
-                        new net.minecraft.core.particles.BlockParticleOption(
-                                net.minecraft.core.particles.ParticleTypes.BLOCK, state
-                        ),
-                        x, y, z,
-                        (level.random.nextDouble() - 0.5) * 0.15,
-                        (level.random.nextDouble() - 0.5) * 0.15,
-                        (level.random.nextDouble() - 0.5) * 0.15
-                );
-            }
-        }
+        // Default particles now use simplified collision shape = ~8 particles
     }
-
-    /**
-     * Custom collision shape for entity physics
-     */
-    @Override
-    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level,
-                                                    @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return getShape(state, level, pos, context);
-    }
-
-    /**
-     * Selection box when hovering with cursor
-     */
-    @Override
-    protected @NotNull VoxelShape getInteractionShape(@NotNull BlockState state, @NotNull BlockGetter level,
-                                                      @NotNull BlockPos pos) {
-        return getShape(state, level, pos, CollisionContext.empty());
-    }
-
 
     public static BlazeBurnerBlock.HeatLevel getHeatLevelOf(BlockState state) {
         if (state.hasProperty(HEAT_LEVEL)) {
@@ -182,62 +175,38 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     }
 
 
-    public boolean addDestroyEffects(BlockState state, Level level, BlockPos pos, ParticleEngine manager) {
-        if (level.isClientSide) {
-            // REDUCED from 8 to 4 particles
-            for (int i = 0; i < 4; i++) {
-                double x = pos.getX() + 0.5 + (level.random.nextDouble() - 0.5) * 0.8;
-                double y = pos.getY() + 0.5 + (level.random.nextDouble() - 0.5) * 0.8;
-                double z = pos.getZ() + 0.5 + (level.random.nextDouble() - 0.5) * 0.8;
-
-                manager.createParticle(
-                        new BlockParticleOption(ParticleTypes.BLOCK, state),
-                        x, y, z,
-                        (level.random.nextDouble() - 0.5) * 0.1,
-                        (level.random.nextDouble() - 0.5) * 0.1,
-                        (level.random.nextDouble() - 0.5) * 0.1
-                );
-            }
-        }
-        return true;
-    }
-
-    // Also limit hit particles (when punching the block):
-
-    public boolean addHitEffects(BlockState state, Level level, net.minecraft.world.phys.HitResult target, ParticleEngine manager) {
-        if (level.isClientSide && target instanceof net.minecraft.world.phys.BlockHitResult blockHit) {
-            BlockPos pos = blockHit.getBlockPos();
-
-            // Spawn only 2-3 particles on hit
-            for (int i = 0; i < 3; i++) {
-                double x = pos.getX() + 0.5 + (level.random.nextDouble() - 0.5) * 0.5;
-                double y = pos.getY() + 0.5 + (level.random.nextDouble() - 0.5) * 0.5;
-                double z = pos.getZ() + 0.5 + (level.random.nextDouble() - 0.5) * 0.5;
-
-                level.addParticle(new BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, state),
-                        x, y, z, 0, 0, 0
-                );
-            }
-        }
-        return true; // Prevent default particles
-    }
 
     @Override
-    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        // Manually call the default implementation
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        BlockState rotated = getRotatedBlockState(state, context.getClickedFace());
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof MoltenRotorBlockEntity furnace && !level.isClientSide) {
+                // Drop fuel items based on what's burning
+                FuelType fuelType = furnace.getActiveFuelType();
+                int fuelCount = furnace.getActiveFuelCount();
 
-        if (!rotated.canSurvive(level, pos))
-            return InteractionResult.PASS;
+                if (fuelType != FuelType.NONE && fuelCount > 0) {
+                    ItemStack fuelStack = getFuelItemStack(fuelType, fuelCount);
+                    if (!fuelStack.isEmpty()) {
+                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), fuelStack);
+                    }
+                }
+            }
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
+    }
 
-        KineticBlockEntity.switchToBlockState(level, pos, rotated);
-
-        if (level.getBlockState(pos) != state)
-            IWrenchable.playRotateSound(level, pos);
-
-        return InteractionResult.SUCCESS;
+    private ItemStack getFuelItemStack(FuelType fuelType, int count) {
+        return switch (fuelType) {
+            case STICK -> new ItemStack(Items.STICK, count);
+            case LOG -> new ItemStack(Items.OAK_LOG, count); // Default to oak
+            case COAL -> new ItemStack(Items.COAL, count);
+            case CHARCOAL -> new ItemStack(Items.CHARCOAL, count);
+            case COAL_BLOCK -> new ItemStack(Items.COAL_BLOCK, count);
+            case KELP_BLOCK -> new ItemStack(Items.DRIED_KELP_BLOCK, count);
+            case TNT -> new ItemStack(Items.TNT, count);
+            default -> ItemStack.EMPTY;
+        };
     }
 
     // ========== FUEL SYSTEM ==========
@@ -247,10 +216,29 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
                                                        @NotNull Level level, @NotNull BlockPos pos,
                                                        @NotNull Player player, @NotNull InteractionHand hand,
                                                        @NotNull BlockHitResult hit) {
+        // Handle wrench interactions
+        if (stack.getItem() instanceof WrenchItem) {
+            UseOnContext context = new UseOnContext(player, hand, hit);
+
+            if (player.isShiftKeyDown()) {
+                // Shift + wrench = remove block
+                InteractionResult result = onSneakWrenched(state, context);
+                return result == InteractionResult.SUCCESS ?
+                        ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+            } else {
+                // Regular wrench = rotate block
+                InteractionResult result = onWrenched(state, context);
+                return result == InteractionResult.SUCCESS ?
+                        ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+            }
+        }
+
         // CRITICAL: Allow block placement on top BEFORE any other checks
         if (hit.getDirection() == Direction.UP) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
+
+
 
         MoltenRotorBlockEntity furnace = getBlockEntity(level, pos);
         if (furnace == null) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -282,7 +270,12 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
         // LOGS
         if (held.is(ItemTags.LOGS)) {
-            return tryAddFuel(furnace, player, held, FuelType.LOG);
+            ItemInteractionResult result = tryAddFuel(furnace, player, held, FuelType.LOG);
+            if (result == ItemInteractionResult.SUCCESS) {
+                level.playSound(null, pos, ModSounds.LOG_INSERT.get(),
+                        SoundSource.BLOCKS, 1.0f, level.random.nextFloat() * 0.5f + 0.7f);
+            }
+            return result;
         }
 
         // COAL
@@ -333,20 +326,31 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             return ItemInteractionResult.SUCCESS;
         }
 
-        // TNT (explosive fuel)
         if (held.is(Items.TNT)) {
+            if (furnace.tntCooldown > 0) {
+                return ItemInteractionResult.FAIL; // Still on cooldown
+            }
+
             if (level.random.nextFloat() < 0.10f) {
+                // Set cooldown to prevent spam
+                furnace.tntCooldown = 20; // 1 second cooldown
+
                 // Destroy the furnace block WITHOUT dropping it
-                level.removeBlock(pos, false);  // false = don't drop items
+                level.removeBlock(pos, false);
 
                 // THEN create explosion
                 level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
-                        1.5f, Level.ExplosionInteraction.BLOCK);  // Increased radius 1.5f → 2.5f
+                        1.5f, Level.ExplosionInteraction.BLOCK);
 
                 player.sendSystemMessage(Component.literal("§4§l✖ FURNACE EXPLODED!"));
                 return ItemInteractionResult.SUCCESS;
             }
-            return tryAddFuel(furnace, player, held, FuelType.TNT);
+
+            ItemInteractionResult result = tryAddFuel(furnace, player, held, FuelType.TNT);
+            if (result == ItemInteractionResult.SUCCESS) {
+                furnace.tntCooldown = 5; // 0.25s cooldown on successful add
+            }
+            return result;
         }
 
 
@@ -355,7 +359,6 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             furnace.addUltimateFuel(6000);
             if (!player.getAbilities().instabuild) held.shrink(1);
             player.sendSystemMessage(Component.literal("§5§l☆ NETHER STAR §7(+300s) §d§l[RADIANT!]"));
-            level.playSound(null, pos, SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, 1.0f, 1.2f);
             return ItemInteractionResult.SUCCESS;
         }
 
@@ -364,12 +367,13 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             furnace.addUltimateFuel(4000);
             if (!player.getAbilities().instabuild) held.shrink(1);
             player.sendSystemMessage(Component.literal("§5+Dragon Breath §7(+200s) §d[RADIANT!]"));
-            level.playSound(null, pos, SoundEvents.DRAGON_FIREBALL_EXPLODE, SoundSource.BLOCKS, 0.5f, 1.5f);
             return ItemInteractionResult.SUCCESS;
         }
 
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
+
+
 
     private ItemInteractionResult tryAddFuel(MoltenRotorBlockEntity furnace, Player player,
                                              ItemStack held, FuelType fuelType) {
@@ -467,14 +471,6 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         return blockEntity instanceof MoltenRotorBlockEntity moltenRotor ? moltenRotor : null;
     }
 
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        Direction direction = ctx.getHorizontalDirection().getOpposite();
-        return defaultBlockState()
-                .setValue(FACING, direction)
-                .setValue(HEAT_LEVEL, BlazeBurnerBlock.HeatLevel.NONE);
-    }
 
     // ========== KINETIC INITIALIZATION ==========
 
@@ -498,6 +494,8 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             }
         }
     }
+
+
 
     // ========== PARTICLES ==========
 

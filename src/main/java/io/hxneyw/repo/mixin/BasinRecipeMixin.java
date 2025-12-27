@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -40,7 +41,7 @@ public abstract class BasinRecipeMixin {
         }
 
         if (combustion.getRequiredHeat() == HeatCondition.SUPERHEATED) {
-            if (!hasRadiantHeat(basin)) {
+            if (!createSulfuricResonance$hasRadiantHeat(basin)) {
                 cir.setReturnValue(false);
             }
         }
@@ -50,7 +51,8 @@ public abstract class BasinRecipeMixin {
      * Check for RADIANT heat from Molten Rotor only
      * Rejects Blaze Burners at any heat level
      */
-    private static boolean hasRadiantHeat(BasinBlockEntity basin) {
+    @Unique
+    private static boolean createSulfuricResonance$hasRadiantHeat(BasinBlockEntity basin) {
         Level level = basin.getLevel();
         if (level == null) return false;
 

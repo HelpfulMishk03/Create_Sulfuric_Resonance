@@ -4,7 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import io.hxneyw.repo.CreateSulfuricResonance;
-import io.hxneyw.repo.content.ModBlocks;
+import io.hxneyw.repo.content.registry.ModBlocks;
 import io.hxneyw.repo.content.recipes.CombustionMixingRecipe;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import mezz.jei.api.IModPlugin;
@@ -49,7 +49,7 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(IRecipeRegistration registration) {
+    public void registerRecipes(@NotNull IRecipeRegistration registration) {
         List<RecipeHolder<BasinRecipe>> recipes = getAllRecipes();
 
         CreateSulfuricResonance.LOGGER.info("========================================");

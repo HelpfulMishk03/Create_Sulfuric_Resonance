@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Allows Mechanical Arms to interact with Molten Rotor Furnaces
  * Deposit-only - arms can add fuel but not extract
- *
  * BEHAVIOR:
  * - Arm picks up entire stack of fuel (up to 64)
  * - Inserts fuel ONE AT A TIME until furnace is full (32/32)

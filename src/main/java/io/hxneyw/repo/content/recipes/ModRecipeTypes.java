@@ -46,6 +46,7 @@ public class ModRecipeTypes {
             return ResourceLocation.fromNamespaceAndPath(CreateSulfuricResonance.MODID, "combustion_mixing");
         }
 
+
         @Override
         public RecipeType<?> getType() {
             return COMBUSTION_MIXING.get();
@@ -58,15 +59,15 @@ public class ModRecipeTypes {
     };
 
     public static void register(IEventBus modEventBus) {
-        CreateSulfuricResonance.LOGGER.info("========================================");
+        CreateSulfuricResonance.LOGGER.info("========================================1");
         CreateSulfuricResonance.LOGGER.info(">>> ModRecipeTypes.register() CALLED");
-        CreateSulfuricResonance.LOGGER.info("========================================");
+        CreateSulfuricResonance.LOGGER.info("========================================1");
 
         SERIALIZER_REGISTER.register(modEventBus);
         TYPE_REGISTER.register(modEventBus);
 
-        CreateSulfuricResonance.LOGGER.info("========================================");
+        CreateSulfuricResonance.LOGGER.info("========================================1");
         CreateSulfuricResonance.LOGGER.info("✓✓✓ RECIPE TYPES REGISTERED ✓✓✓");
-        CreateSulfuricResonance.LOGGER.info("========================================");
+        CreateSulfuricResonance.LOGGER.info("========================================1");
     }
 }

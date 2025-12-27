@@ -6,6 +6,7 @@ import io.hxneyw.repo.content.items.EmberCatalystItem;
 import io.hxneyw.repo.content.items.NetherwoodDustItem;
 import io.hxneyw.repo.content.items.PyroclastBombItem;
 import io.hxneyw.repo.content.items.SulfurItem;
+import io.hxneyw.repo.content.registry.ModBlocks;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;

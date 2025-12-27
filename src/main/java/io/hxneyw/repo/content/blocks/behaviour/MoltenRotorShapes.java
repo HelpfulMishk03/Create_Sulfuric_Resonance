@@ -138,19 +138,15 @@ public class MoltenRotorShapes {
         VoxelShape[] rotated = {Shapes.empty()};
 
         if (to == Direction.UP) {
-            shape.toAabbs().forEach(box -> {
-                rotated[0] = Shapes.join(rotated[0], Shapes.box(
-                        box.minX, box.minZ, 1 - box.maxY,
-                        box.maxX, box.maxZ, 1 - box.minY
-                ), BooleanOp.OR);
-            });
+            shape.toAabbs().forEach(box -> rotated[0] = Shapes.join(rotated[0], Shapes.box(
+                    box.minX, box.minZ, 1 - box.maxY,
+                    box.maxX, box.maxZ, 1 - box.minY
+            ), BooleanOp.OR));
         } else { // DOWN
-            shape.toAabbs().forEach(box -> {
-                rotated[0] = Shapes.join(rotated[0], Shapes.box(
-                        box.minX, 1 - box.maxZ, box.minY,
-                        box.maxX, 1 - box.minZ, box.maxY
-                ), BooleanOp.OR);
-            });
+            shape.toAabbs().forEach(box -> rotated[0] = Shapes.join(rotated[0], Shapes.box(
+                    box.minX, 1 - box.maxZ, box.minY,
+                    box.maxX, 1 - box.minZ, box.maxY
+            ), BooleanOp.OR));
         }
 
         return rotated[0];

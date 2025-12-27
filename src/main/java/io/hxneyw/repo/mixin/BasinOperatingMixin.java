@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -34,7 +35,7 @@ public abstract class BasinOperatingMixin {
 
         if (level == null) return;
 
-        Optional<BasinBlockEntity> basinOpt = getBasin(self);
+        Optional<BasinBlockEntity> basinOpt = createSulfuricResonance$getBasin(self);
         if (basinOpt.isEmpty()) return;
 
         BasinBlockEntity basin = basinOpt.get();
@@ -57,7 +58,8 @@ public abstract class BasinOperatingMixin {
         }
     }
 
-    private Optional<BasinBlockEntity> getBasin(BasinOperatingBlockEntity self) {
+    @Unique
+    private Optional<BasinBlockEntity> createSulfuricResonance$getBasin(BasinOperatingBlockEntity self) {
         Level level = self.getLevel();
         if (level == null) return Optional.empty();
 

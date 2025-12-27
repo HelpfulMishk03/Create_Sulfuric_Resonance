@@ -1,10 +1,11 @@
 package io.hxneyw.repo.content.blocks;
 
+import com.simibubi.create.AllItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
-import io.hxneyw.repo.content.ModBlockEntities;
+import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.blocks.behaviour.CombustionHeatingBehaviour;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -39,6 +40,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     private FuelType activeFuelType = FuelType.NONE;
     private boolean creativeMode = false, kineticsInitialized = false;
     private boolean hasLavaInStack = false, hasSulfurInStack = false, hasCoalInStack = false, hasCharcoalInStack = false, hasStickInStack = false;
+    public int tntCooldown = 0;
+
 
     public enum RotorHeatLevel {
         NONE(0, 0f, 0f, "Unheated"), SMOULDERING(300, 32f, 128f, "Heated"), FADING(325, 24f, 128f, "Heated"),
@@ -147,6 +150,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         if (stack.is(Items.COAL_BLOCK)) return FuelType.COAL_BLOCK;
         if (stack.is(Items.DRIED_KELP_BLOCK)) return FuelType.KELP_BLOCK;
         if (stack.is(Items.TNT)) return FuelType.TNT;
+        if (stack.is(AllItems.BLAZE_CAKE)) return FuelType.BLAZE_CAKE;
+        if (stack.is(io.hxneyw.repo.content.Items.SOUL_FIRED_BLAZE_CAKE)) return FuelType.SOUL_FIRED_BLAZE_CAKE;
         return null;
     }
 
@@ -154,6 +159,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     public void tick() {
         super.tick();
         if (level == null || level.isClientSide) return;
+
+        if (tntCooldown > 0) {
+            tntCooldown--;
+        }
 
         if (creativeMode) {
             RotorHeatLevel prev = currentHeatTier;
@@ -231,8 +240,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             coolingPerTick *= 2f; // Rain doubles to 4°C per second
         }
 
-        // Calculate how many ticks needed to cool from current temp to ambient (20°C)
-        float tempDifference = currentTemperature - 20f;
+        // Calculate how many ticks needed to cool from current temp to ambient (300°C)
+        float tempDifference = currentTemperature - 300f;
         int ticksNeeded = (int)Math.ceil(tempDifference / coolingPerTick);
 
         return ticksNeeded; // Return ticks directly
@@ -298,6 +307,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             sendData();
             return true;
         }
+
+
 
         // CASE 2: STICKS - Can only add when logs are burning
         if (fuelType == FuelType.STICK) {
@@ -421,7 +432,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             int sec = cooldownTime / 20, min = sec / 60, remSec = sec % 60;
             tooltip.add(Component.literal("Cooling Down: " + (min > 0 ? min + "m " : "") + remSec + "s").withStyle(ChatFormatting.YELLOW));
         } else if (currentHeatTier != RotorHeatLevel.NONE) {
-            tooltip.add(Component.literal("Fuel Remaining: 0s").withStyle(ChatFormatting.GRAY));
         }
 
         if (currentHeatTier == RotorHeatLevel.RADIANT) {

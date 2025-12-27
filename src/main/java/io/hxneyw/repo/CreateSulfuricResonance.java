@@ -1,15 +1,14 @@
 package io.hxneyw.repo;
 
 import com.mojang.logging.LogUtils;
-import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes;
 import io.hxneyw.repo.compat.arm.ModArmInteractionPoints;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.ModTabs;
-import io.hxneyw.repo.content.ModBlocks;
-import io.hxneyw.repo.content.ModBlockEntities;
+import io.hxneyw.repo.content.registry.ModBlocks;
+import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
-import net.minecraft.world.level.block.state.BlockState;
+import io.hxneyw.repo.content.registry.ModSounds;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -59,15 +58,14 @@ public class CreateSulfuricResonance {
         ModArmInteractionPoints.register(modEventBus);
         LOGGER.info("========== ARM INTERACTION POINTS REGISTERED ==========");
 
+        ModSounds.SOUNDS.register(modEventBus);
+
         NeoForge.EVENT_BUS.register(this);
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            LOGGER.info("[{}] Common setup complete.", MODID);
-
-        });
+        event.enqueueWork(() -> LOGGER.info("[{}] Common setup complete.", MODID));
     }
 
     @SubscribeEvent

@@ -33,12 +33,12 @@ public class CombustionMixingRecipe extends BasinRecipe {
     }
 
     @Override
-    protected boolean canRequireHeat() {
+    public boolean canRequireHeat() {
         return true;
     }
 
     @Override
-    protected boolean canSpecifyDuration() {
+    public boolean canSpecifyDuration() {
         return true;
     }
 
