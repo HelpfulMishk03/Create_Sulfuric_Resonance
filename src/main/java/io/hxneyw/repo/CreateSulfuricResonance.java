@@ -58,6 +58,8 @@ public class CreateSulfuricResonance {
         ModArmInteractionPoints.register(modEventBus);
         LOGGER.info("========== ARM INTERACTION POINTS REGISTERED ==========");
 
+
+
         ModSounds.SOUNDS.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);

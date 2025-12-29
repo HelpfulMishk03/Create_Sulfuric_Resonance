@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:block/molten_rotor_furnace",
+  "parent": "sulfuricresonance:block/molten_rotor_furnace_item",
   "display": {
     "gui": {
       "rotation": [30, 225, 0],

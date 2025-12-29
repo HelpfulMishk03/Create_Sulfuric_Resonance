@@ -3,12 +3,14 @@ package io.hxneyw.repo.content.blocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.blocks.behaviour.CombustionHeatingBehaviour;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -68,16 +70,39 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
     public MoltenRotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) { super(type, pos, state); }
     public MoltenRotorBlockEntity(BlockPos pos, BlockState state) { this(ModBlockEntities.MOLTEN_ROTOR.get(), pos, state); }
 
+
+
     @Override public void addBehaviours(List<BlockEntityBehaviour> behaviours) { super.addBehaviours(behaviours); behaviours.add(new CombustionHeatingBehaviour(this)); }
-    @Override public float getGeneratedSpeed() { return currentHeatTier.rpmCap; }
-    @Override public float calculateAddedStressCapacity() {
+
+// REPLACE these methods in MoltenRotorBlockEntity.java:
+
+
+    @Override
+    public float getGeneratedSpeed() {
+        float baseSpeed = currentHeatTier.rpmCap;
+        if (baseSpeed == 0) return 0;
+
+        Direction facing = getBlockState().getValue(MoltenRotorBlock.FACING);
+
+        return switch (facing) {
+            case NORTH -> -baseSpeed;  // Invert for North
+            case EAST -> -baseSpeed;
+            case SOUTH -> baseSpeed;
+            case WEST -> baseSpeed;
+            default -> baseSpeed;
+        };
+    }
+
+
+    @Override
+    public float calculateAddedStressCapacity() {
         float speed = Math.abs(getGeneratedSpeed());
         if (speed == 0) return 0f;
         float desiredSU = currentHeatTier.baseStressCapacity;
         return this.lastCapacityProvided = desiredSU / speed;
     }
-    @Override public float calculateStressApplied() { return 0f; }
 
+    @Override public float calculateStressApplied() { return 0f; }
     public boolean isCreativeMode() { return creativeMode; }
     public float getTotalStressOutput() { return currentHeatTier.baseStressCapacity; }
     public RotorHeatLevel getCurrentHeatTier() { return currentHeatTier; }
@@ -141,7 +166,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         @Override public int getSlotLimit(int slot) { return 64; }
         @Override public boolean isItemValid(int slot, @NotNull ItemStack stack) { return getFuelTypeFromItem(stack) != null; }
     };
-
+    //ARM INTERACTION POINT FUEL WHITELIST
     public FuelType getFuelTypeFromItem(ItemStack stack) {
         if (stack.is(Items.STICK)) return FuelType.STICK;
         if (stack.is(ItemTags.LOGS)) return FuelType.LOG;

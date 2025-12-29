@@ -132,10 +132,10 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     @Override
     protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level,
                                                     @NotNull BlockPos pos, @NotNull CollisionContext context) {
-        return Shapes.box(0.0625, 0, 0.0625, 0.9375, 1, 0.9375);
+        Direction facing = state.getValue(FACING);
+        return MoltenRotorShapes.getShape(facing); // Use the SAME shape as visual
     }
 
-    // 2. Keep detailed visual shape
     @Override
     protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level,
                                            @NotNull BlockPos pos, @NotNull CollisionContext context) {
@@ -479,7 +479,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         super.onPlace(state, level, pos, oldState, isMoving);
 
         if (!level.isClientSide && !oldState.is(this)) {
-            level.scheduleTick(pos, this, 2);
+            level.scheduleTick(pos, this, 1);
         }
     }
 

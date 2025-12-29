@@ -17,25 +17,35 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 @EventBusSubscriber(modid = "sulfuricresonance", value = Dist.CLIENT)
 public class ClientModEvents {
 
+    // Define partial models
+    public static final PartialModel ROTOR_SHAFT_LEFT = new PartialModel(
+            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_left")
+    );
+
+    public static final PartialModel ROTOR_SHAFT_RIGHT = new PartialModel(
+            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_right")
+    );
+
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            // Register block entity renderer
             BlockEntityRenderers.register(ModBlockEntities.MOLTEN_ROTOR.get(), MoltenRotorRenderer::new);
-
-            // Register entity renderer
-            EntityRenderers.register(
-                    ModEntities.PYROCLAST_BOMB.get(),
-                    ThrownItemRenderer::new
-            );
+            EntityRenderers.register(ModEntities.PYROCLAST_BOMB.get(), ThrownItemRenderer::new);
         });
     }
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        // Register the impeller model so it's loaded by Minecraft
         event.register(ModelResourceLocation.standalone(
                 ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "impeller")
+        ));
+
+        event.register(ModelResourceLocation.standalone(
+                ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_left")
+        ));
+
+        event.register(ModelResourceLocation.standalone(
+                ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_right")
         ));
     }
 }

@@ -5,7 +5,6 @@
   "refmap": "sulfuricresonance.refmap.json",
   "mixins": [
     "BasinRecipeMixin",
-    "BasinBlockEntityMixin",
     "BasinOperatingMixin"
   ],
   "injectors": {
