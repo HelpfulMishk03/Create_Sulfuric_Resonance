@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.client.ClientModEvents;
-import io.hxneyw.repo.content.blocks.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.MoltenRotorBlockEntity;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
@@ -39,7 +38,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
         if (!impellerItem.isEmpty()) {
             BakedModel itemModel = Minecraft.getInstance().getItemRenderer()
                     .getModel(impellerItem, furnace.getLevel(), null, 0);
-            if (itemModel != null && itemModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
+            if (itemModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
                 renderImpellerFromItem(furnace, ms, buffer, actualLight, overlay, facing, partialTicks, itemModel);
             }
         }
@@ -72,10 +71,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
             angle += offset;
 
             float adjustedAngle = switch (facing) {
-                case NORTH -> angle;
-                case WEST -> -angle;
-                case EAST -> angle;
-                case SOUTH -> -angle;
+                case WEST, SOUTH -> -angle;
                 default -> angle;
             };
 
@@ -110,10 +106,10 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
         ms.translate(0.5, 0.5, 0.5);
 
         switch (facing) {
-            case NORTH: break;
             case SOUTH: ms.mulPose(Axis.YP.rotationDegrees(180f)); break;
             case EAST: ms.mulPose(Axis.YP.rotationDegrees(-90f)); break;
             case WEST: ms.mulPose(Axis.YP.rotationDegrees(90f)); break;
+            case NORTH:
             default: break;
         }
 
@@ -130,10 +126,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
         // Apply directional adjustment for impeller (same as shafts)
         float adjustedAngle = switch (facing) {
-            case NORTH -> -angle;
-            case WEST -> angle;
-            case EAST -> -angle;
-            case SOUTH -> angle;
+            case NORTH, EAST -> -angle;
             default -> angle;
         };
 
@@ -157,8 +150,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
         // Use Create's AnimationTickHolder instead of game time
         float time = AnimationTickHolder.getRenderTime(furnace.getLevel());
-        float angle = (time * speed * 3f / 10f) % 360;
-        return angle;
+        return (time * speed * 3f / 10f) % 360;
     }
 
     private void renderShaft(PoseStack ms, MultiBufferSource buffer, BakedModel model, int light, int overlay, float angle, Direction facing, boolean isLeftShaft) {

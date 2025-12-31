@@ -21,6 +21,7 @@ public class ModArmInteractionPoints {
             );
 
     // Register the Molten Rotor arm interaction point type
+    @SuppressWarnings("unused")
     public static final DeferredHolder<ArmInteractionPointType, MoltenRotorType> MOLTEN_ROTOR =
             ARM_INTERACTION_POINTS.register("molten_rotor", MoltenRotorType::new);
 

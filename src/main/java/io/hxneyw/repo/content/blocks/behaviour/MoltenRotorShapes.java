@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Custom collision shapes for the Molten Rotor Furnace
- * FIXED: Removed shaft axes and front glass nubs
+
  */
 public class MoltenRotorShapes {
 
@@ -31,10 +30,7 @@ public class MoltenRotorShapes {
         return SHAPES.getOrDefault(facing, SHAPES.get(Direction.SOUTH));
     }
 
-    /**
-     * Base collision shape - CLEANED VERSION
-     * Excludes: Left shaft, Right shaft, Middle axis, and front glass nubs
-     */
+
     private static VoxelShape makeBaseShape() {
         VoxelShape shape = Shapes.empty();
 

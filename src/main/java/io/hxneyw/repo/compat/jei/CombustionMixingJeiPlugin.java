@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused") // JEI discovers this via @JeiPlugin annotation
 @JeiPlugin
 public class CombustionMixingJeiPlugin implements IModPlugin {
 
@@ -35,14 +36,16 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new CombustionMixingCategory(
                         new CreateRecipeCategory.Info<>(
-                                CombustionMixingCategory.RECIPE_TYPE,
-                                Component.translatable("recipe.sulfuricresonance.combustion_mixing"),
+                                CombustionMixingCategory.RECIPE_TYPE,           // 1. RecipeType
+                                Component.translatable("recipe.sulfuricresonance.combustion_mixing"),  // 2. Component title
                                 registration.getJeiHelpers().getGuiHelper().createDrawableItemStack(
                                         new ItemStack(ModBlocks.MOLTEN_ROTOR_FURNACE.get())
-                                ),
-                                null,
-                                CombustionMixingJeiPlugin::getAllRecipes,
-                                Collections.emptyList()
+                                ),                                               // 3. IDrawable background (using icon as background for now)
+                                registration.getJeiHelpers().getGuiHelper().createDrawableItemStack(
+                                        new ItemStack(ModBlocks.MOLTEN_ROTOR_FURNACE.get())
+                                ),                                               // 4. IDrawable icon
+                                CombustionMixingJeiPlugin::getAllRecipes,       // 5. Supplier<List<RecipeHolder>>
+                                Collections.emptyList()                          // 6. List<Supplier<ItemStack>> catalysts
                         )
                 )
         );
@@ -69,8 +72,6 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         registration.addRecipes(CombustionMixingCategory.RECIPE_TYPE, recipes);
     }
 
-
-
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         // Register Molten Rotor as catalyst
@@ -92,13 +93,12 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         );
     }
 
+    @SuppressWarnings("unchecked")
     private static List<RecipeHolder<BasinRecipe>> getAllRecipes() {
         if (Minecraft.getInstance().level == null) {
             return Collections.emptyList();
         }
 
-        // Get all Combustion Mixing recipes and cast them to BasinRecipe
-        // (safe because CombustionMixingRecipe extends BasinRecipe)
         return Minecraft.getInstance().level.getRecipeManager()
                 .getAllRecipesFor(ModRecipeTypes.COMBUSTION_MIXING.get())
                 .stream()

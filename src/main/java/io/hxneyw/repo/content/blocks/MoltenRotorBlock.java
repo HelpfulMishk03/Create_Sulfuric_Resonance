@@ -4,11 +4,17 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.equipment.wrench.WrenchItem;
 import io.hxneyw.repo.content.blocks.behaviour.MoltenRotorShapes;
+import io.hxneyw.repo.content.registry.ModParticles;
 import io.hxneyw.repo.content.registry.ModSounds;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -130,15 +136,22 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
     }
 
     @Override
-    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level,
-                                                    @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                           @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        // Particles use empty context - give them simple shape
+        if (context == CollisionContext.empty()) {
+            return Shapes.box(0.0625, 0, 0.1875, 0.9375, 1, 0.875);
+        }
+
+        // Everything else (selection, rendering) gets full detailed shape
         Direction facing = state.getValue(FACING);
-        return MoltenRotorShapes.getShape(facing); // Use the SAME shape as visual
+        return MoltenRotorShapes.getShape(facing);
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level,
-                                           @NotNull BlockPos pos, @NotNull CollisionContext context) {
+    protected @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level,
+                                                    @NotNull BlockPos pos, @NotNull CollisionContext context) {
+        // Collision also uses the full detailed shape
         Direction facing = state.getValue(FACING);
         return MoltenRotorShapes.getShape(facing);
     }
@@ -150,22 +163,14 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         return true; // Prevent landing particles
     }
 
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean addRunningEffects(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Entity entity) {
         return true; // Prevent running particles
     }
 
-    // For break particles - override at WorldRenderer level
-    @Override
-    public void playerDestroy(@NotNull Level level, @NotNull Player player, @NotNull BlockPos pos,
-                              @NotNull BlockState state, @javax.annotation.Nullable BlockEntity blockEntity,
-                              @NotNull ItemStack tool) {
-        VoxelShape shape = getCollisionShape(state, level, pos, CollisionContext.empty());
-        System.out.println("Collision shape boxes: " + shape.toAabbs().size());
-        super.playerDestroy(level, player, pos, state, blockEntity, tool);
-        // Default particles now use simplified collision shape = ~8 particles
-    }
+
 
     public static BlazeBurnerBlock.HeatLevel getHeatLevelOf(BlockState state) {
         if (state.hasProperty(HEAT_LEVEL)) {
@@ -499,6 +504,8 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
     // ========== PARTICLES ==========
 
+
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull RandomSource random) {
@@ -509,6 +516,10 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
         }
 
         Direction facing = state.getValue(FACING);
+
+        // Get actual heat tier from block entity for RADIANT check
+        MoltenRotorBlockEntity furnace = getBlockEntity(level, pos);
+        boolean isRadiant = furnace != null && furnace.getCurrentHeatTier() == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
 
         // Sound effects
         if (random.nextInt(15) == 0) {
@@ -531,8 +542,41 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             );
         }
 
-        // Flame particles from top
-        if (heat.isAtLeast(BlazeBurnerBlock.HeatLevel.KINDLED) && random.nextInt(5) == 0) {
+        if (isRadiant) {
+            // Your custom purple flames
+            if (random.nextInt(3) == 0) {
+                level.addParticle(ModParticles.COMBUSTION_PURPLE_FLAME.get(),
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
+                        pos.getY() + 0.6,
+                        pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
+                        0, 0.01, 0
+                );
+            }
+
+            // Soul fire flame particles (additional purple effect)
+            if (random.nextInt(3) == 0) {
+                level.addParticle(ParticleTypes.SOUL_FIRE_FLAME,
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
+                        pos.getY() + 0.6,
+                        pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.4,
+                        0, 0.01, 0
+                );
+            }
+
+            // White spark particles for "combustion" effect
+            if (random.nextInt(4) == 0) {
+                level.addParticle(ParticleTypes.END_ROD,
+                        pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.3,
+                        pos.getY() + 0.7,
+                        pos.getZ() + 0.5 + (random.nextDouble() - 0.5) * 0.3,
+                        (random.nextDouble() - 0.5) * 0.02,
+                        0.02,
+                        (random.nextDouble() - 0.5) * 0.02
+                );
+            }
+        }
+        // Non-radiant flame particles
+        else if (heat.isAtLeast(BlazeBurnerBlock.HeatLevel.KINDLED) && random.nextInt(5) == 0) {
             level.addParticle(ParticleTypes.FLAME,
                     pos.getX() + 0.5,
                     pos.getY() + 0.6,
@@ -541,64 +585,53 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
             );
         }
 
-        // NEW: Small smoke from the three back-top slits
-        if (random.nextInt(2) == 0) { // Spawn frequently
-            // Calculate slit positions based on facing direction
-            // The slits are on the BACK TOP of the furnace
-
-            // Define the three slit positions (relative to back face, top area)
-            // Left slit, middle slit, right slit
+        // Small smoke from the three back-top slits
+        if (random.nextInt(2) == 0) {
             double[][] slitOffsets = {
-                    {-0.25, 0.85},  // Left slit (x offset, y height near top)
+                    {-0.25, 0.85},  // Left slit
                     {0.0, 0.85},    // Middle slit
                     {0.25, 0.85}    // Right slit
             };
 
-            // Pick a random slit
             double[] slit = slitOffsets[random.nextInt(3)];
-
-            // Calculate world position based on facing direction
             double x, y, z;
             double velX, velY, velZ;
 
-            y = pos.getY() + slit[1]; // Height near top
+            y = pos.getY() + slit[1];
 
-            // Adjust position and velocity based on facing direction
-            // Back is OPPOSITE of facing direction
             switch (facing) {
-                case NORTH: // Front faces north, back is SOUTH
+                case NORTH:
                     x = pos.getX() + 0.5 + slit[0];
-                    z = pos.getZ() + 0.8; // Back edge (south side)
+                    z = pos.getZ() + 0.8;
                     velX = (random.nextDouble() - 0.5) * 0.02;
                     velY = 0.03;
-                    velZ = 0.02; // Smoke drifts south (away from back)
+                    velZ = 0.02;
                     break;
-                case SOUTH: // Front faces south, back is NORTH
-                    x = pos.getX() + 0.5 - slit[0]; // Flip horizontal offset
-                    z = pos.getZ() + 0.2; // Back edge (north side)
+                case SOUTH:
+                    x = pos.getX() + 0.5 - slit[0];
+                    z = pos.getZ() + 0.2;
                     velX = (random.nextDouble() - 0.5) * 0.02;
                     velY = 0.03;
-                    velZ = -0.02; // Smoke drifts north (away from back)
+                    velZ = -0.02;
                     break;
-                case EAST: // Front faces east, back is WEST
-                    x = pos.getX() + 0.2; // Back edge (west side)
+                case EAST:
+                    x = pos.getX() + 0.2;
                     z = pos.getZ() + 0.5 + slit[0];
-                    velX = -0.02; // Smoke drifts west (away from back)
+                    velX = -0.02;
                     velY = 0.03;
                     velZ = (random.nextDouble() - 0.5) * 0.02;
                     break;
-                case WEST: // Front faces west, back is EAST
-                    x = pos.getX() + 0.8; // Back edge (east side)
-                    z = pos.getZ() + 0.5 - slit[0]; // Flip horizontal offset
-                    velX = 0.02; // Smoke drifts east (away from back)
+                case WEST:
+                    x = pos.getX() + 0.8;
+                    z = pos.getZ() + 0.5 - slit[0];
+                    velX = 0.02;
                     velY = 0.03;
                     velZ = (random.nextDouble() - 0.5) * 0.02;
                     break;
                 default:
-                    return; // Skip if facing up/down
+                    return;
             }
 
-            // Spawn small smoke particle
             level.addParticle(ParticleTypes.SMOKE,
                     x, y, z,
                     velX, velY, velZ

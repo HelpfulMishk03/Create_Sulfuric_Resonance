@@ -20,9 +20,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class CombustionMixingCategory extends BasinCategory {
 
+    @SuppressWarnings("unchecked")
     public static final RecipeType<RecipeHolder<BasinRecipe>> RECIPE_TYPE =
-            RecipeType.create("sulfuricresonance", "combustion_mixing",
-                    (Class<RecipeHolder<BasinRecipe>>)(Class<?>)RecipeHolder.class);
+            RecipeType.create(
+                    "sulfuricresonance",
+                    "combustion_mixing",
+                    (Class<RecipeHolder<BasinRecipe>>)(Class<?>)RecipeHolder.class
+            );
 
     private final AnimatedMixer mixer = new AnimatedMixer();
     private final AnimatedBlazeBurner heater = new AnimatedBlazeBurner();

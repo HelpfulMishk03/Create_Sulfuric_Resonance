@@ -45,31 +45,6 @@ public class MoltenRotorArmPoint extends ArmInteractionPoint {
                 return stack;
             }
 
-            // Calculate effective capacity remaining
-            int burnTime = furnace.getDisplayFuelTime();
-            int maxCapacity = fuelType.maxStackSize;
-
-            // Special case for sticks
-            if (fuelType == MoltenRotorBlockEntity.FuelType.STICK) {
-                maxCapacity = 32;
-                // Only works with logs burning
-                if (furnace.getActiveFuelType() != MoltenRotorBlockEntity.FuelType.LOG || burnTime <= 0) {
-                    return stack;
-                }
-            }
-
-            // Calculate how much space is available
-            int spaceAvailable;
-            if (burnTime > 0 && furnace.getActiveFuelType() == fuelType) {
-                // Same fuel burning - calculate effective space
-                float itemsWorthOfTimeRemaining = burnTime / fuelType.baseBurnTimeTicks;
-                int effectiveCurrentCount = (int) Math.ceil(itemsWorthOfTimeRemaining);
-                spaceAvailable = maxCapacity - effectiveCurrentCount;
-            } else {
-                // Fresh start - full capacity
-                spaceAvailable = maxCapacity;
-            }
-
             // CRITICAL: Tell the arm we can accept the ENTIRE stack
             // Even if furnace only has space for 5, we return "can accept all 64"
             // This makes the arm pick up the full stack
@@ -101,7 +76,6 @@ public class MoltenRotorArmPoint extends ArmInteractionPoint {
      */
     private boolean wouldAcceptFuel(MoltenRotorBlockEntity furnace, MoltenRotorBlockEntity.FuelType fuelType) {
         MoltenRotorBlockEntity.FuelType currentFuel = furnace.getActiveFuelType();
-        int currentCount = furnace.getActiveFuelCount();
         int burnTime = furnace.getDisplayFuelTime();
 
         // CASE 1: New fuel has HIGHER heat output - OVERRIDE
@@ -133,14 +107,10 @@ public class MoltenRotorArmPoint extends ArmInteractionPoint {
         }
 
         // CASE 4: Different fuel burning (not higher heat) - reject
-        if (currentFuel != MoltenRotorBlockEntity.FuelType.NONE &&
-                currentFuel != fuelType &&
-                burnTime > 0) {
-            return false; // Can't mix fuels
-        }
+        return currentFuel == MoltenRotorBlockEntity.FuelType.NONE ||
+                currentFuel == fuelType ||
+                burnTime <= 0;
 
         // CASE 5: No fuel burning - start fresh
-        // This handles: burnTime <= 0 OR currentFuel == NONE
-        return true; // Always can start fresh
     }
 }

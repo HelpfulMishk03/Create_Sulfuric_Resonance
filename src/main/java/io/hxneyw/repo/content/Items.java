@@ -76,11 +76,16 @@ public class Items {
                     .stacksTo(16)
             )
     );
-    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD_FILLED = ITEMS.register("obsidian_fiber_mold_filled",
-            () -> new Item(new Item.Properties()
-                    .stacksTo(16)
-            )
-    );
+    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD_FILLED;
+
+    static {
+        OBSIDIAN_FIBER_MOLD_FILLED = ITEMS.register("obsidian_fiber_mold_filled",
+                () -> new Item(new Item.Properties()
+                        .stacksTo(16)
+                )
+        );
+    }
+
     public static final DeferredItem<Item> OBSIDIAN_FIBER = ITEMS.register("obsidian_fiber",
             () -> new Item(new Item.Properties()
                     .stacksTo(64)

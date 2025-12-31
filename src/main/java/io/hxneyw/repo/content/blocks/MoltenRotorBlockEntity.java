@@ -3,11 +3,11 @@ package io.hxneyw.repo.content.blocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.blocks.behaviour.CombustionHeatingBehaviour;
+import io.hxneyw.repo.content.registry.ModParticles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -85,10 +85,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         Direction facing = getBlockState().getValue(MoltenRotorBlock.FACING);
 
         return switch (facing) {
-            case NORTH -> -baseSpeed;  // Invert for North
-            case EAST -> -baseSpeed;
-            case SOUTH -> baseSpeed;
-            case WEST -> baseSpeed;
+            case NORTH,EAST -> -baseSpeed;  // Invert for North
             default -> baseSpeed;
         };
     }
@@ -127,22 +124,91 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
     public void cycleCreativeTier() {
         if (!creativeMode) return;
+
+        RotorHeatLevel previousTier = currentHeatTier;
+
         currentHeatTier = switch(currentHeatTier) {
             case NONE, SMOULDERING, FADING -> RotorHeatLevel.SEETHING;
             case KINDLED, SEETHING -> RotorHeatLevel.RADIANT;
             case RADIANT -> RotorHeatLevel.SMOULDERING;
         };
+
         currentTemperature = switch(currentHeatTier) {
             case SMOULDERING -> TEMP_SMOULDERING_MIN + 100f;
             case SEETHING -> TEMP_SEETHING_MIN + 200f;
             case RADIANT -> TEMP_RADIANT_MIN + 150f;
             default -> 20f;
         };
-        updateBlockVisuals(); notifyKineticNetworkOfChange(); setChanged(); sendData();
+
+        updateBlockVisuals();
+        notifyKineticNetworkOfChange();
+        setChanged();
+        sendData();
+
         if (level instanceof ServerLevel sl) {
-            var particle = currentHeatTier == RotorHeatLevel.SMOULDERING ? ParticleTypes.FLAME : ParticleTypes.SOUL_FIRE_FLAME;
-            int count = switch(currentHeatTier) { case SMOULDERING -> 15; case SEETHING -> 25; case RADIANT -> 35; default -> 10; };
-            sl.sendParticles(particle, worldPosition.getX() + 0.5, worldPosition.getY() + 0.8, worldPosition.getZ() + 0.5, count, 0.3, 0.3, 0.3, 0.05);
+            // Check if transitioning TO radiant tier
+            if (currentHeatTier == RotorHeatLevel.RADIANT && previousTier != RotorHeatLevel.RADIANT) {
+                if (level instanceof ServerLevel) {
+                    // Your custom purple flames
+                    sl.sendParticles(ModParticles.COMBUSTION_PURPLE_FLAME.get(),
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            50,
+                            0.6, 0.6, 0.6,
+                            0.008
+                    );
+
+                    // Purple soul fire flames
+                    sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            20,
+                            0.4, 0.4, 0.4,
+                            0.005
+                    );
+
+                    // White END_ROD particles
+                    sl.sendParticles(ParticleTypes.END_ROD,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            10,
+                            0.5, 0.5, 0.5,
+                            0.008
+                    );
+
+                    // White FIREWORK sparks
+                    sl.sendParticles(ParticleTypes.FIREWORK,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            5,
+                            0.6, 0.6, 0.6,
+                            0.002
+                    );
+                }
+
+            } else {
+                // Non-radiant transitions - use existing particle logic
+                var particle = currentHeatTier == RotorHeatLevel.SMOULDERING ?
+                        ParticleTypes.FLAME : ParticleTypes.SOUL_FIRE_FLAME;
+
+                int count = switch(currentHeatTier) {
+                    case SMOULDERING -> 15;
+                    case SEETHING -> 25;
+                    case RADIANT -> 35;
+                    default -> 10;
+                };
+
+                sl.sendParticles(particle,
+                        worldPosition.getX() + 0.5,
+                        worldPosition.getY() + 0.8,
+                        worldPosition.getZ() + 0.5,
+                        count, 0.3, 0.3, 0.3, 0.05
+                );
+            }
         }
     }
 
@@ -252,6 +318,50 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
         } else if (++clientUpdateCounter >= 1) {
             clientUpdateCounter = 0;
             sendData();
+
+            if (newTier == RotorHeatLevel.RADIANT && previousTier != RotorHeatLevel.RADIANT) {
+                if (level instanceof ServerLevel sl) {
+                    // Purple soul fire flames (outer layer)
+                    sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            40,
+                            0.4, 0.4, 0.4,
+                            0.15
+                    );
+
+                    // White END_ROD particles (middle layer)
+                    sl.sendParticles(ParticleTypes.END_ROD,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            30,
+                            0.5, 0.5, 0.5,
+                            0.2
+                    );
+
+                    // Purple SOUL particles (inner core)
+                    sl.sendParticles(ParticleTypes.SOUL,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            25,
+                            0.3, 0.3, 0.3,
+                            0.1
+                    );
+
+                    // White FIREWORK sparks
+                    sl.sendParticles(ParticleTypes.FIREWORK,
+                            worldPosition.getX() + 0.5,
+                            worldPosition.getY() + 0.5,
+                            worldPosition.getZ() + 0.5,
+                            20,
+                            0.6, 0.6, 0.6,
+                            0.25
+                    );
+                }
+            }
         }
     }
 
@@ -267,9 +377,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
         // Calculate how many ticks needed to cool from current temp to ambient (300°C)
         float tempDifference = currentTemperature - 300f;
-        int ticksNeeded = (int)Math.ceil(tempDifference / coolingPerTick);
 
-        return ticksNeeded; // Return ticks directly
+        return (int)Math.ceil(tempDifference / coolingPerTick); // Return ticks directly
     }
 
     private boolean tierAffectsRotation(RotorHeatLevel from, RotorHeatLevel to) {

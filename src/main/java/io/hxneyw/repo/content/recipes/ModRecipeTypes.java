@@ -46,15 +46,16 @@ public class ModRecipeTypes {
             return ResourceLocation.fromNamespaceAndPath(CreateSulfuricResonance.MODID, "combustion_mixing");
         }
 
-
+        @SuppressWarnings("unchecked")
         @Override
-        public RecipeType<?> getType() {
-            return COMBUSTION_MIXING.get();
+        public <T extends RecipeSerializer<?>> T getSerializer() {
+            return (T) COMBUSTION_MIXING_SERIALIZER.get();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
-        public RecipeSerializer<?> getSerializer() {
-            return COMBUSTION_MIXING_SERIALIZER.get();
+        public <I extends net.minecraft.world.item.crafting.RecipeInput, R extends net.minecraft.world.item.crafting.Recipe<I>> RecipeType<R> getType() {
+            return (RecipeType<R>) COMBUSTION_MIXING.get();
         }
     };
 

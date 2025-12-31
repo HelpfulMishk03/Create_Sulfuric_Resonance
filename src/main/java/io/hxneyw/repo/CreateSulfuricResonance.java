@@ -4,10 +4,12 @@ import com.mojang.logging.LogUtils;
 import io.hxneyw.repo.compat.arm.ModArmInteractionPoints;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.ModTabs;
+import io.hxneyw.repo.content.particles.CombustionPurpleFlameParticle;
 import io.hxneyw.repo.content.registry.ModBlocks;
 import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.registry.ModParticles;
 import io.hxneyw.repo.content.registry.ModSounds;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,6 +17,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
@@ -33,33 +36,22 @@ public class CreateSulfuricResonance {
         // Register items
         Items.register(modEventBus);
         LOGGER.info("========== ITEMS.REGISTER CALLED ==========");
-
         // Register creative tabs
         ModTabs.register(modEventBus);
         LOGGER.info("========== TABS.REGISTER CALLED ==========");
-
         // Register entities
         ModEntities.register(modEventBus);
         LOGGER.info("========== ENTITIES.REGISTER CALLED ==========");
-
         // Register blocks
         ModBlocks.register(modEventBus);
         LOGGER.info("========== BLOCKS.REGISTER CALLED ==========");
-
         // Register block entities
         ModBlockEntities.register(modEventBus);
-        LOGGER.info("========== BLOCK ENTITIES.REGISTER CALLED ==========");
-
         // Register recipe types
         ModRecipeTypes.register(modEventBus);
-        LOGGER.info("========== RECIPE TYPES.REGISTER CALLED ==========");
-
         // Register arm interaction points using DeferredRegister
         ModArmInteractionPoints.register(modEventBus);
-        LOGGER.info("========== ARM INTERACTION POINTS REGISTERED ==========");
-
-
-
+        ModParticles.PARTICLE_TYPES.register(modEventBus);
         ModSounds.SOUNDS.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
