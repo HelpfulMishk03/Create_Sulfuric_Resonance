@@ -19,7 +19,7 @@ license = "All Rights Reserved"
 # The modid of the mod
 modId = "sulfuricresonance" #mandatory
 # The version number of the mod
-version = "0.0.2.1" #mandatory
+version = "0.0.2.1-betaA" #mandatory
 # A display name for the mod
 displayName = "Create: Sulfuric Resonance" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/
@@ -34,7 +34,7 @@ displayName = "Create: Sulfuric Resonance" #mandatory
 authors = "Hxney" #optional
 
 # The description text for the mod (multi line!) (#mandatory)
-description = '''An attempt to connect create to the chemical imbalance of minecraft, and related.'''
+description = '''A Create addon expanding combustion, heat generation, sulfur chemistry, sulfuric acid, rubber processing, and industrial machinery.'''
 
 # ========================================
 # MIXIN CONFIGURATION - CRITICAL!

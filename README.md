@@ -1,8 +1,13 @@
-# Create: Sulfuric Resonance
+## License
+Create: Sulfuric Resonance is proprietary software. Copyright © 2026 Hxney. All Rights Reserved.
+
+Compiled releases may be used for personal, non-commercial gameplay. Redistribution, modified releases, source-code reuse, asset reuse, and unauthorized uploads are prohibited. See [LICENSE](LICENSE) for the complete terms.
 
 Create: Sulfuric Resonance is a NeoForge addon for Create that expands Minecraft's heat, combustion, sulfur, acid, rubber, and mechanical-processing systems.
 
-The current stable development version is **0.0.2.1** for:
+# Create: Sulfuric Resonance
+
+The current stable development version is **0.0.2.1-betaA** for:
 
 - Minecraft **1.21.1**
 - NeoForge **21.1.243**
@@ -129,7 +134,7 @@ Refresh dependencies when versions change:
 
 ## Repository Notes
 
-This source tree was originally reconstructed from the compiled `0.0.1.9-beta-(J.L.D)` mod archive and has since been repaired, updated, expanded, and tested in-game.
+This project was reconstructed completely by the original author, Hxney, from a previously released compiled build after a development hiatus. The current source has since been repaired, updated, expanded, and restored as the official development source for Create: Sulfuric Resonance. Hxney remains the only one actively maintaining and updating.
 
 The current `0.0.2.1` source should be treated as the new stable development baseline rather than a byte-for-byte decompilation of the older archive.
 
@@ -164,7 +169,8 @@ Current planned improvements include:
 
 ## License
 
-All Rights Reserved.
+Create: Sulfuric Resonance Proprietary License
+Copyright © 2026 Hxney. All Rights Reserved.
 
 ## Author
 
