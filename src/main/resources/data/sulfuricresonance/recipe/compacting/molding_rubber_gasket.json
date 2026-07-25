@@ -1,0 +1,20 @@
+{
+  "type": "create:compacting",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:molded_rubber_gasket"
+    },
+    {
+      "id": "create:experience_nugget"
+    }
+  ]
+}

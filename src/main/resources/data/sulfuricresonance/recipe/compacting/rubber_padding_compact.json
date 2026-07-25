@@ -1,0 +1,29 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:rubber_padding",
+      "count": 1
+    }
+  ]
+}

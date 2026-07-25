@@ -1,69 +1,82 @@
 package io.hxneyw.repo;
 
 import com.mojang.logging.LogUtils;
-import io.hxneyw.repo.compat.arm.ModArmInteractionPoints;
+import io.hxneyw.repo.compat.arm.AllModArmInteractionPoints;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.ModTabs;
-import io.hxneyw.repo.content.particles.CombustionPurpleFlameParticle;
-import io.hxneyw.repo.content.registry.ModBlocks;
-import io.hxneyw.repo.content.registry.ModBlockEntities;
 import io.hxneyw.repo.content.entities.ModEntities;
+import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.registry.AllBlockEntities;
+import io.hxneyw.repo.content.registry.AllModBlocks;
+import io.hxneyw.repo.content.registry.AllModEffects;
+import io.hxneyw.repo.content.registry.AllModFluids;
+import io.hxneyw.repo.content.registry.AllModSounds;
 import io.hxneyw.repo.content.registry.ModParticles;
-import io.hxneyw.repo.content.registry.ModSounds;
+import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
+import net.createmod.ponder.foundation.PonderIndex;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.fml.config.ModConfig.Type;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
-@Mod(CreateSulfuricResonance.MODID)
+@Mod("sulfuricresonance")
 public class CreateSulfuricResonance {
+   public static final String MODID = "sulfuricresonance";
+   public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final String MODID = "sulfuricresonance";
-    public static final Logger LOGGER = LogUtils.getLogger();
+   public CreateSulfuricResonance(IEventBus modEventBus, ModContainer modContainer) {
+      LOGGER.info("========== CREATE SULFURIC RESONANCE CONSTRUCTOR CALLED ==========");
+      LOGGER.info("========== PREPARING FOR NEXT SEQUENCE ==========");
+      Items.register(modEventBus);
+      LOGGER.info("========== ITEMS.REGISTER CALLED ==========");
+      PonderIndex.addPlugin(new SulfuricResonancePonderPlugin());
+      ModTabs.register(modEventBus);
+      ModEntities.register(modEventBus);
+      AllModBlocks.register(modEventBus);
+      AllBlockEntities.register(modEventBus);
+      ModRecipeTypes.register(modEventBus);
+      AllModArmInteractionPoints.register(modEventBus);
+      ModParticles.PARTICLE_TYPES.register(modEventBus);
+      AllModSounds.SOUNDS.register(modEventBus);
+      AllModFluids.register(modEventBus);
+      if (FMLEnvironment.dist.isClient()) {
+         modEventBus.addListener(AllModFluids::registerFluidExtensions);
+      }
 
-    public CreateSulfuricResonance(IEventBus modEventBus, ModContainer modContainer) {
-        LOGGER.info("========== CREATE SULFURIC RESONANCE CONSTRUCTOR CALLED ==========");
+      AllModEffects.register(modEventBus);
+      NeoForge.EVENT_BUS.register(this);
+      modContainer.registerConfig(Type.COMMON, Config.SPEC);
+   }
 
-        modEventBus.addListener(this::commonSetup);
+   @SubscribeEvent
+   public void onServerStarting(ServerStartingEvent event) {
+      LOGGER.info("[{}] Server is starting.", "sulfuricresonance");
+   }
 
-        // Register items
-        Items.register(modEventBus);
-        LOGGER.info("========== ITEMS.REGISTER CALLED ==========");
-        // Register creative tabs
-        ModTabs.register(modEventBus);
-        LOGGER.info("========== TABS.REGISTER CALLED ==========");
-        // Register entities
-        ModEntities.register(modEventBus);
-        LOGGER.info("========== ENTITIES.REGISTER CALLED ==========");
-        // Register blocks
-        ModBlocks.register(modEventBus);
-        LOGGER.info("========== BLOCKS.REGISTER CALLED ==========");
-        // Register block entities
-        ModBlockEntities.register(modEventBus);
-        // Register recipe types
-        ModRecipeTypes.register(modEventBus);
-        // Register arm interaction points using DeferredRegister
-        ModArmInteractionPoints.register(modEventBus);
-        ModParticles.PARTICLE_TYPES.register(modEventBus);
-        ModSounds.SOUNDS.register(modEventBus);
+   @EventBusSubscriber(
+      modid = "sulfuricresonance",
+      value = {Dist.CLIENT}
+   )
+   public static class ClientModEvents {
+      @SubscribeEvent
+      public static void onRegisterRenderers(RegisterRenderers event) {
+         event.registerBlockEntityRenderer((BlockEntityType)AllBlockEntities.PERFORATED_SPRITZER.get(), PerforatedSpritzerRenderer::new);
+      }
 
-        NeoForge.EVENT_BUS.register(this);
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> LOGGER.info("[{}] Common setup complete.", MODID));
-    }
-
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("[{}] Server is starting.", MODID);
-    }
+      @SubscribeEvent
+      public static void onClientSetup(FMLClientSetupEvent event) {
+         CreateSulfuricResonance.LOGGER.info("=== CLIENT SETUP EVENT FIRED ===");
+      }
+   }
 }

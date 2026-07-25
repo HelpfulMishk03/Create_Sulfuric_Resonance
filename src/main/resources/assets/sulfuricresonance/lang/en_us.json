@@ -1,6 +1,6 @@
 {
-
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
+
   "item.sulfuricresonance.sulfur": "Sulfur",
   "item.sulfuricresonance.netherwood_dust": "Netherwood Dust",
   "item.sulfuricresonance.spent_ash": "Spent Ash",
@@ -16,11 +16,60 @@
   "item.sulfuricresonance.latex_clump": "Latex Clump",
   "item.sulfuricresonance.unrefined_rubber": "Unrefined Rubber",
   "item.sulfuricresonance.vulcanized_rubber": "Vulcanized Rubber",
+  "item.sulfuricresonance.molded_rubber_gasket": "Molded Rubber Gasket",
   "item.sulfuricresonance.infernal_impeller": "Infernal Impeller",
   "item.sulfuricresonance.flameborne_core": "Flameborne Core",
+  "item.sulfuricresonance.corrupt_blaze_cake": "Corrupt Blaze Cake",
+  "item.sulfuricresonance.soul_fired_blaze_cake": "Soul Fired Blaze Cake",
+  "item.sulfuricresonance.impeller_blade": "Impeller Blade",
+  "item.sulfuricresonance.sheathed_impeller_blade": "Sheathed Impeller Blade",
+
+  "block.sulfuricresonance.perforated_spritzer": "Perforated Spritzer",
   "block.sulfuricresonance.molten_rotor_furnace": "Molten Rotor Furnace",
+  "block.sulfuricresonance.sulfur_block": "Sulfur Block",
+  "block.sulfuricresonance.rubber_padding": "Rubber Padding",
+
   "recipe.sulfuricresonance.combustion_mixing": "Combustion Mixing",
   "create.recipe.heat_requirement.radiant": "Combustion",
-  "item.sulfuricresonance.corrupt_blaze_cake": "Corrupt Blaze Cake",
-  "item.sulfuricresonance.soul_fired_blaze_cake": "Soul Fired Blaze Cake"
+
+  "block.sulfuricresonance.rubber_padding.tooltip.summary": "Soften entity _falls_, bounce items along _tough to reach_ areas with _machinery_ and Create unique contraptions with Rubber Padding",
+  "block.sulfuricresonance.rubber_padding.tooltip.condition1": "When Placed",
+  "block.sulfuricresonance.rubber_padding.tooltip.behaviour1": "Negates _fall damage_ for entities",
+  "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Bounces _items_ predictably",
+  "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Maintains _horizontal momentum_",
+
+  "fluid.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
+  "item.sulfuricresonance.sulfuric_acid_bucket": "Sulfuric Acid Bucket",
+  "block.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
+  "fluid_type.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
+
+  "effect.sulfuricresonance.acid_burn": "Acid Burn",
+  "effect.sulfuricresonance.acid_burn.description": "Taking corrosive damage from sulfuric acid",
+
+  "_comment": "=== PONDER TRANSLATIONS ===",
+
+  "sulfuricresonance.ponder.perforated_spritzer.header": "Perforated Spritzer",
+
+  "sulfuricresonance.ponder.perforated_spritzer.intro.header": "Using the Perforated Spritzer",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_1": "The Perforated Spritzer can store and disperse fluids in a downward fashion",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_2": "It will hold up to 3500mB of any fluid",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_3": "It cannot spray fluid on its own",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_4": "It requires pressure from a pump once its tank is full",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_5": "When the pump pushes fluid into a full Spritzer...",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_6": "...it sprays the fluid downward!",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_7": "The Spritzer can hydrate farmland",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_8": "...it can also water crops!",
+  "sulfuricresonance.ponder.perforated_spritzer.intro.text_9": "Making their growth speed increase slightly only when farmland beneath them is fully hydrated",
+
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.header": "Mob Automation with the Spritzer",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_1": "The Spritzer, when filled with sulfuric acid will cause the corrosive acid burn effect and effectively hurt mobs, to kill and automate their loot in a creative new way.",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_2": "Items are blown into the collection system",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_3": "Items are collected in the chest!",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_4": "The Spritzer also sprays lava, damaging entities by setting them on fire",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_5": "Loot collected successfully!",
+
+  "sulfuricresonance.ponder.tag.fluids": "Fluid Handling",
+  "sulfuricresonance.ponder.tag.fluids.description": "Components that handle fluids in Sulfuric Resonance",
+  "subtitles.sulfuricresonance.log_insert": "Log Added",
+  "subtitles.sulfuricresonance.rubber_padding_hit": "Rubber Padding Hit"
 }

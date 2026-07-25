@@ -9,20 +9,25 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PartialModel {
-    private final ResourceLocation modelLocation;
-    private BakedModel bakedModel;
+   private final ResourceLocation modelLocation;
+   private BakedModel cachedModel;
+   private boolean needsRefresh = true;
 
-    public PartialModel(ResourceLocation modelLocation) {
-        this.modelLocation = modelLocation;
-    }
+   public PartialModel(ResourceLocation modelLocation) {
+      this.modelLocation = modelLocation;
+   }
 
-    public BakedModel get() {
-        if (bakedModel == null) {
-            bakedModel = Minecraft.getInstance()
-                    .getModelManager()
-                    .getModel(ModelResourceLocation.standalone(modelLocation));
-        }
-        return bakedModel;
-    }
+   public BakedModel get() {
+      if (this.cachedModel == null || this.needsRefresh) {
+         this.cachedModel = Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(this.modelLocation));
+         this.needsRefresh = false;
+      }
 
+      return this.cachedModel;
+   }
+
+   public void invalidate() {
+      this.needsRefresh = true;
+      this.cachedModel = null;
+   }
 }

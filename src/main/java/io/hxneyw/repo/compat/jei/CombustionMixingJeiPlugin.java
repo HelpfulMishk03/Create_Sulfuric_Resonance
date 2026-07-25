@@ -1,12 +1,13 @@
 package io.hxneyw.repo.compat.jei;
 
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.compat.jei.category.CreateRecipeCategory;
+import com.simibubi.create.compat.jei.EmptyBackground;
+import com.simibubi.create.compat.jei.category.CreateRecipeCategory.Info;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
-import io.hxneyw.repo.CreateSulfuricResonance;
-import io.hxneyw.repo.content.registry.ModBlocks;
-import io.hxneyw.repo.content.recipes.CombustionMixingRecipe;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.registry.AllModBlocks;
+import java.util.Collections;
+import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -19,90 +20,77 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.List;
-
-@SuppressWarnings("unused") // JEI discovers this via @JeiPlugin annotation
 @JeiPlugin
+@SuppressWarnings("unused")
 public class CombustionMixingJeiPlugin implements IModPlugin {
+   @NotNull
+   @Override
+   public ResourceLocation getPluginUid() {
+      return ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "jei_plugin");
+   }
 
-    @Override
-    public @NotNull ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(CreateSulfuricResonance.MODID, "jei_plugin");
-    }
+   @Override
+   public void registerCategories(IRecipeCategoryRegistration registration) {
+      Info<BasinRecipe> categoryInfo = new Info<>(
+              CombustionMixingCategory.RECIPE_TYPE,
+              Component.translatable(
+                      "recipe.sulfuricresonance.combustion_mixing"
+              ),
+              new EmptyBackground(177, 103),
+              registration.getJeiHelpers()
+                      .getGuiHelper()
+                      .createDrawableItemStack(
+                              new ItemStack(AllBlocks.MECHANICAL_MIXER.get())
+                      ),
+              CombustionMixingJeiPlugin::getAllRecipes,
+              Collections.emptyList()
+      );
 
-    @Override
-    public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(
-                new CombustionMixingCategory(
-                        new CreateRecipeCategory.Info<>(
-                                CombustionMixingCategory.RECIPE_TYPE,           // 1. RecipeType
-                                Component.translatable("recipe.sulfuricresonance.combustion_mixing"),  // 2. Component title
-                                registration.getJeiHelpers().getGuiHelper().createDrawableItemStack(
-                                        new ItemStack(ModBlocks.MOLTEN_ROTOR_FURNACE.get())
-                                ),                                               // 3. IDrawable background (using icon as background for now)
-                                registration.getJeiHelpers().getGuiHelper().createDrawableItemStack(
-                                        new ItemStack(ModBlocks.MOLTEN_ROTOR_FURNACE.get())
-                                ),                                               // 4. IDrawable icon
-                                CombustionMixingJeiPlugin::getAllRecipes,       // 5. Supplier<List<RecipeHolder>>
-                                Collections.emptyList()                          // 6. List<Supplier<ItemStack>> catalysts
-                        )
-                )
-        );
-    }
+      registration.addRecipeCategories(
+              new CombustionMixingCategory(categoryInfo)
+      );
+   }
 
-    @Override
-    public void registerRecipes(@NotNull IRecipeRegistration registration) {
-        List<RecipeHolder<BasinRecipe>> recipes = getAllRecipes();
+   @Override
+   public void registerRecipes(@NotNull IRecipeRegistration registration) {
+      List<RecipeHolder<BasinRecipe>> recipes = getAllRecipes();
+      registration.addRecipes(CombustionMixingCategory.RECIPE_TYPE, recipes);
+   }
 
-        CreateSulfuricResonance.LOGGER.info("========================================");
-        CreateSulfuricResonance.LOGGER.info("[JEI] Registering Combustion Mixing recipes");
-        CreateSulfuricResonance.LOGGER.info("[JEI] Found {} recipes", recipes.size());
+   @Override
+   public void registerRecipeCatalysts(
+           IRecipeCatalystRegistration registration
+   ) {
+      registration.addRecipeCatalyst(
+              new ItemStack(AllBlocks.MECHANICAL_MIXER.get()),
+              CombustionMixingCategory.RECIPE_TYPE
+      );
 
-        for (RecipeHolder<BasinRecipe> holder : recipes) {
-            BasinRecipe recipe = holder.value();
-            CreateSulfuricResonance.LOGGER.info("[JEI] Recipe ID: {}", holder.id());
-            CreateSulfuricResonance.LOGGER.info("[JEI]   Type: {}", recipe.getClass().getSimpleName());
-            CreateSulfuricResonance.LOGGER.info("[JEI]   Ingredients: {}", recipe.getIngredients().size());
-            CreateSulfuricResonance.LOGGER.info("[JEI]   Results: {}", recipe.getRollableResults().size());
-            CreateSulfuricResonance.LOGGER.info("[JEI]   Is CombustionMixingRecipe? {}", recipe instanceof CombustionMixingRecipe);
-        }
-        CreateSulfuricResonance.LOGGER.info("========================================");
+      registration.addRecipeCatalyst(
+              new ItemStack(AllBlocks.BASIN.get()),
+              CombustionMixingCategory.RECIPE_TYPE
+      );
 
-        registration.addRecipes(CombustionMixingCategory.RECIPE_TYPE, recipes);
-    }
+      registration.addRecipeCatalyst(
+              new ItemStack(AllModBlocks.MOLTEN_ROTOR_FURNACE.get()),
+              CombustionMixingCategory.RECIPE_TYPE
+      );
+   }
 
-    @Override
-    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        // Register Molten Rotor as catalyst
-        registration.addRecipeCatalyst(
-                new ItemStack(ModBlocks.MOLTEN_ROTOR_FURNACE.get()),
-                CombustionMixingCategory.RECIPE_TYPE
-        );
+   @SuppressWarnings("unchecked")
+   private static List<RecipeHolder<BasinRecipe>> getAllRecipes() {
+      if (Minecraft.getInstance().level == null) {
+         return Collections.emptyList();
+      }
 
-        // IMPORTANT: Register Basin + Mixer as catalysts
-        // This makes "Combustion Mixing" show when pressing U on Mixer/Basin
-        registration.addRecipeCatalyst(
-                new ItemStack(AllBlocks.BASIN.get()),
-                CombustionMixingCategory.RECIPE_TYPE
-        );
+      net.minecraft.world.item.crafting.RecipeType<BasinRecipe> recipeType =
+              (net.minecraft.world.item.crafting.RecipeType<BasinRecipe>)
+                      (net.minecraft.world.item.crafting.RecipeType<?>)
+                              ModRecipeTypes.COMBUSTION_MIXING.get();
 
-        registration.addRecipeCatalyst(
-                new ItemStack(AllBlocks.MECHANICAL_MIXER.get()),
-                CombustionMixingCategory.RECIPE_TYPE
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<RecipeHolder<BasinRecipe>> getAllRecipes() {
-        if (Minecraft.getInstance().level == null) {
-            return Collections.emptyList();
-        }
-
-        return Minecraft.getInstance().level.getRecipeManager()
-                .getAllRecipesFor(ModRecipeTypes.COMBUSTION_MIXING.get())
-                .stream()
-                .map(holder -> (RecipeHolder<BasinRecipe>)(RecipeHolder<?>)holder)
-                .toList();
-    }
+      return Minecraft.getInstance()
+              .level
+              .getRecipeManager()
+              .getAllRecipesFor(recipeType);
+   }
 }

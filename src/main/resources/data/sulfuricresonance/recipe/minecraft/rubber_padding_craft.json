@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:rubber_padding",
+    "count": 1
+  }
+}

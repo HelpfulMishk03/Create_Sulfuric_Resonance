@@ -1,6 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench By Hxney",
+	"render_type": "cutout",
 	"textures": {
         "1": "sulfuricresonance:block/molten_rotor_furnace",
         "2": "sulfuricresonance:block/reinforced_iron_base",

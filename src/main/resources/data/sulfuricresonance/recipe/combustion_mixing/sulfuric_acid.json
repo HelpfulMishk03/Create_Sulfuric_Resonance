@@ -1,0 +1,30 @@
+{
+  "type": "sulfuricresonance:combustion_mixing",
+  "heat_requirement": "superheated",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 1000,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "processing_time": 350,
+  "results": [
+    {
+      "amount": 1000,
+      "id": "sulfuricresonance:sulfuric_acid"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type": "create:cutting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:infernal_impeller"
+    }
+  ],
+  "processing_time": 100,
+  "results": [
+    {
+      "count": 2,
+      "id": "sulfuricresonance:impeller_blade"
+    }
+  ]
+}

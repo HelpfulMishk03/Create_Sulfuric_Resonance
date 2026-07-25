@@ -1,6 +1,10 @@
 {
   "log_insert": {
-    "subtitle": "Log Added",
+    "subtitle": "subtitles.sulfuricresonance.log_insert",
     "sounds": ["sulfuricresonance:log_insert"]
+  },
+  "rubber_padding_hit": {
+    "subtitle": "subtitles.sulfuricresonance.rubber_padding_hit",
+    "sounds": ["sulfuricresonance:rubber_padding_hit"]
   }
 }

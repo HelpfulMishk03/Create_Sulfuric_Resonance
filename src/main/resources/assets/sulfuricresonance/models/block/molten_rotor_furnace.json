@@ -1,6 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench By Hxney",
+	"render_type": "cutout",
 	"textures": {
         "1": "sulfuricresonance:block/molten_rotor_furnace",
         "2": "sulfuricresonance:block/reinforced_iron_base",
@@ -73,19 +74,6 @@
 				"west": {"uv": [7.75, 10.5, 8, 11.75], "texture": "#1"},
 				"up": {"uv": [10.75, 11.75, 10.5, 10.5], "rotation": 270, "texture": "#1"},
 				"down": {"uv": [11, 1.5, 10.75, 2.75], "rotation": 90, "texture": "#1"}
-			}
-		},
-		{
-			"name": "HeatGaugeDial",
-			"from": [10.25, 10.75, 0.55],
-			"to": [10.75, 12.75, 1.25],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8.025, 8, 8]},
-			"faces": {
-				"north": {"uv": [11.75, 0, 12, 0.5], "texture": "#1"},
-				"east": {"uv": [11.75, 0.5, 12, 1], "texture": "#1"},
-				"west": {"uv": [11.5, 11.25, 11.75, 11.75], "texture": "#1"},
-				"up": {"uv": [12.75, 2.25, 12.5, 2], "rotation": 270, "texture": "#1"},
-				"down": {"uv": [12.75, 2.25, 12.5, 2.5], "rotation": 90, "texture": "#1"}
 			}
 		},
 		{
