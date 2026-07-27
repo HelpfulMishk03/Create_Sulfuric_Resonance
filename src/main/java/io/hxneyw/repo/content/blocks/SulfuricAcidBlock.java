@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public class SulfuricAcidBlock extends LiquidBlock {
       if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
          long currentTime = level.getGameTime();
          long lastReaction = LAST_REACTION_TIME.getOrDefault(pos, 0L);
-         if (currentTime - lastReaction < 10L) {
+         if (currentTime - lastReaction < REACTION_COOLDOWN_TICKS) {
             super.neighborChanged(state, level, pos, block, fromPos, isMoving);
             return;
          }
@@ -49,7 +48,7 @@ public class SulfuricAcidBlock extends LiquidBlock {
             BlockState neighborState = level.getBlockState(neighborPos);
             if (neighborState.getFluidState().is(Fluids.WATER) || neighborState.getFluidState().is(Fluids.FLOWING_WATER)) {
                level.playSound(
-                  null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F
+                       null, pos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.random.nextFloat() - level.random.nextFloat()) * 0.8F
                );
                serverLevel.sendParticles(ParticleTypes.LARGE_SMOKE, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 8, 0.5, 0.5, 0.5, 0.0);
             }
@@ -62,13 +61,13 @@ public class SulfuricAcidBlock extends LiquidBlock {
                }
 
                level.playSound(
-                  null, neighborPos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F
+                       null, neighborPos, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.4F
                );
                serverLevel.sendParticles(
-                  ParticleTypes.LARGE_SMOKE, neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5, 12, 0.5, 0.5, 0.5, 0.05
+                       ParticleTypes.LARGE_SMOKE, neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5, 12, 0.5, 0.5, 0.5, 0.05
                );
                serverLevel.sendParticles(
-                  ParticleTypes.LAVA, neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.0
+                       ParticleTypes.LAVA, neighborPos.getX() + 0.5, neighborPos.getY() + 0.5, neighborPos.getZ() + 0.5, 6, 0.3, 0.3, 0.3, 0.0
                );
                break;
             }

@@ -9,7 +9,6 @@ import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -19,12 +18,12 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("resource")
 public class RubberPaddingBlock extends Block {
    private static final String NBT_BOUNCED = "RubberPaddingBounced";
    private static final String NBT_BOUNCE_COUNT = "RubberPaddingBounceCount";
@@ -75,7 +74,7 @@ public class RubberPaddingBlock extends Block {
    }
 
    public void fallOn(@NotNull Level level, @NotNull BlockState state, @NotNull BlockPos pos, Entity entity, float fallDistance) {
-      if (!entity.isSuppressingBounce() && (Boolean)Config.RUBBER_PADDING_ENABLED.get()) {
+      if (!entity.isSuppressingBounce() && Config.RUBBER_PADDING_ENABLED.get()) {
          entity.causeFallDamage(fallDistance, 0.0F, level.damageSources().fall());
       } else {
          super.fallOn(level, state, pos, entity, fallDistance);
@@ -83,26 +82,26 @@ public class RubberPaddingBlock extends Block {
    }
 
    public void updateEntityAfterFallOn(@NotNull BlockGetter blockGetter, @NotNull Entity entity) {
-      if ((Boolean)Config.RUBBER_PADDING_ENABLED.get() && !entity.isSuppressingBounce()) {
+      if (Config.RUBBER_PADDING_ENABLED.get() && !entity.isSuppressingBounce()) {
          Vec3 velocity = entity.getDeltaMovement();
          if (entity instanceof ItemEntity item) {
             CompoundTag itemData = item.getPersistentData();
             long currentTime = item.level().getGameTime();
-            long lastBounceTime = itemData.getLong("RubberPaddingLastBounceTime");
-            if (currentTime - lastBounceTime > 20L && Math.abs(velocity.y) < 0.05) {
-               itemData.putBoolean("RubberPaddingSettling", true);
+            long lastBounceTime = itemData.getLong(NBT_LAST_BOUNCE_TIME);
+            if (currentTime - lastBounceTime > SETTLING_TIME && Math.abs(velocity.y) < BOBBING_THRESHOLD) {
+               itemData.putBoolean(NBT_SETTLING, true);
                super.updateEntityAfterFallOn(blockGetter, entity);
                return;
             }
 
-            boolean isSettling = itemData.getBoolean("RubberPaddingSettling");
-            if (isSettling && Math.abs(velocity.y) < 0.2) {
+            boolean isSettling = itemData.getBoolean(NBT_SETTLING);
+            if (isSettling && Math.abs(velocity.y) < MIN_FALL_VELOCITY) {
                super.updateEntityAfterFallOn(blockGetter, entity);
                return;
             }
          }
 
-         if (velocity.y >= -0.2) {
+         if (velocity.y >= -MIN_FALL_VELOCITY) {
             if (entity instanceof ItemEntity item) {
                this.clearBounceData(item);
             }
@@ -110,14 +109,14 @@ public class RubberPaddingBlock extends Block {
             super.updateEntityAfterFallOn(blockGetter, entity);
          } else {
             if (entity instanceof ItemEntity itemEntity) {
-               if ((Double)Config.ITEM_BOUNCE_MULTIPLIER.get() <= 0.0) {
+               if (Config.ITEM_BOUNCE_MULTIPLIER.get() <= 0.0) {
                   super.updateEntityAfterFallOn(blockGetter, entity);
                   return;
                }
 
                this.bounceItem(itemEntity, velocity);
             } else {
-               if ((Double)Config.ENTITY_BOUNCE_MULTIPLIER.get() <= 0.0) {
+               if (Config.ENTITY_BOUNCE_MULTIPLIER.get() <= 0.0) {
                   super.updateEntityAfterFallOn(blockGetter, entity);
                   return;
                }
@@ -135,16 +134,16 @@ public class RubberPaddingBlock extends Block {
       double verticalSpeed = Math.abs(velocity.y);
       long currentTime = level.getGameTime();
       CompoundTag itemData = item.getPersistentData();
-      boolean hasBouncedBefore = itemData.getBoolean("RubberPaddingBounced");
-      int bounceCount = itemData.getInt("RubberPaddingBounceCount");
-      long lastBounceTime = itemData.getLong("RubberPaddingLastBounceTime");
-      double lastYPos = itemData.getDouble("RubberPaddingLastYPos");
-      itemData.remove("RubberPaddingSettling");
+      boolean hasBouncedBefore = itemData.getBoolean(NBT_BOUNCED);
+      int bounceCount = itemData.getInt(NBT_BOUNCE_COUNT);
+      long lastBounceTime = itemData.getLong(NBT_LAST_BOUNCE_TIME);
+      double lastYPos = itemData.getDouble(NBT_LAST_Y_POS);
+      itemData.remove(NBT_SETTLING);
       double currentYPos = item.getY();
       if (!hasBouncedBefore || !(Math.abs(currentYPos - lastYPos) < 0.1)) {
-         if (currentTime - lastBounceTime < 4L) {
-            item.setDeltaMovement(velocity.x * 0.9, velocity.y, velocity.z * 0.9);
-         } else if (hasBouncedBefore && verticalSpeed < 0.05) {
+         if (currentTime - lastBounceTime < BOUNCE_COOLDOWN_TICKS) {
+            item.setDeltaMovement(velocity.x * HORIZONTAL_RETENTION, velocity.y, velocity.z * HORIZONTAL_RETENTION);
+         } else if (hasBouncedBefore && verticalSpeed < ITEM_STOP_THRESHOLD) {
             this.clearBounceData(item);
             item.setDeltaMovement(velocity.x * 0.7, 0.0, velocity.z * 0.7);
          } else {
@@ -154,7 +153,7 @@ public class RubberPaddingBlock extends Block {
             if (horizontalSpeed > 0.01) {
                double dirX = velocity.x / horizontalSpeed;
                double dirZ = velocity.z / horizontalSpeed;
-               double retainedSpeed = Math.max(horizontalSpeed * 0.9, 0.18);
+               double retainedSpeed = Math.max(horizontalSpeed * HORIZONTAL_RETENTION, HORIZONTAL_MIN_SPEED);
                newX = dirX * retainedSpeed;
                newZ = dirZ * retainedSpeed;
             } else {
@@ -164,34 +163,34 @@ public class RubberPaddingBlock extends Block {
 
             double newY;
             if (!hasBouncedBefore) {
-               double configMultiplier = (Double)Config.ITEM_BOUNCE_MULTIPLIER.get();
-               newY = 0.28 * configMultiplier;
-               itemData.putBoolean("RubberPaddingBounced", true);
-               itemData.putInt("RubberPaddingBounceCount", 1);
-               itemData.putLong("RubberPaddingLastBounceTime", currentTime);
-               itemData.putDouble("RubberPaddingLastYPos", currentYPos);
+               double configMultiplier = Config.ITEM_BOUNCE_MULTIPLIER.get();
+               newY = BASE_ITEM_FIRST_BOUNCE * configMultiplier;
+               itemData.putBoolean(NBT_BOUNCED, true);
+               itemData.putInt(NBT_BOUNCE_COUNT, 1);
+               itemData.putLong(NBT_LAST_BOUNCE_TIME, currentTime);
+               itemData.putDouble(NBT_LAST_Y_POS, currentYPos);
                level.playSound(
-                  null,
-                  item.blockPosition(),
-                  (SoundEvent)AllModSounds.RUBBER_PADDING_HIT.get(),
-                  SoundSource.BLOCKS,
-                  0.3F,
-                  1.0F + level.random.nextFloat() * 0.2F
+                       null,
+                       item.blockPosition(),
+                       AllModSounds.RUBBER_PADDING_HIT.get(),
+                       SoundSource.BLOCKS,
+                       0.3F,
+                       1.0F + level.random.nextFloat() * 0.2F
                );
                this.spawnItemParticles(level, item);
             } else {
-               newY = 0.28 * Math.pow(0.6, bounceCount);
-               itemData.putInt("RubberPaddingBounceCount", bounceCount + 1);
-               itemData.putLong("RubberPaddingLastBounceTime", currentTime);
-               itemData.putDouble("RubberPaddingLastYPos", currentYPos);
+               newY = BASE_ITEM_FIRST_BOUNCE * Math.pow(ITEM_SUBSEQUENT_MULTIPLIER, bounceCount);
+               itemData.putInt(NBT_BOUNCE_COUNT, bounceCount + 1);
+               itemData.putLong(NBT_LAST_BOUNCE_TIME, currentTime);
+               itemData.putDouble(NBT_LAST_Y_POS, currentYPos);
                if (newY > 0.1) {
                   level.playSound(
-                     null,
-                     item.blockPosition(),
-                     (SoundEvent)AllModSounds.RUBBER_PADDING_HIT.get(),
-                     SoundSource.BLOCKS,
-                     0.55F * (float)Math.pow(0.6, bounceCount),
-                     1.0F + level.random.nextFloat() * 0.2F
+                          null,
+                          item.blockPosition(),
+                          AllModSounds.RUBBER_PADDING_HIT.get(),
+                          SoundSource.BLOCKS,
+                          0.55F * (float)Math.pow(ITEM_SUBSEQUENT_MULTIPLIER, bounceCount),
+                          1.0F + level.random.nextFloat() * 0.2F
                   );
                   this.spawnItemParticles(level, item);
                }
@@ -204,22 +203,22 @@ public class RubberPaddingBlock extends Block {
 
    private void bounceEntity(Entity entity, Vec3 velocity) {
       Level level = entity.level();
-      double configMultiplier = (Double)Config.ENTITY_BOUNCE_MULTIPLIER.get();
-      double bounceY = -velocity.y * 0.5 * configMultiplier;
+      double configMultiplier = Config.ENTITY_BOUNCE_MULTIPLIER.get();
+      double bounceY = -velocity.y * BASE_ENTITY_BOUNCE_MULTIPLIER * configMultiplier;
       entity.setDeltaMovement(velocity.x, bounceY, velocity.z);
       level.playSound(
-         null, entity.blockPosition(), (SoundEvent)AllModSounds.RUBBER_PADDING_HIT.get(), SoundSource.BLOCKS, 0.8F, 0.9F + level.random.nextFloat() * 0.2F
+              null, entity.blockPosition(), AllModSounds.RUBBER_PADDING_HIT.get(), SoundSource.BLOCKS, 0.8F, 0.9F + level.random.nextFloat() * 0.2F
       );
       this.spawnEntityParticles(level, entity);
    }
 
    private void clearBounceData(ItemEntity item) {
       CompoundTag data = item.getPersistentData();
-      data.remove("RubberPaddingBounced");
-      data.remove("RubberPaddingBounceCount");
-      data.remove("RubberPaddingLastBounceTime");
-      data.remove("RubberPaddingLastYPos");
-      data.remove("RubberPaddingSettling");
+      data.remove(NBT_BOUNCED);
+      data.remove(NBT_BOUNCE_COUNT);
+      data.remove(NBT_LAST_BOUNCE_TIME);
+      data.remove(NBT_LAST_Y_POS);
+      data.remove(NBT_SETTLING);
    }
 
    public float getFriction(@NotNull BlockState state, @NotNull LevelReader world, @NotNull BlockPos pos, Entity entity) {
@@ -237,15 +236,15 @@ public class RubberPaddingBlock extends Block {
       if (level instanceof ServerLevel serverLevel) {
          BlockState state = serverLevel.getBlockState(entity.blockPosition());
          serverLevel.sendParticles(
-            new BlockParticleOption(ParticleTypes.BLOCK, state),
-            entity.getX(),
-            entity.getY(),
-            entity.getZ(),
-            6,
-            entity.getBbWidth() / 2.0F,
-            0.0,
-            entity.getBbWidth() / 2.0F,
-            0.1
+                 new BlockParticleOption(ParticleTypes.BLOCK, state),
+                 entity.getX(),
+                 entity.getY(),
+                 entity.getZ(),
+                 6,
+                 entity.getBbWidth() / 2.0F,
+                 0.0,
+                 entity.getBbWidth() / 2.0F,
+                 0.1
          );
       }
    }

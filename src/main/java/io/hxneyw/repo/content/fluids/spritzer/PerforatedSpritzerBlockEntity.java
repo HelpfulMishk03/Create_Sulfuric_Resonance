@@ -14,7 +14,6 @@ import net.createmod.catnip.animation.LerpedFloat.Chaser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +25,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.FarmBlock;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
@@ -55,7 +53,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    private int sprayingTicks = 0;
 
    public PerforatedSpritzerBlockEntity(BlockPos pos, BlockState state) {
-      super((BlockEntityType)AllBlockEntities.PERFORATED_SPRITZER.get(), pos, state);
+      super(AllBlockEntities.PERFORATED_SPRITZER.get(), pos, state);
       this.tankInventory = this.createInventory();
       this.tank = this.tankInventory;
       this.forceFluidLevelUpdate = true;
@@ -119,27 +117,35 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          }
 
          @NotNull
-         public FluidStack drain(@NotNull FluidStack resource, @NotNull FluidAction action) {
-            FluidStack drained = PerforatedSpritzerBlockEntity.this.tankInventory.drain(resource, action);
-            if (!drained.isEmpty()
-               && action.execute()
-               && PerforatedSpritzerBlockEntity.this.level != null
-               && !PerforatedSpritzerBlockEntity.this.level.isClientSide) {
-               PerforatedSpritzerBlockEntity.this.onFluidStackChanged(PerforatedSpritzerBlockEntity.this.tankInventory.getFluid());
-            }
+         @Override
+         public FluidStack drain(
+                 @NotNull FluidStack resource,
+                 @NotNull FluidAction action
+         ) {
+            FluidStack drained =
+                    PerforatedSpritzerBlockEntity.this
+                            .tankInventory
+                            .drain(resource, action);
+
+            PerforatedSpritzerBlockEntity.this
+                    .handleExecutedDrain(drained, action);
 
             return drained;
          }
 
          @NotNull
-         public FluidStack drain(int maxDrain, @NotNull FluidAction action) {
-            FluidStack drained = PerforatedSpritzerBlockEntity.this.tankInventory.drain(maxDrain, action);
-            if (!drained.isEmpty()
-               && action.execute()
-               && PerforatedSpritzerBlockEntity.this.level != null
-               && !PerforatedSpritzerBlockEntity.this.level.isClientSide) {
-               PerforatedSpritzerBlockEntity.this.onFluidStackChanged(PerforatedSpritzerBlockEntity.this.tankInventory.getFluid());
-            }
+         @Override
+         public FluidStack drain(
+                 int maxDrain,
+                 @NotNull FluidAction action
+         ) {
+            FluidStack drained =
+                    PerforatedSpritzerBlockEntity.this
+                            .tankInventory
+                            .drain(maxDrain, action);
+
+            PerforatedSpritzerBlockEntity.this
+                    .handleExecutedDrain(drained, action);
 
             return drained;
          }
@@ -156,6 +162,22 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       if (this.level != null && !this.level.isClientSide) {
          this.level.invalidateCapabilities(this.worldPosition);
       }
+   }
+
+   private void handleExecutedDrain(
+           FluidStack drained,
+           FluidAction action
+   ) {
+      if (drained.isEmpty()
+              || !action.execute()
+              || this.level == null
+              || this.level.isClientSide) {
+         return;
+      }
+
+      this.onFluidStackChanged(
+              this.tankInventory.getFluid()
+      );
    }
 
    public void initialize() {
@@ -192,13 +214,16 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       if (this.level != null && !this.level.isClientSide) {
          boolean wasSpraying = this.spraying;
          int currentAmount = this.tankInventory.getFluidAmount();
-         boolean shouldSpray = currentAmount >= 2800 && this.canSprayFluid();
+         boolean shouldSpray =
+                 currentAmount >= SPRAY_START_THRESHOLD
+                         && this.canSprayFluid();
          if (shouldSpray) {
             this.spraying = true;
             this.sprayTimer++;
-            if (this.sprayTimer >= 10) {
+            if (this.sprayTimer >= SPRAY_INTERVAL) {
                this.sprayTimer = 0;
-               if (!this.isPerformingSpray && this.tankInventory.getFluidAmount() >= 25) {
+               if (!this.isPerformingSpray
+                       && this.tankInventory.getFluidAmount() >= FLUID_PER_SPRAY) {
                   this.performSpray();
                }
             }
@@ -220,13 +245,18 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    }
 
    private boolean canSprayFluid() {
-      FluidStack fluid = this.tankInventory.getFluid();
-      return fluid.isEmpty()
-         ? false
-         : fluid.getFluid() == Fluids.WATER
-            || fluid.getFluid() == Fluids.LAVA
-            || fluid.getFluid() == Fluids.FLOWING_LAVA
-            || fluid.getFluid() == AllModFluids.SULFURIC_ACID.get();
+      FluidStack fluid =
+              this.tankInventory.getFluid();
+
+      return !fluid.isEmpty()
+              && (
+              fluid.getFluid() == Fluids.WATER
+                      || fluid.getFluid() == Fluids.LAVA
+                      || fluid.getFluid()
+                      == Fluids.FLOWING_LAVA
+                      || fluid.getFluid()
+                      == AllModFluids.SULFURIC_ACID.get()
+      );
    }
 
    private void performSpray() {
@@ -240,12 +270,18 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
             }
 
             int beforeAmount = this.tankInventory.getFluidAmount();
-            if (beforeAmount < 25) {
+            if (beforeAmount < FLUID_PER_SPRAY) {
                return;
             }
 
-            FluidStack drained = this.tankInventory.drain(25, FluidAction.EXECUTE);
-            if (drained.isEmpty() || drained.getAmount() != 25) {
+            FluidStack drained =
+                    this.tankInventory.drain(
+                            FLUID_PER_SPRAY,
+                            FluidAction.EXECUTE
+                    );
+
+            if (drained.isEmpty()
+                    || drained.getAmount() != FLUID_PER_SPRAY) {
                return;
             }
 
@@ -302,7 +338,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
             if (fluid.getFluid() == Fluids.WATER) {
                serverLevel.sendParticles(ParticleTypes.FALLING_WATER, x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
             } else if (fluid.getFluid() == AllModFluids.SULFURIC_ACID.get()) {
-               serverLevel.sendParticles((SimpleParticleType)ModParticles.ACID_DRIP.get(), x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
+               serverLevel.sendParticles(ModParticles.ACID_DRIP.get(), x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
             } else if (fluid.getFluid() == Fluids.LAVA || fluid.getFluid() == Fluids.FLOWING_LAVA) {
                serverLevel.sendParticles(ParticleTypes.FALLING_LAVA, x, y, z, 1, 0.0, -0.05, 0.0, 0.0);
                if (serverLevel.random.nextFloat() < 0.3F) {
@@ -333,9 +369,9 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
 
                BlockState state = serverLevel.getBlockState(checkPos);
                if (state.getBlock() instanceof FarmBlock) {
-                  int currentMoisture = (Integer)state.getValue(FarmBlock.MOISTURE);
-                  if (currentMoisture < 7 && serverLevel.random.nextFloat() < 0.08F) {
-                     serverLevel.setBlock(checkPos, (BlockState)state.setValue(FarmBlock.MOISTURE, currentMoisture + 1), 2);
+                  int currentMoisture = state.getValue(FarmBlock.MOISTURE);
+                  if (currentMoisture < 7 && serverLevel.random.nextFloat() < 0.08F) {serverLevel.setBlock(checkPos, state.setValue(FarmBlock.MOISTURE, currentMoisture + 1), 2
+                     );
                   }
                }
 
@@ -343,9 +379,16 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
                   BlockPos farmlandBelow = checkPos.below();
                   BlockState farmlandState = serverLevel.getBlockState(farmlandBelow);
                   if (farmlandState.getBlock() instanceof FarmBlock) {
-                     int moisture = (Integer)farmlandState.getValue(FarmBlock.MOISTURE);
+                     int moisture = farmlandState.getValue(FarmBlock.MOISTURE);
                      if (moisture < 7 && serverLevel.random.nextFloat() < 0.08F) {
-                        serverLevel.setBlock(farmlandBelow, (BlockState)farmlandState.setValue(FarmBlock.MOISTURE, moisture + 1), 2);
+                        serverLevel.setBlock(
+                                farmlandBelow,
+                                farmlandState.setValue(
+                                        FarmBlock.MOISTURE,
+                                        moisture + 1
+                                ),
+                                2
+                        );
                      }
 
                      int currentAge = crop.getAge(state);
@@ -398,7 +441,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       } else {
          super.sendData();
          this.queuedSync = false;
-         this.syncCooldown = 8;
+         this.syncCooldown = SYNC_RATE;
       }
    }
 
@@ -461,8 +504,17 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
    }
 
-   public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-      return this.level == null ? false : this.containedFluidTooltip(tooltip, isPlayerSneaking, this.tankInventory);
+   @Override
+   public boolean addToGoggleTooltip(
+           List<Component> tooltip,
+           boolean isPlayerSneaking
+   ) {
+      return this.level != null
+              && this.containedFluidTooltip(
+              tooltip,
+              isPlayerSneaking,
+              this.tankInventory
+      );
    }
 
    public SmartFluidTank getTankInventory() {

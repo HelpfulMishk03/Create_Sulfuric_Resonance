@@ -101,7 +101,7 @@ public class AllModFluids {
                }
             }
          },
-         new FluidType[]{(FluidType)SULFURIC_ACID_TYPE.get()}
+              SULFURIC_ACID_TYPE.get()
       );
    }
 

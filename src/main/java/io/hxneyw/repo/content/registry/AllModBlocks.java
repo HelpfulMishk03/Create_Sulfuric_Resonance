@@ -2,7 +2,7 @@ package io.hxneyw.repo.content.registry;
 
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.CreateSulfuricResonance;
-import io.hxneyw.repo.content.blocks.MoltenRotorBlock;
+import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
@@ -32,14 +31,16 @@ public class AllModBlocks {
             .instrument(NoteBlockInstrument.IRON_XYLOPHONE)
             .noOcclusion()
             .lightLevel(state -> {
-               HeatLevel heat = (HeatLevel)state.getValue(MoltenRotorBlock.HEAT_LEVEL);
+               HeatLevel heat =
+                       state.getValue(
+                               MoltenRotorBlock.HEAT_LEVEL
+                       );
 
                return switch (heat) {
                   case NONE -> 0;
                   case SMOULDERING, FADING -> 8;
                   case KINDLED -> 12;
                   case SEETHING -> 15;
-                  default -> throw new MatchException(null, null);
                };
             })
       )
@@ -73,7 +74,7 @@ public class AllModBlocks {
    public static final DeferredBlock<LiquidBlock> SULFURIC_ACID_BLOCK = BLOCKS.register(
       "sulfuric_acid",
       () -> new SulfuricAcidBlock(
-         (FlowingFluid)AllModFluids.SULFURIC_ACID.get(),
+              AllModFluids.SULFURIC_ACID.get(),
          Properties.of()
             .mapColor(MapColor.COLOR_YELLOW)
             .replaceable()

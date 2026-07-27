@@ -3,7 +3,6 @@ package io.hxneyw.repo.content.items;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import org.jetbrains.annotations.NotNull;
 
 public class NetherwoodDustItem extends Item {

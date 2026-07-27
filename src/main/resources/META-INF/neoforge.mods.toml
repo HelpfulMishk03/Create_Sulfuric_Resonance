@@ -9,17 +9,17 @@ modLoader = "javafml" #mandatory
 loaderVersion = "[4,)" #mandatory
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
-license = "All Rights Reserved"
+license = "Read the attached LICENSE.md"
 
 # A URL to refer people to when problems occur with this mod
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/" #optional
-
+logoFile = "sulfuricresonance.png"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
 modId = "sulfuricresonance" #mandatory
 # The version number of the mod
-version = "0.0.2.1-betaA" #mandatory
+version = "0.0.2.2-betaA" #mandatory
 # A display name for the mod
 displayName = "Create: Sulfuric Resonance" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/

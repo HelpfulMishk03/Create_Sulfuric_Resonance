@@ -25,7 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
@@ -73,11 +72,11 @@ public class PerforatedSpritzerBlock extends Block implements IWrenchable, IBE<P
       if (stack.isEmpty()) {
          return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
       } else {
-         PerforatedSpritzerBlockEntity be = (PerforatedSpritzerBlockEntity)this.getBlockEntity(level, pos);
+         PerforatedSpritzerBlockEntity be = this.getBlockEntity(level, pos);
          if (be == null) {
             return ItemInteractionResult.FAIL;
          } else {
-            IFluidHandler fluidCapability = (IFluidHandler)level.getCapability(FluidHandler.BLOCK, pos, null);
+            IFluidHandler fluidCapability = level.getCapability(FluidHandler.BLOCK, pos, null);
             if (fluidCapability == null) {
                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             } else {
@@ -149,7 +148,9 @@ public class PerforatedSpritzerBlock extends Block implements IWrenchable, IBE<P
       return PerforatedSpritzerBlockEntity.class;
    }
 
-   public BlockEntityType<? extends PerforatedSpritzerBlockEntity> getBlockEntityType() {
-      return (BlockEntityType<? extends PerforatedSpritzerBlockEntity>)AllBlockEntities.PERFORATED_SPRITZER.get();
+   @Override
+   public BlockEntityType<? extends PerforatedSpritzerBlockEntity>
+   getBlockEntityType() {
+      return AllBlockEntities.PERFORATED_SPRITZER.get();
    }
 }

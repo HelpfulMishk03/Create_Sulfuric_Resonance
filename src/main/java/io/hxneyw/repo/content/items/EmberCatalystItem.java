@@ -4,10 +4,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("resource")
 public class EmberCatalystItem extends Item {
    public EmberCatalystItem(Properties properties) {
       super(properties);

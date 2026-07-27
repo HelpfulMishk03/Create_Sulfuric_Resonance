@@ -13,8 +13,9 @@ base {
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
-    maven { url = 'https://maven.createmod.net' }
-    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://maven.createmod.net' }          // Create, Ponder, Flywheel
+    maven { url = 'https://maven.ithundxr.dev/snapshots' } // Registrate
+    maven { url = 'https://maven.blamejared.com' }         // JEI
     mavenCentral()
 }
 
@@ -40,8 +41,15 @@ neoForge {
 }
 
 dependencies {
-    implementation "com.simibubi.create:create-${minecraft_version}:${create_version}:slim@jar"
-    implementation files(fileTree(dir: 'libs/create-embedded/META-INF/jarjar', include: ['*.jar']))
+    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
+        transitive = false
+    }
+
+    implementation "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
+    compileOnly "dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}"
+    runtimeOnly "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
+    implementation "com.tterrag.registrate:Registrate:${registrate_version}"
+
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 }

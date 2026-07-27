@@ -12,8 +12,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 @EventBusSubscriber(
-   modid = "sulfuricresonance",
-   value = {Dist.CLIENT}
+        modid = "sulfuricresonance",
+        value = {Dist.CLIENT}
 )
 public class UniversalTooltipHandler {
    @SubscribeEvent
@@ -21,7 +21,7 @@ public class UniversalTooltipHandler {
       Item item = event.getItemStack().getItem();
       ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
       if (itemId.getNamespace().equals("sulfuricresonance")) {
-         TooltipModifier modifier = (TooltipModifier)TooltipModifier.REGISTRY.get(item);
+         TooltipModifier modifier = TooltipModifier.REGISTRY.get(item);
          if (modifier != null) {
             modifier.modify(event);
          } else {

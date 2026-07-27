@@ -12,18 +12,20 @@ import net.minecraft.world.level.Level.ExplosionInteraction;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("resource")
 public class PyroclastBombEntity extends ThrowableItemProjectile {
    public PyroclastBombEntity(EntityType<? extends PyroclastBombEntity> type, Level level) {
       super(type, level);
    }
 
    public PyroclastBombEntity(Level level, LivingEntity shooter) {
-      super((EntityType)ModEntities.PYROCLAST_BOMB.get(), shooter, level);
+      super(ModEntities.PYROCLAST_BOMB.get(), shooter, level);
    }
 
+   @Override
    @NotNull
    protected Item getDefaultItem() {
-      return (Item)Items.PYROCLAST_BOMB.get();
+      return Items.PYROCLAST_BOMB.get();
    }
 
    protected void onHit(@NotNull HitResult result) {

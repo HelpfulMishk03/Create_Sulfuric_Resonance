@@ -1,6 +1,7 @@
-package io.hxneyw.repo.content.blocks;
+package io.hxneyw.repo.content.blocks.moltenrotor;
 
-import com.simibubi.create.AllItems;
+import io.hxneyw.repo.compat.fuel.FuelCompatibility;
+import io.hxneyw.repo.compat.fuel.ResolvedFuel;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
@@ -21,12 +22,11 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
@@ -36,6 +36,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private int remainingBurnTime = 0;
    private int activeFuelCount = 0;
    private int activeLogStickCount = 0;
+   private int renderedFuelUnitCount = 0;
    private int clientUpdateCounter = 0;
    private int lastNotifiedFuelCount = 0;
    private MoltenRotorBlockEntity.RotorHeatLevel currentHeatTier = MoltenRotorBlockEntity.RotorHeatLevel.NONE;
@@ -51,43 +52,50 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private boolean hasStickInStack = false;
    private final List<ItemStack> pendingFuel = new ArrayList<>();
    public int tntCooldown = 0;
-   public final IItemHandler fuelHandler = new IItemHandler() {
-      public int getSlots() {
-         return 1;
+
+   private final IItemHandler unsidedFuelHandler =
+           new MoltenRotorFuelHandler(this, null);
+   private final IItemHandler[] sidedFuelHandlers =
+           new IItemHandler[Direction.values().length];
+
+   /**
+    * Returns a stable handler instance for capability consumers.
+    * The handler performs side checks dynamically, so rotating the furnace
+    * does not leave capability caches with stale access rules.
+    */
+   public IItemHandler getAutomationFuelHandler(@Nullable Direction side) {
+      if (side == null) {
+         return this.unsidedFuelHandler;
       }
 
-      @NotNull
-      public ItemStack getStackInSlot(int slot) {
-         return ItemStack.EMPTY;
+      int index = side.ordinal();
+      IItemHandler handler = this.sidedFuelHandlers[index];
+      if (handler == null) {
+         handler = new MoltenRotorFuelHandler(this, side);
+         this.sidedFuelHandlers[index] = handler;
       }
 
-      @NotNull
-      public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-         MoltenRotorBlockEntity.FuelType fuelType = MoltenRotorBlockEntity.this.getFuelTypeFromItem(stack);
-         if (fuelType == null || fuelType == MoltenRotorBlockEntity.FuelType.NONE) {
-            return stack;
-         } else if (!MoltenRotorBlockEntity.this.insertFuel(stack, simulate)) {
-            return stack;
-         } else {
-            ItemStack remainder = stack.copy();
-            remainder.shrink(1);
-            return remainder;
-         }
+      return handler;
+   }
+
+   /**
+    * Automation may insert from the open front, top, and either side.
+    * The underside is reserved for future output and the rear is blocked by
+    * the impeller housing. Unsided capability users are accepted for broad
+    * pipe compatibility.
+    */
+   public boolean canAutomationInsertFrom(@Nullable Direction side) {
+      if (side == null) {
+         return true;
       }
 
-      @NotNull
-      public ItemStack extractItem(int slot, int amount, boolean simulate) {
-         return ItemStack.EMPTY;
-      }
+      Direction facing =
+              this.getBlockState().getValue(MoltenRotorBlock.FACING);
 
-      public int getSlotLimit(int slot) {
-         return 64;
-      }
+      return side != Direction.DOWN
+              && side != facing.getOpposite();
+   }
 
-      public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-         return MoltenRotorBlockEntity.this.insertFuel(stack, true);
-      }
-   };
 
    public MoltenRotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
       super(type, pos, state);
@@ -100,6 +108,20 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
       super.addBehaviours(behaviours);
       behaviours.add(new CombustionHeatingBehaviour(this));
+   }
+
+   /**
+    * Visual impeller speed follows temperature exactly:
+    * 1 degree Celsius equals 1 RPM.
+    * <p>
+    * This does not change the Create kinetic network output, which remains
+    * controlled by the active heat tier.
+    */
+   public float getImpellerRpm() {
+      return Math.max(
+              (this.currentTemperature - 20.0F) * 0.5F,
+              0.0F
+      );
    }
 
    public float getGeneratedSpeed() {
@@ -142,10 +164,34 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return Math.max(this.remainingBurnTime, 0);
    }
 
+   public ItemStack getRenderedFuelStack() {
+      return this.activeFuelStack.copy();
+   }
+
+   public FuelType getRenderedFuelType() {
+      return this.activeFuelType;
+   }
+
+   public int getRenderedLogStickCount() {
+      return Math.min(this.activeLogStickCount, 4);
+   }
+
+   public int getRenderedFuelUnitCount() {
+      if (this.activeFuelType == FuelType.NONE || this.remainingBurnTime <= 0) {
+         return 0;
+      }
+
+      if (this.level != null && this.level.isClientSide) {
+         return this.renderedFuelUnitCount;
+      }
+
+      return this.getFuelUnitCount(this.activeFuelType);
+   }
+
    public String getHeatTierName() {
       return this.currentHeatTier == MoltenRotorBlockEntity.RotorHeatLevel.FADING ? "Heated" : this.currentHeatTier.displayName;
    }
-
+   @SuppressWarnings("unused")
    public boolean isCombustionActive() {
       return this.currentHeatTier.isAtLeast(RotorHeatLevel.SMOULDERING);
    }
@@ -204,8 +250,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          this.setChanged();
          this.sendData();
          if (this.level instanceof ServerLevel sl
-            && this.currentHeatTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
-            && previousTier != MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+                 && this.currentHeatTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
+                 && previousTier != MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
             this.spawnRadiantParticles(sl);
          }
       }
@@ -220,30 +266,19 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
    }
 
-   public MoltenRotorBlockEntity.FuelType getFuelTypeFromItem(ItemStack stack) {
-      if (stack.is(Items.STICK)) {
-         return MoltenRotorBlockEntity.FuelType.STICK;
-      } else if (stack.is(ItemTags.LOGS)) {
-         return MoltenRotorBlockEntity.FuelType.LOG;
-      } else if (stack.is(Items.COAL)) {
-         return MoltenRotorBlockEntity.FuelType.COAL;
-      } else if (stack.is(Items.CHARCOAL)) {
-         return MoltenRotorBlockEntity.FuelType.CHARCOAL;
-      } else if (stack.is(Items.COAL_BLOCK)) {
-         return MoltenRotorBlockEntity.FuelType.COAL_BLOCK;
-      } else if (stack.is(Items.DRIED_KELP_BLOCK)) {
-         return MoltenRotorBlockEntity.FuelType.KELP_BLOCK;
-      } else if (stack.is(Items.TNT)) {
-         return MoltenRotorBlockEntity.FuelType.TNT;
-      } else if (stack.is(AllItems.BLAZE_CAKE.get())) {
-         return MoltenRotorBlockEntity.FuelType.BLAZE_CAKE;
-      } else {
-         return stack.is(io.hxneyw.repo.content.Items.SOUL_FIRED_BLAZE_CAKE.get()) ? MoltenRotorBlockEntity.FuelType.SOUL_FIRED_BLAZE_CAKE : null;
+   public FuelType getFuelTypeFromItem(ItemStack stack) {
+      ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
+
+      if (resolvedFuel == null || !resolvedFuel.isValid()) {
+         return null;
       }
+
+      return resolvedFuel.type();
    }
 
    public void tick() {
       super.tick();
+
       if (this.level != null && !this.level.isClientSide) {
          if (this.tntCooldown > 0) {
             this.tntCooldown--;
@@ -315,8 +350,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
                this.clientUpdateCounter = 0;
                this.sendData();
                if (newTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
-                  && previousTier != MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
-                  && this.level instanceof ServerLevel sl) {
+                       && previousTier != MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
+                       && this.level instanceof ServerLevel sl) {
                   this.spawnRadiantParticles(sl);
                }
             } else if (++this.clientUpdateCounter >= 1) {
@@ -363,8 +398,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          return MoltenRotorBlockEntity.RotorHeatLevel.KINDLED;
       } else {
          return this.currentTemperature >= 300.0F && this.currentTemperature < 350.0F && this.remainingBurnTime == 0
-            ? MoltenRotorBlockEntity.RotorHeatLevel.FADING
-            : MoltenRotorBlockEntity.RotorHeatLevel.SMOULDERING;
+                 ? MoltenRotorBlockEntity.RotorHeatLevel.FADING
+                 : MoltenRotorBlockEntity.RotorHeatLevel.SMOULDERING;
       }
    }
 
@@ -388,6 +423,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    }
 
    public boolean insertFuel(ItemStack stack, boolean simulate) {
+      if (this.creativeMode) {
+         return false;
+      }
+
       if (this.level == null || stack.isEmpty()) {
          return false;
       }
@@ -398,7 +437,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
 
       if (fuelType == MoltenRotorBlockEntity.FuelType.SOUL_FIRED_BLAZE_CAKE
-         && !this.currentHeatTier.isAtLeast(RotorHeatLevel.SEETHING)) {
+              && !this.currentHeatTier.isAtLeast(RotorHeatLevel.SEETHING)) {
          return false;
       }
 
@@ -417,7 +456,18 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
 
       if (this.isSpecialFuel(fuelType)) {
-         if ((this.activeFuelType != MoltenRotorBlockEntity.FuelType.NONE && this.isSpecialFuel(this.activeFuelType)) || this.hasPendingSpecialFuel()) {
+         boolean soulCakeAfterBlazeCake =
+                 fuelType == MoltenRotorBlockEntity.FuelType.SOUL_FIRED_BLAZE_CAKE
+                         && this.activeFuelType
+                         == MoltenRotorBlockEntity.FuelType.BLAZE_CAKE
+                         && this.currentHeatTier.isAtLeast(RotorHeatLevel.SEETHING)
+                         && !this.hasPendingSpecialFuel();
+
+         if (!soulCakeAfterBlazeCake
+                 && ((this.activeFuelType
+                 != MoltenRotorBlockEntity.FuelType.NONE
+                 && this.isSpecialFuel(this.activeFuelType))
+                 || this.hasPendingSpecialFuel())) {
             return false;
          }
 
@@ -430,8 +480,27 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          return true;
       }
 
-      MoltenRotorBlockEntity.FuelType normalFuelInUse = this.getNormalFuelInUse();
-      if (normalFuelInUse == null || normalFuelInUse != fuelType || this.hasPendingSpecialFuel()) {
+      /*
+       * Special fuels keep their exclusive queue rules.
+       * Ordinary fuels may now be mixed in insertion order.
+       *
+       * Example:
+       * coal -> spruce log -> plank -> charcoal
+       */
+      if (this.hasPendingSpecialFuel()) {
+         return false;
+      }
+
+      ResolvedFuel resolvedFuel =
+              FuelCompatibility.resolve(stack);
+
+      if (resolvedFuel == null || !resolvedFuel.isValid()) {
+         return false;
+      }
+
+      int maximumUnits = resolvedFuel.maximumUnits();
+
+      if (this.getFuelUnitCount(fuelType) >= maximumUnits) {
          return false;
       }
 
@@ -477,22 +546,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private boolean isSpecialFuel(MoltenRotorBlockEntity.FuelType fuelType) {
       return fuelType == MoltenRotorBlockEntity.FuelType.BLAZE_CAKE || fuelType == MoltenRotorBlockEntity.FuelType.SOUL_FIRED_BLAZE_CAKE;
    }
-
-   private MoltenRotorBlockEntity.FuelType getNormalFuelInUse() {
-      if (this.activeFuelType != MoltenRotorBlockEntity.FuelType.NONE && !this.isSpecialFuel(this.activeFuelType)) {
-         return this.activeFuelType;
-      }
-
-      for (ItemStack queuedStack : this.pendingFuel) {
-         MoltenRotorBlockEntity.FuelType queuedType = this.getFuelTypeFromItem(queuedStack);
-         if (queuedType != null && !this.isSpecialFuel(queuedType)) {
-            return queuedType;
-         }
-      }
-
-      return null;
-   }
-
    private boolean hasPendingSpecialFuel() {
       for (ItemStack queuedStack : this.pendingFuel) {
          MoltenRotorBlockEntity.FuelType queuedType = this.getFuelTypeFromItem(queuedStack);
@@ -529,19 +582,22 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    }
 
    private void startFuel(ItemStack fuelStack) {
-      FuelType fuelType = this.getFuelTypeFromItem(fuelStack);
+      ResolvedFuel resolvedFuel = FuelCompatibility.resolve(fuelStack);
 
-      if (fuelType == null || fuelType == FuelType.NONE) {
+      if (resolvedFuel == null || !resolvedFuel.isValid()) {
          return;
       }
+
+      FuelType fuelType = resolvedFuel.type();
 
       this.activeFuelStack = fuelStack.copyWithCount(1);
       this.activeFuelType = fuelType;
       this.activeFuelCount = 1;
       this.activeLogStickCount = 0;
-      this.remainingBurnTime = (int) fuelType.baseBurnTimeTicks;
-      this.baseHeatingRate = fuelType.celsiusPerSecond;
-      this.currentMaxTemp = fuelType.maxTempReachable;
+
+      this.remainingBurnTime = (int) resolvedFuel.burnTimeTicks();
+      this.baseHeatingRate = resolvedFuel.heatingRate();
+      this.currentMaxTemp = resolvedFuel.maximumTemperature();
 
       this.clearFuelStackFlags();
       this.updateFuelStackFlags(fuelType);
@@ -616,29 +672,48 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    }
 
    private void spawnRadiantParticles(ServerLevel sl) {
-      sl.sendParticles(ModParticles.COMBUSTION_PURPLE_FLAME.get(),
-         this.worldPosition.getX() + 0.5,
-         this.worldPosition.getY() + 0.5,
-         this.worldPosition.getZ() + 0.5,
-         50,
-         0.6,
-         0.6,
-         0.6,
-         0.008
-      );
+      /*
+       * A restrained one-time transition flash. Continuous chamber
+       * flames are handled client-side by MoltenRotorBlock.
+       */
+      double x = this.worldPosition.getX() + 0.5;
+      double y = this.worldPosition.getY() + 0.28;
+      double z = this.worldPosition.getZ() + 0.5;
+
       sl.sendParticles(
-         ParticleTypes.SOUL_FIRE_FLAME,
-         this.worldPosition.getX() + 0.5,
-         this.worldPosition.getY() + 0.5,
-         this.worldPosition.getZ() + 0.5,
-         20,
-         0.4,
-         0.4,
-         0.4,
-         0.005
+              ModParticles.COMBUSTION_PURPLE_FLAME.get(),
+              x,
+              y,
+              z,
+              4,
+              0.12,
+              0.05,
+              0.12,
+              0.002
       );
+
       sl.sendParticles(
-         ParticleTypes.END_ROD, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5, 10, 0.5, 0.5, 0.5, 0.008
+              ParticleTypes.SOUL_FIRE_FLAME,
+              x,
+              y,
+              z,
+              2,
+              0.10,
+              0.04,
+              0.10,
+              0.001
+      );
+
+      sl.sendParticles(
+              ParticleTypes.END_ROD,
+              x,
+              y,
+              z,
+              1,
+              0.08,
+              0.04,
+              0.08,
+              0.001
       );
    }
 
@@ -680,57 +755,166 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
    }
 
-   public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+   @Override
+   public boolean addToGoggleTooltip(
+           List<Component> tooltip,
+           boolean isPlayerSneaking
+   ) {
       tooltip.add(Component.literal(""));
+
       if (this.creativeMode) {
-         tooltip.add(Component.literal("★ CREATIVE MODE").withStyle(
-                 ChatFormatting.LIGHT_PURPLE,
-                 ChatFormatting.BOLD
-         ));
-         tooltip.add(Component.literal("  (Infinite heat - right-click to cycle)").withStyle(ChatFormatting.DARK_GRAY));
+         tooltip.add(
+                 Component.literal("★ CREATIVE MODE")
+                         .withStyle(
+                                 ChatFormatting.LIGHT_PURPLE,
+                                 ChatFormatting.BOLD
+                         )
+         );
+
+         tooltip.add(
+                 Component.literal(
+                                 "  (Infinite heat - right-click to cycle)"
+                         )
+                         .withStyle(ChatFormatting.DARK_GRAY)
+         );
       }
-      ChatFormatting color = switch (this.currentHeatTier) {
-         case NONE -> ChatFormatting.GRAY;
-         case SMOULDERING, FADING -> ChatFormatting.YELLOW;
-         case KINDLED -> ChatFormatting.RED;
-         case SEETHING -> ChatFormatting.DARK_RED;
-         case RADIANT -> ChatFormatting.DARK_PURPLE;
-      };
-      tooltip.add(Component.literal("Heat: " + this.getHeatTierName() + " (" + this.getDisplayTemperature() + "°C)").withStyle(color));
+
+      ChatFormatting heatColor =
+              switch (this.currentHeatTier) {
+                 case NONE -> ChatFormatting.GRAY;
+                 case SMOULDERING, FADING ->
+                         ChatFormatting.YELLOW;
+                 case KINDLED -> ChatFormatting.RED;
+                 case SEETHING -> ChatFormatting.DARK_RED;
+                 case RADIANT -> ChatFormatting.DARK_PURPLE;
+              };
+
       tooltip.add(
-         Component.literal(
-               "Stress Capacity: " + (this.currentHeatTier != MoltenRotorBlockEntity.RotorHeatLevel.NONE ? (int)this.getTotalStressOutput() : 0) + " su"
-            )
-            .withStyle(this.currentHeatTier != MoltenRotorBlockEntity.RotorHeatLevel.NONE ? ChatFormatting.GOLD : ChatFormatting.GRAY)
+              Component.literal(
+                              "Heat: "
+                                      + this.getHeatTierName()
+                                      + " ("
+                                      + this.getDisplayTemperature()
+                                      + "°C)"
+                      )
+                      .withStyle(heatColor)
+      );
+
+      int displayedStress =
+              this.currentHeatTier
+                      != MoltenRotorBlockEntity.RotorHeatLevel.NONE
+                      ? (int)this.getTotalStressOutput()
+                      : 0;
+
+      tooltip.add(
+              Component.literal(
+                              "Stress Capacity: "
+                                      + displayedStress
+                                      + " su"
+                      )
+                      .withStyle(
+                              displayedStress > 0
+                                      ? ChatFormatting.GOLD
+                                      : ChatFormatting.GRAY
+                      )
+      );
+
+      int generatedRpm =
+              Math.round(
+                      Math.abs(this.getGeneratedSpeed())
+              );
+
+      tooltip.add(
+              Component.literal(
+                              "Generated Speed: "
+                                      + generatedRpm
+                                      + " RPM"
+                      )
+                      .withStyle(
+                              generatedRpm > 0
+                                      ? ChatFormatting.AQUA
+                                      : ChatFormatting.GRAY
+                      )
       );
 
       if (this.remainingBurnTime > 0
               && this.activeFuelType != FuelType.NONE) {
+
          tooltip.add(
                  Component.literal("Burning: ")
                          .withStyle(ChatFormatting.GRAY)
-                         .append(this.getActiveFuelDisplayName().copy()
-                                 .withStyle(ChatFormatting.WHITE))
+                         .append(
+                                 this.getActiveFuelDisplayName()
+                                         .copy()
+                                         .withStyle(
+                                                 ChatFormatting.WHITE
+                                         )
+                         )
          );
       }
 
       this.addQueuedFuelTooltip(tooltip);
 
       if (this.remainingBurnTime > 0) {
-         int sec = this.remainingBurnTime / 20;
-         int min = sec / 60;
-         int remSec = sec % 60;
-         tooltip.add(Component.literal("Fuel Remaining: " + (min > 0 ? min + "m " : "") + remSec + "s").withStyle(ChatFormatting.GREEN));
+         int totalSeconds =
+                 this.remainingBurnTime / 20;
+
+         int minutes =
+                 totalSeconds / 60;
+
+         int seconds =
+                 totalSeconds % 60;
+
+         String displayedTime =
+                 minutes > 0
+                         ? minutes + "m " + seconds + "s"
+                         : seconds + "s";
+
+         tooltip.add(
+                 Component.literal(
+                                 "Fuel Remaining: "
+                                         + displayedTime
+                         )
+                         .withStyle(ChatFormatting.GREEN)
+         );
       } else if (this.getDisplayCooldownTime() > 0) {
-         int sec = this.getDisplayCooldownTime() / 20;
-         int min = sec / 60;
-         int remSec = sec % 60;
-         tooltip.add(Component.literal("Cooling Down: " + (min > 0 ? min + "m " : "") + remSec + "s").withStyle(ChatFormatting.YELLOW));
+         int totalSeconds =
+                 this.getDisplayCooldownTime() / 20;
+
+         int minutes =
+                 totalSeconds / 60;
+
+         int seconds =
+                 totalSeconds % 60;
+
+         String displayedTime =
+                 minutes > 0
+                         ? minutes + "m " + seconds + "s"
+                         : seconds + "s";
+
+         tooltip.add(
+                 Component.literal(
+                                 "Cooling Down: "
+                                         + displayedTime
+                         )
+                         .withStyle(ChatFormatting.YELLOW)
+         );
       }
 
-      if (this.currentHeatTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
-         tooltip.add(Component.literal("✦ RADIANT TIER ACTIVE").withStyle(ChatFormatting.DARK_PURPLE));
-         tooltip.add(Component.literal("  (Combustion recipes enabled)").withStyle(ChatFormatting.DARK_GRAY));
+      if (this.currentHeatTier
+              == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+
+         tooltip.add(
+                 Component.literal("✦ RADIANT TIER ACTIVE")
+                         .withStyle(ChatFormatting.DARK_PURPLE)
+         );
+
+         tooltip.add(
+                 Component.literal(
+                                 "  (Combustion recipes enabled)"
+                         )
+                         .withStyle(ChatFormatting.DARK_GRAY)
+         );
       }
 
       return true;
@@ -747,6 +931,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
       tag.putInt("FuelCount", this.activeFuelCount);
       tag.putInt("ActiveLogStickCount", this.activeLogStickCount);
+      tag.putInt(
+              "RenderedFuelUnits",
+              this.activeFuelType != FuelType.NONE && this.remainingBurnTime > 0
+                      ? this.getFuelUnitCount(this.activeFuelType)
+                      : 0
+      );
       ListTag pendingFuelTag = new ListTag();
       for (ItemStack queuedStack : this.pendingFuel) {
          pendingFuelTag.add(queuedStack.save(provider));
@@ -770,6 +960,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.remainingBurnTime = tag.getInt("FuelTime");
       this.activeFuelCount = tag.getInt("FuelCount");
       this.activeLogStickCount = tag.getInt("ActiveLogStickCount");
+      this.renderedFuelUnitCount = tag.getInt("RenderedFuelUnits");
       this.pendingFuel.clear();
       if (tag.contains("PendingFuel", Tag.TAG_LIST)) {
          ListTag pendingFuelTag = tag.getList("PendingFuel", Tag.TAG_COMPOUND);
@@ -811,8 +1002,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       } else {
          int fuelIndex = tag.getInt("FuelType");
          this.activeFuelType = fuelIndex >= 0 && fuelIndex < MoltenRotorBlockEntity.FuelType.values().length
-            ? MoltenRotorBlockEntity.FuelType.values()[fuelIndex]
-            : MoltenRotorBlockEntity.FuelType.NONE;
+                 ? MoltenRotorBlockEntity.FuelType.values()[fuelIndex]
+                 : MoltenRotorBlockEntity.FuelType.NONE;
          this.pendingFuel.clear();
       }
       if (clientPacket) {
@@ -831,6 +1022,30 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       CHARCOAL("charcoal", 14.0F, 650.0F, 32, 350.0F, 0.8F),
       COAL_BLOCK("coal_block", 25.0F, 900.0F, 1, 2400.0F, 1.0F),
       KELP_BLOCK("kelp_block", 15.5F, 750.0F, 3, 400.0F, 1.0F),
+      GENERIC_LOW(
+              "generic_low",
+              6.0F,
+              400.0F,
+              16,
+              300.0F,
+              1.0F
+      ),
+      GENERIC_MEDIUM(
+              "generic_medium",
+              12.0F,
+              600.0F,
+              16,
+              600.0F,
+              1.0F
+      ),
+      GENERIC_HIGH(
+              "generic_high",
+              20.0F,
+              850.0F,
+              8,
+              1200.0F,
+              1.0F
+      ),
       TNT("tnt", 25.0F, 600.0F, 1, 750.0F, 1.2F),
       BLAZE_CAKE("blaze_cake", 40.0F, 1200.0F, 1, 3000.0F, 1.0F),
       SOUL_FIRED_BLAZE_CAKE(
@@ -849,7 +1064,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       public final float baseBurnTimeTicks;
       public final float burnRateMultiplier;
 
-       FuelType(
+      FuelType(
               String serializedId,
               float cps,
               float maxTemp,
@@ -912,7 +1127,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       public final float baseStressCapacity;
       public final String displayName;
 
-       RotorHeatLevel(
+      RotorHeatLevel(
               String serializedId,
               int rank,
               int displayTemp,

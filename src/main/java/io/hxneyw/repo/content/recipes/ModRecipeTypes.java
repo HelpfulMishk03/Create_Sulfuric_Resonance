@@ -25,28 +25,50 @@ public class ModRecipeTypes {
          return RecipeType.simple(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "combustion_mixing"));
       }
    );
-   public static final DeferredHolder<RecipeSerializer<?>, Serializer<CombustionMixingRecipe>> COMBUSTION_MIXING_SERIALIZER = SERIALIZER_REGISTER.register(
-      "combustion_mixing", () -> {
-         CreateSulfuricResonance.LOGGER.info(">>> REGISTERING RECIPE SERIALIZER: combustion_mixing");
-         return new Serializer(params -> {
-            CreateSulfuricResonance.LOGGER.info("========================================");
-            CreateSulfuricResonance.LOGGER.info(">>> CREATING COMBUSTION MIXING RECIPE!");
-            CreateSulfuricResonance.LOGGER.info("========================================");
-            return new CombustionMixingRecipe(params);
-         });
-      }
-   );
+   public static final DeferredHolder<
+           RecipeSerializer<?>,
+           Serializer<CombustionMixingRecipe>
+           > COMBUSTION_MIXING_SERIALIZER =
+           SERIALIZER_REGISTER.register(
+                   "combustion_mixing",
+                   () -> {
+                      CreateSulfuricResonance.LOGGER.info(
+                              ">>> REGISTERING RECIPE SERIALIZER: combustion_mixing"
+                      );
+
+                      return new Serializer<>(
+                              params -> {
+                                  CreateSulfuricResonance.LOGGER.info(
+                                          "========================================"
+                                  );
+                                  CreateSulfuricResonance.LOGGER.info(
+                                          ">>> CREATING COMBUSTION MIXING RECIPE!"
+                                  );
+                                  CreateSulfuricResonance.LOGGER.info(
+                                          "========================================"
+                                  );
+
+                                  return new CombustionMixingRecipe(params);
+                              }
+                      );
+                   }
+           );
    public static final IRecipeTypeInfo COMBUSTION_MIXING_TYPE_INFO = new IRecipeTypeInfo() {
       public ResourceLocation getId() {
          return ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "combustion_mixing");
       }
 
+      @Override
+      @SuppressWarnings("unchecked")
       public <T extends RecipeSerializer<?>> T getSerializer() {
-         return (T)ModRecipeTypes.COMBUSTION_MIXING_SERIALIZER.get();
+         return (T) COMBUSTION_MIXING_SERIALIZER.get();
       }
 
-      public <I extends RecipeInput, R extends Recipe<I>> RecipeType<R> getType() {
-         return (RecipeType<R>)ModRecipeTypes.COMBUSTION_MIXING.get();
+      @Override
+      @SuppressWarnings("unchecked")
+      public <I extends RecipeInput, R extends Recipe<I>>
+      RecipeType<R> getType() {
+         return (RecipeType<R>) COMBUSTION_MIXING.get();
       }
    };
 

@@ -2,6 +2,7 @@ package io.hxneyw.repo;
 
 import com.mojang.logging.LogUtils;
 import io.hxneyw.repo.compat.arm.AllModArmInteractionPoints;
+import io.hxneyw.repo.compat.automation.ModCapabilities;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
@@ -15,7 +16,6 @@ import io.hxneyw.repo.content.registry.AllModSounds;
 import io.hxneyw.repo.content.registry.ModParticles;
 import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -40,7 +40,6 @@ public class CreateSulfuricResonance {
       LOGGER.info("========== PREPARING FOR NEXT SEQUENCE ==========");
       Items.register(modEventBus);
       LOGGER.info("========== ITEMS.REGISTER CALLED ==========");
-      PonderIndex.addPlugin(new SulfuricResonancePonderPlugin());
       ModTabs.register(modEventBus);
       ModEntities.register(modEventBus);
       AllModBlocks.register(modEventBus);
@@ -48,6 +47,7 @@ public class CreateSulfuricResonance {
       ModRecipeTypes.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);
       ModParticles.PARTICLE_TYPES.register(modEventBus);
+      modEventBus.addListener(ModCapabilities::registerCapabilities);
       AllModSounds.SOUNDS.register(modEventBus);
       AllModFluids.register(modEventBus);
       if (FMLEnvironment.dist.isClient()) {
@@ -71,12 +71,19 @@ public class CreateSulfuricResonance {
    public static class ClientModEvents {
       @SubscribeEvent
       public static void onRegisterRenderers(RegisterRenderers event) {
-         event.registerBlockEntityRenderer((BlockEntityType)AllBlockEntities.PERFORATED_SPRITZER.get(), PerforatedSpritzerRenderer::new);
+         event.registerBlockEntityRenderer(
+                 AllBlockEntities.PERFORATED_SPRITZER.get(),
+                 PerforatedSpritzerRenderer::new
+         );
       }
 
       @SubscribeEvent
       public static void onClientSetup(FMLClientSetupEvent event) {
          CreateSulfuricResonance.LOGGER.info("=== CLIENT SETUP EVENT FIRED ===");
+         event.enqueueWork(() ->
+                 PonderIndex.addPlugin(new SulfuricResonancePonderPlugin())
+
+         );
       }
    }
 }

@@ -20,7 +20,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent.Pre;
 import net.neoforged.neoforge.client.event.ViewportEvent.ComputeFogColor;
 import org.joml.Matrix4f;
-
+@SuppressWarnings("resource")
 @EventBusSubscriber(
    modid = "sulfuricresonance",
    value = {Dist.CLIENT}

@@ -13,8 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +51,7 @@ public class PyroclastBombItem extends Item {
       }
 
       player.awardStat(Stats.ITEM_USED.get(this));
-      player.getCooldowns().addCooldown(this, 10);
+      player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
       if (!player.getAbilities().instabuild) {
          itemStack.shrink(1);
       }

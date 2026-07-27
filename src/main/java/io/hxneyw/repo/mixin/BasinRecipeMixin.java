@@ -3,8 +3,8 @@ package io.hxneyw.repo.mixin;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
-import io.hxneyw.repo.content.blocks.MoltenRotorBlock;
-import io.hxneyw.repo.content.blocks.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
+import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.recipes.CombustionMixingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.Recipe;
@@ -46,9 +46,10 @@ public abstract class BasinRecipeMixin {
          if (!(heaterState.getBlock() instanceof MoltenRotorBlock)) {
             return false;
          } else {
-            return level.getBlockEntity(heaterPos) instanceof MoltenRotorBlockEntity rotor
-               ? rotor.getCurrentHeatTier() == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
-               : false;
+            return level.getBlockEntity(heaterPos)
+                    instanceof MoltenRotorBlockEntity rotor
+                    && rotor.getCurrentHeatTier()
+                    == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
          }
       }
    }

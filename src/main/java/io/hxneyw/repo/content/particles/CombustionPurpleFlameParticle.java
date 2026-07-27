@@ -24,7 +24,11 @@ public class CombustionPurpleFlameParticle extends RisingParticle {
    public void tick() {
       super.tick();
       if (this.age > this.lifetime / 2) {
-         this.setAlpha(1.0F - ((float)this.age - this.lifetime / 2) / this.lifetime);
+         this.setAlpha(
+                 1.0F
+                         - ((float)this.age - this.lifetime / 2.0F)
+                         / this.lifetime
+         );
       }
 
       this.quadSize *= 0.96F;
