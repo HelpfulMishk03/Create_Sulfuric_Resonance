@@ -1,16 +1,43 @@
 .agents/
 .cache/
-.gradle/
-.idea/
-build/
-run/
-runs/
-*.iml
-
 /assets/
 /data/
 /io/
 /META-INF/
+# Gradle
+.gradle/
+build/
 
+# Minecraft development runs
+run/
+runs/
+logs/
+crash-reports/
+screenshots/
+saves/
+resourcepacks/
+shaderpacks/
+libs/create-embedded/
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# Java
+*.class
+hs_err_pid*
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
 build.gradle.run-config-backup
 build.gradle.runtime-classpath-backup

@@ -36,6 +36,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private int remainingBurnTime = 0;
    private int activeFuelCount = 0;
    private int activeLogStickCount = 0;
+   private final List<ItemStack> activeLogStickStacks = new ArrayList<>();
    private int renderedFuelUnitCount = 0;
    private int clientUpdateCounter = 0;
    private int lastNotifiedFuelCount = 0;
@@ -172,8 +173,24 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.activeFuelType;
    }
 
-   public int getRenderedLogStickCount() {
-      return Math.min(this.activeLogStickCount, 4);
+   public List<ItemStack> getRenderedLogStickStacks() {
+      List<ItemStack> renderedStacks = new ArrayList<>();
+
+      for (int index = 0;
+           index < this.activeLogStickStacks.size() && index < 4;
+           index++) {
+         renderedStacks.add(this.activeLogStickStacks.get(index).copy());
+      }
+
+      /*
+       * Preserve visuals for worlds saved before exact stick stacks were
+       * recorded. New insertions always store the actual inserted item.
+       */
+      while (renderedStacks.size() < Math.min(this.activeLogStickCount, 4)) {
+         renderedStacks.add(new ItemStack(net.minecraft.world.item.Items.STICK));
+      }
+
+      return renderedStacks;
    }
 
    public int getRenderedFuelUnitCount() {
@@ -210,6 +227,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.activeFuelType = FuelType.NONE;
       this.activeFuelCount = 0;
       this.activeLogStickCount = 0;
+      this.activeLogStickStacks.clear();
       this.pendingFuel.clear();
       this.baseHeatingRate = 0.0F;
       this.currentMaxTemp = 0.0F;
@@ -442,7 +460,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
 
       if (fuelType == MoltenRotorBlockEntity.FuelType.STICK) {
-         return this.insertLogBoostStick(simulate);
+         return this.insertLogBoostStick(stack, simulate);
       }
 
       if (!this.hasActiveOrPendingFuel()) {
@@ -517,7 +535,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return true;
    }
 
-   private boolean insertLogBoostStick(boolean simulate) {
+   private boolean insertLogBoostStick(ItemStack stack, boolean simulate) {
       if (this.activeFuelType != MoltenRotorBlockEntity.FuelType.LOG || this.remainingBurnTime <= 0) {
          return false;
       }
@@ -530,6 +548,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       if (!simulate) {
          this.remainingBurnTime += (int)MoltenRotorBlockEntity.FuelType.STICK.baseBurnTimeTicks;
          this.activeLogStickCount++;
+         this.activeLogStickStacks.add(stack.copyWithCount(1));
          this.activeFuelCount = logUnits + this.activeLogStickCount;
          this.updateFuelStackFlags(MoltenRotorBlockEntity.FuelType.STICK);
          this.setChanged();
@@ -594,6 +613,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.activeFuelType = fuelType;
       this.activeFuelCount = 1;
       this.activeLogStickCount = 0;
+      this.activeLogStickStacks.clear();
 
       this.remainingBurnTime = (int) resolvedFuel.burnTimeTicks();
       this.baseHeatingRate = resolvedFuel.heatingRate();
@@ -625,6 +645,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.activeFuelType = MoltenRotorBlockEntity.FuelType.NONE;
       this.activeFuelCount = 0;
       this.activeLogStickCount = 0;
+      this.activeLogStickStacks.clear();
       this.baseHeatingRate = this.currentMaxTemp = 0.0F;
       this.clearFuelStackFlags();
    }
@@ -931,6 +952,11 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
       tag.putInt("FuelCount", this.activeFuelCount);
       tag.putInt("ActiveLogStickCount", this.activeLogStickCount);
+      ListTag activeLogStickTag = new ListTag();
+      for (ItemStack stickStack : this.activeLogStickStacks) {
+         activeLogStickTag.add(stickStack.save(provider));
+      }
+      tag.put("ActiveLogStickStacks", activeLogStickTag);
       tag.putInt(
               "RenderedFuelUnits",
               this.activeFuelType != FuelType.NONE && this.remainingBurnTime > 0
@@ -960,6 +986,20 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.remainingBurnTime = tag.getInt("FuelTime");
       this.activeFuelCount = tag.getInt("FuelCount");
       this.activeLogStickCount = tag.getInt("ActiveLogStickCount");
+      this.activeLogStickStacks.clear();
+      if (tag.contains("ActiveLogStickStacks", Tag.TAG_LIST)) {
+         ListTag activeLogStickTag =
+                 tag.getList("ActiveLogStickStacks", Tag.TAG_COMPOUND);
+         for (int i = 0; i < activeLogStickTag.size(); i++) {
+            ItemStack stickStack = ItemStack.parseOptional(
+                    provider,
+                    activeLogStickTag.getCompound(i)
+            );
+            if (!stickStack.isEmpty()) {
+               this.activeLogStickStacks.add(stickStack);
+            }
+         }
+      }
       this.renderedFuelUnitCount = tag.getInt("RenderedFuelUnits");
       this.pendingFuel.clear();
       if (tag.contains("PendingFuel", Tag.TAG_LIST)) {

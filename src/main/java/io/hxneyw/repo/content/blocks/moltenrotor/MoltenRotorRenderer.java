@@ -9,6 +9,7 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.client.ClientModEvents;
 import io.hxneyw.repo.content.Items;
 
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import net.minecraft.client.Minecraft;
@@ -607,26 +608,14 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
               2
       );
 
-      // Extracted method call
       double[][] logPositions = getLogPositions(visibleLogs);
+      List<ItemStack> renderedStickStacks =
+              furnace.getRenderedLogStickStacks();
+      int stickIndex = 0;
 
-      // Removed redundant 'visibleSticks' variable
-      int sticksRemaining = Math.min(
-              furnace.getRenderedLogStickCount(),
-              4
-      );
-
-      ItemStack stickStack =
-              new ItemStack(net.minecraft.world.item.Items.STICK);
       Minecraft minecraft = Minecraft.getInstance();
-      BakedModel stickModel = minecraft
-              .getItemRenderer()
-              .getModel(stickStack, furnace.getLevel(), null, 0);
-
-      boolean canRenderSticks = stickModel != minecraft.getModelManager().getMissingModel();
 
       for (double[] logPos : logPositions) {
-         // --- 1. RENDER LOG ---
          ms.pushPose();
 
          ms.translate(
@@ -637,8 +626,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
          ms.scale(0.28F, 0.28F, 0.28F);
 
-         Minecraft.getInstance()
-                 .getItemRenderer()
+         minecraft.getItemRenderer()
                  .render(
                          fuelStack,
                          ItemDisplayContext.FIXED,
@@ -652,44 +640,49 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
          ms.popPose();
 
-         // --- 2. RENDER STICKS FOR THIS LOG ---
-         if (canRenderSticks && sticksRemaining > 0) {
-            // Give this log up to 2 sticks
-            int sticksForThisLog = Math.min(sticksRemaining, 2);
+         if (stickIndex >= renderedStickStacks.size()) {
+            continue;
+         }
 
-            // Calculate the stick Z position relative to THIS log
-            double stickZ = logPos[2] - 0.015;
+         double stickZ = logPos[2] - 0.015;
 
-            // Left stick leans right
+         ItemStack leftStickStack = renderedStickStacks.get(stickIndex++);
+         this.renderLogTopStick(
+                 leftStickStack,
+                 minecraft.getItemRenderer().getModel(
+                         leftStickStack,
+                         furnace.getLevel(),
+                         null,
+                         0
+                 ),
+                 ms,
+                 buffer,
+                 light,
+                 overlay,
+                 logPos[0] - 0.040,
+                 stickZ,
+                 34.0F
+         );
+
+         if (stickIndex < renderedStickStacks.size()) {
+            ItemStack rightStickStack =
+                    renderedStickStacks.get(stickIndex++);
             this.renderLogTopStick(
-                    stickStack,
-                    stickModel,
+                    rightStickStack,
+                    minecraft.getItemRenderer().getModel(
+                            rightStickStack,
+                            furnace.getLevel(),
+                            null,
+                            0
+                    ),
                     ms,
                     buffer,
                     light,
                     overlay,
-                    logPos[0] - 0.040,
+                    logPos[0] + 0.040,
                     stickZ,
-                    34.0F
+                    -34.0F
             );
-
-            // Replaced >= with ==
-            if (sticksForThisLog == 2) {
-               // Right stick leans left
-               this.renderLogTopStick(
-                       stickStack,
-                       stickModel,
-                       ms,
-                       buffer,
-                       light,
-                       overlay,
-                       logPos[0] + 0.040,
-                       stickZ,
-                       -34.0F
-               );
-            }
-
-            sticksRemaining -= sticksForThisLog;
          }
       }
    }
@@ -705,20 +698,17 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
            double z,
            float angle
    ) {
+      if (stickStack.isEmpty()
+              || stickModel == Minecraft.getInstance()
+              .getModelManager()
+              .getMissingModel()) {
+         return;
+      }
+
       ms.pushPose();
-
-      // 1. Position slightly above the logs using the dynamic Z parameter
       ms.translate(x, -0.118, z);
-
-      // NO X-AXIS ROTATION! (This is what made it lay flat on the floor)
-
-      // 2. Neutralize the stick's natural diagonal texture so it stands straight UP
       ms.mulPose(Axis.ZP.rotationDegrees(45.0F));
-
-      // 3. Lean the stick to form the V shape
       ms.mulPose(Axis.ZP.rotationDegrees(angle));
-
-      // 4. Uniform scaling so it doesn't warp
       ms.scale(0.125F, 0.125F, 0.125F);
 
       Minecraft.getInstance()

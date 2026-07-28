@@ -33,6 +33,7 @@ public class ModTabs {
                   output.accept(Items.SULFUR_BLOCK.get());
                   output.accept(Items.SULFURIC_ACID_BUCKET.get());
                   output.accept(Items.NETHERWORLD_DUST.get());
+                  output.accept(Items.LYE.get());
                   output.accept(Items.SPENT_ASH.get());
                   output.accept(Items.EMBER_CATALYST.get());
                   output.accept(Items.CORRUPT_BLAZE_CAKE.get());
