@@ -8,6 +8,8 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.block.IBE;
 import io.hxneyw.repo.Config;
+import io.hxneyw.repo.compat.fuel.FuelCompatibility;
+import io.hxneyw.repo.compat.fuel.ResolvedFuel;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllVoxelShapes;
 import io.hxneyw.repo.content.registry.ModParticles;
@@ -156,6 +158,13 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
            @NotNull InteractionHand hand,
            @NotNull BlockHitResult hit
    ) {
+      /*
+       * Empty-hand interaction belongs to useWithoutItem().
+       */
+      if (stack.isEmpty()) {
+         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+      }
+
       if (stack.getItem() instanceof WrenchItem) {
          UseOnContext context = new UseOnContext(player, hand, hit);
 
@@ -168,31 +177,58 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
                  : ItemInteractionResult.FAIL;
       }
 
-      MoltenRotorBlockEntity furnace = this.getBlockEntity(level, pos);
+      /*
+       * IMPORTANT: classify the held item without first requiring the client to
+       * have a MoltenRotorBlockEntity instance. The old early furnace == null
+       * branch routed every item into Item#useOn: logs placed as blocks and coal
+       * appeared to do nothing.
+       */
+      ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
+      MoltenRotorBlockEntity.FuelType fuelType =
+              resolvedFuel == null || resolvedFuel.isInvalid()
+                      ? null
+                      : resolvedFuel.type();
 
-      if (furnace == null) {
-         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+      boolean creativeCake = stack.is(AllItems.CREATIVE_BLAZE_CAKE.get());
+      boolean tnt = stack.is(Items.TNT);
+      boolean netherStar = stack.is(Items.NETHER_STAR);
+      boolean dragonBreath = stack.is(Items.DRAGON_BREATH);
+      boolean recognizedFuel =
+              fuelType != null
+                      && fuelType != MoltenRotorBlockEntity.FuelType.NONE;
+
+      /*
+       * Non-fuels must skip the furnace's empty-hand/status interaction and
+       * continue to the held item's own useOn method. BlockItems can therefore
+       * place against the furnace normally.
+       */
+      if (!creativeCake && !tnt && !netherStar && !dragonBreath && !recognizedFuel) {
+         return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
       }
 
-      if (stack.is(AllItems.CREATIVE_BLAZE_CAKE.get())) {
-         if (level.isClientSide) {
-            return ItemInteractionResult.SUCCESS;
-         }
+      /*
+       * The client has enough information to claim accepted furnace items now.
+       * Actual mutation remains server-only.
+       */
+      if (level.isClientSide) {
+         return ItemInteractionResult.SUCCESS;
+      }
 
+      MoltenRotorBlockEntity furnace = this.getBlockEntity(level, pos);
+      if (furnace == null) {
+         return ItemInteractionResult.FAIL;
+      }
+
+      if (creativeCake) {
          if (!furnace.isCreativeMode()) {
             furnace.setCreativeMode(true);
          } else {
             furnace.cycleCreativeTier();
          }
-
          return ItemInteractionResult.SUCCESS;
       }
 
-      if (stack.is(Items.TNT)) {
-         if (level.isClientSide) {
-            return ItemInteractionResult.SUCCESS;
-         }
-
+      if (tnt) {
          if (Config.TNT_CAN_EXPLODE.get()
                  && furnace.tntCooldown <= 0
                  && level.random.nextFloat() < 0.25F) {
@@ -206,13 +242,10 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
                     pos.getY() + 0.5,
                     pos.getZ() + 0.5,
                     1.5F,
-                    ExplosionInteraction.BLOCK
+                    Level.ExplosionInteraction.BLOCK
             );
 
-            player.sendSystemMessage(
-                    Component.literal("FURNACE EXPLODED!")
-            );
-
+            player.sendSystemMessage(Component.literal("FURNACE EXPLODED!"));
             return ItemInteractionResult.SUCCESS;
          }
 
@@ -226,96 +259,43 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
          if (!player.getAbilities().instabuild) {
             stack.shrink(1);
          }
-
          return ItemInteractionResult.SUCCESS;
       }
 
-      if (stack.is(Items.NETHER_STAR)) {
-         if (level.isClientSide) {
-            return ItemInteractionResult.SUCCESS;
-         }
-
+      if (netherStar) {
          furnace.addUltimateFuel(6000);
          playInsertionSound(level, pos);
 
          if (!player.getAbilities().instabuild) {
             stack.shrink(1);
          }
-
-
          return ItemInteractionResult.SUCCESS;
       }
 
-      if (stack.is(Items.DRAGON_BREATH)) {
-         if (level.isClientSide) {
-            return ItemInteractionResult.SUCCESS;
-         }
-
+      if (dragonBreath) {
          furnace.addUltimateFuel(4000);
          playInsertionSound(level, pos);
 
          if (!player.getAbilities().instabuild) {
             stack.shrink(1);
          }
-
-
-         return ItemInteractionResult.SUCCESS;
-      }
-
-      MoltenRotorBlockEntity.FuelType fuelType =
-              furnace.getFuelTypeFromItem(stack);
-
-      if (fuelType == null
-              || fuelType == MoltenRotorBlockEntity.FuelType.NONE) {
-         return ItemInteractionResult.FAIL;
-      }
-
-      if (level.isClientSide) {
          return ItemInteractionResult.SUCCESS;
       }
 
       if (!furnace.insertFuel(stack, false)) {
          if (fuelType == MoltenRotorBlockEntity.FuelType.STICK) {
-            player.sendSystemMessage(
-                    Component.literal(
-                            "Sticks require logs to be burning."
-                    )
-            );
-
-
-
-         } else if (
-                 fuelType
-                         == MoltenRotorBlockEntity.FuelType
-                         .SOUL_FIRED_BLAZE_CAKE
-                         && !furnace.getCurrentHeatTier()
-                         .isAtLeast(
-                                 MoltenRotorBlockEntity.RotorHeatLevel.SEETHING
-                         )
-         ) {
-            player.sendSystemMessage(
-                    Component.literal(
-                            "Soul-Fired Blaze Cake requires SEETHING heat."
-                    )
-            );
+            player.sendSystemMessage(Component.literal("Sticks require logs to be burning."));
+         } else if (fuelType == MoltenRotorBlockEntity.FuelType.SOUL_FIRED_BLAZE_CAKE
+                 && !furnace.getCurrentHeatTier().isAtLeast(MoltenRotorBlockEntity.RotorHeatLevel.SEETHING)) {
+            player.sendSystemMessage(Component.literal("Soul-Fired Blaze Cake requires SEETHING heat."));
          }
-
          return ItemInteractionResult.FAIL;
       }
 
-
-
       playInsertionSound(level, pos);
 
-      if (fuelType
-              == MoltenRotorBlockEntity.FuelType
-              .SOUL_FIRED_BLAZE_CAKE) {
-         player.sendSystemMessage(
-                 Component.literal(
-                         "Soul-Fired Blaze Cake inserted "
-                                 + "(+175s, maximum heat)."
-                 )
-         );
+      if (fuelType == MoltenRotorBlockEntity.FuelType.SOUL_FIRED_BLAZE_CAKE) {
+         player.sendSystemMessage(Component.literal("Soul-Fired Blaze Cake inserted (+175s, maximum heat)."));
       }
 
       if (!player.getAbilities().instabuild) {
@@ -334,12 +314,14 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
            @NotNull Player player,
            @NotNull BlockHitResult hit
    ) {
-      if (level.isClientSide) {
-         return InteractionResult.SUCCESS;
+      MoltenRotorBlockEntity furnace = this.getBlockEntity(level, pos);
+
+      // We must still return PASS here if there is no furnace or status to show
+      if (furnace == null || !furnace.shouldShowStatus()) {
+         return InteractionResult.PASS;
       }
 
-      MoltenRotorBlockEntity furnace = this.getBlockEntity(level, pos);
-      if (furnace == null || !furnace.shouldShowStatus()) {
+      if (level.isClientSide) {
          return InteractionResult.SUCCESS;
       }
 
@@ -520,7 +502,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
        * Only one slit emits on a given display tick so the exhaust
        * stays defined instead of building into a giant cloud.
        */
-      if (random.nextFloat() < 0.37F) {
+      if (random.nextFloat() < 0.44F) {
          double[] slitOffsets = {-0.25, 0.0, 0.25};
          double slitOffset = slitOffsets[random.nextInt(slitOffsets.length)];
          double y = pos.getY() + 0.85;
