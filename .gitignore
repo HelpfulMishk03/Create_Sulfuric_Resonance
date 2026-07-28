@@ -1,9 +1,14 @@
+# Local AI/tooling state
 .agents/
 .cache/
+
+# Temporary extracted dependency/source folders
 /assets/
 /data/
 /io/
 /META-INF/
+libs/create-embedded/
+
 # Gradle
 .gradle/
 build/
@@ -17,27 +22,38 @@ screenshots/
 saves/
 resourcepacks/
 shaderpacks/
-libs/create-embedded/
-# IntelliJ
+
+# IntelliJ IDEA
 .idea/
 *.iml
+*.ipr
+*.iws
 out/
 
 # Eclipse
 .classpath
 .project
 .settings/
+bin/
 
-# VS Code
+# Visual Studio Code
 .vscode/
 
-# Java
+# Java/JVM
 *.class
 hs_err_pid*
+replay_pid*
+
+# Generated backups
+build.gradle.run-config-backup
+build.gradle.runtime-classpath-backup
 
 # Operating system
 .DS_Store
 Thumbs.db
 desktop.ini
-build.gradle.run-config-backup
-build.gradle.runtime-classpath-backup
+
+# Local environment files
+.env
+.env.*
+!.env.example

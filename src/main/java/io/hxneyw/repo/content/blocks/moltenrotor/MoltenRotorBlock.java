@@ -9,7 +9,6 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.block.IBE;
 import io.hxneyw.repo.Config;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
-import io.hxneyw.repo.content.registry.AllModSounds;
 import io.hxneyw.repo.content.registry.AllVoxelShapes;
 import io.hxneyw.repo.content.registry.ModParticles;
 import net.minecraft.ChatFormatting;
@@ -222,6 +221,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
          }
 
          furnace.tntCooldown = 5;
+         playInsertionSound(level, pos);
 
          if (!player.getAbilities().instabuild) {
             stack.shrink(1);
@@ -236,6 +236,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
          }
 
          furnace.addUltimateFuel(6000);
+         playInsertionSound(level, pos);
 
          if (!player.getAbilities().instabuild) {
             stack.shrink(1);
@@ -251,6 +252,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
          }
 
          furnace.addUltimateFuel(4000);
+         playInsertionSound(level, pos);
 
          if (!player.getAbilities().instabuild) {
             stack.shrink(1);
@@ -265,7 +267,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
       if (fuelType == null
               || fuelType == MoltenRotorBlockEntity.FuelType.NONE) {
-         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+         return ItemInteractionResult.FAIL;
       }
 
       if (level.isClientSide) {
@@ -279,6 +281,9 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
                             "Sticks require logs to be burning."
                     )
             );
+
+
+
          } else if (
                  fuelType
                          == MoltenRotorBlockEntity.FuelType
@@ -298,17 +303,9 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
          return ItemInteractionResult.FAIL;
       }
 
-      if (fuelType == MoltenRotorBlockEntity.FuelType.LOG) {
-         level.playSound(
-                 null,
-                 pos,
-                 AllModSounds.LOG_INSERT.get(),
-                 SoundSource.BLOCKS,
-                 1.0F,
-                 level.random.nextFloat() * 0.5F + 0.7F
-         );
-      }
 
+
+      playInsertionSound(level, pos);
 
       if (fuelType
               == MoltenRotorBlockEntity.FuelType
@@ -404,6 +401,19 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
       return InteractionResult.SUCCESS;
    }
+
+   private static void playInsertionSound(Level level, BlockPos pos) {
+      level.playSound(
+              null,
+              pos,
+              SoundEvents.BUNDLE_INSERT,
+              SoundSource.BLOCKS,
+              0.25F,
+              0.95F + level.random.nextFloat() * 0.10F
+      );
+   }
+
+
 
    @Nullable
    private MoltenRotorBlockEntity getBlockEntity(Level level, BlockPos pos) {

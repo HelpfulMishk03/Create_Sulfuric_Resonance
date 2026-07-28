@@ -287,7 +287,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    public FuelType getFuelTypeFromItem(ItemStack stack) {
       ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
 
-      if (resolvedFuel == null || !resolvedFuel.isValid()) {
+      if (resolvedFuel == null || resolvedFuel.isInvalid()) {
          return null;
       }
 
@@ -512,7 +512,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       ResolvedFuel resolvedFuel =
               FuelCompatibility.resolve(stack);
 
-      if (resolvedFuel == null || !resolvedFuel.isValid()) {
+      if (resolvedFuel == null || resolvedFuel.isInvalid()) {
          return false;
       }
 
@@ -603,7 +603,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private void startFuel(ItemStack fuelStack) {
       ResolvedFuel resolvedFuel = FuelCompatibility.resolve(fuelStack);
 
-      if (resolvedFuel == null || !resolvedFuel.isValid()) {
+      if (resolvedFuel == null || resolvedFuel.isInvalid()) {
          return;
       }
 

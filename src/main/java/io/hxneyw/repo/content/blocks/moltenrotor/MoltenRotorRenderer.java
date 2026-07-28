@@ -465,7 +465,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
    private static double[][] getLogPositions(int visibleLogs) {
       return visibleLogs == 2
               ? new double[][]{
-              {0.0, -0.205, -0.050}, // BACK LOG: Changed from -0.100 to -0.050 (moves it forward)
+              {0.0, -0.205, -0.050}, // BACKLOG: Changed from -0.100 to -0.050 (moves it forward)
               {0.0, -0.205, 0.130}   // FRONT LOG: Changed from 0.180 to 0.130 (moves it backward)
       }
               : new double[][]{

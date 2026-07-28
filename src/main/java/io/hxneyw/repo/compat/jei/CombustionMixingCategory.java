@@ -34,7 +34,13 @@ import org.apache.commons.lang3.mutable.MutableInt;
 @ParametersAreNonnullByDefault
 public class CombustionMixingCategory extends BasinCategory {
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public static final RecipeType<RecipeHolder<BasinRecipe>> RECIPE_TYPE = RecipeType.create("sulfuricresonance", "combustion_mixing", (Class)RecipeHolder.class);
+   public static final RecipeType<RecipeHolder<BasinRecipe>> RECIPE_TYPE =
+           RecipeType.<RecipeHolder<BasinRecipe>>create(
+                   "sulfuricresonance",
+                   "combustion_mixing",
+                   (Class) RecipeHolder.class
+           );
+
    private final AnimatedMixer mixer = new AnimatedMixer();
    private final AnimatedMoltenRotor heater = new AnimatedMoltenRotor();
 
@@ -42,9 +48,17 @@ public class CombustionMixingCategory extends BasinCategory {
       super(info, true);
    }
 
-   public void setRecipe(IRecipeLayoutBuilder builder, BasinRecipe recipe, IFocusGroup focuses) {
-      List<Pair<Ingredient, MutableInt>> condensedIngredients = ItemHelper.condenseIngredients(recipe.getIngredients());
-      int size = condensedIngredients.size() + recipe.getFluidIngredients().size();
+   @Override
+   public void setRecipe(
+           IRecipeLayoutBuilder builder,
+           BasinRecipe recipe,
+           IFocusGroup focuses
+   ) {
+      List<Pair<Ingredient, MutableInt>> condensedIngredients =
+              ItemHelper.condenseIngredients(recipe.getIngredients());
+
+      int size = condensedIngredients.size()
+              + recipe.getFluidIngredients().size();
       int xOffset = size < 3 ? (3 - size) * 19 / 2 : 0;
       int i = 0;
 
@@ -73,19 +87,26 @@ public class CombustionMixingCategory extends BasinCategory {
          i++;
       }
 
-      for (SizedFluidIngredient fluidIngredient : recipe.getFluidIngredients()) {
+      for (SizedFluidIngredient fluidIngredient
+              : recipe.getFluidIngredients()) {
          int x = 17 + xOffset + i % 3 * 19;
          int y = 51 - i / 3 * 19;
          addFluidSlot(builder, x, y, fluidIngredient);
          i++;
       }
 
-      size = recipe.getRollableResults().size() + recipe.getFluidResults().size();
+      size = recipe.getRollableResults().size()
+              + recipe.getFluidResults().size();
       i = 0;
 
       for (ProcessingOutput result : recipe.getRollableResults()) {
-         int xPosition = 142 - (size % 2 != 0 && i == size - 1 ? 0 : (i % 2 == 0 ? 10 : -9));
+         int xPosition = 142 - (
+                 size % 2 != 0 && i == size - 1
+                         ? 0
+                         : i % 2 == 0 ? 10 : -9
+         );
          int yPosition = -19 * (i / 2) + 51;
+
          builder.addSlot(
                          RecipeIngredientRole.OUTPUT,
                          xPosition,
@@ -98,57 +119,109 @@ public class CombustionMixingCategory extends BasinCategory {
       }
 
       for (FluidStack fluidResult : recipe.getFluidResults()) {
-         int xPosition = 142 - (size % 2 != 0 && i == size - 1 ? 0 : (i % 2 == 0 ? 10 : -9));
+         int xPosition = 142 - (
+                 size % 2 != 0 && i == size - 1
+                         ? 0
+                         : i % 2 == 0 ? 10 : -9
+         );
          int yPosition = -19 * (i / 2) + 51;
          addFluidSlot(builder, xPosition, yPosition, fluidResult);
          i++;
       }
 
       HeatCondition requiredHeat = recipe.getRequiredHeat();
+
       if (!requiredHeat.testBlazeBurner(HeatLevel.NONE)) {
-         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 134, 81)
+         builder.addSlot(
+                         RecipeIngredientRole.RENDER_ONLY,
+                         134,
+                         81
+                 )
                  .addItemStack(
-                         new ItemStack(AllModBlocks.MOLTEN_ROTOR_FURNACE.get())
+                         new ItemStack(
+                                 AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+                         )
                  );
       }
 
       if (!requiredHeat.testBlazeBurner(HeatLevel.KINDLED)) {
-         builder.addSlot(RecipeIngredientRole.CATALYST, 153, 81)
+         builder.addSlot(
+                         RecipeIngredientRole.CATALYST,
+                         153,
+                         81
+                 )
                  .addItemStack(
-                         new ItemStack(Items.SOUL_FIRED_BLAZE_CAKE.get())
+                         new ItemStack(
+                                 Items.SOUL_FIRED_BLAZE_CAKE.get()
+                         )
                  );
       }
    }
 
-   public void draw(BasinRecipe recipe, IRecipeSlotsView iRecipeSlotsView, GuiGraphics graphics, double mouseX, double mouseY) {
+   @Override
+   public void draw(
+           BasinRecipe recipe,
+           IRecipeSlotsView recipeSlotsView,
+           GuiGraphics graphics,
+           double mouseX,
+           double mouseY
+   ) {
       HeatCondition requiredHeat = recipe.getRequiredHeat();
       boolean noHeat = requiredHeat == HeatCondition.NONE;
-      int vRows = (1 + recipe.getFluidResults().size() + recipe.getRollableResults().size()) / 2;
+      int vRows = (
+              1
+                      + recipe.getFluidResults().size()
+                      + recipe.getRollableResults().size()
+      ) / 2;
       int centerX = this.getBackground().getWidth() / 2 + 3;
+
       if (vRows <= 2) {
-         AllGuiTextures.JEI_DOWN_ARROW.render(graphics, 136, -19 * (vRows - 1) + 32);
+         AllGuiTextures.JEI_DOWN_ARROW.render(
+                 graphics,
+                 136,
+                 -19 * (vRows - 1) + 32
+         );
       }
 
-      AllGuiTextures shadow = noHeat ? AllGuiTextures.JEI_SHADOW : AllGuiTextures.JEI_LIGHT;
+      AllGuiTextures shadow = noHeat
+              ? AllGuiTextures.JEI_SHADOW
+              : AllGuiTextures.JEI_LIGHT;
       shadow.render(graphics, 81, 58 + (noHeat ? 10 : 30));
+
       if (requiredHeat != HeatCondition.NONE) {
-         this.heater.withHeat(requiredHeat.visualizeAsBlazeBurner()).draw(graphics, centerX, 55);
+         this.heater
+                 .withHeat(requiredHeat.visualizeAsBlazeBurner())
+                 .draw(graphics, centerX, 55);
       }
 
       this.mixer.draw(graphics, centerX, 34);
-      AllGuiTextures heatBar = noHeat ? AllGuiTextures.JEI_NO_HEAT_BAR : AllGuiTextures.JEI_HEAT_BAR;
+
+      AllGuiTextures heatBar = noHeat
+              ? AllGuiTextures.JEI_NO_HEAT_BAR
+              : AllGuiTextures.JEI_HEAT_BAR;
       heatBar.render(graphics, 4, 80);
-      Minecraft mc = Minecraft.getInstance();
+
+      Minecraft minecraft = Minecraft.getInstance();
       String text;
-      int color = 0;
+      int color;
+
       if (requiredHeat == HeatCondition.SUPERHEATED) {
          text = "Combustion";
          color = 11141375;
       } else {
          text = CreateLang.translateDirect(
                  requiredHeat.getTranslationKey()
-         ).getString();}
+         ).getString();
+         color = requiredHeat.getColor();
+      }
 
-      graphics.drawString(mc.font, text, 9, 86, color, false);
+      graphics.drawString(
+              minecraft.font,
+              text,
+              9,
+              86,
+              color,
+              false
+      );
    }
 }

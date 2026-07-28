@@ -19,11 +19,7 @@ public record ResolvedFuel(
         );
     }
 
-    public static ResolvedFuel none() {
-        return null;
-    }
-
-    public boolean isValid() {
+    public boolean isInvalid() {
         return type != null && type != FuelType.NONE;
     }
 }

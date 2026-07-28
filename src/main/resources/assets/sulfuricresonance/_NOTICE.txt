@@ -1,0 +1,9 @@
+Create: Sulfuric Resonance original assets
+Copyright © 2026 Hxney, Ł. All Rights Reserved.
+
+Hxney and Ł are separate public creator identities used by the same developer
+and copyright owner.
+
+Original textures, models, language files, sounds, particles, and other assets
+in this namespace may not be reused, redistributed, re-uploaded, modified, or
+claimed as another creator's work except where expressly permitted by LICENSE.md.

@@ -1,3 +1,9 @@
 {
-  "parent": "sulfuricresonance:block/perforated_spritzer"
+  "parent": "sulfuricresonance:block/perforated_spritzer",
+  "display": {
+    "ground": {
+      "translation": [0, -1, 0],
+      "scale": [0.25, 0.25, 0.25]
+    }
+  }
 }

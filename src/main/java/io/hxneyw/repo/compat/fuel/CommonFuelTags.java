@@ -4,7 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-
+@SuppressWarnings("unused")
 public final class CommonFuelTags {
     public static final TagKey<Item> MINECRAFT_COALS =
             create("minecraft", "coals");
@@ -16,13 +16,7 @@ public final class CommonFuelTags {
             create("atm10", "tiny_coals");
 
     public static final TagKey<Item> COAL_COKE =
-            TagKey.create(
-                    Registries.ITEM,
-                    ResourceLocation.fromNamespaceAndPath(
-                            "c",
-                            "coal_coke"
-                    )
-            );
+            create("c", "coal_coke");
 
     private CommonFuelTags() {
     }

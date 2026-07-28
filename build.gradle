@@ -10,12 +10,29 @@ base {
     archivesName = mod_id
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
-    maven { url = 'https://maven.createmod.net' }          // Create, Ponder, Flywheel
-    maven { url = 'https://maven.ithundxr.dev/snapshots' } // Registrate
-    maven { url = 'https://maven.blamejared.com' }         // JEI
+    maven {
+        url = 'https://maven.createmod.net'
+    }
+
+    maven {
+        url = 'https://maven.ithundxr.dev/snapshots'
+    }
+
+    maven {
+        url = 'https://maven.blamejared.com'
+    }
+
+    maven {
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+
     mavenCentral()
 }
 
@@ -25,35 +42,59 @@ neoForge {
     runs {
         client {
             client()
-            gameDirectory = project.file('runs/client')
+            gameDirectory = file('runs/client')
         }
+
         server {
             server()
-            gameDirectory = project.file('runs/server')
+            gameDirectory = file('runs/server')
         }
     }
 
     mods {
         "${mod_id}" {
-            sourceSet sourceSets.main
+            //noinspection GroovyAssignabilityCheck
+            sourceSet(sourceSets.main)
         }
     }
 }
 
 dependencies {
-    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
-        transitive = false
-    }
+    def createSlimDependency =
+            dependencies.create("com.simibubi.create:create-${minecraft_version}:${create_version}:slim")
 
-    implementation "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
-    compileOnly "dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}"
-    runtimeOnly "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
-    implementation "com.tterrag.registrate:Registrate:${registrate_version}"
+    createSlimDependency.transitive = false
+    implementation(createSlimDependency)
 
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}")
+
+    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
+    runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
+
+    implementation("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+
+    annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
 }
+
+def generatedRefmapDirectory = layout.buildDirectory.dir('generated/mixin')
+def generatedRefmapName = 'sulfuricresonance.refmap.json'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+
+    options.compilerArgs.add(
+            '-AoutRefMapFile='
+                    + generatedRefmapDirectory.get()
+                    .file(generatedRefmapName)
+                    .asFile
+                    .absolutePath
+    )
+}
+
+tasks.named('processResources').configure {
+    dependsOn tasks.named('compileJava')
+    from generatedRefmapDirectory
 }
