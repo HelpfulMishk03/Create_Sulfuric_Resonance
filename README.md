@@ -2,7 +2,7 @@
 
 **Create: Sulfuric Resonance** is an independently developed NeoForge addon for Create that expands Minecraft's combustion, heat generation, sulfur chemistry, sulfuric acid, rubber processing, kinetic machinery, and industrial automation systems.
 
-> **Beta notice:** Version **0.0.2.3-betaA** is a public-beta candidate. Core systems are functional and extensively tested, but balancing, recipes, visuals, and compatibility may still change before a stable release.
+> **Beta notice:** Version **0.0.2.4-betaA** is a public-beta candidate. Core systems are functional and extensively tested, but balancing, recipes, visuals, and compatibility may still change before a stable release.
 
 ## Supported Versions
 
@@ -12,7 +12,7 @@
 - Java **21**
 - JEI **19.39.0.372 or newer** — optional, client-side
 
-> **JEI compatibility notice:** JEI **19.39.0.379 and newer** may display blank fluid textures in some Combustion Mixing recipe slots. The recipes and fluid amounts remain present, but the visual fluid tile may not render correctly. This issue is still under investigation.
+> **JEI compatibility notice:** JEI **19.39.0.379 and newer will likey show no fluid being rendered in reicpes, this is a documented issue on their tracker.
 
 The current beta has also been tested with:
 
@@ -22,7 +22,7 @@ The current beta has also been tested with:
 
 ## Development Status
 
-> **Public beta:** Version **0.0.2.3-betaA** is feature-complete enough for public testing, but it is not a final stable release. Core mechanics are working and have been extensively tested; balancing, recipes, visuals, compatibility, names, and implementation details may still change as the project matures.
+> **Public beta:** Version **0.0.2.4-betaA** is feature-complete enough for public testing, but it is not a final stable release. Core mechanics are working and have been extensively tested; balancing, recipes, visuals, compatibility, names, and implementation details may still change as the project matures.
 
 Create: Sulfuric Resonance is my first major Minecraft mod project. Development has taken approximately eight months of active work, not including an extended break caused by unforeseen life emergencies. Feedback and clear bug reports are appreciated, but updates may take time.
 
@@ -30,7 +30,7 @@ Release-by-release additions and fixes are documented in [CHANGELOG.md](src/main
 
 ## Testing Status
 
-The 0.0.2.3-betaA pre-release test pass completed:
+The 0.0.2.4-betaA pre-release test pass completed:
 
 - **416 / 416 checks completed**
 - **412 passed**

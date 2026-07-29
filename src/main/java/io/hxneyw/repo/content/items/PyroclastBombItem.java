@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PyroclastBombItem extends Item {
    private static final int COOLDOWN_TICKS = 10;
+   private static final float THROW_VELOCITY = 0.55F;
+   private static final float THROW_INACCURACY = 1.2F;
 
    public PyroclastBombItem(Properties properties) {
       super(properties);
@@ -46,7 +48,7 @@ public class PyroclastBombItem extends Item {
       if (!level.isClientSide) {
          PyroclastBombEntity bomb = new PyroclastBombEntity(level, player);
          bomb.setItem(itemStack);
-         bomb.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.0F, 1.2F);
+         bomb.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, THROW_VELOCITY, THROW_INACCURACY);
          level.addFreshEntity(bomb);
       }
 

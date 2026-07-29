@@ -22,7 +22,7 @@
 
   "block.sulfuricresonance.perforated_spritzer": "Perforated Spritzer",
   "block.sulfuricresonance.molten_rotor_furnace": "Molten Rotor Furnace",
-  "block.sulfuricresonance.sulfur_block": "Sulfur Block",
+  "block.sulfuricresonance.sulfur_block": "Sulphur Block",
   "block.sulfuricresonance.rubber_padding": "Rubber Padding",
 
   "recipe.sulfuricresonance.combustion_mixing": "Combustion Mixing",
@@ -34,13 +34,16 @@
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Bounces _items_ predictably",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Maintains _horizontal momentum_",
 
-  "fluid.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
-  "item.sulfuricresonance.sulfuric_acid_bucket": "Sulfuric Acid Bucket",
-  "block.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
-  "fluid_type.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
-
+  "fluid.sulfuricresonance.sulfuric_acid": "Sulphuric Acid",
+  "item.sulfuricresonance.sulfuric_acid_bucket": "Sulphuric Acid Bucket",
+  "block.sulfuricresonance.sulfuric_acid": "Sulphuric Acid",
+  "fluid_type.sulfuricresonance.sulfuric_acid": "Sulphuric Acid",
+  "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulphuric Resonance",
+  "item.sulfuricresonance.sulfur": "Sulphur",
+  "item.sulfuricresonance.netherwood_dust": "Netherwood Dust",
+  "item.sulfuricresonance.spent_ash": "Spent Ash",
   "effect.sulfuricresonance.acid_burn": "Acid Burn",
-  "effect.sulfuricresonance.acid_burn.description": "Taking corrosive damage from sulfuric acid",
+  "effect.sulfuricresonance.acid_burn.description": "Taking corrosive damage from sulphuric acid",
 
   "_comment": "=== PONDER TRANSLATIONS ===",
 
@@ -57,15 +60,18 @@
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_8": "...and it can also water crops!",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_9": "This slightly increases their growth rate, but only when the farmland beneath them is fully hydrated",
 
-  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.header": "Mob Automation with the Spritzer",
-  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_1": "When filled with sulfuric acid, the Spritzer applies the corrosive Acid Burn effect, allowing mobs to be killed and their drops automated in a creative new way",
-  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_2": "Items are blown into the collection system",
-  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_3": "Items are collected in the chest!",
-  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_4": "The Spritzer can also spray lava, damaging entities and setting them on fire",
-  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_5": "Loot collected successfully!",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.header": "Mob Automation with the Perforated Spritzer",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_1": "This setup uses a Perforated Spritzer to damage mobs and collect their drops",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_2": "Sulphuric Acid applies Acid Burn and repeatedly damages living entities beneath the Spritzer",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_3": "When the mob is defeated, its drops remain beneath the Spritzer",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_4": "An Encased Fan pushes those dropped items towards the Funnel",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_5": "The Funnel inserts the loot into the attached Chest automatically",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_6": "Supplying Lava instead ignites entities caught beneath the Spritzer",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_7": "Water has the opposite use, extinguishing burning entities below",
+  "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_8": "Choose the supplied fluid to damage mobs, ignite them, or extinguish fire",
 
   "sulfuricresonance.ponder.tag.fluids": "Fluid Handling",
-  "sulfuricresonance.ponder.tag.fluids.description": "Components used to handle fluids in Sulfuric Resonance",
+  "sulfuricresonance.ponder.tag.fluids.description": "Components used to handle fluids in Sulphuric Resonance",
   "subtitles.sulfuricresonance.log_insert": "Log Added",
   "subtitles.sulfuricresonance.rubber_padding_hit": "Rubber Padding Hit"
 }

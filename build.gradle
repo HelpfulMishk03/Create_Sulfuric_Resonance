@@ -1,3 +1,5 @@
+import net.neoforged.moddevgradle.dsl.ModModel
+
 plugins {
     id 'java-library'
     id 'net.neoforged.moddev' version '2.0.142'
@@ -16,21 +18,35 @@ java {
     }
 }
 
+/*
+ * Resolve the main source set once without configuring it through a closure.
+ * Generated data is added by processResources below, so no
+ * additional source-set resource configuration is required.
+ */
+final NamedDomainObjectProvider<SourceSet> mainSourceSetProvider =
+        sourceSets.named(SourceSet.MAIN_SOURCE_SET_NAME)
+
+final def generatedResourcesDir = layout.projectDirectory.dir('src/generated/resources')
+final def existingResourcesDir = layout.projectDirectory.dir('src/main/resources')
+final def clientRunDir = layout.projectDirectory.dir('runs/client')
+final def serverRunDir = layout.projectDirectory.dir('runs/server')
+final def dataRunDir = layout.projectDirectory.dir('runs/data')
+
 repositories {
-    maven {
-        url = 'https://maven.createmod.net'
+    maven { MavenArtifactRepository repository ->
+        repository.url = uri('https://maven.createmod.net')
     }
 
-    maven {
-        url = 'https://maven.ithundxr.dev/snapshots'
+    maven { MavenArtifactRepository repository ->
+        repository.url = uri('https://maven.ithundxr.dev/snapshots')
     }
 
-    maven {
-        url = 'https://maven.blamejared.com'
+    maven { MavenArtifactRepository repository ->
+        repository.url = uri('https://maven.blamejared.com')
     }
 
-    maven {
-        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    maven { MavenArtifactRepository repository ->
+        repository.url = uri('https://repo.spongepowered.org/repository/maven-public/')
     }
 
     mavenCentral()
@@ -42,26 +58,38 @@ neoForge {
     runs {
         client {
             client()
-            gameDirectory = file('runs/client')
+            gameDirectory = clientRunDir.asFile
         }
 
         server {
             server()
-            gameDirectory = file('runs/server')
+            gameDirectory = serverRunDir.asFile
+        }
+
+        data {
+            data()
+            gameDirectory = dataRunDir.asFile
+
+            programArgument('--mod')
+            programArgument(mod_id.toString())
+            programArgument('--all')
+            programArgument('--output')
+            programArgument(generatedResourcesDir.asFile.absolutePath)
+            programArgument('--existing')
+            programArgument(existingResourcesDir.asFile.absolutePath)
         }
     }
 
-    mods {
-        "${mod_id}" {
-            //noinspection GroovyAssignabilityCheck
-            sourceSet(sourceSets.main)
-        }
+    mods.register(mod_id.toString()) { ModModel modModel ->
+        modModel.getModSourceSets().add(mainSourceSetProvider)
     }
 }
 
 dependencies {
-    def createSlimDependency =
-            dependencies.create("com.simibubi.create:create-${minecraft_version}:${create_version}:slim")
+    ExternalModuleDependency createSlimDependency =
+            dependencies.create(
+                    "com.simibubi.create:create-${minecraft_version}:${create_version}:slim"
+            ) as ExternalModuleDependency
 
     createSlimDependency.transitive = false
     implementation(createSlimDependency)
@@ -76,25 +104,28 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
 
-    annotationProcessor("org.spongepowered:mixin:0.8.7:processor")
+    annotationProcessor('org.spongepowered:mixin:0.8.7:processor')
 }
 
-def generatedRefmapDirectory = layout.buildDirectory.dir('generated/mixin')
-def generatedRefmapName = 'sulfuricresonance.refmap.json'
+final def generatedRefmapDirectory = layout.buildDirectory.dir('generated/mixin')
+final String generatedRefmapName = 'sulfuricresonance.refmap.json'
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+tasks.withType(JavaCompile).configureEach { JavaCompile compileTask ->
+    compileTask.options.encoding = 'UTF-8'
 
-    options.compilerArgs.add(
-            '-AoutRefMapFile='
-                    + generatedRefmapDirectory.get()
+    compileTask.options.compilerArgs.add(
+            '-AoutRefMapFile=' + generatedRefmapDirectory.get()
                     .file(generatedRefmapName)
                     .asFile
                     .absolutePath
     )
 }
 
-tasks.named('processResources').configure {
-    dependsOn tasks.named('compileJava')
-    from generatedRefmapDirectory
+tasks.named('processResources', ProcessResources).configure { ProcessResources resourceTask ->
+    /*
+     * The refmap is produced by compileJava, so compile first and then copy it
+     * into the processed resources output.
+     */
+    resourceTask.dependsOn(tasks.named('compileJava'))
+    resourceTask.from(generatedRefmapDirectory)
 }

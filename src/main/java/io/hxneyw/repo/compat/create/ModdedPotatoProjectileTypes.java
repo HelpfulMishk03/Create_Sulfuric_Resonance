@@ -16,15 +16,15 @@ public class ModdedPotatoProjectileTypes {
    public static void bootstrap(BootstrapContext<PotatoCannonProjectileType> ctx) {
       ctx.register(
          PYROCLAST_BOMB,
-         new Builder()
-            .damage(3)
-            .reloadTicks(25)
-            .velocity(1.2F)
-            .knockback(1.5F)
-            .renderTumbling()
-            .soundPitch(0.7F)
-                 .addItems(Items.PYROCLAST_BOMB.get())
-            .build()
+              new Builder()
+                      .damage(3)
+                      .reloadTicks(25)
+                      .velocity(0.7F)
+                      .knockback(1.5F)
+                      .renderTumbling()
+                      .soundPitch(0.7F)
+                      .addItems(Items.PYROCLAST_BOMB.get())
+                      .build()
       );
    }
 }

@@ -22,7 +22,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CarrotBlock;
 import net.minecraft.world.level.block.FarmBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
@@ -47,25 +46,25 @@ public class PerforatedSpritzerScenes {
       scene.world().showSection(util.select().position(spritzerPos), Direction.DOWN);
       scene.idle(20);
       scene.overlay()
-         .showText(80)
-         .text("The Perforated Spritzer can store and disperse fluids in a downward fashion")
-         .attachKeyFrame()
-         .pointAt(util.vector().topOf(spritzerPos))
-         .placeNearTarget();
+              .showText(80)
+              .text("The Perforated Spritzer can store and disperse fluids in a downward fashion")
+              .attachKeyFrame()
+              .pointAt(util.vector().topOf(spritzerPos))
+              .placeNearTarget();
       scene.idle(90);
       scene.overlay()
-         .showText(60)
-         .text("It will hold up to 3500mB of any fluid")
-         .colored(PonderPalette.BLUE)
-         .pointAt(util.vector().centerOf(spritzerPos))
-         .placeNearTarget();
+              .showText(60)
+              .text("It will hold up to 3500mB of any fluid")
+              .colored(PonderPalette.BLUE)
+              .pointAt(util.vector().centerOf(spritzerPos))
+              .placeNearTarget();
       scene.idle(70);
       scene.overlay()
-         .showText(70)
-         .text("It cannot spray fluid on its own")
-         .colored(PonderPalette.MEDIUM)
-         .pointAt(util.vector().topOf(spritzerPos))
-         .placeNearTarget();
+              .showText(70)
+              .text("It cannot spray fluid on its own")
+              .colored(PonderPalette.MEDIUM)
+              .pointAt(util.vector().topOf(spritzerPos))
+              .placeNearTarget();
       scene.idle(80);
       FluidStack tankWater = new FluidStack(Fluids.WATER, 8000);
       scene.world().modifyBlockEntity(tankPos, FluidTankBlockEntity.class, be -> be.getTankInventory().setFluid(tankWater));
@@ -73,27 +72,27 @@ public class PerforatedSpritzerScenes {
       scene.world().setKineticSpeed(util.select().position(cogwheelPos), 32.0F);
       scene.world().setKineticSpeed(util.select().position(pumpPos), -32.0F);
       scene.world()
-         .showSection(
-            util.select().position(tankPos).add(util.select().position(pumpPos)).add(util.select().position(cogwheelPos)).add(util.select().position(motorPos)),
-            Direction.DOWN
-         );
+              .showSection(
+                      util.select().position(tankPos).add(util.select().position(pumpPos)).add(util.select().position(cogwheelPos)).add(util.select().position(motorPos)),
+                      Direction.DOWN
+              );
       scene.idle(20);
       scene.world().propagatePipeChange(pumpPos);
       scene.idle(10);
       scene.overlay()
-         .showText(80)
-         .text("It requires pressure from a pump once its tank is full")
-         .colored(PonderPalette.OUTPUT)
-         .pointAt(util.vector().topOf(spritzerPos))
-         .placeNearTarget();
+              .showText(80)
+              .text("It requires pressure from a pump once its tank is full")
+              .colored(PonderPalette.OUTPUT)
+              .pointAt(util.vector().topOf(spritzerPos))
+              .placeNearTarget();
       scene.idle(90);
       scene.overlay()
-         .showText(70)
-         .text("When the pump pushes fluid into a full Spritzer...")
-         .attachKeyFrame()
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().centerOf(spritzerPos))
-         .placeNearTarget();
+              .showText(70)
+              .text("When the pump pushes fluid into a full Spritzer...")
+              .attachKeyFrame()
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().centerOf(spritzerPos))
+              .placeNearTarget();
       scene.idle(80);
 
       for (int i = 0; i <= 7; i++) {
@@ -110,11 +109,11 @@ public class PerforatedSpritzerScenes {
 
       scene.idle(20);
       scene.overlay()
-         .showText(60)
-         .text("...it sprays the fluid downward!")
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().blockSurface(spritzerPos, Direction.DOWN))
-         .placeNearTarget();
+              .showText(60)
+              .text("...it sprays the fluid downward!")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().blockSurface(spritzerPos, Direction.DOWN))
+              .placeNearTarget();
       scene.idle(10);
       Vec3 sprayCenter = util.vector().centerOf(spritzerPos).add(0.0, -0.4, 0.0);
 
@@ -129,16 +128,16 @@ public class PerforatedSpritzerScenes {
       scene.idle(30);
       scene.world().hideSection(util.select().position(farmlandPos), Direction.DOWN);
       scene.idle(5);
-      scene.world().setBlocks(util.select().position(farmlandPos), (BlockState)Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 0), false);
+      scene.world().setBlocks(util.select().position(farmlandPos), Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 0), false);
       scene.world().showIndependentSection(util.select().position(farmlandPos), Direction.UP);
       scene.idle(20);
       scene.overlay()
-         .showText(80)
-         .text("The Spritzer can hydrate farmland")
-         .attachKeyFrame()
-         .colored(PonderPalette.BLUE)
-         .pointAt(util.vector().centerOf(farmlandPos).add(0.0, 0.5, 0.0))
-         .placeNearTarget();
+              .showText(80)
+              .text("The Spritzer can hydrate farmland")
+              .attachKeyFrame()
+              .colored(PonderPalette.BLUE)
+              .pointAt(util.vector().centerOf(farmlandPos).add(0.0, 0.5, 0.0))
+              .placeNearTarget();
       scene.idle(60);
 
       for (int i = 0; i < 40; i++) {
@@ -149,238 +148,394 @@ public class PerforatedSpritzerScenes {
 
       scene.idle(10);
 
-      for (int i = 0; i < 40; i++) {
-         double xOffset = (Math.random() - 0.5) * 0.6;
-         double zOffset = (Math.random() - 0.5) * 0.6;
-         Vec3 sprayPos = util.vector().centerOf(spritzerPos).add(xOffset, -0.3, zOffset);
-         scene.effects().emitParticles(sprayPos, scene.effects().simpleParticleEmitter(ParticleTypes.FALLING_WATER, sprayPos), 0.3F, 2);
-         scene.idle(3);
-      }
+      emitRandomWaterSpray(scene, util, spritzerPos, 40);
 
       scene.idle(10);
       scene.addKeyframe();
-      scene.world().modifyBlock(farmlandPos, state -> (BlockState)Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7), false);
+      scene.world().modifyBlock(farmlandPos, state -> Blocks.FARMLAND.defaultBlockState().setValue(FarmBlock.MOISTURE, 7), false);
       scene.idle(10);
       scene.overlay()
-         .showText(80)
-         .text("...it can also water crops!")
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().blockSurface(farmlandPos, Direction.UP))
-         .placeNearTarget();
+              .showText(80)
+              .text("...it can also water crops!")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().blockSurface(farmlandPos, Direction.UP))
+              .placeNearTarget();
       scene.idle(90);
       BlockPos cropPos = farmlandPos.above();
-      scene.world().setBlock(cropPos, (BlockState)Blocks.CARROTS.defaultBlockState().setValue(CarrotBlock.AGE, 0), false);
+      scene.world().setBlock(cropPos, Blocks.CARROTS.defaultBlockState().setValue(CarrotBlock.AGE, 0), false);
       scene.world().showSection(util.select().position(cropPos), Direction.DOWN);
       scene.idle(30);
 
-      for (int i = 0; i < 20; i++) {
-         double xOffset = (Math.random() - 0.5) * 0.6;
-         double zOffset = (Math.random() - 0.5) * 0.6;
-         Vec3 sprayPos = util.vector().centerOf(spritzerPos).add(xOffset, -0.3, zOffset);
-         scene.effects().emitParticles(sprayPos, scene.effects().simpleParticleEmitter(ParticleTypes.FALLING_WATER, sprayPos), 0.3F, 2);
-         scene.idle(3);
+      for (int age : new int[]{2, 4, 6}) {
+         emitRandomWaterSpray(scene, util, spritzerPos, 20);
+         scene.world().modifyBlock(
+                 cropPos,
+                 state -> state.setValue(CarrotBlock.AGE, age),
+                 false
+         );
+         scene.idle(20);
       }
-
-      scene.world().modifyBlock(cropPos, state -> (BlockState)state.setValue(CarrotBlock.AGE, 2), false);
-      scene.idle(20);
-
-      for (int i = 0; i < 20; i++) {
-         double xOffset = (Math.random() - 0.5) * 0.6;
-         double zOffset = (Math.random() - 0.5) * 0.6;
-         Vec3 sprayPos = util.vector().centerOf(spritzerPos).add(xOffset, -0.3, zOffset);
-         scene.effects().emitParticles(sprayPos, scene.effects().simpleParticleEmitter(ParticleTypes.FALLING_WATER, sprayPos), 0.3F, 2);
-         scene.idle(3);
-      }
-
-      scene.world().modifyBlock(cropPos, state -> (BlockState)state.setValue(CarrotBlock.AGE, 4), false);
-      scene.idle(20);
-
-      for (int i = 0; i < 20; i++) {
-         double xOffset = (Math.random() - 0.5) * 0.6;
-         double zOffset = (Math.random() - 0.5) * 0.6;
-         Vec3 sprayPos = util.vector().centerOf(spritzerPos).add(xOffset, -0.3, zOffset);
-         scene.effects().emitParticles(sprayPos, scene.effects().simpleParticleEmitter(ParticleTypes.FALLING_WATER, sprayPos), 0.3F, 2);
-         scene.idle(3);
-      }
-
-      scene.world().modifyBlock(cropPos, state -> (BlockState)state.setValue(CarrotBlock.AGE, 6), false);
-      scene.idle(20);
       scene.overlay()
-         .showText(80)
-         .text("Making their growth speed increase slightly only when farmland beneath them is fully hydrated")
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().blockSurface(farmlandPos, Direction.UP))
-         .placeNearTarget();
+              .showText(80)
+              .text("Making their growth speed increase slightly only when farmland beneath them is fully hydrated")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().blockSurface(farmlandPos, Direction.UP))
+              .placeNearTarget();
       scene.idle(90);
       scene.markAsFinished();
    }
 
    public static void mobAutomation(SceneBuilder builder, SceneBuildingUtil util) {
       CreateSceneBuilder scene = new CreateSceneBuilder(builder);
-      scene.title("perforated_spritzer.mob_automation", "Mob Automation with the Spritzer");
+      scene.title(
+              "perforated_spritzer.mob_automation",
+              "Mob Automation with the Perforated Spritzer"
+      );
+
+      /* These positions match perforated_spritzer/mob_automation.nbt. */
+      BlockPos chestPos = util.grid().at(0, 1, 2);
+      BlockPos funnelPos = util.grid().at(1, 1, 2);
+      BlockPos targetPos = util.grid().at(2, 0, 2);
       BlockPos spritzerPos = util.grid().at(2, 2, 2);
-      BlockPos motorPos = util.grid().at(2, 2, 1);
-      BlockPos pumpPos = util.grid().at(2, 3, 2);
+      BlockPos pumpMotorPos = util.grid().at(2, 2, 1);
       BlockPos cogwheelPos = util.grid().at(2, 3, 1);
+      BlockPos pumpPos = util.grid().at(2, 3, 2);
       BlockPos tankPos = util.grid().at(2, 4, 2);
-      BlockPos zombiePos = util.grid().at(2, 0, 2);
-      BlockPos fanMotorPos = util.grid().at(0, 2, 2);
-      BlockPos fanPos = util.grid().at(1, 2, 2);
-      BlockPos funnelPos = util.grid().at(3, 0, 2);
-      BlockPos chestPos = util.grid().at(4, 0, 2);
+      BlockPos fanPos = util.grid().at(3, 1, 2);
+      BlockPos fanMotorPos = util.grid().at(4, 1, 2);
+
       scene.configureBasePlate(0, 0, 5);
       scene.showBasePlate();
       scene.idle(10);
-      scene.world().showSection(util.select().position(tankPos), Direction.DOWN);
+
+      scene.world().showSection(
+              util.select().position(chestPos)
+                      .add(util.select().position(funnelPos)),
+              Direction.EAST
+      );
       scene.idle(10);
-      scene.world().showSection(util.select().position(pumpPos), Direction.DOWN);
-      scene.idle(5);
-      scene.world().showSection(util.select().position(cogwheelPos), Direction.DOWN);
-      scene.idle(5);
-      scene.world().showSection(util.select().position(spritzerPos), Direction.DOWN);
-      scene.idle(5);
-      scene.world().showSection(util.select().position(motorPos), Direction.DOWN);
-      scene.idle(15);
-      scene.world()
-         .modifyBlockEntity(
-            tankPos, FluidTankBlockEntity.class, be -> be.getTankInventory().setFluid(new FluidStack((Fluid)AllModFluids.SULFURIC_ACID.get(), 8000))
-         );
-      scene.world().modifyBlockEntity(spritzerPos, PerforatedSpritzerBlockEntity.class, be -> {
-         be.getTankInventory().setFluid(new FluidStack((Fluid)AllModFluids.SULFURIC_ACID.get(), 3500));
-         if (be.getFluidLevel() != null) {
-            be.getFluidLevel().chase(1.0, 0.5, Chaser.EXP);
-         }
-      });
+
+      scene.world().showSection(
+              util.select().position(fanPos)
+                      .add(util.select().position(fanMotorPos)),
+              Direction.WEST
+      );
       scene.idle(10);
-      scene.world().showSection(util.select().position(chestPos), Direction.DOWN);
-      scene.idle(5);
-      scene.world().showSection(util.select().position(funnelPos), Direction.DOWN);
-      scene.idle(10);
-      scene.world().showSection(util.select().position(fanMotorPos), Direction.DOWN);
-      scene.idle(5);
-      scene.world().showSection(util.select().position(fanPos), Direction.DOWN);
-      scene.idle(15);
-      scene.world().createEntity(w -> {
-         Zombie zombie = new Zombie(EntityType.ZOMBIE, w);
-         Vec3 pos = util.vector().centerOf(zombiePos).add(0.0, 0.5, 0.0);
-         zombie.setPos(pos.x, pos.y, pos.z);
-         zombie.setYRot(90.0F);
-         zombie.setYHeadRot(90.0F);
-         zombie.setYBodyRot(90.0F);
-         zombie.setBaby(true);
-         zombie.setNoAi(true);
-         zombie.setSilent(true);
-         zombie.setDeltaMovement(Vec3.ZERO);
-         zombie.setNoGravity(false);
-         zombie.xOld = pos.x;
-         zombie.yOld = pos.y;
-         zombie.zOld = pos.z;
-         zombie.xo = pos.x;
-         zombie.yo = pos.y;
-         zombie.zo = pos.z;
-         return zombie;
-      });
-      scene.idle(20);
+
+      scene.world().showSection(
+              util.select().position(spritzerPos)
+                      .add(util.select().position(pumpMotorPos))
+                      .add(util.select().position(cogwheelPos))
+                      .add(util.select().position(pumpPos))
+                      .add(util.select().position(tankPos)),
+              Direction.DOWN
+      );
+      scene.idle(25);
+
+      /* text_1 */
       scene.overlay()
-         .showText(240)
-         .text(
-            "The Spritzer, when filled with sulfuric acid will cause the corrosive acid burn effect and effectively hurt mobs, to kill and automate their loot in a creative new way."
-         )
-         .attachKeyFrame()
-         .colored(PonderPalette.RED)
-         .pointAt(util.vector().centerOf(spritzerPos))
-         .placeNearTarget();
-      scene.idle(250);
-      scene.world().setKineticSpeed(util.select().position(motorPos), 32.0F);
-      scene.world().setKineticSpeed(util.select().position(cogwheelPos), 32.0F);
-      scene.world().setKineticSpeed(util.select().position(pumpPos), -32.0F);
+              .showText(100)
+              .text("This setup uses a Perforated Spritzer to damage mobs and collect their drops")
+              .attachKeyFrame()
+              .colored(PonderPalette.MEDIUM)
+              .pointAt(util.vector().centerOf(spritzerPos))
+              .placeNearTarget();
+      scene.idle(110);
+
+      fillSupplyTank(scene, tankPos, AllModFluids.SULFURIC_ACID.get());
+      fillSpritzer(scene, spritzerPos, AllModFluids.SULFURIC_ACID.get());
+      startPump(scene, util, pumpMotorPos, cogwheelPos, pumpPos);
       scene.world().propagatePipeChange(pumpPos);
-      scene.idle(30);
+      scene.idle(20);
 
-      for (int spray = 0; spray < 10; spray++) {
-         double[][] holePositions = new double[][]{
-            {0.25, 0.25},
-            {0.4375, 0.25},
-            {0.625, 0.25},
-            {0.8125, 0.25},
-            {0.25, 0.375},
-            {0.4375, 0.375},
-            {0.625, 0.375},
-            {0.8125, 0.375},
-            {0.25, 0.5},
-            {0.4375, 0.5},
-            {0.625, 0.5},
-            {0.8125, 0.5},
-            {0.25, 0.625},
-            {0.4375, 0.625},
-            {0.625, 0.625},
-            {0.8125, 0.625},
-            {0.25, 0.75},
-            {0.4375, 0.75},
-            {0.625, 0.75},
-            {0.8125, 0.75}
-         };
+      createStationaryBabyZombie(scene, util, targetPos);
+      scene.idle(15);
 
-         for (double[] hole : holePositions) {
-            Vec3 sprayPos = util.vector().topOf(spritzerPos).add(hole[0] - 0.5, -0.95, hole[1] - 0.5);
-            scene.effects()
-               .emitParticles(
-                  sprayPos, scene.effects().simpleParticleEmitter((SimpleParticleType)ModParticles.ACID_DRIP.get(), new Vec3(0.0, -0.1, 0.0)), 1.0F, 1
-               );
-         }
+      /* text_2 */
+      scene.overlay()
+              .showText(120)
+              .text("Sulfuric Acid applies Acid Burn and repeatedly damages living entities beneath the Spritzer")
+              .attachKeyFrame()
+              .colored(PonderPalette.RED)
+              .pointAt(util.vector().centerOf(targetPos).add(0.0, 0.9, 0.0))
+              .placeNearTarget();
 
-         if (spray % 2 == 0) {
+      for (int pulse = 0; pulse < 8; pulse++) {
+         emitSprayPulse(
+                 scene,
+                 util,
+                 spritzerPos,
+                 ModParticles.ACID_DRIP.get(),
+                 new Vec3(0.0, -0.10, 0.0)
+         );
+
+         if (pulse % 2 == 0) {
             scene.world().modifyEntities(Zombie.class, zombie -> {
                zombie.hurtDuration = 10;
                zombie.hurtTime = 10;
             });
          }
 
-         if (spray == 8) {
-            scene.world().modifyEntities(Zombie.class, zombie -> zombie.remove(RemovalReason.KILLED));
-            Vec3 dropPos = util.vector().centerOf(zombiePos).add(0.0, 0.5, 0.0);
-            scene.world().createItemEntity(dropPos, util.vector().of(0.0, 0.0, 0.0), new ItemStack(Items.ROTTEN_FLESH, 2));
-         }
+         scene.idle(12);
+      }
+      scene.idle(30);
 
-         scene.idle(15);
+      scene.world().modifyEntities(
+              Zombie.class,
+              zombie -> zombie.remove(RemovalReason.KILLED)
+      );
+
+      Vec3 dropPos = util.vector().centerOf(targetPos).add(0.0, 0.65, 0.0);
+      scene.world().createItemEntity(
+              dropPos,
+              Vec3.ZERO,
+              new ItemStack(Items.ROTTEN_FLESH, 2)
+      );
+      scene.idle(15);
+
+      /* text_3 */
+      scene.overlay()
+              .showText(90)
+              .text("When the mob is defeated, its drops remain beneath the Spritzer")
+              .colored(PonderPalette.GREEN)
+              .pointAt(dropPos)
+              .placeNearTarget();
+      scene.idle(100);
+
+      scene.world().setKineticSpeed(
+              util.select().position(fanMotorPos),
+              -32.0F
+      );
+      scene.world().setKineticSpeed(
+              util.select().position(fanPos),
+              -32.0F
+      );
+
+      /* text_4 */
+      scene.overlay()
+              .showText(110)
+              .text("An Encased Fan pushes those dropped items toward the Funnel")
+              .attachKeyFrame()
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().centerOf(fanPos))
+              .placeNearTarget();
+
+      /*
+       * Ponder does not always simulate fan/entity collision identically to a
+       * running world, so move the showcased drop in deterministic steps.
+       */
+      for (int tick = 0; tick < 22; tick++) {
+         scene.world().modifyEntities(
+                 ItemEntity.class,
+                 item -> item.setDeltaMovement(-0.085, 0.015, 0.0)
+         );
+         scene.idle(2);
+      }
+      scene.idle(70);
+
+      /* text_5 */
+      scene.overlay()
+              .showText(100)
+              .text("The Funnel inserts the loot into the attached Chest automatically")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().blockSurface(chestPos, Direction.UP))
+              .placeNearTarget();
+
+      scene.idle(25);
+      scene.world().modifyEntities(
+              ItemEntity.class,
+              item -> item.remove(RemovalReason.DISCARDED)
+      );
+      scene.idle(85);
+
+      scene.world().setKineticSpeed(
+              util.select().position(fanMotorPos)
+                      .add(util.select().position(fanPos)),
+              0.0F
+      );
+
+      scene.addKeyframe();
+      fillSupplyTank(scene, tankPos, Fluids.LAVA);
+      fillSpritzer(scene, spritzerPos, Fluids.LAVA);
+      scene.idle(20);
+
+      createStationaryBabyZombie(scene, util, targetPos);
+      scene.idle(15);
+
+      /* text_6 */
+      scene.overlay()
+              .showText(110)
+              .text("Supplying Lava instead ignites entities caught beneath the Spritzer")
+              .attachKeyFrame()
+              .colored(PonderPalette.OUTPUT)
+              .pointAt(util.vector().centerOf(targetPos).add(0.0, 0.9, 0.0))
+              .placeNearTarget();
+
+      /*
+       * Ponder does not reliably render Minecraft's normal entity fire layer.
+       * Keep the real fire state, then wrap the mob in attached flame and smoke
+       * particles so the ignition is unmistakable without placing a fire block.
+       */
+      for (int pulse = 0; pulse < 5; pulse++) {
+         emitSprayPulse(
+                 scene,
+                 util,
+                 spritzerPos,
+                 ParticleTypes.FALLING_LAVA,
+                 new Vec3(0.0, -0.08, 0.0)
+         );
+
+         scene.world().modifyEntities(Zombie.class, zombie -> {
+            zombie.igniteForSeconds(5.0F);
+            zombie.setRemainingFireTicks(100);
+            zombie.setSharedFlagOnFire(true);
+            zombie.hurtDuration = 10;
+            zombie.hurtTime = 10;
+         });
+         emitEntityFirePulse(scene, util, targetPos, pulse);
+         scene.idle(10);
       }
 
-      scene.idle(20);
-      scene.world().setKineticSpeed(util.select().position(fanMotorPos), -32.0F);
-      scene.world().setKineticSpeed(util.select().position(fanPos), -32.0F);
+      for (int pulse = 5; pulse < 17; pulse++) {
+         emitEntityFirePulse(scene, util, targetPos, pulse);
+         scene.idle(5);
+      }
       scene.idle(10);
-      scene.overlay()
-         .showText(100)
-         .text("Items are blown into the collection system")
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().topOf(fanPos))
-         .placeNearTarget();
-      scene.idle(110);
-      scene.world().modifyEntities(ItemEntity.class, item -> item.setDeltaMovement(-0.3, 0.05, 0.0));
-      scene.idle(60);
-      scene.idle(6);
-      scene.world().modifyEntities(ItemEntity.class, item -> item.remove(RemovalReason.DISCARDED));
-      scene.idle(14);
-      scene.overlay()
-         .showText(100)
-         .text("Items are collected in the chest!")
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().centerOf(chestPos))
-         .placeNearTarget();
-      scene.idle(110);
+
       scene.addKeyframe();
-      scene.world().modifyBlockEntity(tankPos, FluidTankBlockEntity.class, be -> be.getTankInventory().setFluid(new FluidStack(Fluids.LAVA, 8000)));
-      scene.world().modifyBlockEntity(spritzerPos, PerforatedSpritzerBlockEntity.class, be -> {
-         be.getTankInventory().setFluid(new FluidStack(Fluids.LAVA, 3500));
-         if (be.getFluidLevel() != null) {
-            be.getFluidLevel().chase(1.0, 0.5, Chaser.EXP);
-         }
-      });
+      fillSupplyTank(scene, tankPos, Fluids.WATER);
+      fillSpritzer(scene, spritzerPos, Fluids.WATER);
       scene.idle(20);
-      scene.world().createEntity(w -> {
-         Zombie zombie = new Zombie(EntityType.ZOMBIE, w);
-         Vec3 pos = util.vector().centerOf(zombiePos).add(0.0, 0.5, 0.0);
-         zombie.setPos(pos.x, pos.y, pos.z);
+
+      /* text_7 */
+      scene.overlay()
+              .showText(110)
+              .text("Water has the opposite use, extinguishing burning entities below")
+              .attachKeyFrame()
+              .colored(PonderPalette.BLUE)
+              .pointAt(util.vector().centerOf(targetPos).add(0.0, 0.9, 0.0))
+              .placeNearTarget();
+
+      for (int pulse = 0; pulse < 4; pulse++) {
+         emitSprayPulse(
+                 scene,
+                 util,
+                 spritzerPos,
+                 ParticleTypes.FALLING_WATER,
+                 new Vec3(0.0, -0.10, 0.0)
+         );
+
+         if (pulse == 0) {
+            scene.world().modifyEntities(Zombie.class, zombie -> {
+               zombie.clearFire();
+               zombie.setRemainingFireTicks(0);
+               zombie.setSharedFlagOnFire(false);
+            });
+         }
+
+         if (pulse == 1) {
+            emitEntityExtinguishBurst(scene, util, targetPos);
+         }
+         scene.idle(12);
+      }
+      scene.idle(72);
+
+      /* text_8 */
+      scene.overlay()
+              .showText(110)
+              .text("Choose the supplied fluid to damage mobs, ignite them, or extinguish fire")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().centerOf(spritzerPos))
+              .placeNearTarget();
+      scene.idle(120);
+      scene.markAsFinished();
+   }
+
+   private static void emitRandomWaterSpray(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           BlockPos spritzerPos,
+           int pulses
+   ) {
+      Vec3 center = util.vector().centerOf(spritzerPos);
+
+      for (int pulse = 0; pulse < pulses; pulse++) {
+         double xOffset = (Math.random() - 0.5) * 0.6;
+         double zOffset = (Math.random() - 0.5) * 0.6;
+         Vec3 sprayPos = center.add(xOffset, -0.3, zOffset);
+         scene.effects().emitParticles(
+                 sprayPos,
+                 scene.effects().simpleParticleEmitter(
+                         ParticleTypes.FALLING_WATER,
+                         sprayPos
+                 ),
+                 0.3F,
+                 2
+         );
+         scene.idle(3);
+      }
+   }
+
+   private static void startPump(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           BlockPos motorPos,
+           BlockPos cogwheelPos,
+           BlockPos pumpPos
+   ) {
+      scene.world().setKineticSpeed(
+              util.select().position(motorPos),
+              32.0F
+      );
+      scene.world().setKineticSpeed(
+              util.select().position(cogwheelPos),
+              32.0F
+      );
+      scene.world().setKineticSpeed(
+              util.select().position(pumpPos),
+              -32.0F
+      );
+   }
+
+   private static void fillSupplyTank(
+           CreateSceneBuilder scene,
+           BlockPos tankPos,
+           Fluid fluid
+   ) {
+      scene.world().modifyBlockEntity(
+              tankPos,
+              FluidTankBlockEntity.class,
+              tank -> tank.getTankInventory().setFluid(new FluidStack(fluid, 8000))
+      );
+   }
+
+   private static void fillSpritzer(
+           CreateSceneBuilder scene,
+           BlockPos spritzerPos,
+           Fluid fluid
+   ) {
+      scene.world().modifyBlockEntity(
+              spritzerPos,
+              PerforatedSpritzerBlockEntity.class,
+              spritzer -> {
+                 spritzer.getTankInventory().setFluid(new FluidStack(fluid, 3500));
+                 if (spritzer.getFluidLevel() != null) {
+                    spritzer.getFluidLevel().chase(1.0, 0.5, Chaser.EXP);
+                 }
+              }
+      );
+   }
+
+   private static void createStationaryBabyZombie(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           BlockPos targetPos
+   ) {
+      scene.world().createEntity(world -> {
+         Zombie zombie = new Zombie(EntityType.ZOMBIE, world);
+         Vec3 position = util.vector().centerOf(targetPos).add(0.0, 0.5, 0.0);
+
+         zombie.setPos(position.x, position.y, position.z);
          zombie.setYRot(90.0F);
          zombie.setYHeadRot(90.0F);
          zombie.setYBodyRot(90.0F);
@@ -389,58 +544,125 @@ public class PerforatedSpritzerScenes {
          zombie.setSilent(true);
          zombie.setDeltaMovement(Vec3.ZERO);
          zombie.setNoGravity(false);
-         zombie.xOld = pos.x;
-         zombie.yOld = pos.y;
-         zombie.zOld = pos.z;
-         zombie.xo = pos.x;
-         zombie.yo = pos.y;
-         zombie.zo = pos.z;
+         zombie.xOld = position.x;
+         zombie.yOld = position.y;
+         zombie.zOld = position.z;
+         zombie.xo = position.x;
+         zombie.yo = position.y;
+         zombie.zo = position.z;
          return zombie;
       });
-      scene.idle(10);
-      scene.overlay()
-         .showText(100)
-         .text("The Spritzer also sprays lava, damaging entities by setting them on fire")
-         .colored(PonderPalette.OUTPUT)
-         .pointAt(util.vector().blockSurface(spritzerPos, Direction.DOWN))
-         .placeNearTarget();
-      scene.idle(110);
+   }
 
-      for (int spray = 0; spray < 12; spray++) {
-         for (int i = 0; i < 10; i++) {
-            double xOffset = (Math.random() - 0.5) * 0.6;
-            double zOffset = (Math.random() - 0.5) * 0.6;
-            Vec3 sprayPos = util.vector().centerOf(spritzerPos).add(xOffset, -0.3, zOffset);
-            scene.effects().emitParticles(sprayPos, scene.effects().simpleParticleEmitter(ParticleTypes.FALLING_LAVA, sprayPos), 0.8F, 3);
+   private static void emitSprayPulse(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           BlockPos spritzerPos,
+           SimpleParticleType particle,
+           Vec3 motion
+   ) {
+      for (int row = 0; row < 5; row++) {
+         double z = 0.25 + row * 0.125;
+
+         for (int column = 0; column < 4; column++) {
+            double x = 0.25 + column * 0.1875;
+            Vec3 particlePos = util.vector()
+                    .topOf(spritzerPos)
+                    .add(x - 0.5, -0.95, z - 0.5);
+
+            scene.effects().emitParticles(
+                    particlePos,
+                    scene.effects().simpleParticleEmitter(particle, motion),
+                    1.0F,
+                    1
+            );
          }
+      }
+   }
 
-         scene.world().modifyEntities(Zombie.class, zombie -> {
-            zombie.setRemainingFireTicks(40);
-            zombie.hurtDuration = 10;
-            zombie.hurtTime = 10;
-         });
-         if (spray == 10) {
-            scene.world().modifyEntities(Zombie.class, zombie -> zombie.remove(RemovalReason.KILLED));
-            Vec3 cookedDropPos = util.vector().centerOf(zombiePos).add(0.0, 0.5, 0.0);
-            scene.world().createItemEntity(cookedDropPos, util.vector().of(0.0, 0.0, 0.0), new ItemStack(Items.ROTTEN_FLESH, 1));
-         }
+   private static void emitEntityFirePulse(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           BlockPos targetPos,
+           int pulse
+   ) {
+      Vec3 bodyBase = util.vector().centerOf(targetPos).add(0.0, 0.55, 0.0);
+      double[][] anchors = {
+              {-0.18, 0.10, -0.10},
+              {0.16, 0.18, 0.10},
+              {-0.10, 0.42, 0.12},
+              {0.12, 0.58, -0.08},
+              {0.00, 0.76, 0.02}
+      };
 
-         scene.idle(15);
+      for (int index = 0; index < anchors.length; index++) {
+         double[] anchor = anchors[index];
+         Vec3 flamePos = bodyBase.add(anchor[0], anchor[1], anchor[2]);
+         SimpleParticleType flame = (index + pulse) % 3 == 0
+                 ? ParticleTypes.FLAME
+                 : ParticleTypes.SMALL_FLAME;
+
+         scene.effects().emitParticles(
+                 flamePos,
+                 scene.effects().simpleParticleEmitter(
+                         flame,
+                         new Vec3(0.0, 0.018, 0.0)
+                 ),
+                 1.0F,
+                 1
+         );
       }
 
-      scene.idle(20);
-      scene.world().modifyEntities(ItemEntity.class, item -> item.setDeltaMovement(-0.3, 0.05, 0.0));
-      scene.idle(60);
-      scene.overlay()
-         .showText(100)
-         .text("Loot collected successfully!")
-         .colored(PonderPalette.GREEN)
-         .pointAt(util.vector().centerOf(chestPos))
-         .placeNearTarget();
-      scene.idle(110);
-      scene.idle(6);
-      scene.world().modifyEntities(ItemEntity.class, item -> item.remove(RemovalReason.DISCARDED));
-      scene.idle(14);
-      scene.markAsFinished();
+      if (pulse % 2 == 0) {
+         Vec3 smokePos = bodyBase.add(0.0, 0.92, 0.0);
+         scene.effects().emitParticles(
+                 smokePos,
+                 scene.effects().simpleParticleEmitter(
+                         ParticleTypes.SMOKE,
+                         new Vec3(0.0, 0.025, 0.0)
+                 ),
+                 1.0F,
+                 2
+         );
+      }
    }
+
+   private static void emitEntityExtinguishBurst(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           BlockPos targetPos
+   ) {
+      Vec3 bodyCenter = util.vector().centerOf(targetPos).add(0.0, 0.95, 0.0);
+      double[][] splashOffsets = {
+              {-0.20, 0.00, -0.10},
+              {0.20, 0.05, 0.10},
+              {-0.10, 0.28, 0.15},
+              {0.12, 0.40, -0.12},
+              {0.00, 0.62, 0.00}
+      };
+
+      for (double[] offset : splashOffsets) {
+         Vec3 splashPos = bodyCenter.add(offset[0], offset[1], offset[2]);
+         scene.effects().emitParticles(
+                 splashPos,
+                 scene.effects().simpleParticleEmitter(
+                         ParticleTypes.SPLASH,
+                         new Vec3(offset[0] * 0.08, 0.035, offset[2] * 0.08)
+                 ),
+                 1.0F,
+                 2
+         );
+      }
+
+      scene.effects().emitParticles(
+              bodyCenter.add(0.0, 0.55, 0.0),
+              scene.effects().simpleParticleEmitter(
+                      ParticleTypes.SMOKE,
+                      new Vec3(0.0, 0.02, 0.0)
+              ),
+              1.0F,
+              4
+      );
+   }
+
 }
