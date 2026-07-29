@@ -75,5 +75,14 @@
         "sulfuricresonance.ponder.tag.fluids": "Manejo de fluidos",
         "sulfuricresonance.ponder.tag.fluids.description": "Componentes que manejan fluidos en Resonancia Sulfúrica",
         "subtitles.sulfuricresonance.log_insert": "Tronco añadido",
-        "subtitles.sulfuricresonance.rubber_padding_hit": "Golpe en acolchado de caucho"
+        "subtitles.sulfuricresonance.rubber_padding_hit": "Golpe en acolchado de caucho",
+
+        "sulfuricresonance.ponder.molten_rotor.header": "Horno de rotor fundido",
+        "sulfuricresonance.ponder.molten_rotor.operation.header": "Alimentación del horno de rotor fundido",
+        "sulfuricresonance.ponder.molten_rotor.operation.text_1": "El horno de rotor fundido convierte el calor en fuerza rotacional",
+        "sulfuricresonance.ponder.molten_rotor.operation.text_2": "Los ejes pueden conectarse a ambos lados del horno",
+        "sulfuricresonance.ponder.molten_rotor.operation.text_3": "El combustible calienta la cámara y hace que el impulsor interno acelere",
+        "sulfuricresonance.ponder.molten_rotor.operation.text_4": "A medida que aumenta la temperatura, el horno produce una mayor salida rotacional",
+        "sulfuricresonance.ponder.molten_rotor.operation.text_5": "El indicador de calor muestra la temperatura de funcionamiento actual del horno"
+
         }

@@ -11,36 +11,86 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public class SulfuricResonancePonderPlugin implements PonderPlugin {
-   @NotNull
-   public String getModId() {
-      CreateSulfuricResonance.LOGGER.info("Ponder Plugin loading for: {}", "sulfuricresonance");
-      return "sulfuricresonance";
-   }
 
-   public void registerScenes(@NotNull PonderSceneRegistrationHelper<ResourceLocation> helper) {
-      CreateSulfuricResonance.LOGGER.info("Registering Ponder scenes...");
+    @NotNull
+    @Override
+    public String getModId() {
+        CreateSulfuricResonance.LOGGER.info(
+                "Ponder Plugin loading for: {}",
+                "sulfuricresonance"
+        );
+        return "sulfuricresonance";
+    }
 
-      try {
-         ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey((Block)AllModBlocks.PERFORATED_SPRITZER.get());
-         CreateSulfuricResonance.LOGGER.info("Block ID: {}", blockId);
-         helper.addStoryBoard(blockId, "perforated_spritzer/intro", PerforatedSpritzerScenes::intro, new ResourceLocation[]{AllPonderTags.FLUIDS});
-         helper.addStoryBoard(
-            blockId, "perforated_spritzer/mob_automation", PerforatedSpritzerScenes::mobAutomation, new ResourceLocation[]{AllPonderTags.FLUIDS}
-         );
-         CreateSulfuricResonance.LOGGER.info("Successfully registered 2 scenes for: {}", blockId);
-      } catch (Exception var3) {
-         CreateSulfuricResonance.LOGGER.error("Failed to register Ponder scenes!", var3);
-      }
-   }
+    @Override
+    public void registerScenes(
+            @NotNull PonderSceneRegistrationHelper<ResourceLocation> helper
+    ) {
+        CreateSulfuricResonance.LOGGER.info(
+                "Registering Ponder scenes..."
+        );
 
-   public void registerTags(@NotNull PonderTagRegistrationHelper<ResourceLocation> helper) {
-      CreateSulfuricResonance.LOGGER.info("Registering Ponder tags...");
+        try {
+            ResourceLocation spritzerId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            (Block) AllModBlocks.PERFORATED_SPRITZER.get()
+                    );
 
-      try {
-         AllPonderTags.register(helper);
-         CreateSulfuricResonance.LOGGER.info("Successfully registered Ponder tags");
-      } catch (Exception var3) {
-         CreateSulfuricResonance.LOGGER.error("Failed to register Ponder tags!", var3);
-      }
-   }
+            helper.addStoryBoard(
+                    spritzerId,
+                    "perforated_spritzer/intro",
+                    PerforatedSpritzerScenes::intro,
+                    new ResourceLocation[]{AllPonderTags.FLUIDS}
+            );
+
+            helper.addStoryBoard(
+                    spritzerId,
+                    "perforated_spritzer/mob_automation",
+                    PerforatedSpritzerScenes::mobAutomation,
+                    new ResourceLocation[]{AllPonderTags.FLUIDS}
+            );
+
+            ResourceLocation moltenRotorId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            (Block) AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+                    );
+
+            helper.addStoryBoard(
+                    moltenRotorId,
+                    "molten_rotor/operation",
+                    MoltenRotorScenes::operation,
+                    new ResourceLocation[]{}
+            );
+
+            CreateSulfuricResonance.LOGGER.info(
+                    "Successfully registered 3 Ponder scenes"
+            );
+        } catch (Exception exception) {
+            CreateSulfuricResonance.LOGGER.error(
+                    "Failed to register Ponder scenes!",
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public void registerTags(
+            @NotNull PonderTagRegistrationHelper<ResourceLocation> helper
+    ) {
+        CreateSulfuricResonance.LOGGER.info(
+                "Registering Ponder tags..."
+        );
+
+        try {
+            AllPonderTags.register(helper);
+            CreateSulfuricResonance.LOGGER.info(
+                    "Successfully registered Ponder tags"
+            );
+        } catch (Exception exception) {
+            CreateSulfuricResonance.LOGGER.error(
+                    "Failed to register Ponder tags!",
+                    exception
+            );
+        }
+    }
 }
