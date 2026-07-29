@@ -1,0 +1,24 @@
+Prepare 0.0.2.4-beta release
+
+Finalize the first stable beta build after restoring and expanding the
+main mod systems.
+
+- finish the Molten Rotor Furnace heat, fuel, rendering, automation,
+  persistence, and kinetic output systems
+- add and polish the Molten Rotor operating Ponder scene
+- complete both Perforated Spritzer Ponder scenes
+- add US English, British English, and Spanish Ponder translations
+- balance Pyroclast Bomb hand throwing and Potato Cannon velocity
+- restore Potato Cannon projectile registration and generated data
+- fix generated resource packaging and duplicate resource handling
+- improve modded fuel compatibility and shared fuel validation
+- finish Combustion Mixing recipe and JEI integration fixes
+- clean up furnace interactions, insertion sounds, particles, fuel
+  rendering, shaft rotation, and heat visuals
+- update README and CHANGELOG for 0.0.2.4-beta
+- update project metadata and release version
+- confirm client, dedicated server, Ponder, JEI, automation, persistence,
+  and projectile systems are working correctly
+
+This is the first build where all currently implemented features are
+working together without known release-blocking issues.

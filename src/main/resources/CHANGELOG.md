@@ -6,7 +6,52 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
-## [0.0.2.3-betaA] - Public Beta Candidate
+## [0.0.2.4-beta] - Ponder, Projectile, and Build Stability Update
+
+### Added
+
+#### Ponder
+
+- Added a detailed Molten Rotor Furnace Ponder scene covering startup, heat tiers, RPM progression, stress output, the heat gauge, Engineer's Goggles information, and cooldown behavior.
+- Added the completed Perforated Spritzer mob-automation Ponder scene.
+- Added and synchronized Ponder localization for American English, British English, and Spanish.
+- Added the Molten Rotor Furnace to the mod's supported Ponder machinery.
+
+#### Pyroclast Bomb
+
+- Added generated Create Potato Cannon projectile data for the Pyroclast Bomb.
+- Added separate balancing for hand-thrown and Potato Cannon launch behavior.
+
+### Changed
+
+- Expanded the Molten Rotor Furnace Ponder sequence from a short overview into a longer heat-and-output tutorial.
+- Corrected the displayed Ponder shaft rotation direction.
+- Reduced the Pyroclast Bomb's hand-thrown launch velocity for a heavier, shorter arc.
+- Reduced the Pyroclast Bomb's Potato Cannon velocity for more controllable range.
+- Updated public documentation and release metadata to version `0.0.2.4-beta`.
+
+### Fixed
+
+- Fixed the Create Potato Cannon no longer recognizing the Pyroclast Bomb as valid ammunition.
+- Fixed generated Potato Cannon projectile data not being included in the final mod resources.
+- Fixed duplicate-resource build failures caused by the same projectile JSON being supplied from multiple resource locations.
+- Fixed missing default-localization entries for newly added Ponder text.
+- Fixed the Gradle data-generation configuration so `runData` can generate the required Create projectile data.
+
+### Testing
+
+- Verified the Molten Rotor Furnace Ponder scene in game.
+- Verified the expanded heat explanation, gauge sequence, kinetic animation, and corrected shaft direction.
+- Verified hand throwing and Create Potato Cannon launching for the Pyroclast Bomb.
+- Verified that the Pyroclast Bomb remains registered as valid Potato Cannon ammunition after rebuilding.
+
+### Known limitations
+
+- Fuel compatibility remains intentionally selective; not every modded furnace fuel or log is accepted automatically.
+- Furnace lighting is still based on Minecraft's normal block-light behavior and renderer effects rather than truly directional light propagation.
+- Additional Ponder coverage and recipe explanations may still be expanded during beta.
+
+## [0.0.2.3-betaA] - Pre-Release Public
 
 ### Added
 
@@ -185,4 +230,4 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 
 ## Project history note
 
-Create: Sulfuric Resonance is developed and maintained by **Hxney**. Approximately eight months of active development led to the `0.0.2.3-betaA` public-beta candidate, excluding an approximately one-year interruption caused by unforeseen life emergencies.
+Create: Sulfuric Resonance is developed and maintained by **Hxney**. Approximately eight months of active development led to the `0.0.2.4-beta` public-beta candidate, excluding an approximately one-year interruption caused by unforeseen life emergencies.

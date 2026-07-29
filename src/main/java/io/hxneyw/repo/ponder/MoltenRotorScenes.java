@@ -42,16 +42,16 @@ public final class MoltenRotorScenes {
         scene.idle(20);
 
         scene.overlay()
-                .showText(80)
+                .showText(90)
                 .text(
-                        "The Molten Rotor Furnace converts heat into rotational force"
+                        "The Molten Rotor Furnace converts stored heat into rotational force"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.MEDIUM)
                 .pointAt(util.vector().centerOf(furnacePos))
                 .placeNearTarget();
 
-        scene.idle(90);
+        scene.idle(100);
 
         scene.world().showSection(
                 util.select()
@@ -63,7 +63,7 @@ public final class MoltenRotorScenes {
         scene.idle(20);
 
         scene.overlay()
-                .showText(80)
+                .showText(85)
                 .text(
                         "Shafts can connect to either side of the furnace"
                 )
@@ -72,15 +72,89 @@ public final class MoltenRotorScenes {
                 .pointAt(util.vector().centerOf(rightShaftPos))
                 .placeNearTarget();
 
-        scene.idle(90);
+        scene.idle(95);
+
+        scene.overlay()
+                .showText(95)
+                .text(
+                        "At ambient temperature, the furnace remains idle until it reaches 300°C"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.MEDIUM)
+                .pointAt(util.vector().centerOf(furnacePos))
+                .placeNearTarget();
+
+        scene.idle(105);
+
+        /*
+         * Creative heat mode is used only inside the demonstration so the
+         * scene can move through its heat states without waiting for fuel.
+         */
+        scene.world().modifyBlockEntity(
+                furnacePos,
+                MoltenRotorBlockEntity.class,
+                furnace -> furnace.setCreativeMode(true)
+        );
+
+        scene.world().modifyBlock(
+                furnacePos,
+                state -> state.setValue(
+                        MoltenRotorBlock.HEAT_LEVEL,
+                        HeatLevel.KINDLED
+                ),
+                false
+        );
+
+        /*
+         * Negative speeds intentionally reverse the original Ponder shaft
+         * direction so it matches the requested in-game presentation.
+         */
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                -32.0F
+        );
+
+        scene.idle(25);
+
+        scene.overlay()
+                .showText(90)
+                .text(
+                        "Smouldering begins at 300°C and produces 32 RPM"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(furnacePos))
+                .placeNearTarget();
+
+        scene.idle(100);
+
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                -64.0F
+        );
+
+        scene.overlay()
+                .showText(90)
+                .text(
+                        "Kindled begins at 500°C, raising output to 64 RPM"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(rightShaftPos))
+                .placeNearTarget();
+
+        scene.idle(100);
 
         scene.world().modifyBlockEntity(
                 furnacePos,
                 MoltenRotorBlockEntity.class,
-                furnace -> {
-                    furnace.setCreativeMode(true);
-                    furnace.cycleCreativeTier();
-                }
+                MoltenRotorBlockEntity::cycleCreativeTier
         );
 
         scene.world().modifyBlock(
@@ -97,39 +171,55 @@ public final class MoltenRotorScenes {
                         .position(leftShaftPos)
                         .add(util.select().position(furnacePos))
                         .add(util.select().position(rightShaftPos)),
-                64.0F
+                -128.0F
         );
 
-        scene.idle(30);
+        scene.idle(25);
 
         scene.overlay()
-                .showText(90)
+                .showText(100)
                 .text(
-                        "Fuel heats the chamber and causes the internal impeller to accelerate"
+                        "Seething begins at 800°C, producing 128 RPM and meeting the Superheated requirement"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(furnacePos))
                 .placeNearTarget();
 
-        scene.idle(100);
+        scene.idle(110);
+
+        scene.world().modifyBlockEntity(
+                furnacePos,
+                MoltenRotorBlockEntity.class,
+                MoltenRotorBlockEntity::cycleCreativeTier
+        );
+
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                -256.0F
+        );
+
+        scene.idle(25);
 
         scene.overlay()
-                .showText(90)
+                .showText(105)
                 .text(
-                        "As temperature rises, the furnace produces greater rotational output"
+                        "Radiant begins at 1300°C, producing 256 RPM and enabling Combustion recipes"
                 )
                 .attachKeyFrame()
-                .colored(PonderPalette.OUTPUT)
-                .pointAt(util.vector().centerOf(rightShaftPos))
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(furnacePos))
                 .placeNearTarget();
 
-        scene.idle(100);
+        scene.idle(115);
 
         scene.overlay()
                 .showText(90)
                 .text(
-                        "The heat gauge shows the furnace's current operating temperature"
+                        "The front gauge tracks chamber temperature as the furnace crosses each heat tier"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.MEDIUM)
@@ -141,6 +231,82 @@ public final class MoltenRotorScenes {
                 .placeNearTarget();
 
         scene.idle(100);
+
+        scene.overlay()
+                .showText(105)
+                .text(
+                        "Engineer's Goggles show temperature, heat state, stress capacity, generated speed, fuel and cooldown time"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.OUTPUT)
+                .pointAt(util.vector().centerOf(furnacePos))
+                .placeNearTarget();
+
+        scene.idle(115);
+
+        scene.overlay()
+                .showText(145)
+                .text(
+                        "When fuel runs out, stored heat drains away and output slows through lower tiers before stopping"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.MEDIUM)
+                .pointAt(util.vector().centerOf(rightShaftPos))
+                .placeNearTarget();
+
+        scene.idle(35);
+
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                -128.0F
+        );
+        scene.idle(25);
+
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                -64.0F
+        );
+        scene.idle(25);
+
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                -32.0F
+        );
+        scene.idle(25);
+
+        scene.world().setKineticSpeed(
+                util.select()
+                        .position(leftShaftPos)
+                        .add(util.select().position(furnacePos))
+                        .add(util.select().position(rightShaftPos)),
+                0.0F
+        );
+
+        scene.world().modifyBlockEntity(
+                furnacePos,
+                MoltenRotorBlockEntity.class,
+                furnace -> furnace.setCreativeMode(false)
+        );
+
+        scene.world().modifyBlock(
+                furnacePos,
+                state -> state.setValue(
+                        MoltenRotorBlock.HEAT_LEVEL,
+                        HeatLevel.NONE
+                ),
+                false
+        );
+
+        scene.idle(55);
         scene.markAsFinished();
     }
 }

@@ -74,12 +74,16 @@
   "sulfuricresonance.ponder.tag.fluids.description": "Components used to handle fluids in Sulphuric Resonance",
   "subtitles.sulfuricresonance.log_insert": "Log Added",
   "subtitles.sulfuricresonance.rubber_padding_hit": "Rubber Padding Hit",
-
+  "sulfuricresonance.ponder.molten_rotor.header": "Molten Rotor Furnace",
   "sulfuricresonance.ponder.molten_rotor.operation.header": "Powering the Molten Rotor Furnace",
-  "sulfuricresonance.ponder.molten_rotor.operation.text_1": "The Molten Rotor Furnace converts heat into rotational force",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_1": "The Molten Rotor Furnace converts stored heat into rotational force",
   "sulfuricresonance.ponder.molten_rotor.operation.text_2": "Shafts can connect to either side of the furnace",
-  "sulfuricresonance.ponder.molten_rotor.operation.text_3": "Fuel heats the chamber and causes the internal impeller to accelerate",
-  "sulfuricresonance.ponder.molten_rotor.operation.text_4": "As temperature rises, the furnace produces greater rotational output",
-  "sulfuricresonance.ponder.molten_rotor.operation.text_5": "The heat gauge shows the furnace's current operating temperature"
-
+  "sulfuricresonance.ponder.molten_rotor.operation.text_3": "At ambient temperature, the furnace remains idle until it reaches 300°C",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_4": "Smouldering begins at 300°C and produces 32 RPM",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_5": "Kindled begins at 500°C, raising output to 64 RPM",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_6": "Seething begins at 800°C, producing 128 RPM and meeting the Superheated requirement",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_7": "Radiant begins at 1300°C, producing 256 RPM and enabling Combustion recipes",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_8": "The front gauge tracks chamber temperature as the furnace crosses each heat tier",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_9": "Engineer's Goggles show temperature, heat state, stress capacity, generated speed, fuel and cooldown time",
+  "sulfuricresonance.ponder.molten_rotor.operation.text_10": "When fuel runs out, stored heat drains away and output slows through lower tiers before stopping"
 }
