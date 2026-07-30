@@ -6,6 +6,14 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## [0.0.2.4-beta1] - Progression Hotfix
+
+### Fixed
+
+- Fixed a progression-blocking recipe loop where the Molten Rotor Furnace required Flameborne Core while Flameborne Core required sulfur obtained through the furnace progression.
+- Replaced the Molten Rotor Furnace's Flameborne Core ingredient with Blaze Shard.
+- Restored a valid progression path from early Blaze processing to the Molten Rotor Furnace and then into sulfur chemistry.
+
 ## [0.0.2.4-beta] - Ponder, Projectile, and Build Stability Update
 
 ### Added

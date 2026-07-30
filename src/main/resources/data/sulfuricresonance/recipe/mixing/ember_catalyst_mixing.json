@@ -3,13 +3,13 @@
   "heat_requirement": "heated",
   "ingredients": [
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
       "item": "sulfuricresonance:netherwood_dust"
     },
     {
-      "item": "sulfuricresonance:embersol"
+      "item": "minecraft:glowstone_dust"
     }
   ],
   "processing_time": 130,

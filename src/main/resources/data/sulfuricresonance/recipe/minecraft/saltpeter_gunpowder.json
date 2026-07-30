@@ -9,7 +9,7 @@
   ],
   "ingredients": [
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
       "item": "minecraft:charcoal"
