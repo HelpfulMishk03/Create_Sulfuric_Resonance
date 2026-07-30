@@ -39,6 +39,17 @@
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Bounces _items_ predictably",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Maintains _horizontal momentum_",
 
+  "tooltip.sulfuricresonance.sulfur.reactive": "Reactive industrial material",
+  "tooltip.sulfuricresonance.sulfur.uses": "Used in sulfur chemistry, rubber, combustion, and Sulfuric Acid production",
+
+  "tooltip.sulfuricresonance.sulfur_block.storage": "Compressed sulfur storage block",
+  "tooltip.sulfuricresonance.sulfur_block.unpack": "Can be unpacked into 9 Sulfur",
+
+  "tooltip.sulfuricresonance.acid.corrosive": "Highly corrosive industrial fluid",
+  "tooltip.sulfuricresonance.acid.reactions": "Reacts with water and lava",
+  "tooltip.sulfuricresonance.acid.industrial": "Used in sulfur chemistry, rubber processing, and industrial reactions",
+  "tooltip.sulfuricresonance.acid.warning": "Improper handling may cause major harm",
+
   "fluid.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
   "item.sulfuricresonance.sulfuric_acid_bucket": "Sulfuric Acid Bucket",
   "block.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
@@ -87,5 +98,13 @@
   "sulfuricresonance.ponder.molten_rotor.operation.text_7": "Radiant begins at 1300°C, producing 256 RPM and enabling Combustion recipes",
   "sulfuricresonance.ponder.molten_rotor.operation.text_8": "The front gauge tracks chamber temperature as the furnace crosses each heat tier",
   "sulfuricresonance.ponder.molten_rotor.operation.text_9": "Engineer's Goggles show temperature, heat state, stress capacity, generated speed, fuel and cooldown time",
-  "sulfuricresonance.ponder.molten_rotor.operation.text_10": "When fuel runs out, stored heat drains away and output slows through lower tiers before stopping"
+  "sulfuricresonance.ponder.molten_rotor.operation.text_10": "When fuel runs out, stored heat drains away and output slows through lower tiers before stopping",
+
+  "sulfuricresonance.ponder.sulfur.header": "Sulfur",
+  "sulfuricresonance.ponder.sulfur.compatibility.header": "Cross-Mod Sulfur Compatibility",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_1": "Sulfuric Resonance accepts processed sulfur through common item tags",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_2": "Compatible sulfur items use c:sulfur; compatible sulfur dusts use c:dusts/sulfur",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_3": "Properly tagged processed sulfur from other mods can replace Sulfuric Resonance Sulfur",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Raw ores, chunks, and storage blocks are not processed sulfur inputs",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Materials using private or missing tags may require dedicated compatibility"
 }

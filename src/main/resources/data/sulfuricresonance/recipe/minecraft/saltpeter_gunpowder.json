@@ -2,9 +2,11 @@
   "type": "minecraft:crafting_shapeless",
   "neoforge:conditions": [
     {
-      "type": "neoforge:tag_empty",
-      "tag": "c:dusts/saltpeter",
-      "inverted": true
+      "type": "neoforge:not",
+      "value": {
+        "type": "neoforge:tag_empty",
+        "tag": "c:dusts/saltpeter"
+      }
     }
   ],
   "ingredients": [

@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:sulfurous_beginnings",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:infernal_impeller"
+    },
+    "title": {
+      "text": "Shattered Power"
+    },
+    "description": {
+      "text": "Obtain Blaze Shards and craft an Infernal Impeller."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_impeller": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:infernal_impeller"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

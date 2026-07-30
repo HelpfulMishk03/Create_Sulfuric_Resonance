@@ -6,6 +6,54 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## [0.0.2.5-beta] — Compatibility, Guidance, and Progression
+
+### Updated
+
+- Updated NeoForge to `21.1.247`.
+- Updated English (US), English (UK), and Spanish language files.
+- Refined the Molten Rotor Furnace Ponder scene layout and viewing orientation.
+
+### Cross-Mod Compatibility
+
+- Added the shared Sulfur-processing input tag.
+- Added shared Sulfuric Acid fluid and bucket tags.
+- Removed unsafe hard references to optional TFMG content.
+- Verified compatibility with:
+    - TFMG Sulfur Dust
+    - TFMG Sulfuric Acid
+    - Butchery Sulfur
+    - Railcraft Reborn Sulfur Dust
+- Added common Sulfur storage-block tags.
+- Added Create filling and emptying recipes for the Sulfuric Acid Bucket.
+
+### Tooltips
+
+- Improved Sulfur and Sulfuric Acid tooltips.
+- Added corrosive-handling warnings for Sulfuric Acid.
+- Added fluid and bucket compatibility information.
+- Added water and lava reaction warnings.
+- Added intended industrial-use descriptions.
+- Added a warning that improper handling may cause major harm.
+
+### Advancements
+
+- **Sulfurous Beginnings** — Obtain Sulfur.
+- **Shattered Power** — Obtain Blaze Shards and craft the Infernal Impeller.
+- **I’m Flattered..** — Obtain Spent Ash.
+- **You’re on Fire** — Obtain a Flameborne Core.
+- **Woah.. How Do I Use This Thing?** — Obtain the Molten Rotor Furnace.
+- **Controlled Chemistry** — Process Sulfur through Combustion Mixing.
+- **Industrial Allies** — Use compatible Sulfur from another mod.
+- **Pyro** — Obtain and fire the Pyroclast Bomb from a Potato Cannon.
+
+### Ponder
+
+- Added an in-game Sulfur Processing Guide.
+- Explains accepted common Sulfur tags.
+- Explains compatibility with properly tagged external Sulfur dusts.
+- Explains why raw ores, chunks, and storage blocks are not accepted as processed Sulfur inputs.
+
 ## [0.0.2.4-beta1] - Progression Hotfix
 
 ### Fixed

@@ -39,6 +39,17 @@
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Rebota _objetos_ de forma predecible",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Mantiene el _impulso horizontal_",
 
+  "tooltip.sulfuricresonance.sulfur.reactive": "Material industrial reactivo",
+  "tooltip.sulfuricresonance.sulfur.uses": "Se utiliza en química del azufre, caucho, combustión y producción de ácido sulfúrico",
+
+  "tooltip.sulfuricresonance.sulfur_block.storage": "Bloque de almacenamiento de azufre comprimido",
+  "tooltip.sulfuricresonance.sulfur_block.unpack": "Se puede desmontar para obtener 9 unidades de azufre",
+
+  "tooltip.sulfuricresonance.acid.corrosive": "Fluido industrial altamente corrosivo",
+  "tooltip.sulfuricresonance.acid.reactions": "Reacciona con el agua y la lava",
+  "tooltip.sulfuricresonance.acid.industrial": "Se utiliza en química del azufre, procesamiento de caucho y reacciones industriales",
+  "tooltip.sulfuricresonance.acid.warning": "Una manipulación incorrecta puede causar daños graves",
+
   "fluid.sulfuricresonance.sulfuric_acid": "Ácido sulfúrico",
   "item.sulfuricresonance.sulfuric_acid_bucket": "Cubo de ácido sulfúrico",
   "block.sulfuricresonance.sulfuric_acid": "Ácido sulfúrico",
@@ -88,5 +99,13 @@
   "sulfuricresonance.ponder.molten_rotor.operation.text_7": "El nivel Radiante comienza a 1300 °C, produce 256 RPM y permite recetas de Combustión",
   "sulfuricresonance.ponder.molten_rotor.operation.text_8": "El indicador frontal muestra la temperatura de la cámara al atravesar cada nivel de calor",
   "sulfuricresonance.ponder.molten_rotor.operation.text_9": "Las gafas de ingeniero muestran la temperatura, el estado térmico, la capacidad de estrés, la velocidad generada, el combustible y el tiempo de enfriamiento",
-  "sulfuricresonance.ponder.molten_rotor.operation.text_10": "Cuando se agota el combustible, el calor acumulado disminuye y la salida se ralentiza por los niveles inferiores hasta detenerse"
+  "sulfuricresonance.ponder.molten_rotor.operation.text_10": "Cuando se agota el combustible, el calor acumulado disminuye y la salida se ralentiza por los niveles inferiores hasta detenerse",
+
+  "sulfuricresonance.ponder.sulfur.header": "Azufre",
+  "sulfuricresonance.ponder.sulfur.compatibility.header": "Compatibilidad de azufre entre mods",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_1": "Sulfuric Resonance acepta azufre procesado mediante etiquetas comunes de objetos",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_2": "Los objetos de azufre compatibles usan c:sulfur; los polvos de azufre compatibles usan c:dusts/sulfur",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_3": "El azufre procesado y etiquetado correctamente de otros mods puede sustituir al azufre de Sulfuric Resonance",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Los minerales, fragmentos en bruto y bloques de almacenamiento no se consideran entradas de azufre procesado",
+  "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Los materiales que usan etiquetas privadas o inexistentes pueden necesitar compatibilidad específica"
 }

@@ -27,8 +27,8 @@ public final class MoltenRotorScenes {
         );
 
         BlockPos furnacePos = util.grid().at(2, 1, 2);
-        BlockPos leftShaftPos = util.grid().at(1, 1, 2);
-        BlockPos rightShaftPos = util.grid().at(3, 1, 2);
+        BlockPos westShaftPos = util.grid().at(1, 1, 2);
+        BlockPos eastShaftPos = util.grid().at(3, 1, 2);
 
         scene.configureBasePlate(0, 0, 5);
         scene.showBasePlate();
@@ -55,8 +55,8 @@ public final class MoltenRotorScenes {
 
         scene.world().showSection(
                 util.select()
-                        .position(leftShaftPos)
-                        .add(util.select().position(rightShaftPos)),
+                        .position(westShaftPos)
+                        .add(util.select().position(eastShaftPos)),
                 Direction.DOWN
         );
 
@@ -69,7 +69,7 @@ public final class MoltenRotorScenes {
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.OUTPUT)
-                .pointAt(util.vector().centerOf(rightShaftPos))
+                .pointAt(util.vector().centerOf(eastShaftPos))
                 .placeNearTarget();
 
         scene.idle(95);
@@ -111,9 +111,9 @@ public final class MoltenRotorScenes {
          */
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -32.0F
         );
 
@@ -133,9 +133,9 @@ public final class MoltenRotorScenes {
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -64.0F
         );
 
@@ -146,7 +146,7 @@ public final class MoltenRotorScenes {
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
-                .pointAt(util.vector().centerOf(rightShaftPos))
+                .pointAt(util.vector().centerOf(eastShaftPos))
                 .placeNearTarget();
 
         scene.idle(100);
@@ -168,9 +168,9 @@ public final class MoltenRotorScenes {
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -128.0F
         );
 
@@ -196,9 +196,9 @@ public final class MoltenRotorScenes {
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -256.0F
         );
 
@@ -251,43 +251,43 @@ public final class MoltenRotorScenes {
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.MEDIUM)
-                .pointAt(util.vector().centerOf(rightShaftPos))
+                .pointAt(util.vector().centerOf(eastShaftPos))
                 .placeNearTarget();
 
         scene.idle(35);
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -128.0F
         );
         scene.idle(25);
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -64.0F
         );
         scene.idle(25);
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 -32.0F
         );
         scene.idle(25);
 
         scene.world().setKineticSpeed(
                 util.select()
-                        .position(leftShaftPos)
+                        .position(westShaftPos)
                         .add(util.select().position(furnacePos))
-                        .add(util.select().position(rightShaftPos)),
+                        .add(util.select().position(eastShaftPos)),
                 0.0F
         );
 

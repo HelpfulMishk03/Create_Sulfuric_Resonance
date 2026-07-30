@@ -1,45 +1,26 @@
-# Create: Sulfuric Resonance
+## Create: Sulfuric Resonance
 
-**Create: Sulfuric Resonance** is an independently developed NeoForge addon for Create that expands Minecraft's combustion, heat generation, sulfur chemistry, sulfuric acid, rubber processing, kinetic machinery, and industrial automation systems.
+**Create: Sulfuric Resonance** is an independently developed NeoForge addon for Create that expands combustion, kinetic heat generation, Sulfur chemistry, Sulfuric Acid processing, rubber engineering, and industrial automation.
 
-> **Beta notice:** Version **0.0.2.4-beta** is a public-beta candidate. Core systems are functional and extensively tested, but balancing, recipes, visuals, and compatibility may still change before a stable release.
+> **Beta notice:** Version **0.0.2.5-beta** is a public beta release. Core systems are functional and tested, but balancing, recipes, visuals, names, and compatibility may still change before a stable release. Back up important worlds before updating beta versions.
 
 ## Supported Versions
 
 - Minecraft **1.21.1**
-- NeoForge **21.1.243 or newer** within the supported Minecraft 1.21.1 range
+- NeoForge **21.1.247**
 - Create **6.0.10 or newer**
 - Java **21**
-- JEI **19.39.0.372 or newer** — optional, client-side
+- JEI **19.39.0.372 or newer** — optional and client-side
 
-> **JEI compatibility notice:** JEI **19.39.0.379 and newer** may show blank fluid textures in Combustion Mixing recipes. The recipe, tooltip, and fluid amount can still be registered correctly.
-
-The current beta has also been tested with:
-
-- NeoForge **21.1.244**
-- Create **6.0.10**
-- JEI **19.42.0.384**
+> **JEI compatibility notice:** Some JEI builds may render blank fluid textures in Combustion Mixing recipes. The recipe, tooltip, and fluid amount can still be registered correctly.
 
 ## Development Status
 
-> **Public beta:** Version **0.0.2.4-beta** is feature-complete enough for public testing, but it is not a final stable release. Core mechanics are working and have been extensively tested; balancing, recipes, visuals, compatibility, names, and implementation details may still change as the project matures.
+> **Public beta:** `0.0.2.5-beta` expands the mod's compatibility, player guidance, and early progression presentation. It is not yet a final stable release.
 
-Create: Sulfuric Resonance is my first major Minecraft mod project. Development has taken approximately eight months of active work, not including an extended break caused by unforeseen life emergencies. Feedback and clear bug reports are appreciated, but updates may take time.
+Create: Sulfuric Resonance is a solo project. Feedback and clear bug reports are appreciated, though updates may take time.
 
 Release-by-release additions and fixes are documented in [CHANGELOG.md](src/main/resources/CHANGELOG.md).
-
-## Testing Status
-
-The `0.0.2.4-beta` pre-release test pass currently records:
-
-- **416 / 416 checks completed**
-- **412 passed**
-- **0 failed**
-- **4 marked for final review**
-
-The review items covered dropped-item model positioning, furnace side-click behavior, insertion sounds, and JEI fluid-slot rendering. Side-click behavior and insertion sounds have since been updated.
-
-The Molten Rotor Furnace Ponder scene and the Pyroclast Bomb's hand-thrown and Potato Cannon behavior have also been verified in game.
 
 ## Current Features
 
@@ -51,23 +32,40 @@ Major capabilities include:
 
 - temperature-based RPM and stress generation;
 - multiple heat tiers;
-- visible and queued fuel handling;
 - manual and automated fuel insertion;
 - Create-goggle diagnostics;
-- rain-sensitive temperature behavior;
+- rain-sensitive temperature behaviour;
 - creative heat-tier cycling;
-- high-tier fuel boosts;
-- custom block-entity rendering;
-- world-reload persistence;
-- a detailed Ponder tutorial for heat, RPM, stress output, the gauge, and cooldown behavior.
+- custom block-entity rendering and persistence;
+- a detailed Ponder scene covering heat tiers, RPM, stress output, the gauge, and cooldown behaviour.
 
 ### Combustion Mixing
 
-Combustion Mixing extends Create's Basin processing with recipes that require the Molten Rotor Furnace's higher heat tiers.
+Combustion Mixing extends Create Basin processing with recipes that require the Molten Rotor Furnace's highest heat tiers.
+
+### Sulfur and Cross-Mod Compatibility
+
+Sulfuric Resonance uses common tags to recognise compatible processed Sulfur from other mods.
+
+- Supported sulfur-processing inputs include compatible `c:sulfur` items and `c:dusts/sulfur` dusts.
+- Sulfuric Acid uses shared common fluid and bucket tags.
+- Sulfur storage blocks use common storage-block tags.
+- Raw ores, raw chunks, and storage blocks are intentionally not treated as processed Sulfur inputs.
+- Materials using private or missing tags may need dedicated compatibility support.
+
+`0.0.2.5-beta` has been verified with:
+
+- TFMG Sulfur Dust;
+- TFMG Sulfuric Acid;
+- Butchery Sulfur;
+- Railcraft Reborn Sulfur Dust.
 
 ### Sulfuric Acid
 
-Sulfuric Acid is a hazardous industrial fluid with custom effects, particles, fluid reactions, bucket support, and processing uses.
+Sulfuric Acid is a hazardous industrial fluid with custom effects, particles, reactions, bucket support, and processing uses.
+
+- Create filling and emptying recipes support the Sulfuric Acid Bucket.
+- Tooltips communicate corrosive handling, fluid/bucket compatibility, industrial uses, and water/lava reactions.
 
 ### Rubber and Mechanical Components
 
@@ -86,7 +84,20 @@ Its Ponder coverage includes:
 
 ### Pyroclast Bomb
 
-The Pyroclast Bomb can be thrown by hand or launched through Create's Potato Cannon. Its two launch methods use separately balanced velocities while sharing the same projectile and explosion behavior.
+The Pyroclast Bomb can be thrown by hand or launched through Create's Potato Cannon. Its two launch methods use separately balanced velocities while sharing the same projectile and explosion behaviour.
+
+### Advancements
+
+The first Sulfuric Resonance advancement path now guides early progression:
+
+- **Sulfurous Beginnings** — Obtain Sulfur.
+- **Shattered Power** — Obtain Blaze Shards and craft the Infernal Impeller.
+- **I'm Flattered..** — Obtain Spent Ash.
+- **You're on Fire** — Obtain a Flameborne Core.
+- **Woah.. How Do I Use This Thing?** — Obtain the Molten Rotor Furnace.
+- **Controlled Chemistry** — Process Sulfur in Combustion Mixing.
+- **Industrial Allies** — Use compatible Sulfur from another mod.
+- **Pyro** — Obtain and fire the Pyroclast Bomb from a Potato Cannon.
 
 ### Ponder
 
@@ -94,14 +105,15 @@ Ponder scenes are included for:
 
 - Perforated Spritzer operation;
 - Perforated Spritzer mob automation;
-- Molten Rotor Furnace operation, heat progression, kinetic output, gauge behavior, and cooldown.
+- Molten Rotor Furnace operation, heat progression, kinetic output, gauge behaviour, and cooldown;
+- Cross-Mod Sulfur Compatibility, explaining accepted common tags and processed external Sulfur inputs.
 
-Ponder text is currently supplied for American English, British English, and Spanish.
+Ponder text is supplied for American English, British English, and Spanish.
 
 ## Installation
 
 1. Install Minecraft **1.21.1**.
-2. Install NeoForge **21.1.243 or newer** for Minecraft 1.21.1.
+2. Install NeoForge **21.1.247** for Minecraft 1.21.1.
 3. Install Create **6.0.10 or newer**.
 4. Optionally install JEI **19.39.0.372 or newer** for recipe viewing.
 5. Download Create: Sulfuric Resonance from CurseForge or Modrinth.
@@ -112,30 +124,23 @@ Do not install development source folders or an embedded Create dependency. Crea
 ## Known Beta Limitations
 
 - JEI is optional and client-side only.
-- Some JEI builds may render blank Combustion Mixing fluid slots even when the recipe data is present.
-- The Molten Rotor and Perforated Spritzer dropped-item model positions may still receive final visual adjustment.
+- Some JEI builds may render blank Combustion Mixing fluid slots even when recipe data is present.
 - Fuel compatibility is tag-aware but is not completely data-driven for every modded furnace fuel.
 - Not every modded log is automatically accepted for latex processing.
 - Some modded wooden fuels may require explicit tag or compatibility support.
 - Recipe balance and heat values may change during beta testing.
 - Minecraft block light is omnidirectional; furnace visuals can imitate directional glow, but actual block-light propagation is not directional.
-- Additional Ponder scenes and recipe explanations may still be added.
 
 ## Planned Work
 
 - Expand data-driven and tag-based fuel profiles where they make sense.
 - Add broader compatibility with Create addons and selected modded fuels.
 - Continue Molten Rotor visual and balance polish.
-- Expand Lye, latex, rubber, and vulcanization progression.
-- Add more combustion and Sulfuric Acid recipes.
-- Add further Ponder coverage for advanced mechanics.
+- Expand Lye, latex, rubber, and vulcanisation progression.
+- Add more Combustion and Sulfuric Acid recipes.
 - Continue dedicated-server and large-modpack compatibility testing.
 - Add EMI support.
-- New machinery and mechanics yet to come
-
-## Final Note
-
-- This mod is self developed, by a single person, so please do be patient when waiting for new releases, as life does happen, and things can pop up at any moment. Have fun!
+- Introduce new machinery and later material tiers.
 
 ## License and Distribution
 
