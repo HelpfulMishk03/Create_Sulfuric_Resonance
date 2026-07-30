@@ -28,7 +28,7 @@ final NamedDomainObjectProvider<SourceSet> mainSourceSetProvider =
 
 final def generatedResourcesDir = layout.projectDirectory.dir('src/generated/resources')
 final def existingResourcesDir = layout.projectDirectory.dir('src/main/resources')
-final def clientRunDir = layout.projectDirectory.dir('runs/client')
+final def clientRunDir = layout.projectDirectory.dir('runs/client-0.0.2.5-beta-dev')
 final def serverRunDir = layout.projectDirectory.dir('runs/server')
 final def dataRunDir = layout.projectDirectory.dir('runs/data')
 
