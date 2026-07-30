@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:youre_on_fire",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:molten_rotor_furnace"
+    },
+    "title": {
+      "text": "Woah.. How Do I Use This Thing?"
+    },
+    "description": {
+      "text": "Obtain the Molten Rotor Furnace."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_molten_rotor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:molten_rotor_furnace"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

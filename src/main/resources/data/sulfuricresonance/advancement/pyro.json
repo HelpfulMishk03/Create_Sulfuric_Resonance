@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:controlled_chemistry",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:pyroclast_bomb"
+    },
+    "title": {
+      "text": "Pyro"
+    },
+    "description": {
+      "text": "Obtain and fire a Pyroclast Bomb from a Create Potato Cannon."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_pyroclast_bomb": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:pyroclast_bomb"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

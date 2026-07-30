@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:woah_how_do_i_use_this",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:sulfuric_acid_bucket"
+    },
+    "title": {
+      "text": "Controlled Chemistry"
+    },
+    "description": {
+      "text": "Produce Sulfuric Acid through controlled combustion chemistry."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_sulfuric_acid": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:sulfuric_acid_bucket"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

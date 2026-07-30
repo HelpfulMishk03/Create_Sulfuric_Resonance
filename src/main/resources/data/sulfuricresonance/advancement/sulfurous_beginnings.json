@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:sulfur"
+    },
+    "title": {
+      "text": "Sulfurous Beginnings"
+    },
+    "description": {
+      "text": "Obtain Sulfur for the first time."
+    },
+    "background": "sulfuricresonance:textures/gui/advancements/backgrounds/sulfur_resonance.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_sulfur": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:sulfur"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

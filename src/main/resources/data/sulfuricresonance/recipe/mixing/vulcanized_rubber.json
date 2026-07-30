@@ -15,10 +15,10 @@
       "item": "sulfuricresonance:unrefined_rubber"
     },
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
       "item": "minecraft:black_dye"

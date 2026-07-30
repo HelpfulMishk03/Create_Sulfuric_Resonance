@@ -3,16 +3,16 @@
   "heat_requirement": "superheated",
   "ingredients": [
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
-      "item": "sulfuricresonance:sulfur"
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
     },
     {
       "type": "neoforge:single",

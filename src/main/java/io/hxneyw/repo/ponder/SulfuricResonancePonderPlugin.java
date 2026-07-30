@@ -62,8 +62,20 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                     new ResourceLocation[]{}
             );
 
+            ResourceLocation sulfurId = ResourceLocation.fromNamespaceAndPath(
+                    CreateSulfuricResonance.MODID,
+                    "sulfur"
+            );
+
+            helper.addStoryBoard(
+                    sulfurId,
+                    "sulfur/compatibility",
+                    SulfurScenes::compatibility,
+                    new ResourceLocation[]{}
+            );
+
             CreateSulfuricResonance.LOGGER.info(
-                    "Successfully registered 3 Ponder scenes"
+                    "Successfully registered 4 Ponder scenes"
             );
         } catch (Exception exception) {
             CreateSulfuricResonance.LOGGER.error(
@@ -72,6 +84,8 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
             );
         }
     }
+
+
 
     @Override
     public void registerTags(

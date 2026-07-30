@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    },
+    {
+      "tag": "sulfuricresonance:sulfur_processing_inputs"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:sulfur_block",
+    "count": 1
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:shattered_power",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:spent_ash"
+    },
+    "title": {
+      "text": "I'm Flattered.."
+    },
+    "description": {
+      "text": "Obtain Spent Ash for the first time."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_spent_ash": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:spent_ash"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
