@@ -20,7 +20,7 @@ import java.util.List;
         modid = "sulfuricresonance",
         value = Dist.CLIENT
 )
-public class UniversalTooltipHandler {
+public class AddSulfuricResonanceTooltip {
 
    @SubscribeEvent
    public static void onItemTooltip(ItemTooltipEvent event) {
@@ -95,6 +95,8 @@ public class UniversalTooltipHandler {
          }
       }
 
+
+
       if (!lines.isEmpty()) {
          event.getToolTip().addAll(1, lines);
       }
@@ -110,6 +112,31 @@ public class UniversalTooltipHandler {
                     Component.literal("c:buckets/sulfuric_acid")
                             .withStyle(ChatFormatting.DARK_AQUA)
             );
+            case "spent_ash" -> lines.add(
+                    Component.translatable(
+                            "tooltip.sulfuricresonance.spent_ash"
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+
+            case "ash_ceramic" -> lines.add(
+                    Component.translatable(
+                            "tooltip.sulfuricresonance.ash_ceramic"
+                    ).withStyle(ChatFormatting.GRAY)
+            );
+
+            case "ash_brick" -> {
+               lines.add(
+                       Component.translatable(
+                               "tooltip.sulfuricresonance.ash_brick.1"
+                       ).withStyle(ChatFormatting.GRAY)
+               );
+
+               lines.add(
+                       Component.translatable(
+                               "tooltip.sulfuricresonance.ash_brick.2"
+                       ).withStyle(ChatFormatting.DARK_GRAY)
+               );
+            }
          }
       }
    }
