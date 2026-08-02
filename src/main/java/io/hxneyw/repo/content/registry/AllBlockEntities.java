@@ -1,6 +1,8 @@
 package io.hxneyw.repo.content.registry;
 
 import io.hxneyw.repo.CreateSulfuricResonance;
+import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
+import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import net.minecraft.core.Direction;
@@ -8,6 +10,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.Builder;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -26,6 +29,20 @@ public class AllBlockEntities {
                    AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
            ).build(null)
    );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<AshCeramicCrucibleBlockEntity>
+           > ASH_CERAMIC_CRUCIBLE = BLOCK_ENTITIES.register(
+           "ash_ceramic_crucible",
+           () -> Builder.of(
+                   AshCeramicCrucibleBlockEntity::new,
+                   AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
+           ).build(null)
+   );
+
+
+
    public static final DeferredHolder<
            BlockEntityType<?>,
            BlockEntityType<PerforatedSpritzerBlockEntity>
@@ -35,7 +52,20 @@ public class AllBlockEntities {
                    PerforatedSpritzerBlockEntity::new,
                    AllModBlocks.PERFORATED_SPRITZER.get()
            ).build(null)
+
    );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<LivingEmberLampBlockEntity>
+           > LIVING_EMBER_LAMP = BLOCK_ENTITIES.register(
+           "living_ember_lamp",
+           () -> Builder.of(
+                   LivingEmberLampBlockEntity::new,
+                   AllModBlocks.LIVING_EMBER_LAMP.get()
+           ).build(null)
+   );
+
 
    public static void register(IEventBus eventBus) {
       BLOCK_ENTITIES.register(eventBus);
@@ -54,7 +84,22 @@ public class AllBlockEntities {
 
             return blockEntity.fluidCapability;
          }
+
+
+
       });
+
+      event.registerBlockEntity(
+              Capabilities.ItemHandler.BLOCK,
+              ASH_CERAMIC_CRUCIBLE.get(),
+              (blockEntity, side) -> blockEntity.getItemCapability()
+      );
+
+      event.registerBlockEntity(
+              FluidHandler.BLOCK,
+              ASH_CERAMIC_CRUCIBLE.get(),
+              (blockEntity, side) -> blockEntity.getFluidCapability()
+      );
       CreateSulfuricResonance.LOGGER.info("Registered capabilities for block entities");
    }
 }

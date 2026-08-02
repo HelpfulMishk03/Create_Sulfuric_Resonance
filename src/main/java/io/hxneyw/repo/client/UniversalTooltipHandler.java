@@ -20,7 +20,7 @@ import java.util.List;
         modid = "sulfuricresonance",
         value = Dist.CLIENT
 )
-public class AddSulfuricResonanceTooltip {
+public class UniversalTooltipHandler {
 
    @SubscribeEvent
    public static void onItemTooltip(ItemTooltipEvent event) {
@@ -93,7 +93,45 @@ public class AddSulfuricResonanceTooltip {
                     "tooltip.sulfuricresonance.acid.warning"
             ).withStyle(ChatFormatting.RED));
          }
+
+         case "spent_ash" -> lines.add(
+                 Component.translatable(
+                         "tooltip.sulfuricresonance.spent_ash"
+                 ).withStyle(ChatFormatting.GRAY)
+         );
+
+         case "ash_ceramic" -> lines.add(
+                 Component.translatable(
+                         "tooltip.sulfuricresonance.ash_ceramic"
+                 ).withStyle(ChatFormatting.GRAY)
+         );
+
+         case "ash_brick" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.ash_brick.1"
+            ).withStyle(ChatFormatting.GRAY));
+
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.ash_brick.2"
+            ).withStyle(ChatFormatting.DARK_GRAY));
+         }
+         case "cinder_fuel_briquette" -> lines.add(Component.translatable(
+                 "tooltip.sulfuricresonance.cinder_fuel_briquette.1"
+         ).withStyle(ChatFormatting.GRAY));
+         case "cinder_sandpaper" ->
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.cinder_sandpaper.1"
+            ).withStyle(ChatFormatting.GRAY));
+
+         case "ash_ceramic_crucible" -> lines.add(
+                 Component.translatable(
+                         "tooltip.sulfuricresonance.ash_ceramic_crucible"
+                 ).withStyle(ChatFormatting.GRAY)
+         );
+
       }
+
+
 
 
 
@@ -112,31 +150,9 @@ public class AddSulfuricResonanceTooltip {
                     Component.literal("c:buckets/sulfuric_acid")
                             .withStyle(ChatFormatting.DARK_AQUA)
             );
-            case "spent_ash" -> lines.add(
-                    Component.translatable(
-                            "tooltip.sulfuricresonance.spent_ash"
-                    ).withStyle(ChatFormatting.GRAY)
-            );
 
-            case "ash_ceramic" -> lines.add(
-                    Component.translatable(
-                            "tooltip.sulfuricresonance.ash_ceramic"
-                    ).withStyle(ChatFormatting.GRAY)
-            );
 
-            case "ash_brick" -> {
-               lines.add(
-                       Component.translatable(
-                               "tooltip.sulfuricresonance.ash_brick.1"
-                       ).withStyle(ChatFormatting.GRAY)
-               );
 
-               lines.add(
-                       Component.translatable(
-                               "tooltip.sulfuricresonance.ash_brick.2"
-                       ).withStyle(ChatFormatting.DARK_GRAY)
-               );
-            }
          }
       }
    }

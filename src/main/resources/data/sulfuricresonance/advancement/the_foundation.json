@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:heatproof",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:ash_ceramic_crucible"
+    },
+    "title": {
+      "text": "The Foundation"
+    },
+    "description": {
+      "text": "With the Ash Ceramic you've obtained, craft a heatproof Ceramic Crucible."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_ceramic_crucible": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:ash_ceramic_crucible"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

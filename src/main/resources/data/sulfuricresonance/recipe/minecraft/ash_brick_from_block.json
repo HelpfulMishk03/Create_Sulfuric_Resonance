@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:ash_brick_block"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:ash_brick",
+    "count": 4
+  }
+}

@@ -29,6 +29,56 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
       return ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "jei_plugin");
    }
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   private static final mezz.jei.api.recipe.RecipeType<
+           RecipeHolder<BasinRecipe>
+           > CREATE_MIXING =
+           mezz.jei.api.recipe.RecipeType.create(
+                   "create",
+                   "mixing",
+                   (Class) RecipeHolder.class
+           );
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   private static final mezz.jei.api.recipe.RecipeType<
+           RecipeHolder<BasinRecipe>
+           > CREATE_PACKING =
+           mezz.jei.api.recipe.RecipeType.create(
+                   "create",
+                   "packing",
+                   (Class) RecipeHolder.class
+           );
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   private static final mezz.jei.api.recipe.RecipeType<
+           RecipeHolder<BasinRecipe>
+           > CREATE_AUTOMATIC_SHAPELESS =
+           mezz.jei.api.recipe.RecipeType.create(
+                   "create",
+                   "automatic_shapeless",
+                   (Class) RecipeHolder.class
+           );
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   private static final mezz.jei.api.recipe.RecipeType<
+           RecipeHolder<BasinRecipe>
+           > CREATE_AUTOMATIC_BREWING =
+           mezz.jei.api.recipe.RecipeType.create(
+                   "create",
+                   "automatic_brewing",
+                   (Class) RecipeHolder.class
+           );
+
+   @SuppressWarnings({"unchecked", "rawtypes"})
+   private static final mezz.jei.api.recipe.RecipeType<
+           RecipeHolder<BasinRecipe>
+           > CREATE_AUTOMATIC_PACKING =
+           mezz.jei.api.recipe.RecipeType.create(
+                   "create",
+                   "automatic_packing",
+                   (Class) RecipeHolder.class
+           );
+
    @Override
    public void registerCategories(IRecipeCategoryRegistration registration) {
       Info<BasinRecipe> categoryInfo = new Info<>(
@@ -61,18 +111,54 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
    public void registerRecipeCatalysts(
            IRecipeCatalystRegistration registration
    ) {
+      ItemStack crucible =
+              new ItemStack(
+                      AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
+              );
+
+
+      registration.addRecipeCatalyst(
+              crucible,
+              CREATE_MIXING
+      );
+
+
+      registration.addRecipeCatalyst(
+              crucible,
+              CREATE_PACKING
+      );
+
+      registration.addRecipeCatalyst(
+              crucible,
+              CREATE_AUTOMATIC_SHAPELESS
+      );
+
+      registration.addRecipeCatalyst(
+              crucible,
+              CREATE_AUTOMATIC_BREWING
+      );
+
+      registration.addRecipeCatalyst(
+              crucible,
+              CREATE_AUTOMATIC_PACKING
+      );
+
+      // Only the Crucible is a valid combustion processing vessel.
+      registration.addRecipeCatalyst(
+              crucible,
+              CombustionMixingCategory.RECIPE_TYPE
+      );
+
+      // Machinery required to perform combustion mixing.
       registration.addRecipeCatalyst(
               new ItemStack(AllBlocks.MECHANICAL_MIXER.get()),
               CombustionMixingCategory.RECIPE_TYPE
       );
 
       registration.addRecipeCatalyst(
-              new ItemStack(AllBlocks.BASIN.get()),
-              CombustionMixingCategory.RECIPE_TYPE
-      );
-
-      registration.addRecipeCatalyst(
-              new ItemStack(AllModBlocks.MOLTEN_ROTOR_FURNACE.get()),
+              new ItemStack(
+                      AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+              ),
               CombustionMixingCategory.RECIPE_TYPE
       );
    }

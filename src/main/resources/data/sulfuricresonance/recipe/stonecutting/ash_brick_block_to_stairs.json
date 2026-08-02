@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": { "item": "sulfuricresonance:ash_brick_block" },
+  "result": { "id": "sulfuricresonance:ash_brick_stairs", "count": 1 }
+}

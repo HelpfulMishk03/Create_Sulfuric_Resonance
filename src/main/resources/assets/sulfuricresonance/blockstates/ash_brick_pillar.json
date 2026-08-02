@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "sulfuricresonance:block/ash_brick_pillar"
+    },
+    "axis=z": {
+      "model": "sulfuricresonance:block/ash_brick_pillar",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "sulfuricresonance:block/ash_brick_pillar",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

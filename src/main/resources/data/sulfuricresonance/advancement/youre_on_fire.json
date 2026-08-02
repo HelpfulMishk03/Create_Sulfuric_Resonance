@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:im_flattered",
+  "parent": "sulfuricresonance:embersol_discovery",
   "display": {
     "icon": {
       "id": "sulfuricresonance:flameborne_core"
@@ -8,9 +8,9 @@
       "text": "You're on Fire"
     },
     "description": {
-      "text": "Obtain a Flameborne Core."
+      "text": "Obtain a Flameborne Core —the heart of greater heat still to come."
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

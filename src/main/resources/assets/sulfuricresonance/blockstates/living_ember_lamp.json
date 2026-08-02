@@ -1,0 +1,9 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "sulfuricresonance:block/living_ember_lamp"
+      }
+    }
+  ]
+}

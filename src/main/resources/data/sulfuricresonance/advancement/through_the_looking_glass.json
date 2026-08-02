@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:heatproof",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:ashesil"
+    },
+    "title": {
+      "text": "Through the Looking Glass"
+    },
+    "description": {
+      "text": "Produce Ashesil through heated mixing"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_ashesil": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:ashesil"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

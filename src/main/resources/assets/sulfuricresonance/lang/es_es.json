@@ -1,5 +1,5 @@
 {
-  "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Resonancia Sulfúrica",
+  "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
 
   "item.sulfuricresonance.sulfur": "Azufre",
   "item.sulfuricresonance.netherwood_dust": "Polvo de madera del Nether",
@@ -29,7 +29,17 @@
   "block.sulfuricresonance.molten_rotor_furnace": "Horno de rotor fundido",
   "block.sulfuricresonance.sulfur_block": "Bloque de azufre",
   "block.sulfuricresonance.rubber_padding": "Acolchado de caucho",
-
+  "block.sulfuricresonance.ash_brick_block": "Ladrillos de ceniza",
+  "block.sulfuricresonance.ash_brick_slab": "Losa de ladrillos de ceniza",
+  "block.sulfuricresonance.ash_brick_stairs": "Escaleras de ladrillos de ceniza",
+  "block.sulfuricresonance.ash_brick_wall": "Muro de ladrillos de ceniza",
+  "block.sulfuricresonance.ash_brick_pillar": "Pilar de ladrillos de ceniza",
+  "block.sulfuricresonance.ash_ceramic_crucible": "Crisol de cerámica",
+  "tooltip.sulfuricresonance.ash_ceramic_crucible": "Se utiliza como recipiente de procesamiento para recetas de combustión.",
+  "item.sulfuricresonance.cinder_fuel_briquette": "Briqueta de combustible de rescoldo",
+  "tooltip.sulfuricresonance.cinder_fuel_briquette.1": "Combustible comprimido reforzado con compuesto de rescoldo, Arde un 50 % más que el carbón vegetal",
+  "item.sulfuricresonance.cinder_sandpaper": "Papel de lija de escoria",
+  "tooltip.sulfuricresonance.cinder_sandpaper.1": "Una lámina abrasiva reforzada con compuesto de escoria, dos veces más duradera que el papel de lija rojo",
   "recipe.sulfuricresonance.combustion_mixing": "Mezcla por combustión",
   "create.recipe.heat_requirement.radiant": "Combustión",
 
@@ -38,6 +48,11 @@
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour1": "Anula el _daño por caída_ de las entidades",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Rebota _objetos_ de forma predecible",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Mantiene el _impulso horizontal_",
+
+  "tooltip.sulfuricresonance.spent_ash": "Útil para tintes, cerámica, construcción y química futura",
+  "tooltip.sulfuricresonance.ash_ceramic": "Se utiliza en recipientes industriales y futuros equipos",
+  "tooltip.sulfuricresonance.ash_brick.1": "Un ladrillo resistente hecho de ceniza residual y arcilla",
+  "tooltip.sulfuricresonance.ash_brick.2": "Se utiliza para construcciones a base de ceniza",
 
   "tooltip.sulfuricresonance.sulfur.reactive": "Material industrial reactivo",
   "tooltip.sulfuricresonance.sulfur.uses": "Se utiliza en química del azufre, caucho, combustión y producción de ácido sulfúrico",
@@ -84,8 +99,7 @@
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_8": "Elige el fluido suministrado para dañar mobs, prenderles fuego o extinguir las llamas",
 
   "sulfuricresonance.ponder.tag.fluids": "Manejo de fluidos",
-  "sulfuricresonance.ponder.tag.fluids.description": "Componentes que manejan fluidos en Resonancia Sulfúrica",
-  "subtitles.sulfuricresonance.log_insert": "Tronco añadido",
+  "sulfuricresonance.ponder.tag.fluids.description": "Componentes que manejan fluidos en Sulfuric Resonance",
   "subtitles.sulfuricresonance.rubber_padding_hit": "Golpe en acolchado de caucho",
 
   "sulfuricresonance.ponder.molten_rotor.header": "Horno de rotor fundido",
@@ -107,5 +121,30 @@
   "sulfuricresonance.ponder.sulfur.compatibility.text_2": "Los objetos de azufre compatibles usan c:sulfur; los polvos de azufre compatibles usan c:dusts/sulfur",
   "sulfuricresonance.ponder.sulfur.compatibility.text_3": "El azufre procesado y etiquetado correctamente de otros mods puede sustituir al azufre de Sulfuric Resonance",
   "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Los minerales, fragmentos en bruto y bloques de almacenamiento no se consideran entradas de azufre procesado",
-  "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Los materiales que usan etiquetas privadas o inexistentes pueden necesitar compatibilidad específica"
+  "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Los materiales que usan etiquetas privadas o inexistentes pueden necesitar compatibilidad específica",
+
+  "block.sulfuricresonance.ashesil": "Ashesil",
+  "block.sulfuricresonance.ashesil_pane": "Panel de Ashesil",
+  "block.sulfuricresonance.living_ember_lamp": "Lámpara de brasa viviente",
+  "item.sulfuricresonance.ash_brick": "Ladrillo de ceniza",
+  "item.sulfuricresonance.ash_ceramic": "Cerámica de ceniza",
+  "message.sulfuricresonance.living_ember_lamp.linked": "Lámpara de brasa viviente vinculada al horno en %s, %s, %s",
+  "subtitles.sulfuricresonance.molten_rotor_rumble": "El rotor fundido retumba",
+  "tooltip.sulfuricresonance.cinder_fuel_briquette.2": "Arde un 50 % más que el carbón vegetal",
+  "tooltip.sulfuricresonance.living_ember_lamp.unlinked": "Haz clic derecho en un horno de rotor fundido para configurarla",
+  "tooltip.sulfuricresonance.living_ember_lamp.linked": "Horno vinculado: %s, %s, %s",
+  "tooltip.sulfuricresonance.living_ember_lamp.dimension": "Dimensión: %s",
+  "sulfuricresonance.ponder.living_ember_lamp.header": "Lámpara de brasa viviente",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.header": "Vinculación y lectura de la lámpara de brasa viviente",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_1": "La lámpara de brasa viviente muestra a distancia el calor y el estado del combustible de un horno de rotor fundido",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_2": "Antes de colocarla, haz clic derecho en el horno mientras sostienes la lámpara",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Las coordenadas y la dimensión seleccionadas se guardan en el objeto y aparecen en su descripción",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Una vez colocada, la lámpara solo vigila el horno seleccionado mediante el vínculo guardado",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_5": "Un horno frío o inactivo mantiene la lámpara apagada en el nivel 0",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_6": "El calor decreciente o humeante eleva suavemente la lámpara al nivel 7",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_7": "El calor encendido o ardiente la eleva suavemente al nivel 11",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_8": "Con calor radiante, la lámpara alcanza su brillo estable de nivel 13",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Cuando quedan 200 tics de combustible o menos, una lámpara caliente avisa pulsando visiblemente entre los niveles 9 y 15",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Si el horno vinculado se retira, se descarga o está en otra dimensión, la lámpara se desvanece de forma segura hasta apagarse",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Vuelve a vincular el objeto de la lámpara antes de colocarlo junto a otro horno"
 }

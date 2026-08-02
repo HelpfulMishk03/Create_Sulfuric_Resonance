@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:woah_how_do_i_use_this",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:sulfur"
+    },
+    "title": {
+      "text": "Sulfurous Beginnings"
+    },
+    "description": {
+      "text": "Obtain Sulfur for the first time."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_sulfur": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:sulfur"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:reinforced_cinder_compound"
+    },
+    {
+      "item": "minecraft:paper"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:cinder_sandpaper",
+    "count": 1
+  }
+}

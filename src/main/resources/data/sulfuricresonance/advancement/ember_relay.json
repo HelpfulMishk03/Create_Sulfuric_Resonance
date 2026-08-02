@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:through_the_looking_glass",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:living_ember_lamp"
+    },
+    "title": {
+      "text": "Ember Relay"
+    },
+    "description": {
+      "text": "Craft a Living Ember Lamp to monitor a Molten Rotor Furnace from afar."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_lamp": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:living_ember_lamp"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

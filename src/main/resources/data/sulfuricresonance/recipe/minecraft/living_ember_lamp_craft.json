@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " C ",
+    "ABA",
+    "DCD"
+  ],
+  "key": {
+    "A": {
+      "item": "sulfuricresonance:ashesil"
+    },
+    "B": {
+      "item": "sulfuricresonance:embersol"
+    },
+    "C": {
+      "item": "create:sturdy_sheet"
+    },
+    "D": {
+      "item": "create:metal_girder"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:living_ember_lamp",
+    "count": 1
+  }
+}

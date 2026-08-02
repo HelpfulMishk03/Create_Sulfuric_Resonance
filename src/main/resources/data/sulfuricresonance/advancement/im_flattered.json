@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:shattered_power",
+  "parent": "sulfuricresonance:embersol_discovery",
   "display": {
     "icon": {
       "id": "sulfuricresonance:spent_ash"
@@ -8,7 +8,7 @@
       "text": "I'm Flattered.."
     },
     "description": {
-      "text": "Obtain Spent Ash for the first time."
+      "text": "Obtain Spent Ash, a seemingly useless byproduct —or so it appears."
     },
     "frame": "task",
     "show_toast": true,
