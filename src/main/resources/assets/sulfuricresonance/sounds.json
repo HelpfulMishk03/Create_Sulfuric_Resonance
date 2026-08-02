@@ -1,10 +1,16 @@
 {
-  "log_insert": {
-    "subtitle": "subtitles.sulfuricresonance.log_insert",
-    "sounds": ["sulfuricresonance:log_insert"]
-  },
   "rubber_padding_hit": {
     "subtitle": "subtitles.sulfuricresonance.rubber_padding_hit",
     "sounds": ["sulfuricresonance:rubber_padding_hit"]
+  },
+  "molten_rotor_rumble": {
+    "subtitle": "subtitles.sulfuricresonance.molten_rotor_rumble",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:molten_rotor_rumble",
+        "stream": true,
+        "attenuation_distance": 16
+      }
+    ]
   }
 }

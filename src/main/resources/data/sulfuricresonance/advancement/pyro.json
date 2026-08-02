@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:controlled_chemistry",
+  "parent": "sulfuricresonance:sulfurous_beginnings",
   "display": {
     "icon": {
       "id": "sulfuricresonance:pyroclast_bomb"
@@ -8,9 +8,9 @@
       "text": "Pyro"
     },
     "description": {
-      "text": "Obtain and fire a Pyroclast Bomb from a Create Potato Cannon."
+      "text": "Craft a Pyroclast Bomb and discover its explosive potential."
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

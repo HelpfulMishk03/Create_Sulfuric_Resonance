@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "type=bottom": { "model": "sulfuricresonance:block/ash_brick_slab" },
+    "type=top": { "model": "sulfuricresonance:block/ash_brick_slab_top" },
+    "type=double": { "model": "sulfuricresonance:block/ash_brick_block" }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:ash_ceramic"
+    },
+    {
+      "item": "sulfuricresonance:ash_ceramic"
+    },
+    {
+      "item": "minecraft:sand"
+    },
+    {
+      "item": "minecraft:sand"
+    }
+  ],
+  "processing_time": 175,
+  "results": [
+    {
+      "id": "sulfuricresonance:ashesil",
+      "amount": 1
+    },
+    {
+      "id": "sulfuricresonance:ashesil",
+      "amount": 1
+    }
+  ]
+}

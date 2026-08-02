@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "sulfuricresonance:block/ashesil"
+  },
+  "render_type": "minecraft:translucent"
+}

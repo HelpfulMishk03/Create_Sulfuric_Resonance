@@ -8,6 +8,9 @@ import io.hxneyw.repo.content.blocks.behaviour.CombustionHeatingBehaviour;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.ModParticles;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,12 +27,18 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
+   private static final String FURNACE_IDENTITY_TAG = "FurnaceIdentity";
+
+   private static Consumer<MoltenRotorBlockEntity> clientSoundTick =
+           blockEntity -> {};
+
    private int clientUpdateCounter = 0;
    private int lastNotifiedFuelCount = 0;
    private MoltenRotorBlockEntity.RotorHeatLevel lastSentHeatTier =
            MoltenRotorBlockEntity.RotorHeatLevel.NONE;
    private boolean creativeMode = false;
    private boolean kineticsInitialized = false;
+   private UUID furnaceIdentity = UUID.randomUUID();
    public int tntCooldown = 0;
 
    private final MoltenRotorFuelController fuelController =
@@ -89,6 +98,16 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this(AllBlockEntities.MOLTEN_ROTOR.get(), pos, state);
    }
 
+   /**
+    * Installed by client-only setup without introducing client classes into
+    * this common block-entity class.
+    */
+   public static void setClientSoundTick(
+           Consumer<MoltenRotorBlockEntity> soundTick
+   ) {
+      clientSoundTick = Objects.requireNonNull(soundTick);
+   }
+
    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
       super.addBehaviours(behaviours);
       behaviours.add(new CombustionHeatingBehaviour(this));
@@ -127,6 +146,14 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public boolean isCreativeMode() {
       return this.creativeMode;
+   }
+
+   /**
+    * Permanently identifies this individual furnace block entity. A furnace
+    * placed later at the same coordinates receives a different identity.
+    */
+   public @NotNull UUID getFurnaceIdentity() {
+      return this.furnaceIdentity;
    }
 
    public float getTotalStressOutput() {
@@ -205,18 +232,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    }
 
    private MoltenRotorBlockEntity.RotorHeatLevel applyNextCreativeTier() {
-      MoltenRotorBlockEntity.RotorHeatLevel previousTier =
-              this.getCurrentHeatTier();
-
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
-              switch (previousTier) {
-                 case NONE, SMOULDERING, FADING ->
-                         MoltenRotorBlockEntity.RotorHeatLevel.SEETHING;
-                 case KINDLED, SEETHING ->
-                         MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
-                 case RADIANT ->
-                         MoltenRotorBlockEntity.RotorHeatLevel.SMOULDERING;
-              };
+      RotorHeatLevel newTier = getNewTier();
 
       float newTemperature = switch (newTier) {
          case SMOULDERING -> 400.0F;
@@ -233,6 +249,20 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return newTier;
    }
 
+   private @NotNull RotorHeatLevel getNewTier() {
+      RotorHeatLevel previousTier =
+              this.getCurrentHeatTier();
+
+       return switch (previousTier) {
+          case NONE, SMOULDERING, FADING ->
+                  RotorHeatLevel.SEETHING;
+          case KINDLED, SEETHING ->
+                  RotorHeatLevel.RADIANT;
+          case RADIANT ->
+                  RotorHeatLevel.SMOULDERING;
+       };
+   }
+
    public void initializeKinetics() {
       if (!this.kineticsInitialized && this.level != null && !this.level.isClientSide) {
          this.kineticsInitialized = true;
@@ -245,7 +275,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    public void tick() {
       super.tick();
 
-      if (this.level != null && !this.level.isClientSide) {
+      if (this.level != null && this.level.isClientSide) {
+         clientSoundTick.accept(this);
+         return;
+      }
+
+      if (this.level != null) {
          if (this.tntCooldown > 0) {
             this.tntCooldown--;
          }
@@ -591,6 +626,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       super.write(tag, provider, clientPacket);
       this.temperatureController.write(tag);
       this.fuelController.write(tag, provider);
+      tag.putUUID(FURNACE_IDENTITY_TAG, this.furnaceIdentity);
       tag.putBoolean("KineticsInit", this.kineticsInitialized);
       tag.putBoolean("CreativeMode", this.creativeMode);
       tag.putInt("LastNotifiedFuel", this.lastNotifiedFuelCount);
@@ -600,6 +636,11 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       super.read(tag, provider, clientPacket);
       this.temperatureController.read(tag);
       this.fuelController.read(tag, provider);
+      if (tag.hasUUID(FURNACE_IDENTITY_TAG)) {
+         this.furnaceIdentity = tag.getUUID(FURNACE_IDENTITY_TAG);
+      } else {
+         this.furnaceIdentity = UUID.randomUUID();
+      }
       this.kineticsInitialized = tag.getBoolean("KineticsInit");
       this.creativeMode = tag.getBoolean("CreativeMode");
       this.lastNotifiedFuelCount = tag.getInt("LastNotifiedFuel");
@@ -712,11 +753,11 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public enum RotorHeatLevel {
       NONE("none", 0, 0, 0.0F, 0.0F, "Unheated"),
-      SMOULDERING("smouldering", 1, 300, 32.0F, 128.0F, "Heated"),
-      FADING("fading", 1, 325, 24.0F, 128.0F, "Heated"),
-      KINDLED("kindled", 2, 650, 64.0F, 1024.0F, "Heated"),
-      SEETHING("seething", 3, 950, 128.0F, 2048.0F, "Superheated"),
-      RADIANT("radiant", 4, 1400, 256.0F, 8192.0F, "Combustion");
+      SMOULDERING("smouldering", 1, 300, 32.0F, 2048.0F, "Heated"),
+      FADING("fading", 1, 325, 24.0F, 2048.0F, "Heated"),
+      KINDLED("kindled", 2, 650, 64.0F, 2048.0F, "Heated"),
+      SEETHING("seething", 3, 950, 128.0F, 8196.0F, "Superheated"),
+      RADIANT("radiant", 4, 1400, 256.0F, 12294.0F, "Combustion");
 
       public final String serializedId;
       public final int rank;

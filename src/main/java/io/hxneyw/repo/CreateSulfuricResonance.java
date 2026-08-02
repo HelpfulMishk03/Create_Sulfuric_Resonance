@@ -8,12 +8,7 @@ import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
-import io.hxneyw.repo.content.registry.AllBlockEntities;
-import io.hxneyw.repo.content.registry.AllModBlocks;
-import io.hxneyw.repo.content.registry.AllModEffects;
-import io.hxneyw.repo.content.registry.AllModFluids;
-import io.hxneyw.repo.content.registry.AllModSounds;
-import io.hxneyw.repo.content.registry.ModParticles;
+import io.hxneyw.repo.content.registry.*;
 import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.neoforged.api.distmarker.Dist;
@@ -53,7 +48,9 @@ public class CreateSulfuricResonance {
       if (FMLEnvironment.dist.isClient()) {
          modEventBus.addListener(AllModFluids::registerFluidExtensions);
       }
-
+      modEventBus.addListener(
+              CinderSandpaperComponents::modifyDefaultComponents
+      );
       AllModEffects.register(modEventBus);
       NeoForge.EVENT_BUS.register(this);
       modContainer.registerConfig(Type.COMMON, Config.SPEC);

@@ -1,13 +1,16 @@
 package io.hxneyw.repo.client;
 
+import com.simibubi.create.content.processing.basin.BasinRenderer;
+import com.simibubi.create.foundation.block.connected.GlassPaneCTBehaviour;
+import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
+import com.simibubi.create.foundation.data.CreateRegistrate;
+import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.particles.AcidDripParticle;
 import io.hxneyw.repo.content.particles.CombustionPurpleFlameParticle;
-import io.hxneyw.repo.content.registry.AllBlockEntities;
-import io.hxneyw.repo.content.registry.AllModFluids;
-import io.hxneyw.repo.content.registry.ModParticles;
+import io.hxneyw.repo.content.registry.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -19,6 +22,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
 
@@ -47,7 +51,30 @@ public class ClientModEvents {
          BlockEntityRenderers.register(AllBlockEntities.MOLTEN_ROTOR.get(), MoltenRotorRenderer::new);
          EntityRenderers.register(ModEntities.PYROCLAST_BOMB.get(), ThrownItemRenderer::new);
          BlockEntityRenderers.register(AllBlockEntities.PERFORATED_SPRITZER.get(), PerforatedSpritzerRenderer::new);
+         CreateRegistrate.connectedTextures(
+                 () -> new SimpleCTBehaviour(ModSpriteShifts.ASHESIL)
+         ).accept(AllModBlocks.ASHESIL.get());
+         CreateRegistrate.connectedTextures(
+                 () -> new GlassPaneCTBehaviour(ModSpriteShifts.ASHESIL)
+         ).accept(AllModBlocks.ASHESIL_PANE.get());
       });
+   }
+
+   @SubscribeEvent
+   public static void registerBlockEntityRenderers(
+           EntityRenderersEvent.RegisterRenderers event
+   ) {
+      event.registerBlockEntityRenderer(
+              AllBlockEntities.ASH_CERAMIC_CRUCIBLE.get(),
+              BasinRenderer::new
+
+      );
+
+      event.registerBlockEntityRenderer(
+              AllBlockEntities.LIVING_EMBER_LAMP.get(),
+              LivingEmberLampRenderer::new
+      );
+
    }
 
    @SubscribeEvent

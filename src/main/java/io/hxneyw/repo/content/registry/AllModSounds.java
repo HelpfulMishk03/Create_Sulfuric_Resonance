@@ -8,10 +8,12 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class AllModSounds {
    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, "sulfuricresonance");
-   public static final DeferredHolder<SoundEvent, SoundEvent> LOG_INSERT = SOUNDS.register(
-      "log_insert", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "log_insert"))
-   );
+
    public static final DeferredHolder<SoundEvent, SoundEvent> RUBBER_PADDING_HIT = SOUNDS.register(
-      "rubber_padding_hit", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "rubber_padding_hit"))
+           "rubber_padding_hit", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "rubber_padding_hit"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> MOLTEN_ROTOR_RUMBLE = SOUNDS.register(
+           "molten_rotor_rumble", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "molten_rotor_rumble"))
    );
 }

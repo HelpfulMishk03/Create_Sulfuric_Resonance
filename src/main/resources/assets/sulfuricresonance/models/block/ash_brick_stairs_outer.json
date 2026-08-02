@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "sulfuricresonance:block/ash_brick_block",
+    "side": "sulfuricresonance:block/ash_brick_block",
+    "top": "sulfuricresonance:block/ash_brick_block"
+  }
+}

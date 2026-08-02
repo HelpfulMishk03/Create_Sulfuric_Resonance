@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "AAA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "sulfuricresonance:ashesil"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:ashesil_pane",
+    "count": 16
+  }
+}

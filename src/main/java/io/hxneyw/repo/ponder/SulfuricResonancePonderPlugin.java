@@ -67,6 +67,8 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                     "sulfur"
             );
 
+
+
             helper.addStoryBoard(
                     sulfurId,
                     "sulfur/compatibility",
@@ -74,14 +76,29 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                     new ResourceLocation[]{}
             );
 
-            CreateSulfuricResonance.LOGGER.info(
-                    "Successfully registered 4 Ponder scenes"
+            ResourceLocation livingEmberLampId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.LIVING_EMBER_LAMP.get()
+                    );
+
+            helper.addStoryBoard(
+                    livingEmberLampId,
+                    "living_ember_lamp/operation",
+                    LivingEmberLampScenes::operation
             );
+
+            CreateSulfuricResonance.LOGGER.info(
+                    "Successfully registered 5 Ponder scenes"
+            );
+
+
+
         } catch (Exception exception) {
             CreateSulfuricResonance.LOGGER.error(
                     "Failed to register Ponder scenes!",
                     exception
             );
+
         }
     }
 

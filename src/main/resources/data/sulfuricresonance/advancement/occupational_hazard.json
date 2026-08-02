@@ -1,0 +1,28 @@
+{
+  "parent": "sulfuricresonance:the_foundation",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:ash_ceramic_crucible"
+    },
+    "title": {
+      "text": "Occupational Hazard"
+    },
+    "description": {
+      "text": "Stand inside a Ceramic Crucible heated to combustion."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "inside_combustion_crucible": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "inside_combustion_crucible"
+    ]
+  ]
+}

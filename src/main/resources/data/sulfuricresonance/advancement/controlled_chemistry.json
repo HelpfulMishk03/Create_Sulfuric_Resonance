@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:woah_how_do_i_use_this",
+  "parent": "sulfuricresonance:sulfurous_beginnings",
   "display": {
     "icon": {
       "id": "sulfuricresonance:sulfuric_acid_bucket"
@@ -8,9 +8,9 @@
       "text": "Controlled Chemistry"
     },
     "description": {
-      "text": "Produce Sulfuric Acid through controlled combustion chemistry."
+      "text": "Produce Sulfuric Acid through controlled combustion chemistry in a Ceramic Crucible."
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

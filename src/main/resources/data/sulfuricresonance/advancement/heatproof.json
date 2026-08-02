@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:ashen_industry",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:ash_ceramic"
+    },
+    "title": {
+      "text": "Heatproof"
+    },
+    "description": {
+      "text": "Heat a basin and then insert the proper ingredients to obtain Ash Ceramic."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_ash_ceramic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:ash_ceramic"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

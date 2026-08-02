@@ -1,8 +1,8 @@
 ## Create: Sulfuric Resonance
 
-**Create: Sulfuric Resonance** is an independently developed NeoForge addon for Create that expands combustion, kinetic heat generation, Sulfur chemistry, Sulfuric Acid processing, rubber engineering, and industrial automation.
+**Create: Sulfuric Resonance** is an independently developed NeoForge addon for Create that expands combustion, kinetic heat generation, Sulfur chemistry, Sulfuric Acid processing, rubber engineering, ash-based materials, and industrial automation.
 
-> **Beta notice:** Version **0.0.2.5-beta** is a public beta release. Core systems are functional and tested, but balancing, recipes, visuals, names, and compatibility may still change before a stable release. Back up important worlds before updating beta versions.
+> **Beta notice:** Version **0.0.2.6-beta — Ashen Resonance** is a public beta release. Core systems are functional and tested, but balancing, recipes, visuals, names, and compatibility may still change before a stable release. Back up important worlds before updating beta versions.
 
 ## Supported Versions
 
@@ -16,7 +16,7 @@
 
 ## Development Status
 
-> **Public beta:** `0.0.2.5-beta` expands the mod's compatibility, player guidance, and early progression presentation. It is not yet a final stable release.
+> **Public beta:** `0.0.2.6-beta` expands the mod with the **Ashen Resonance** material family, new Create-compatible tools, a custom crucible, heat-responsive lighting, additional building blocks, custom sounds, a rebuilt advancement tree, and expanded localization.
 
 Create: Sulfuric Resonance is a solo project. Feedback and clear bug reports are appreciated, though updates may take time.
 
@@ -33,15 +33,58 @@ Major capabilities include:
 - temperature-based RPM and stress generation;
 - multiple heat tiers;
 - manual and automated fuel insertion;
+- Create Mechanical Arm support;
 - Create-goggle diagnostics;
 - rain-sensitive temperature behaviour;
 - creative heat-tier cycling;
 - custom block-entity rendering and persistence;
+- custom operating sounds;
 - a detailed Ponder scene covering heat tiers, RPM, stress output, the gauge, and cooldown behaviour.
 
 ### Combustion Mixing
 
 Combustion Mixing extends Create Basin processing with recipes that require the Molten Rotor Furnace's highest heat tiers.
+
+The **Ceramic Crucible** expands the mod's heat-resistant processing identity and provides a foundation for specialized combustion recipes.
+
+### Ashen Resonance Materials
+
+Version `0.0.2.6-beta` introduces a new family of ash-derived materials and components:
+
+- **Ash Brick**
+- **Ash Ceramic**
+- **Ash Brick Block**
+- **Ash Brick Stairs**
+- **Ash Brick Slab**
+- **Ash Brick Wall**
+- **Ash Brick Pillar**
+- **Ceramic Crucible**
+- **Ashesil Glass**
+- **Ashesil Panes**
+
+These materials support construction, decoration, industrial crafting, and future high-temperature processing systems.
+
+### Living Ember Lamp
+
+The **Living Ember Lamp** is a heat-responsive industrial light linked to a Molten Rotor Furnace.
+
+Its brightness changes according to the linked furnace's heat state, providing both functional lighting and immediate visual feedback for active machinery.
+
+### Cinder Fuel Briquette
+
+The **Cinder Fuel Briquette** is a compact industrial fuel made from Reinforced Cinder Compound and Charcoal.
+
+- Burns longer than ordinary Charcoal.
+- Supports manual insertion and Create-based automation.
+- Can be handled by Mechanical Arms and other supported item-transfer systems.
+
+### Cinder Sandpaper
+
+The **Cinder Sandpaper** is a Create-compatible polishing tool made from Reinforced Cinder Compound and Paper.
+
+- Functions as sandpaper in Create processing.
+- Has twice the durability of Red Sandpaper.
+- Supports automated polishing workflows.
 
 ### Sulfur and Cross-Mod Compatibility
 
@@ -53,7 +96,7 @@ Sulfuric Resonance uses common tags to recognise compatible processed Sulfur fro
 - Raw ores, raw chunks, and storage blocks are intentionally not treated as processed Sulfur inputs.
 - Materials using private or missing tags may need dedicated compatibility support.
 
-`0.0.2.5-beta` has been verified with:
+Verified compatibility includes:
 
 - TFMG Sulfur Dust;
 - TFMG Sulfuric Acid;
@@ -65,7 +108,7 @@ Sulfuric Resonance uses common tags to recognise compatible processed Sulfur fro
 Sulfuric Acid is a hazardous industrial fluid with custom effects, particles, reactions, bucket support, and processing uses.
 
 - Create filling and emptying recipes support the Sulfuric Acid Bucket.
-- Tooltips communicate corrosive handling, fluid/bucket compatibility, industrial uses, and water/lava reactions.
+- Tooltips communicate corrosive handling, fluid and bucket compatibility, industrial uses, and water or lava reactions.
 
 ### Rubber and Mechanical Components
 
@@ -82,22 +125,9 @@ Its Ponder coverage includes:
 - Sulfuric Acid, lava, and water interactions;
 - mob damage and automatic drop collection.
 
-### Pyroclast Bomb
-
-The Pyroclast Bomb can be thrown by hand or launched through Create's Potato Cannon. Its two launch methods use separately balanced velocities while sharing the same projectile and explosion behaviour.
-
 ### Advancements
 
-The first Sulfuric Resonance advancement path now guides early progression:
-
-- **Sulfurous Beginnings** — Obtain Sulfur.
-- **Shattered Power** — Obtain Blaze Shards and craft the Infernal Impeller.
-- **I'm Flattered..** — Obtain Spent Ash.
-- **You're on Fire** — Obtain a Flameborne Core.
-- **Woah.. How Do I Use This Thing?** — Obtain the Molten Rotor Furnace.
-- **Controlled Chemistry** — Process Sulfur in Combustion Mixing.
-- **Industrial Allies** — Use compatible Sulfur from another mod.
-- **Pyro** — Obtain and fire the Pyroclast Bomb from a Potato Cannon.
+The advancement tree has been rebuilt and expanded to better guide progression through Sulfuric Resonance.
 
 ### Ponder
 
@@ -106,9 +136,29 @@ Ponder scenes are included for:
 - Perforated Spritzer operation;
 - Perforated Spritzer mob automation;
 - Molten Rotor Furnace operation, heat progression, kinetic output, gauge behaviour, and cooldown;
-- Cross-Mod Sulfur Compatibility, explaining accepted common tags and processed external Sulfur inputs.
+- Cross-Mod Sulfur Compatibility, explaining accepted common tags and processed external Sulfur inputs;
+- Living Ember Lamp linking and heat-responsive behaviour.
 
-Ponder text is supplied for American English, British English, and Spanish.
+### Localization
+
+Current localization support includes:
+
+- American English;
+- British English;
+- Spanish;
+- French;
+- German.
+
+## User Experience and Presentation
+
+Version `0.0.2.6-beta` includes a broad inventory and visual-consistency pass.
+
+- Stack sizes were reviewed for consistency.
+- Creative-tab ordering was reorganized.
+- Related intermediates and outputs were grouped together.
+- Item, block, and UI contrast were reviewed.
+- Outline thickness and material colour language were standardized.
+- Tooltips were added or revised across the new material and component chains.
 
 ## Installation
 
@@ -129,15 +179,16 @@ Do not install development source folders or an embedded Create dependency. Crea
 - Not every modded log is automatically accepted for latex processing.
 - Some modded wooden fuels may require explicit tag or compatibility support.
 - Recipe balance and heat values may change during beta testing.
-- Minecraft block light is omnidirectional; furnace visuals can imitate directional glow, but actual block-light propagation is not directional.
+- Minecraft block light is omnidirectional; directional-looking glow effects do not change the underlying light-propagation system.
 
 ## Planned Work
 
 - Expand data-driven and tag-based fuel profiles where they make sense.
 - Add broader compatibility with Create addons and selected modded fuels.
 - Continue Molten Rotor visual and balance polish.
-- Expand Lye, latex, rubber, and vulcanisation progression.
+- Expand latex, rubber, and vulcanisation progression.
 - Add more Combustion and Sulfuric Acid recipes.
+- Expand Ash Ceramic and Ceramic Crucible processing.
 - Continue dedicated-server and large-modpack compatibility testing.
 - Add EMI support.
 - Introduce new machinery and later material tiers.
@@ -154,7 +205,7 @@ Modpack inclusion is permitted only under the terms in [LICENSE.md](src/main/res
 
 This license applies only to original Create: Sulfuric Resonance material. Create, Minecraft, NeoForge, JEI, and all other third-party projects remain owned and licensed by their respective creators.
 
-Create: Sulfuric Resonance is an unofficial addon and is not affiliated with or endorsed by Mojang Studios, Microsoft, NeoForged, or the Creators of Create.
+Create: Sulfuric Resonance is an unofficial addon and is not affiliated with or endorsed by Mojang Studios, Microsoft, NeoForged, or the creators of Create.
 
 ## Official Author
 

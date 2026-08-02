@@ -2,7 +2,7 @@ package io.hxneyw.repo.mixin;
 
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
-import com.simibubi.create.content.processing.recipe.HeatCondition;
+import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.recipes.CombustionMixingRecipe;
@@ -22,16 +22,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 )
 public abstract class BasinRecipeMixin {
    @Inject(
-      method = {"match(Lcom/simibubi/create/content/processing/basin/BasinBlockEntity;Lnet/minecraft/world/item/crafting/Recipe;)Z"},
-      at = {@At("HEAD")},
-      cancellable = true,
-      remap = false
+           method = {
+                   "match(Lcom/simibubi/create/content/processing/basin/BasinBlockEntity;Lnet/minecraft/world/item/crafting/Recipe;)Z"
+           },
+           at = @At("HEAD"),
+           cancellable = true,
+           remap = false
    )
-   private static void enforceCombustionRequirements(BasinBlockEntity basin, Recipe<?> recipe, CallbackInfoReturnable<Boolean> cir) {
-      if (recipe instanceof CombustionMixingRecipe combustion) {
-         if (combustion.getRequiredHeat() == HeatCondition.SUPERHEATED && !createSulfuricResonance$hasRadiantHeat(basin)) {
-            cir.setReturnValue(false);
-         }
+   private static void enforceCombustionRequirements(
+           BasinBlockEntity basin,
+           Recipe<?> recipe,
+           CallbackInfoReturnable<Boolean> cir
+   ) {
+      if (!(recipe instanceof CombustionMixingRecipe)) {
+         return;
+      }
+
+      // Every combustion recipe requires the Ceramic Crucible.
+      if (!(basin instanceof AshCeramicCrucibleBlockEntity)) {
+         cir.setReturnValue(false);
+         return;
+      }
+
+      // The Crucible must be directly above a Radiant Molten Rotor Furnace.
+      if (!createSulfuricResonance$hasRadiantHeat(basin)) {
+         cir.setReturnValue(false);
       }
    }
 

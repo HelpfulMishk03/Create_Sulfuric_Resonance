@@ -1,6 +1,7 @@
 package io.hxneyw.repo.compat.fuel;
 
 import io.hxneyw.repo.compat.fuel.evilcraft.EvilCraftFuelCompatibility;
+import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity.FuelType;
 import io.hxneyw.repo.content.registry.ModItemTags;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +48,16 @@ public final class FuelCompatibility {
 
         if (stack.is(ModItemTags.MOLTEN_ROTOR_DENSE_FUEL)) {
             return ResolvedFuel.fromType(FuelType.COAL_BLOCK);
+        }
+
+        if (stack.is(Items.CINDER_FUEL_BRIQUETTE.get())) {
+            return new ResolvedFuel(
+                    FuelType.CHARCOAL,
+                    FuelType.CHARCOAL.baseBurnTimeTicks * 1.5F,
+                    FuelType.CHARCOAL.celsiusPerSecond,
+                    FuelType.CHARCOAL.maxTempReachable,
+                    FuelType.CHARCOAL.maxStackSize
+            );
         }
 
         if (stack.is(ModItemTags.MOLTEN_ROTOR_CHARCOAL)) {

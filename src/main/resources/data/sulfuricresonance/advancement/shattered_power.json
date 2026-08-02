@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:sulfurous_beginnings",
+  "parent": "sulfuricresonance:embersol_discovery",
   "display": {
     "icon": {
       "id": "sulfuricresonance:infernal_impeller"
@@ -8,9 +8,9 @@
       "text": "Shattered Power"
     },
     "description": {
-      "text": "Obtain Blaze Shards and craft an Infernal Impeller."
+      "text": "Obtain Blaze Shards and craft the Infernal Impeller."
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

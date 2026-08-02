@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:embersol"
+    },
+    "title": {
+      "text": "Embersol Discovery"
+    },
+    "description": {
+      "text": "Obtain Embersol, a substance flowing with the strange heat and essence of the Nether."
+    },
+    "background": "sulfuricresonance:textures/gui/advancements/backgrounds/sulfur_resonance.png",
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_embersol": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:embersol"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -61,15 +61,6 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
          }
       }
 
-      Direction.Axis shaftAxis =
-              KineticBlockEntityRenderer.getRotationAxisOf(furnace);
-      float shaftAngleRadians =
-              KineticBlockEntityRenderer.getAngleForBe(
-                      furnace,
-                      furnace.getBlockPos(),
-                      shaftAxis
-              );
-
       MoltenRotorFuelRenderer.render(
               furnace,
               ms,
@@ -80,12 +71,12 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
       );
 
       this.renderRotatingShafts(
+              furnace,
               ms,
               buffer,
               actualLight,
               overlay,
-              facing,
-              shaftAngleRadians
+              facing
       );
 
       this.renderHeatGaugeNeedle(furnace, ms, buffer, actualLight, overlay, facing
@@ -193,37 +184,53 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
    }
 
    private void renderRotatingShafts(
+           MoltenRotorBlockEntity furnace,
            PoseStack ms,
            MultiBufferSource buffer,
            int light,
            int overlay,
-           Direction facing,
-           float shaftAngleRadians
+           Direction facing
    ) {
       try {
          BakedModel leftShaftModel = ClientModEvents.ROTOR_SHAFT_LEFT.get();
          BakedModel rightShaftModel = ClientModEvents.ROTOR_SHAFT_RIGHT.get();
          boolean foundModels = false;
 
-         /*
-          * Use Create's exact kinetic angle, including its positional
-          * rotation offset. The custom half-shafts now share the same
-          * phase, signed speed and checkerboard alignment as connected
-          * real Create shafts.
-          */
-         float localShaftAngleRadians =
-                 this.toLocalShaftAngle(shaftAngleRadians, facing);
+         Direction.Axis shaftAxis =
+                 KineticBlockEntityRenderer.getRotationAxisOf(furnace);
+
+         Direction leftDirection = facing.getCounterClockWise();
+         Direction rightDirection = facing.getClockWise();
+
+         float leftAngleRadians =
+                 this.toLocalShaftAngle(
+                         KineticBlockEntityRenderer.getAngleForBe(
+                                 furnace,
+                                 furnace.getBlockPos().relative(leftDirection),
+                                 shaftAxis
+                         ),
+                         facing
+                 );
+
+         float rightAngleRadians =
+                 this.toLocalShaftAngle(
+                         KineticBlockEntityRenderer.getAngleForBe(
+                                 furnace,
+                                 furnace.getBlockPos().relative(rightDirection),
+                                 shaftAxis
+                         ),
+                         facing
+                 );
 
          if (leftShaftModel != null
-                 && leftShaftModel
-                 != Minecraft.getInstance().getModelManager().getMissingModel()) {
+                 && leftShaftModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
             this.renderShaft(
                     ms,
                     buffer,
                     leftShaftModel,
                     light,
                     overlay,
-                    localShaftAngleRadians,
+                    leftAngleRadians,
                     facing,
                     true
             );
@@ -231,15 +238,14 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
          }
 
          if (rightShaftModel != null
-                 && rightShaftModel
-                 != Minecraft.getInstance().getModelManager().getMissingModel()) {
+                 && rightShaftModel != Minecraft.getInstance().getModelManager().getMissingModel()) {
             this.renderShaft(
                     ms,
                     buffer,
                     rightShaftModel,
                     light,
                     overlay,
-                    localShaftAngleRadians,
+                    rightAngleRadians,
                     facing,
                     false
             );

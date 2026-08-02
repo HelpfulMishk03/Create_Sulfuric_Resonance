@@ -54,10 +54,8 @@ public final class RubberPaddingArmPoint extends ArmInteractionPoint {
             return stack;
          }
 
-         accepted = Math.min(
-                 stack.getCount(),
-                 Math.max(0, held.getMaxStackSize() - held.getCount())
-         );
+         accepted = Math.clamp(held.getMaxStackSize() - held.getCount(), 0,
+                 stack.getCount());
       }
 
       if (accepted <= 0) {
