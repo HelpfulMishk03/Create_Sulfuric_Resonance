@@ -43,11 +43,14 @@
   "item.sulfuricresonance.cinder_fuel_briquette": "Cinder Fuel Briquette",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.1": "Compressed fuel reinforced with Cinder Compound, burns 50% longer than charcoal",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.2": "Burns 50% longer than charcoal",
-
+  "item.sulfuricresonance.obsidian_cloth": "Obsidian Cloth",
   "item.sulfuricresonance.cinder_sandpaper": "Cinder Sandpaper",
   "tooltip.sulfuricresonance.cinder_sandpaper.1": "An abrasive sheet reinforced with Cinder Compound, twice as durable as red sandpaper",
-
-
+  "item.sulfuricresonance.unfinished_filament": "Unfinished Filament",
+  "item.sulfuricresonance.cinder_filament": "Cinder Filament",
+  "tooltip.sulfuricresonance.cinder_filament": "A heat-conductive filament infused with Blaze material.",
+  "item.sulfuricresonance.acid_etched_copper_sheet": "Acid-Etched Copper Sheet",
+  "tooltip.sulfuricresonance.acid_etched_copper_sheet.1": "Chemically etched for precise thermal circuitry.",
   "sulfuricresonance.ponder.living_ember_lamp.header": "Living Ember Lamp",
   "sulfuricresonance.ponder.living_ember_lamp.operation.header": "Linking and Reading the Living Ember Lamp",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_1": "The Living Ember Lamp remotely displays the heat and fuel condition of one Molten Rotor Furnace",
@@ -62,7 +65,7 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "If the linked furnace is removed, unloaded, or in another dimension, the Lamp safely fades back to darkness",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Link the Lamp item again before placing it beside a different furnace",
 
-
+  "block.sulfuricresonance.thermal_relay_switch": "Thermal Relay Switch",
 
   "recipe.sulfuricresonance.combustion_mixing": "Combustion Mixing",
   "create.recipe.heat_requirement.radiant": "Combustion",

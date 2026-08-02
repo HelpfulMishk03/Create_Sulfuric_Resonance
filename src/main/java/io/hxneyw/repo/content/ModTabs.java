@@ -22,6 +22,7 @@ public class ModTabs {
                   output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
                   output.accept(Items.PERFORATED_SPRITZER.get());
                   output.accept(Items.LIVING_EMBER_LAMP_ITEM.get());
+                  output.accept(Items.THERMAL_RELAY_SWITCH_ITEM.get());
                   output.accept(Items.RUBBER_PADDING.get());
 
 // Sulfur and combustion
@@ -42,6 +43,10 @@ public class ModTabs {
                   output.accept(Items.CINDER_SANDPAPER.get());
                   output.accept(Items.OBSIDIAN_FIBER_MOLD.get());
                   output.accept(Items.OBSIDIAN_FIBER.get());
+                  output.accept(Items.OBSIDIAN_CLOTH.get());
+                  output.accept(Items.UNFINISHED_FILAMENT.get());
+                  output.accept(Items.CINDER_FILAMENT.get());
+                  output.accept(Items.ACID_ETCHED_COPPER_SHEET.get());
                   output.accept(Items.IMPELLER_BLADE.get());
                   output.accept(Items.SHEATHED_IMPELLER_BLADE.get());
                   output.accept(Items.INFERNAL_IMPELLER.get());

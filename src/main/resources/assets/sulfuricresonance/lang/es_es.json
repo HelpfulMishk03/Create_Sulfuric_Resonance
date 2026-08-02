@@ -24,7 +24,7 @@
   "item.sulfuricresonance.soul_fired_blaze_cake": "Pastel de Blaze de fuego de almas",
   "item.sulfuricresonance.impeller_blade": "Aspa de impulsor",
   "item.sulfuricresonance.sheathed_impeller_blade": "Aspa de impulsor recubierta",
-
+  "item.sulfuricresonance.obsidian_cloth": "Tela de obsidiana",
   "block.sulfuricresonance.perforated_spritzer": "Rociador perforado",
   "block.sulfuricresonance.molten_rotor_furnace": "Horno de rotor fundido",
   "block.sulfuricresonance.sulfur_block": "Bloque de azufre",
@@ -53,18 +53,20 @@
   "tooltip.sulfuricresonance.ash_ceramic": "Se utiliza en recipientes industriales y futuros equipos",
   "tooltip.sulfuricresonance.ash_brick.1": "Un ladrillo resistente hecho de ceniza residual y arcilla",
   "tooltip.sulfuricresonance.ash_brick.2": "Se utiliza para construcciones a base de ceniza",
-
+  "item.sulfuricresonance.unfinished_filament": "Filamento sin terminar",
   "tooltip.sulfuricresonance.sulfur.reactive": "Material industrial reactivo",
   "tooltip.sulfuricresonance.sulfur.uses": "Se utiliza en química del azufre, caucho, combustión y producción de ácido sulfúrico",
-
+  "item.sulfuricresonance.cinder_filament": "Filamento de brasa",
+  "tooltip.sulfuricresonance.cinder_filament": "Un filamento conductor del calor infundido con material de blaze.",
   "tooltip.sulfuricresonance.sulfur_block.storage": "Bloque de almacenamiento de azufre comprimido",
   "tooltip.sulfuricresonance.sulfur_block.unpack": "Se puede desmontar para obtener 9 unidades de azufre",
-
+  "item.sulfuricresonance.acid_etched_copper_sheet": "Lámina de cobre grabada con ácido",
+  "tooltip.sulfuricresonance.acid_etched_copper_sheet.1": "Grabada químicamente para circuitos térmicos de precisión.",
   "tooltip.sulfuricresonance.acid.corrosive": "Fluido industrial altamente corrosivo",
   "tooltip.sulfuricresonance.acid.reactions": "Reacciona con el agua y la lava",
   "tooltip.sulfuricresonance.acid.industrial": "Se utiliza en química del azufre, procesamiento de caucho y reacciones industriales",
   "tooltip.sulfuricresonance.acid.warning": "Una manipulación incorrecta puede causar daños graves",
-
+  "block.sulfuricresonance.thermal_relay_switch": "Interruptor de relé térmico",
   "fluid.sulfuricresonance.sulfuric_acid": "Ácido sulfúrico",
   "item.sulfuricresonance.sulfuric_acid_bucket": "Cubo de ácido sulfúrico",
   "block.sulfuricresonance.sulfuric_acid": "Ácido sulfúrico",

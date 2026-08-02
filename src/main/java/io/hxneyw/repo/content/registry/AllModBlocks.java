@@ -9,6 +9,7 @@ import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlock;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
+import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -47,7 +48,11 @@ public class AllModBlocks {
                                 };
                             })
             )
+
+
+
     );
+
     public static final DeferredBlock<Block> RUBBER_PADDING = BLOCKS.register(
             "rubber_padding",
             () -> new RubberPaddingBlock(
@@ -207,6 +212,17 @@ public class AllModBlocks {
                     )
             );
 
-
+    public static final DeferredBlock<ThermalRelaySwitchBlock> THERMAL_RELAY_SWITCH =
+            BLOCKS.register(
+                    "thermal_relay_switch",
+                    () -> new ThermalRelaySwitchBlock(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(2.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
 
 }

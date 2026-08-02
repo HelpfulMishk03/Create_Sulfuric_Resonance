@@ -41,24 +41,26 @@
   "item.sulfuricresonance.cinder_fuel_briquette": "Schlackenbrennstoffbrikett",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.1": "Mit Schlackenmischung verstärkter, verdichteter Brennstoff; brennt 50 % länger als Holzkohle",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.2": "Brennt 50 % länger als Holzkohle",
-
+  "item.sulfuricresonance.obsidian_cloth": "Obsidiangewebe",
   "item.sulfuricresonance.cinder_sandpaper": "Schlackenschleifpapier",
   "tooltip.sulfuricresonance.cinder_sandpaper.1": "Ein mit Schlackenmischung verstärktes Schleifblatt, doppelt so haltbar wie rotes Schleifpapier",
-
+  "item.sulfuricresonance.acid_etched_copper_sheet": "Säuregeätztes Kupferblech",
+  "tooltip.sulfuricresonance.acid_etched_copper_sheet.1": "Chemisch geätzt für präzise thermische Schaltkreise.",
   "recipe.sulfuricresonance.combustion_mixing": "Verbrennungsmischen",
   "create.recipe.heat_requirement.radiant": "Verbrennung",
-
+  "item.sulfuricresonance.unfinished_filament": "Unfertiges Filament",
   "block.sulfuricresonance.rubber_padding.tooltip.summary": "Dämpft _Stürze_ von Kreaturen, lässt Gegenstände mit _Maschinen_ durch _schwer erreichbare_ Bereiche springen und ermöglicht einzigartige Create-Konstruktionen mit Gummipolstern",
   "block.sulfuricresonance.rubber_padding.tooltip.condition1": "Wenn platziert",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour1": "Verhindert _Fallschaden_ bei Kreaturen",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Lässt _Gegenstände_ berechenbar abprallen",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Erhält den _horizontalen Schwung_",
-
+  "item.sulfuricresonance.cinder_filament": "Glutfilament",
+  "tooltip.sulfuricresonance.cinder_filament": "Ein wärmeleitendes Filament, das mit Lohenmaterial durchsetzt ist.",
   "message.sulfuricresonance.living_ember_lamp.linked": "Lebendige Glutlampe mit dem Ofen bei %s, %s, %s verbunden",
   "tooltip.sulfuricresonance.living_ember_lamp.unlinked": "Rechtsklicke zum Konfigurieren auf einen Schmelzrotorofen",
   "tooltip.sulfuricresonance.living_ember_lamp.linked": "Verbundener Ofen: %s, %s, %s",
   "tooltip.sulfuricresonance.living_ember_lamp.dimension": "Dimension: %s",
-
+  "block.sulfuricresonance.thermal_relay_switch": "Thermischer Relaisschalter",
   "tooltip.sulfuricresonance.spent_ash": "Nützlich für Farbstoffe, Keramik, Bauarbeiten und zukünftige Chemie",
   "tooltip.sulfuricresonance.ash_ceramic": "Wird für Industriebehälter und zukünftige Ausrüstung verwendet",
   "tooltip.sulfuricresonance.ash_brick.1": "Ein robuster Ziegel aus verbrauchter Asche und Ton",

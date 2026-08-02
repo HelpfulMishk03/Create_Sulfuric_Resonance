@@ -41,24 +41,26 @@
   "item.sulfuricresonance.cinder_fuel_briquette": "Briquette combustible de scorie",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.1": "Combustible comprimé renforcé avec un composé de scorie ; brûle 50 % plus longtemps que le charbon de bois",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.2": "Brûle 50 % plus longtemps que le charbon de bois",
-
+  "item.sulfuricresonance.obsidian_cloth": "Tissu d’obsidienne",
   "item.sulfuricresonance.cinder_sandpaper": "Papier abrasif de scorie",
   "tooltip.sulfuricresonance.cinder_sandpaper.1": "Une feuille abrasive renforcée avec un composé de scorie, deux fois plus résistante que le papier abrasif rouge",
-
+  "item.sulfuricresonance.unfinished_filament": "Filament inachevé",
   "recipe.sulfuricresonance.combustion_mixing": "Mélange par combustion",
   "create.recipe.heat_requirement.radiant": "Combustion",
-
+  "item.sulfuricresonance.cinder_filament": "Filament de braise",
+  "tooltip.sulfuricresonance.cinder_filament": "Un filament thermoconducteur imprégné de matière de blaze.",
   "block.sulfuricresonance.rubber_padding.tooltip.summary": "Amortit les _chutes_ des entités, fait rebondir les objets dans les zones _difficiles d'accès_ à l'aide de _machines_ et permet de créer des assemblages Create uniques avec le rembourrage en caoutchouc",
   "block.sulfuricresonance.rubber_padding.tooltip.condition1": "Une fois placé",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour1": "Annule les _dégâts de chute_ des entités",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Fait rebondir les _objets_ de façon prévisible",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Conserve l'_élan horizontal_",
-
+  "item.sulfuricresonance.acid_etched_copper_sheet": "Plaque de cuivre gravée à l’acide",
+  "tooltip.sulfuricresonance.acid_etched_copper_sheet.1": "Gravée chimiquement pour des circuits thermiques de précision.",
   "message.sulfuricresonance.living_ember_lamp.linked": "Lampe à braise vivante reliée au four situé en %s, %s, %s",
   "tooltip.sulfuricresonance.living_ember_lamp.unlinked": "Faites un clic droit sur un four à rotor fondu pour la configurer",
   "tooltip.sulfuricresonance.living_ember_lamp.linked": "Four relié : %s, %s, %s",
   "tooltip.sulfuricresonance.living_ember_lamp.dimension": "Dimension : %s",
-
+  "block.sulfuricresonance.thermal_relay_switch": "Commutateur de relais thermique",
   "tooltip.sulfuricresonance.spent_ash": "Utile pour les teintures, la céramique, la construction et la chimie future",
   "tooltip.sulfuricresonance.ash_ceramic": "Utilisée dans les conteneurs industriels et les futurs équipements",
   "tooltip.sulfuricresonance.ash_brick.1": "Une brique résistante formée à partir de cendre épuisée et d'argile",

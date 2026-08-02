@@ -1,0 +1,17 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:obsidian_fiber"
+    },
+    {
+      "item": "sulfuricresonance:reinforced_cinder_compound"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:unfinished_filament",
+      "count": 1
+    }
+  ]
+}

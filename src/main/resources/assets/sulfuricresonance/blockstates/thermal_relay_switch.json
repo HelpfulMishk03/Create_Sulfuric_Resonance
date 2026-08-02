@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "sulfuricresonance:block/thermal_relay_switch"
+    },
+    "facing=east": {
+      "model": "sulfuricresonance:block/thermal_relay_switch",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "sulfuricresonance:block/thermal_relay_switch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "sulfuricresonance:block/thermal_relay_switch",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "IGI",
+    "FCF",
+    "AEA"
+  ],
+  "key": {
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "G": {
+      "item": "sulfuricresonance:ashesil"
+    },
+    "F": {
+      "item": "sulfuricresonance:cinder_filament"
+    },
+    "C": {
+      "item": "minecraft:comparator"
+    },
+    "A": {
+      "item": "sulfuricresonance:acid_etched_copper_sheet"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:thermal_relay_switch",
+    "count": 1
+  }
+}

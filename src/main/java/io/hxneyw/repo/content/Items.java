@@ -71,7 +71,22 @@ public class Items {
            );
 
    public static final DeferredItem<Item> OBSIDIAN_FIBER = ITEMS.register("obsidian_fiber", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> OBSIDIAN_CLOTH = ITEMS.register("obsidian_cloth", () -> new Item(new Item.Properties().stacksTo(64)));
+   public static final DeferredItem<Item> UNFINISHED_FILAMENT = ITEMS.register("unfinished_filament", () -> new Item(new Properties().stacksTo(64)));
+
+   public static final DeferredItem<Item> CINDER_FILAMENT = ITEMS.register("cinder_filament", () -> new Item(new Properties().stacksTo(64)));
+
+   public static final DeferredItem<Item> ACID_ETCHED_COPPER_SHEET = ITEMS.register("acid_etched_copper_sheet", () -> new Item(new Properties().stacksTo(64)));
+
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<BlockItem> THERMAL_RELAY_SWITCH_ITEM =
+           ITEMS.register(
+                   "thermal_relay_switch",
+                   () -> new BlockItem(
+                           AllModBlocks.THERMAL_RELAY_SWITCH.get(),
+                           new Item.Properties()
+                   )
+           );
    public static final DeferredItem<Item> UNREFINED_RUBBER = ITEMS.register("unrefined_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> VULCANIZED_RUBBER = ITEMS.register("vulcanized_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> MOLDED_RUBBER_GASKET = ITEMS.register("molded_rubber_gasket", () -> new Item(new Properties().stacksTo(64)));

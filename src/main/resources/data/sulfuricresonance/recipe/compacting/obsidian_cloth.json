@@ -1,0 +1,23 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:obsidian_fiber"
+    },
+    {
+      "item": "sulfuricresonance:obsidian_fiber"
+    },
+    {
+      "item": "sulfuricresonance:obsidian_fiber"
+    },
+    {
+      "item": "sulfuricresonance:obsidian_fiber"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:obsidian_cloth",
+      "count": 1
+    }
+  ]
+}

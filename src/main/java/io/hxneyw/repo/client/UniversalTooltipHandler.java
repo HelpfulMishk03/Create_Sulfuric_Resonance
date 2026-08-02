@@ -118,19 +118,24 @@ public class UniversalTooltipHandler {
          case "cinder_fuel_briquette" -> lines.add(Component.translatable(
                  "tooltip.sulfuricresonance.cinder_fuel_briquette.1"
          ).withStyle(ChatFormatting.GRAY));
-         case "cinder_sandpaper" ->
-            lines.add(Component.translatable(
-                    "tooltip.sulfuricresonance.cinder_sandpaper.1"
-            ).withStyle(ChatFormatting.GRAY));
+         case "cinder_sandpaper" -> lines.add(Component.translatable(
+                 "tooltip.sulfuricresonance.cinder_sandpaper.1"
+         ).withStyle(ChatFormatting.GRAY));
+
+         case "cinder_filament" -> lines.add(Component.translatable(
+                 "tooltip.sulfuricresonance.cinder_filament"
+         ).withStyle(ChatFormatting.GOLD));
+
+         case "acid_etched_copper_sheet" -> lines.add(Component.translatable(
+                 "tooltip.sulfuricresonance.acid_etched_copper_sheet.1"
+         ).withStyle(ChatFormatting.GOLD));
 
          case "ash_ceramic_crucible" -> lines.add(
                  Component.translatable(
                          "tooltip.sulfuricresonance.ash_ceramic_crucible"
                  ).withStyle(ChatFormatting.GRAY)
          );
-
       }
-
 
 
 

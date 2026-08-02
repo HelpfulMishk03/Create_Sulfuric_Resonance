@@ -21,7 +21,7 @@
   "item.sulfuricresonance.impeller_blade": "Impeller Blade",
   "item.sulfuricresonance.sheathed_impeller_blade": "Sheathed Impeller Blade",
   "item.sulfuricresonance.lye": "Lye",
-
+  "item.sulfuricresonance.obsidian_cloth": "Obsidian Cloth",
   "block.sulfuricresonance.ashesil_pane": "Ashesil Pane",
   "block.sulfuricresonance.perforated_spritzer": "Perforated Spritzer",
   "block.sulfuricresonance.molten_rotor_furnace": "Molten Rotor Furnace",
@@ -40,24 +40,26 @@
   "item.sulfuricresonance.cinder_fuel_briquette": "Cinder Fuel Briquette",
   "tooltip.sulfuricresonance.cinder_fuel_briquette.1": "Compressed fuel reinforced with Cinder Compound, burns 50% longer than charcoal",
 
-
+  "item.sulfuricresonance.unfinished_filament": "Unfinished Filament",
   "block.sulfuricresonance.rubber_padding.tooltip.summary": "Cushion entity _falls_, bounce items through _hard-to-reach_ areas using _machinery_, and create unique contraptions with Rubber Padding",
   "block.sulfuricresonance.rubber_padding.tooltip.condition1": "When Placed",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour1": "Prevents _fall damage_ to entities",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Bounces _items_ predictably",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Maintains _horizontal momentum_",
-
+  "item.sulfuricresonance.cinder_filament": "Cinder Filament",
+  "tooltip.sulfuricresonance.cinder_filament": "A heat-conductive filament infused with Blaze material.",
   "tooltip.sulfuricresonance.spent_ash": "Useful for dyes, ceramics, construction, and future chemistry",
   "tooltip.sulfuricresonance.ash_ceramic": "Used in industrial containers and future equipment",
   "tooltip.sulfuricresonance.ash_brick.1": "A durable brick formed from Spent Ash and clay",
   "tooltip.sulfuricresonance.ash_brick.2": "Used for ash-based construction",
-
+  "item.sulfuricresonance.acid_etched_copper_sheet": "Acid-Etched Copper Sheet",
+  "tooltip.sulfuricresonance.acid_etched_copper_sheet.1": "Chemically etched for precise thermal circuitry.",
   "tooltip.sulfuricresonance.sulfur.reactive": "Reactive industrial material",
   "tooltip.sulfuricresonance.sulfur.uses": "Used in sulphur chemistry, rubber, combustion, and Sulphuric Acid production",
 
   "tooltip.sulfuricresonance.sulfur_block.storage": "Compressed sulphur storage block",
   "tooltip.sulfuricresonance.sulfur_block.unpack": "Can be unpacked into 9 Sulphur",
-
+  "block.sulfuricresonance.thermal_relay_switch": "Thermal Relay Switch",
   "tooltip.sulfuricresonance.acid.corrosive": "Highly corrosive industrial fluid",
   "tooltip.sulfuricresonance.acid.reactions": "Reacts with water and lava",
   "tooltip.sulfuricresonance.acid.industrial": "Used in sulphur chemistry, rubber processing, and industrial reactions",
