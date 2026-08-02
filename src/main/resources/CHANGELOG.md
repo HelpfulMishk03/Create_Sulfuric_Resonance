@@ -6,6 +6,13 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## 0.0.2.6a-beta — Ashen Resonance Hotfix
+
+### Fixed
+
+- Reduced excessive block-breaking particles produced by the Living Ember Lamp.
+- Preserved the lamp's existing voxel shape, collision, linking, lighting, drops, and renderer.
+
 ## [0.0.2.6-beta] — Ashen Resonance
 
 ### Added
