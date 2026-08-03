@@ -33,11 +33,11 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     private static final String LINKED_DIMENSION_TAG = "LinkedFurnaceDimension";
     private static final String LINKED_IDENTITY_TAG = "LinkedFurnaceIdentity";
     private static final int VALIDATION_INTERVAL = 10;
-    private static final int LIGHT_STEP_INTERVAL = 2;
+    private static final int LIGHT_STEP_INTERVAL = 1;
     private static final int LOW_FUEL_WARNING_TICKS = 200;
     private static final int LOW_FUEL_PULSE_MIN_LIGHT = 9;
     private static final int LOW_FUEL_PULSE_MAX_LIGHT = 15;
-    private static final int LOW_FUEL_PULSE_HALF_PERIOD = 20;
+    private static final int LOW_FUEL_PULSE_HALF_PERIOD = 10;
 
     @Nullable
     private BlockPos linkedFurnacePos;
@@ -78,19 +78,19 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         return List.copyOf(CLIENT_LAMPS);
     }
 
-    public boolean matchesLink(
+    public boolean doesNotMatchLink(
             @NotNull LivingEmberLampItem.FurnaceLink link
     ) {
         BlockPos linkedPos = this.linkedFurnacePos;
         String linkedDimension = this.linkedFurnaceDimension;
         UUID linkedIdentity = this.linkedFurnaceIdentity;
 
-        return linkedPos != null
-                && linkedDimension != null
-                && linkedIdentity != null
-                && linkedPos.equals(link.position())
-                && linkedDimension.equals(link.dimension())
-                && linkedIdentity.equals(
+        return linkedPos == null
+                || linkedDimension == null
+                || linkedIdentity == null
+                || !linkedPos.equals(link.position())
+                || !linkedDimension.equals(link.dimension())
+                || !linkedIdentity.equals(
                 link.furnaceIdentity()
         );
     }
@@ -164,15 +164,30 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         };
 
         int remainingFuel = furnace.getDisplayFuelTime();
-        this.lowFuelWarning = !furnace.isCreativeMode()
-                && normalLight >= 10
-                && remainingFuel > 0
-                && remainingFuel <= LOW_FUEL_WARNING_TICKS
-                && !furnace.isFuelQueueEmpty();
+        int remainingHeatedTime = furnace.getDisplayCooldownTime();
+
+        boolean activeFuelEndingSoon =
+                !furnace.isCreativeMode()
+                        && normalLight >= 10
+                        && remainingFuel > 0
+                        && remainingFuel <= LOW_FUEL_WARNING_TICKS
+                        && furnace.isFuelQueueEmpty();
+
+        boolean heatedStateEndingSoon =
+                !furnace.isCreativeMode()
+                        && remainingFuel <= 0
+                        && normalLight > 0
+                        && remainingHeatedTime > 0
+                        && remainingHeatedTime
+                        <= LOW_FUEL_WARNING_TICKS
+                        && furnace.isFuelQueueEmpty();
+
+        this.lowFuelWarning =
+                activeFuelEndingSoon
+                        || heatedStateEndingSoon;
 
         return normalLight;
     }
-
     private void stepLightTowardTarget(
             Level level,
             BlockPos pos,

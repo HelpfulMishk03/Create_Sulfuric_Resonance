@@ -131,50 +131,35 @@ public class ThermalRelaySwitchBlockEntity
                 @Override
                 public int get(int index) {
                     return switch (index) {
-                        case ThermalRelaySwitchMenu.DATA_MODE ->
-                                mode.ordinal();
+                        case ThermalRelaySwitchMenu.DATA_MODE -> mode.ordinal();
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_SCOPE ->
-                                lowFuelScope.ordinal();
+                                     .DATA_LOW_FUEL_SCOPE -> lowFuelScope.ordinal();
                         case ThermalRelaySwitchMenu
-                                .DATA_HEATED_REDSTONE ->
-                                heatedRedstone;
+                                     .DATA_HEATED_REDSTONE -> heatedRedstone;
                         case ThermalRelaySwitchMenu
-                                .DATA_HEATED_GLOW ->
-                                heatedGlow;
+                                     .DATA_HEATED_GLOW -> heatedGlow;
                         case ThermalRelaySwitchMenu
-                                .DATA_SUPERHEATED_REDSTONE ->
-                                superheatedRedstone;
+                                     .DATA_SUPERHEATED_REDSTONE -> superheatedRedstone;
                         case ThermalRelaySwitchMenu
-                                .DATA_SUPERHEATED_GLOW ->
-                                superheatedGlow;
+                                     .DATA_SUPERHEATED_GLOW -> superheatedGlow;
                         case ThermalRelaySwitchMenu
-                                .DATA_COMBUSTION_REDSTONE ->
-                                combustionRedstone;
+                                     .DATA_COMBUSTION_REDSTONE -> combustionRedstone;
                         case ThermalRelaySwitchMenu
-                                .DATA_COMBUSTION_GLOW ->
-                                combustionGlow;
+                                     .DATA_COMBUSTION_GLOW -> combustionGlow;
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_REDSTONE ->
-                                lowFuelRedstone;
+                                     .DATA_LOW_FUEL_REDSTONE -> lowFuelRedstone;
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_GLOW ->
-                                lowFuelGlow;
+                                     .DATA_LOW_FUEL_GLOW -> lowFuelGlow;
                         case ThermalRelaySwitchMenu
-                                .DATA_CURRENT_HEAT_BAND ->
-                                currentHeatBand;
+                                     .DATA_CURRENT_HEAT_BAND -> currentHeatBand;
                         case ThermalRelaySwitchMenu
-                                .DATA_CURRENT_POWER ->
-                                getCurrentPower();
+                                     .DATA_CURRENT_POWER -> getCurrentPower();
                         case ThermalRelaySwitchMenu
-                                .DATA_CURRENT_GLOW ->
-                                getCurrentGlow();
+                                     .DATA_CURRENT_GLOW -> getCurrentGlow();
                         case ThermalRelaySwitchMenu
-                                .DATA_LINKED_COUNT ->
-                                linkedFurnaces.size();
+                                     .DATA_LINKED_COUNT -> linkedFurnaces.size();
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_ACTIVE ->
-                                lowFuelWarningActive ? 1 : 0;
+                                     .DATA_LOW_FUEL_ACTIVE -> lowFuelWarningActive ? 1 : 0;
                         default -> 0;
                     };
                 }
@@ -190,52 +175,40 @@ public class ThermalRelaySwitchBlockEntity
                      * compatibility and client synchronization.
                      */
                     switch (index) {
-                        case ThermalRelaySwitchMenu.DATA_MODE ->
-                                mode = RelayMode.fromOrdinal(value);
+                        case ThermalRelaySwitchMenu.DATA_MODE -> mode = RelayMode.fromOrdinal(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_SCOPE ->
-                                lowFuelScope =
-                                        LowFuelScope.fromOrdinal(value);
+                                     .DATA_LOW_FUEL_SCOPE -> lowFuelScope =
+                                LowFuelScope.fromOrdinal(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_HEATED_REDSTONE ->
-                                heatedRedstone =
-                                        clampHeatedRedstone(value);
+                                     .DATA_HEATED_REDSTONE -> heatedRedstone =
+                                clampHeatedRedstone(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_HEATED_GLOW ->
-                                heatedGlow =
-                                        clampGlow(value);
+                                     .DATA_HEATED_GLOW -> heatedGlow =
+                                clampGlow(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_SUPERHEATED_REDSTONE ->
-                                superheatedRedstone =
-                                        clampSuperheatedRedstone(value);
+                                     .DATA_SUPERHEATED_REDSTONE -> superheatedRedstone =
+                                clampSuperheatedRedstone(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_SUPERHEATED_GLOW ->
-                                superheatedGlow =
-                                        clampGlow(value);
+                                     .DATA_SUPERHEATED_GLOW -> superheatedGlow =
+                                clampGlow(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_COMBUSTION_REDSTONE ->
-                                combustionRedstone =
-                                        clampCombustionRedstone(value);
+                                     .DATA_COMBUSTION_REDSTONE -> combustionRedstone =
+                                clampCombustionRedstone(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_COMBUSTION_GLOW ->
-                                combustionGlow =
-                                        clampGlow(value);
+                                     .DATA_COMBUSTION_GLOW -> combustionGlow =
+                                clampGlow(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_REDSTONE ->
-                                lowFuelRedstone =
-                                        clampRedstone(value);
+                                     .DATA_LOW_FUEL_REDSTONE -> lowFuelRedstone =
+                                clampRedstone(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_GLOW ->
-                                lowFuelGlow =
-                                        clampGlow(value);
+                                     .DATA_LOW_FUEL_GLOW -> lowFuelGlow =
+                                clampGlow(value);
                         case ThermalRelaySwitchMenu
-                                .DATA_CURRENT_HEAT_BAND ->
-                                currentHeatBand =
-                                        Mth.clamp(value, 0, 3);
+                                     .DATA_CURRENT_HEAT_BAND -> currentHeatBand =
+                                Mth.clamp(value, 0, 3);
                         case ThermalRelaySwitchMenu
-                                .DATA_LOW_FUEL_ACTIVE ->
-                                lowFuelWarningActive =
-                                        value != 0;
+                                     .DATA_LOW_FUEL_ACTIVE -> lowFuelWarningActive =
+                                value != 0;
                         default -> {
                             // Current output and linked count are read-only.
                         }
@@ -351,69 +324,48 @@ public class ThermalRelaySwitchBlockEntity
      */
     public boolean handleMenuButton(int buttonId) {
         boolean changed = switch (buttonId) {
-            case ThermalRelaySwitchMenu.BUTTON_MODE_CUSTOM_HEAT ->
-                    setMode(RelayMode.CUSTOM_HEAT);
-            case ThermalRelaySwitchMenu.BUTTON_MODE_LOW_FUEL ->
-                    setMode(RelayMode.LOW_FUEL);
+            case ThermalRelaySwitchMenu.BUTTON_MODE_CUSTOM_HEAT -> setMode(RelayMode.CUSTOM_HEAT);
+            case ThermalRelaySwitchMenu.BUTTON_MODE_LOW_FUEL -> setMode(RelayMode.LOW_FUEL);
 
-            case ThermalRelaySwitchMenu.BUTTON_SCOPE_LOW_HEAT ->
-                    setLowFuelScope(LowFuelScope.LOW_HEAT);
-            case ThermalRelaySwitchMenu.BUTTON_SCOPE_HIGH_HEAT ->
-                    setLowFuelScope(LowFuelScope.HIGH_HEAT);
-            case ThermalRelaySwitchMenu.BUTTON_SCOPE_BOTH ->
-                    setLowFuelScope(LowFuelScope.BOTH);
+            case ThermalRelaySwitchMenu.BUTTON_SCOPE_LOW_HEAT -> setLowFuelScope(LowFuelScope.LOW_HEAT);
+            case ThermalRelaySwitchMenu.BUTTON_SCOPE_HIGH_HEAT -> setLowFuelScope(LowFuelScope.HIGH_HEAT);
+            case ThermalRelaySwitchMenu.BUTTON_SCOPE_BOTH -> setLowFuelScope(LowFuelScope.BOTH);
 
             case ThermalRelaySwitchMenu
-                    .BUTTON_HEATED_REDSTONE_DOWN ->
-                    adjustHeatedRedstone(-1);
+                         .BUTTON_HEATED_REDSTONE_DOWN -> adjustHeatedRedstone(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_HEATED_REDSTONE_UP ->
-                    adjustHeatedRedstone(1);
+                         .BUTTON_HEATED_REDSTONE_UP -> adjustHeatedRedstone(1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_HEATED_GLOW_DOWN ->
-                    adjustHeatedGlow(-1);
+                         .BUTTON_HEATED_GLOW_DOWN -> adjustHeatedGlow(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_HEATED_GLOW_UP ->
-                    adjustHeatedGlow(1);
+                         .BUTTON_HEATED_GLOW_UP -> adjustHeatedGlow(1);
 
             case ThermalRelaySwitchMenu
-                    .BUTTON_SUPERHEATED_REDSTONE_DOWN ->
-                    adjustSuperheatedRedstone(-1);
+                         .BUTTON_SUPERHEATED_REDSTONE_DOWN -> adjustSuperheatedRedstone(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_SUPERHEATED_REDSTONE_UP ->
-                    adjustSuperheatedRedstone(1);
+                         .BUTTON_SUPERHEATED_REDSTONE_UP -> adjustSuperheatedRedstone(1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_SUPERHEATED_GLOW_DOWN ->
-                    adjustSuperheatedGlow(-1);
+                         .BUTTON_SUPERHEATED_GLOW_DOWN -> adjustSuperheatedGlow(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_SUPERHEATED_GLOW_UP ->
-                    adjustSuperheatedGlow(1);
+                         .BUTTON_SUPERHEATED_GLOW_UP -> adjustSuperheatedGlow(1);
 
             case ThermalRelaySwitchMenu
-                    .BUTTON_COMBUSTION_REDSTONE_DOWN ->
-                    adjustCombustionRedstone(-1);
+                         .BUTTON_COMBUSTION_REDSTONE_DOWN -> adjustCombustionRedstone(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_COMBUSTION_REDSTONE_UP ->
-                    adjustCombustionRedstone(1);
+                         .BUTTON_COMBUSTION_REDSTONE_UP -> adjustCombustionRedstone(1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_COMBUSTION_GLOW_DOWN ->
-                    adjustCombustionGlow(-1);
+                         .BUTTON_COMBUSTION_GLOW_DOWN -> adjustCombustionGlow(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_COMBUSTION_GLOW_UP ->
-                    adjustCombustionGlow(1);
+                         .BUTTON_COMBUSTION_GLOW_UP -> adjustCombustionGlow(1);
 
             case ThermalRelaySwitchMenu
-                    .BUTTON_LOW_FUEL_REDSTONE_DOWN ->
-                    adjustLowFuelRedstone(-1);
+                         .BUTTON_LOW_FUEL_REDSTONE_DOWN -> adjustLowFuelRedstone(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_LOW_FUEL_REDSTONE_UP ->
-                    adjustLowFuelRedstone(1);
+                         .BUTTON_LOW_FUEL_REDSTONE_UP -> adjustLowFuelRedstone(1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_LOW_FUEL_GLOW_DOWN ->
-                    adjustLowFuelGlow(-1);
+                         .BUTTON_LOW_FUEL_GLOW_DOWN -> adjustLowFuelGlow(-1);
             case ThermalRelaySwitchMenu
-                    .BUTTON_LOW_FUEL_GLOW_UP ->
-                    adjustLowFuelGlow(1);
+                         .BUTTON_LOW_FUEL_GLOW_UP -> adjustLowFuelGlow(1);
 
             default -> false;
         };
@@ -489,9 +441,22 @@ public class ThermalRelaySwitchBlockEntity
                 hottest = band;
             }
 
+            boolean activeFuelEndingSoon =
+                    this.lowFuelScope.matches(band)
+                            && isActiveFuelEndingSoon(
+                            furnace,
+                            band
+                    );
+
+            boolean heatedStateEndingSoon =
+                    isHeatedStateEndingSoon(
+                            furnace,
+                            band
+                    );
+
             if (!qualifyingLowFuel
-                    && this.lowFuelScope.matches(band)
-                    && isLowFuel(furnace, band)) {
+                    && (activeFuelEndingSoon
+                    || heatedStateEndingSoon)) {
                 qualifyingLowFuel = true;
             }
         }
@@ -542,42 +507,58 @@ public class ThermalRelaySwitchBlockEntity
             @NotNull HeatBand heatBand
     ) {
         return switch (heatBand) {
-            case UNHEATED ->
-                    new ConfiguredOutput(0, 0);
-            case HEATED ->
-                    new ConfiguredOutput(
-                            this.heatedRedstone,
-                            this.heatedGlow
-                    );
-            case SUPERHEATED ->
-                    new ConfiguredOutput(
-                            this.superheatedRedstone,
-                            this.superheatedGlow
-                    );
-            case COMBUSTION ->
-                    new ConfiguredOutput(
-                            this.combustionRedstone,
-                            this.combustionGlow
-                    );
+            case UNHEATED -> new ConfiguredOutput(0, 0);
+            case HEATED -> new ConfiguredOutput(
+                    this.heatedRedstone,
+                    this.heatedGlow
+            );
+            case SUPERHEATED -> new ConfiguredOutput(
+                    this.superheatedRedstone,
+                    this.superheatedGlow
+            );
+            case COMBUSTION -> new ConfiguredOutput(
+                    this.combustionRedstone,
+                    this.combustionGlow
+            );
         };
     }
 
-    private static boolean isLowFuel(
+    private static boolean isActiveFuelEndingSoon(
             @NotNull MoltenRotorBlockEntity furnace,
             @NotNull HeatBand heatBand
     ) {
         if (heatBand == HeatBand.UNHEATED
-                || furnace.isCreativeMode()) {
+                || furnace.isCreativeMode()
+                || !furnace.isFuelQueueEmpty()) {
             return false;
         }
 
-        /*
-         * Queued fuel starts automatically when the active item expires.
-         * Treat the furnace as supplied while anything is waiting.
-         */
-        return furnace.isFuelQueueEmpty()
-                && furnace.getDisplayFuelTime()
+        int remainingFuel =
+                furnace.getDisplayFuelTime();
+
+        return remainingFuel > 0
+                && remainingFuel
                 <= LOW_FUEL_THRESHOLD_TICKS;
+    }
+
+    private static boolean isHeatedStateEndingSoon(
+            @NotNull MoltenRotorBlockEntity furnace,
+            @NotNull HeatBand heatBand
+    ) {
+        if (heatBand == HeatBand.UNHEATED
+                || furnace.isCreativeMode()
+                || !furnace.isFuelQueueEmpty()
+                || furnace.getDisplayFuelTime() > 0) {
+            return false;
+        }
+
+        int remainingHeatedTime =
+                furnace.getDisplayCooldownTime();
+
+        return remainingHeatedTime > 0
+                && remainingHeatedTime
+                <= LOW_FUEL_THRESHOLD_TICKS;
+
     }
 
     private static boolean isPulseOff(

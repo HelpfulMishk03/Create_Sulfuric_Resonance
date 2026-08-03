@@ -19,8 +19,8 @@ public abstract class BeltBlockEntityMixin
 
     @Unique
     private static final String
-            SULFURICRESONANCE_COMBUSTION_BELT_KEY =
-            "SulfuricResonanceCombustionBelt";
+            SULFURICRESONANCE$COMBUSTION_BELT_KEY =
+            "combustionBelt";
 
     @Unique
     private boolean sulfuricresonance$combustionBelt;
@@ -46,10 +46,10 @@ public abstract class BeltBlockEntityMixin
             CompoundTag compound,
             HolderLookup.Provider registries,
             boolean clientPacket,
-            CallbackInfo callback
+            CallbackInfo ci
     ) {
         compound.putBoolean(
-                SULFURICRESONANCE_COMBUSTION_BELT_KEY,
+                SULFURICRESONANCE$COMBUSTION_BELT_KEY,
                 sulfuricresonance$combustionBelt
         );
     }
@@ -63,11 +63,11 @@ public abstract class BeltBlockEntityMixin
             CompoundTag compound,
             HolderLookup.Provider registries,
             boolean clientPacket,
-            CallbackInfo callback
+            CallbackInfo ci
     ) {
         sulfuricresonance$combustionBelt =
                 compound.getBoolean(
-                        SULFURICRESONANCE_COMBUSTION_BELT_KEY
+                        SULFURICRESONANCE$COMBUSTION_BELT_KEY
                 );
     }
 }

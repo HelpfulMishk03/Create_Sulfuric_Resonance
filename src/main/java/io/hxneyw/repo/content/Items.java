@@ -96,7 +96,6 @@ public class Items {
                    () -> new CombustionBeltConnectorItem(
                            new Item.Properties()
                                    .stacksTo(64)
-                                   .fireResistant()
                    )
            );
 

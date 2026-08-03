@@ -83,7 +83,7 @@ public final class LivingEmberLampClientHandler {
                 LivingEmberLampBlockEntity
                         .getLoadedClientLamps()) {
             if (lamp.getLevel() != level
-                    || !lamp.matchesLink(link)) {
+                    || lamp.doesNotMatchLink(link)) {
                 continue;
             }
 
@@ -134,7 +134,7 @@ public final class LivingEmberLampClientHandler {
 
         BlockPos pos = link.position();
 
-        if (!isVisible(level, player, pos)) {
+        if (isHidden(level, player, pos)) {
             return;
         }
 
@@ -161,13 +161,13 @@ public final class LivingEmberLampClientHandler {
             LivingEmberLampItem.FurnaceLink link,
             int color
     ) {
-        if (!isVisible(level, player, pos)) {
+        if (isHidden(level, player, pos)) {
             return;
         }
 
         if (!(level.getBlockEntity(pos)
                 instanceof LivingEmberLampBlockEntity lamp)
-                || !lamp.matchesLink(link)) {
+                || lamp.doesNotMatchLink(link)) {
             return;
         }
 
@@ -182,15 +182,15 @@ public final class LivingEmberLampClientHandler {
         );
     }
 
-    private static boolean isVisible(
+    private static boolean isHidden(
             ClientLevel level,
             LocalPlayer player,
             BlockPos pos
     ) {
-        return level.isLoaded(pos)
-                && player.distanceToSqr(
+        return !level.isLoaded(pos)
+                || !(player.distanceToSqr(
                 Vec3.atCenterOf(pos)
-        ) <= MAX_DISTANCE_SQUARED;
+        ) <= MAX_DISTANCE_SQUARED);
     }
 
     private static void renderShape(
