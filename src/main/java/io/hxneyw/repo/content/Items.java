@@ -89,6 +89,17 @@ public class Items {
                    )
            );
 
+   public static final DeferredItem<CombustionBeltConnectorItem>
+           COMBUSTION_BELT_CONNECTOR =
+           ITEMS.register(
+                   "combustion_belt_connector",
+                   () -> new CombustionBeltConnectorItem(
+                           new Item.Properties()
+                                   .stacksTo(64)
+                                   .fireResistant()
+                   )
+           );
+
    public static final DeferredItem<Item> UNREFINED_RUBBER = ITEMS.register("unrefined_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> VULCANIZED_RUBBER = ITEMS.register("vulcanized_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> MOLDED_RUBBER_GASKET = ITEMS.register("molded_rubber_gasket", () -> new Item(new Properties().stacksTo(64)));

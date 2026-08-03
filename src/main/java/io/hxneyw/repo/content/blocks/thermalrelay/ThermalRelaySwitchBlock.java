@@ -2,14 +2,19 @@ package io.hxneyw.repo.content.blocks.thermalrelay;
 
 import com.mojang.serialization.MapCodec;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
+import io.hxneyw.repo.content.menu.ThermalRelaySwitchMenu;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +31,8 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -39,6 +46,19 @@ public class ThermalRelaySwitchBlock
 
     public static final MapCodec<ThermalRelaySwitchBlock> CODEC =
             simpleCodec(ThermalRelaySwitchBlock::new);
+
+    public static final IntegerProperty POWER =
+            BlockStateProperties.POWER;
+
+    /**
+     * Player-configurable visual level:
+     * 0 = off through 5 = maximum.
+     *
+     * The corresponding Minecraft block-light values are deliberately
+     * subdued: 0, 2, 4, 6, 8, and 10.
+     */
+    public static final IntegerProperty GLOW =
+            IntegerProperty.create("glow", 0, 5);
 
     private static final VoxelShape NORTH_SHAPE = Shapes.or(
             Block.box(2.0, 0.0, 4.0, 14.0, 1.0, 12.0),
@@ -67,23 +87,29 @@ public class ThermalRelaySwitchBlock
     private static final VoxelShape WEST_SHAPE =
             rotateClockwise(SOUTH_SHAPE);
 
-    public ThermalRelaySwitchBlock(Properties properties) {
+    public ThermalRelaySwitchBlock(
+            Properties properties
+    ) {
         super(properties);
 
         registerDefaultState(
                 stateDefinition.any()
                         .setValue(FACING, Direction.NORTH)
+                        .setValue(POWER, 0)
+                        .setValue(GLOW, 0)
         );
     }
 
     @Override
-    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
+    protected @NotNull MapCodec<
+            ? extends HorizontalDirectionalBlock
+            > codec() {
         return CODEC;
     }
 
     @Override
     public @Nullable BlockState getStateForPlacement(
-            BlockPlaceContext context
+            @NotNull BlockPlaceContext context
     ) {
         return defaultBlockState().setValue(
                 FACING,
@@ -95,7 +121,60 @@ public class ThermalRelaySwitchBlock
     protected void createBlockStateDefinition(
             StateDefinition.Builder<Block, BlockState> builder
     ) {
-        builder.add(FACING);
+        builder.add(FACING, POWER, GLOW);
+    }
+
+    /**
+     * Use this method in AllModBlocks as the block registration's lightLevel
+     * function. The relay is intentionally capped at light level 10.
+     */
+    public static int getRelayLightLevel(
+            @NotNull BlockState state
+    ) {
+        return switch (state.getValue(GLOW)) {
+            case 1 -> 2;
+            case 2 -> 4;
+            case 3 -> 6;
+            case 4 -> 8;
+            case 5 -> 10;
+            default -> 0;
+        };
+    }
+
+    @Override
+    public int getLightEmission(
+            @NotNull BlockState state,
+            @NotNull BlockGetter level,
+            @NotNull BlockPos pos
+    ) {
+        return getRelayLightLevel(state);
+    }
+
+    @Override
+    protected boolean isSignalSource(
+            @NotNull BlockState state
+    ) {
+        return true;
+    }
+
+    @Override
+    protected int getSignal(
+            @NotNull BlockState state,
+            @NotNull BlockGetter level,
+            @NotNull BlockPos pos,
+            @NotNull Direction direction
+    ) {
+        return state.getValue(POWER);
+    }
+
+    @Override
+    protected int getDirectSignal(
+            @NotNull BlockState state,
+            @NotNull BlockGetter level,
+            @NotNull BlockPos pos,
+            @NotNull Direction direction
+    ) {
+        return state.getValue(POWER);
     }
 
     @Override
@@ -152,22 +231,13 @@ public class ThermalRelaySwitchBlock
 
         if (level.getBlockEntity(pos)
                 instanceof ThermalRelaySwitchBlockEntity relay) {
-            relay.setConnections(
-                    networkId,
-                    links
-            );
+            relay.setConnections(networkId, links);
         }
     }
 
     /**
-     * Interaction rules:
-     *
-     * <ul>
-     *     <li>sneak-right-click a placed relay: disconnect that relay;</li>
-     *     <li>right-click a linked relay with a relay item: copy its network
-     *     frequency to the held stack;</li>
-     *     <li>otherwise allow the held item to handle its own interaction.</li>
-     * </ul>
+     * Shift-right-click clears this placed relay.
+     * Right-clicking with another relay item copies the network to that item.
      */
     @Override
     protected @NotNull ItemInteractionResult useItemOn(
@@ -181,18 +251,29 @@ public class ThermalRelaySwitchBlock
     ) {
         if (!(level.getBlockEntity(pos)
                 instanceof ThermalRelaySwitchBlockEntity relay)) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return ItemInteractionResult
+                    .SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
         if (player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 relay.clearConnections();
+
+                player.displayClientMessage(
+                        Component.translatable(
+                                "message.sulfuricresonance."
+                                        + "thermal_relay_switch."
+                                        + "network_removed"
+                        ),
+                        true
+                );
             }
 
             return ItemInteractionResult.SUCCESS;
         }
 
-        if (stack.getItem() instanceof ThermalRelaySwitchItem) {
+        if (stack.getItem()
+                instanceof ThermalRelaySwitchItem) {
             UUID networkId = relay.getNetworkId();
 
             List<ThermalRelaySwitchItem.FurnaceLink> links =
@@ -213,9 +294,18 @@ public class ThermalRelaySwitchBlock
             return ItemInteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        /*
+         * Let held tools such as Create's wrench perform their own action.
+         * The configuration menu is intentionally empty-hand only.
+         */
+        return ItemInteractionResult
+                .PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
+    /**
+     * Empty-hand right-click opens the configuration screen.
+     * Shift-right-click still disconnects the placed relay.
+     */
     @Override
     protected @NotNull InteractionResult useWithoutItem(
             @NotNull BlockState state,
@@ -224,25 +314,73 @@ public class ThermalRelaySwitchBlock
             @NotNull Player player,
             @NotNull BlockHitResult hit
     ) {
-        if (!player.isShiftKeyDown()) {
-            return InteractionResult.PASS;
+        if (player.isShiftKeyDown()) {
+            if (level.getBlockEntity(pos)
+                    instanceof ThermalRelaySwitchBlockEntity relay
+                    && !level.isClientSide) {
+                relay.clearConnections();
+
+                player.displayClientMessage(
+                        Component.translatable(
+                                "message.sulfuricresonance."
+                                        + "thermal_relay_switch."
+                                        + "network_removed"
+                        ),
+                        true
+                );
+            }
+
+            return InteractionResult.sidedSuccess(
+                    level.isClientSide
+            );
         }
 
-        if (!(level.getBlockEntity(pos)
-                instanceof ThermalRelaySwitchBlockEntity relay)) {
-            return InteractionResult.PASS;
+        if (!level.isClientSide
+                && player instanceof ServerPlayer serverPlayer) {
+            MenuProvider provider =
+                    getMenuProvider(state, level, pos);
+
+            if (provider != null) {
+                serverPlayer.openMenu(provider);
+            }
         }
 
-        if (!level.isClientSide) {
-            relay.clearConnections();
-        }
-
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(
+                level.isClientSide
+        );
     }
 
     @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T>
-    getTicker(
+    public @Nullable MenuProvider getMenuProvider(
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos pos
+    ) {
+        if (!(level.getBlockEntity(pos)
+                instanceof ThermalRelaySwitchBlockEntity relay)) {
+            return null;
+        }
+
+        return new SimpleMenuProvider(
+                (
+                        containerId,
+                        playerInventory,
+                        player
+                ) -> new ThermalRelaySwitchMenu(
+                        containerId,
+                        playerInventory,
+                        relay
+                ),
+                Component.translatable(
+                        "menu.sulfuricresonance."
+                                + "thermal_relay_switch"
+                )
+        );
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity>
+    BlockEntityTicker<T> getTicker(
             @NotNull Level level,
             @NotNull BlockState state,
             @NotNull BlockEntityType<T> type

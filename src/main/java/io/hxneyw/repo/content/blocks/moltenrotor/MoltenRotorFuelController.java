@@ -372,6 +372,16 @@ public final class MoltenRotorFuelController {
         return Math.max(this.remainingBurnTime, 0);
     }
 
+    /**
+     * Returns whether at least one valid fuel item is waiting in the queue.
+     * <p>
+     * Heat-monitoring blocks use this to suppress low-fuel warnings while the
+     * furnace is already supplied with its next fuel item.
+     */
+    public boolean isFuelQueueEmpty() {
+        return this.pendingFuel.isEmpty();
+    }
+
     public ItemStack getRenderedFuelStack() {
         return this.activeFuelStack.copy();
     }

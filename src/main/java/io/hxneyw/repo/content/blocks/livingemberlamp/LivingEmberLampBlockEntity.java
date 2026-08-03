@@ -1,11 +1,20 @@
 package io.hxneyw.repo.content.blocks.livingemberlamp;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.items.LivingEmberLampItem;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -14,6 +23,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LivingEmberLampBlockEntity extends BlockEntity {
+
+    private static final Set<LivingEmberLampBlockEntity>
+            CLIENT_LAMPS = Collections.newSetFromMap(
+            new WeakHashMap<>()
+    );
 
     private static final String LINKED_POSITION_TAG = "LinkedFurnacePos";
     private static final String LINKED_DIMENSION_TAG = "LinkedFurnaceDimension";
@@ -56,7 +70,45 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         this.linkedFurnaceDimension = dimension;
         this.linkedFurnaceIdentity = furnaceIdentity;
         this.validationCountdown = 0;
-        this.setChanged();
+        markAndSync();
+    }
+
+    public static List<LivingEmberLampBlockEntity>
+    getLoadedClientLamps() {
+        return List.copyOf(CLIENT_LAMPS);
+    }
+
+    public boolean matchesLink(
+            @NotNull LivingEmberLampItem.FurnaceLink link
+    ) {
+        BlockPos linkedPos = this.linkedFurnacePos;
+        String linkedDimension = this.linkedFurnaceDimension;
+        UUID linkedIdentity = this.linkedFurnaceIdentity;
+
+        return linkedPos != null
+                && linkedDimension != null
+                && linkedIdentity != null
+                && linkedPos.equals(link.position())
+                && linkedDimension.equals(link.dimension())
+                && linkedIdentity.equals(
+                link.furnaceIdentity()
+        );
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        if (this.level != null
+                && this.level.isClientSide) {
+            CLIENT_LAMPS.add(this);
+        }
+    }
+
+    @Override
+    public void setRemoved() {
+        CLIENT_LAMPS.remove(this);
+        super.setRemoved();
     }
 
     public static void serverTick(
@@ -115,7 +167,8 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         this.lowFuelWarning = !furnace.isCreativeMode()
                 && normalLight >= 10
                 && remainingFuel > 0
-                && remainingFuel <= LOW_FUEL_WARNING_TICKS;
+                && remainingFuel <= LOW_FUEL_WARNING_TICKS
+                && !furnace.isFuelQueueEmpty();
 
         return normalLight;
     }
@@ -161,6 +214,52 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         return pulsePhase == 0L
                 ? LOW_FUEL_PULSE_MAX_LIGHT
                 : LOW_FUEL_PULSE_MIN_LIGHT;
+    }
+
+    private void markAndSync() {
+        this.setChanged();
+
+        if (this.level == null
+                || this.level.isClientSide) {
+            return;
+        }
+
+        BlockState state = this.getBlockState();
+
+        this.level.sendBlockUpdated(
+                this.worldPosition,
+                state,
+                state,
+                Block.UPDATE_CLIENTS
+        );
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag(
+            @NotNull HolderLookup.Provider registries
+    ) {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag, registries);
+        return tag;
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener>
+    getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(
+            @NotNull Connection connection,
+            @NotNull ClientboundBlockEntityDataPacket packet,
+            @NotNull HolderLookup.Provider registries
+    ) {
+        super.onDataPacket(
+                connection,
+                packet,
+                registries
+        );
     }
 
     @Override

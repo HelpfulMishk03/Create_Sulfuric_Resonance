@@ -7,7 +7,6 @@ import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public class SulfuricResonancePonderPlugin implements PonderPlugin {
@@ -33,33 +32,30 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
         try {
             ResourceLocation spritzerId =
                     BuiltInRegistries.BLOCK.getKey(
-                            (Block) AllModBlocks.PERFORATED_SPRITZER.get()
+                            AllModBlocks.PERFORATED_SPRITZER.get()
                     );
 
             helper.addStoryBoard(
                     spritzerId,
                     "perforated_spritzer/intro",
                     PerforatedSpritzerScenes::intro,
-                    new ResourceLocation[]{AllPonderTags.FLUIDS}
-            );
+                    AllPonderTags.FLUIDS);
 
             helper.addStoryBoard(
                     spritzerId,
                     "perforated_spritzer/mob_automation",
                     PerforatedSpritzerScenes::mobAutomation,
-                    new ResourceLocation[]{AllPonderTags.FLUIDS}
-            );
+                    AllPonderTags.FLUIDS);
 
             ResourceLocation moltenRotorId =
                     BuiltInRegistries.BLOCK.getKey(
-                            (Block) AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+                            AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
                     );
 
             helper.addStoryBoard(
                     moltenRotorId,
                     "molten_rotor/operation",
-                    MoltenRotorScenes::operation,
-                    new ResourceLocation[]{}
+                    MoltenRotorScenes::operation
             );
 
             ResourceLocation sulfurId = ResourceLocation.fromNamespaceAndPath(
@@ -67,13 +63,24 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                     "sulfur"
             );
 
+            ResourceLocation thermalRelayId =
+                    ResourceLocation.fromNamespaceAndPath(
+                            CreateSulfuricResonance.MODID,
+                            "thermal_relay_switch"
+                    );
+
+            helper.forComponents(thermalRelayId)
+                    .addStoryBoard(
+                            "relayswitch/thermal_relay_switch",
+                            ThermalRelayScenes::thermalRelaySwitch
+                    );
+
 
 
             helper.addStoryBoard(
                     sulfurId,
                     "sulfur/compatibility",
-                    SulfurScenes::compatibility,
-                    new ResourceLocation[]{}
+                    SulfurScenes::compatibility
             );
 
             ResourceLocation livingEmberLampId =

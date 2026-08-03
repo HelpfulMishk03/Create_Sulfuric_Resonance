@@ -34,8 +34,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    private int clientUpdateCounter = 0;
    private int lastNotifiedFuelCount = 0;
-   private MoltenRotorBlockEntity.RotorHeatLevel lastSentHeatTier =
-           MoltenRotorBlockEntity.RotorHeatLevel.NONE;
+   private RotorHeatLevel lastSentHeatTier =
+           RotorHeatLevel.NONE;
    private boolean creativeMode = false;
    private boolean kineticsInitialized = false;
    private UUID furnaceIdentity = UUID.randomUUID();
@@ -160,7 +160,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.getCurrentHeatTier().baseStressCapacity;
    }
 
-   public MoltenRotorBlockEntity.RotorHeatLevel getCurrentHeatTier() {
+   public RotorHeatLevel getCurrentHeatTier() {
       return this.temperatureController.getHeatTier();
    }
 
@@ -170,6 +170,16 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public int getDisplayFuelTime() {
       return this.fuelController.getDisplayFuelTime();
+   }
+
+   /**
+    * Returns whether at least one fuel item is waiting in the automatic queue.
+    * <p>
+    * External heat-monitoring blocks use this to avoid reporting low fuel
+    * while the furnace is already supplied with its next fuel item.
+    */
+   public boolean isFuelQueueEmpty() {
+      return this.fuelController.isFuelQueueEmpty();
    }
 
    public ItemStack getRenderedFuelStack() {
@@ -222,16 +232,16 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          return;
       }
 
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
+      RotorHeatLevel newTier =
               this.applyNextCreativeTier();
 
       if (this.level instanceof ServerLevel serverLevel
-              && newTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+              && newTier == RotorHeatLevel.RADIANT) {
          this.spawnRadiantParticles(serverLevel);
       }
    }
 
-   private MoltenRotorBlockEntity.RotorHeatLevel applyNextCreativeTier() {
+   private RotorHeatLevel applyNextCreativeTier() {
       RotorHeatLevel newTier = getNewTier();
 
       float newTemperature = switch (newTier) {
@@ -302,9 +312,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private void tickTemperatureSystem() {
       MoltenRotorTemperatureController.TickResult temperatureTick =
               this.temperatureController.tick();
-      MoltenRotorBlockEntity.RotorHeatLevel previousTier =
+      RotorHeatLevel previousTier =
               temperatureTick.previousTier();
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
+      RotorHeatLevel newTier =
               this.applyTemperatureTick(temperatureTick);
 
       if (newTier != this.lastSentHeatTier) {
@@ -312,9 +322,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          this.clientUpdateCounter = 0;
          this.sendData();
 
-         if (newTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
+         if (newTier == RotorHeatLevel.RADIANT
                  && previousTier
-                 != MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
+                 != RotorHeatLevel.RADIANT
                  && this.level instanceof ServerLevel serverLevel) {
             this.spawnRadiantParticles(serverLevel);
          }
@@ -324,12 +334,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
    }
 
-   private MoltenRotorBlockEntity.RotorHeatLevel applyTemperatureTick(
+   private RotorHeatLevel applyTemperatureTick(
            MoltenRotorTemperatureController.TickResult temperatureTick
    ) {
-      MoltenRotorBlockEntity.RotorHeatLevel previousTier =
+      RotorHeatLevel previousTier =
               temperatureTick.previousTier();
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
+      RotorHeatLevel newTier =
               temperatureTick.currentTier();
 
       if (temperatureTick.tierChanged()) {
@@ -353,8 +363,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       );
    }
 
-   private boolean tierAffectsRotation(MoltenRotorBlockEntity.RotorHeatLevel from, MoltenRotorBlockEntity.RotorHeatLevel to) {
-      return from == MoltenRotorBlockEntity.RotorHeatLevel.NONE != (to == MoltenRotorBlockEntity.RotorHeatLevel.NONE) || from.rpmCap != to.rpmCap;
+   private boolean tierAffectsRotation(RotorHeatLevel from, RotorHeatLevel to) {
+      return from == RotorHeatLevel.NONE != (to == RotorHeatLevel.NONE) || from.rpmCap != to.rpmCap;
    }
 
    private void notifyKineticNetworkOfChange() {
@@ -504,7 +514,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
       int displayedStress =
               this.getCurrentHeatTier()
-                      != MoltenRotorBlockEntity.RotorHeatLevel.NONE
+                      != RotorHeatLevel.NONE
                       ? (int)this.getTotalStressOutput()
                       : 0;
 
@@ -604,7 +614,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
 
       if (this.getCurrentHeatTier()
-              == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+              == RotorHeatLevel.RADIANT) {
 
          tooltip.add(
                  Component.literal("✦ RADIANT TIER ACTIVE")

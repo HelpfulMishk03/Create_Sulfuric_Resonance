@@ -1,6 +1,5 @@
 {
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
-
   "item.sulfuricresonance.sulfur": "Soufre",
   "item.sulfuricresonance.netherwood_dust": "Poussière de bois du Nether",
   "item.sulfuricresonance.lye": "Lessive",
@@ -65,30 +64,47 @@
   "tooltip.sulfuricresonance.ash_ceramic": "Utilisée dans les conteneurs industriels et les futurs équipements",
   "tooltip.sulfuricresonance.ash_brick.1": "Une brique résistante formée à partir de cendre épuisée et d'argile",
   "tooltip.sulfuricresonance.ash_brick.2": "Utilisée pour les constructions à base de cendre",
-
+  "menu.sulfuricresonance.thermal_relay_switch": "Commutateur de relais thermique",
+  "gui.sulfuricresonance.thermal_relay_switch.mode.custom_heat": "Sortie thermique personnalisée",
+  "gui.sulfuricresonance.thermal_relay_switch.mode.low_fuel": "Alerte de carburant faible",
+  "gui.sulfuricresonance.thermal_relay_switch.heat_tier": "Niveau thermique",
+  "gui.sulfuricresonance.thermal_relay_switch.redstone": "Redstone",
+  "gui.sulfuricresonance.thermal_relay_switch.glow": "Lueur (Lumière)",
+  "gui.sulfuricresonance.thermal_relay_switch.unheated": "Non chauffé",
+  "gui.sulfuricresonance.thermal_relay_switch.heated": "Chauffé",
+  "gui.sulfuricresonance.thermal_relay_switch.superheated": "Surchauffé",
+  "gui.sulfuricresonance.thermal_relay_switch.combustion": "Combustion",
+  "gui.sulfuricresonance.thermal_relay_switch.heat_scope": "Plage thermique de carburant faible",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.low_heat": "Basse chaleur",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.high_heat": "Haute chaleur",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.both": "Les deux",
+  "gui.sulfuricresonance.thermal_relay_switch.warning_redstone": "Redstone d'alerte",
+  "gui.sulfuricresonance.thermal_relay_switch.warning_glow": "Lueur d'alerte (Lumière)",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel_threshold": "Carburant faible à %s secondes",
+  "gui.sulfuricresonance.thermal_relay_switch.pulse_rate": "Impulsion : 10t active / 10t inactive",
+  "gui.sulfuricresonance.thermal_relay_switch.linked": "Reliés : %s",
+  "gui.sulfuricresonance.thermal_relay_switch.hottest": "Plus chaud : %s",
+  "gui.sulfuricresonance.thermal_relay_switch.output": "Sortie : Redstone %s / Lueur %s",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel.warning": "Carburant : ALERTE",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel.stable": "Carburant : Stable",
+  "message.sulfuricresonance.thermal_relay_switch.network_removed": "Connexion au réseau supprimée",
   "tooltip.sulfuricresonance.sulfur.reactive": "Matériau industriel réactif",
   "tooltip.sulfuricresonance.sulfur.uses": "Utilisé dans la chimie du soufre, le caoutchouc, la combustion et la production d'acide sulfurique",
-
+  "message.sulfuricresonance.living_ember_lamp.network_removed": "Connexion au réseau supprimée",
   "tooltip.sulfuricresonance.sulfur_block.storage": "Bloc de stockage de soufre comprimé",
   "tooltip.sulfuricresonance.sulfur_block.unpack": "Peut être décompressé en 9 unités de soufre",
-
   "tooltip.sulfuricresonance.acid.corrosive": "Fluide industriel hautement corrosif",
   "tooltip.sulfuricresonance.acid.reactions": "Réagit avec l'eau et la lave",
   "tooltip.sulfuricresonance.acid.industrial": "Utilisé dans la chimie du soufre, le traitement du caoutchouc et les réactions industrielles",
   "tooltip.sulfuricresonance.acid.warning": "Une mauvaise manipulation peut provoquer de graves dommages",
-
   "fluid.sulfuricresonance.sulfuric_acid": "Acide sulfurique",
   "item.sulfuricresonance.sulfuric_acid_bucket": "Seau d'acide sulfurique",
   "block.sulfuricresonance.sulfuric_acid": "Acide sulfurique",
   "fluid_type.sulfuricresonance.sulfuric_acid": "Acide sulfurique",
-
   "effect.sulfuricresonance.acid_burn": "Brûlure acide",
   "effect.sulfuricresonance.acid_burn.description": "Subit des dégâts corrosifs causés par l'acide sulfurique",
-
   "_comment": "=== TRADUCTIONS PONDER ===",
-
   "sulfuricresonance.ponder.perforated_spritzer.header": "Pulvérisateur perforé",
-
   "sulfuricresonance.ponder.perforated_spritzer.intro.header": "Utilisation du pulvérisateur perforé",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_1": "Le pulvérisateur perforé peut stocker et disperser des fluides vers le bas",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_2": "Il peut contenir jusqu'à 3500 mB de n'importe quel fluide",
@@ -99,7 +115,6 @@
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_7": "Le pulvérisateur peut hydrater les terres labourées",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_8": "... il peut également arroser les cultures !",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_9": "Leur croissance augmente ainsi légèrement, mais uniquement lorsque la terre labourée sous elles est entièrement hydratée",
-
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.header": "Automatisation des créatures avec le pulvérisateur perforé",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_1": "Cette installation utilise un pulvérisateur perforé pour blesser les créatures et récupérer leurs butins",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_2": "L'acide sulfurique inflige Brûlure acide et blesse à répétition les créatures vivantes sous le pulvérisateur",
@@ -109,7 +124,6 @@
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_6": "L'alimenter en lave enflamme à la place les créatures prises sous le pulvérisateur",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_7": "L'eau produit l'effet inverse en éteignant les créatures en feu en dessous",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_8": "Choisissez le fluide fourni pour blesser les créatures, les enflammer ou éteindre le feu",
-
   "sulfuricresonance.ponder.tag.fluids": "Gestion des fluides",
   "sulfuricresonance.ponder.tag.fluids.description": "Composants qui manipulent les fluides dans Sulfuric Resonance",
   "subtitles.sulfuricresonance.rubber_padding_hit": "Impact sur le rembourrage en caoutchouc",
@@ -125,7 +139,6 @@
   "sulfuricresonance.ponder.molten_rotor.operation.text_8": "La jauge avant suit la température de la chambre lorsque le four franchit chaque palier de chaleur",
   "sulfuricresonance.ponder.molten_rotor.operation.text_9": "Les lunettes d'ingénieur indiquent la température, l'état thermique, la capacité de contrainte, la vitesse générée, le combustible et le temps de refroidissement",
   "sulfuricresonance.ponder.molten_rotor.operation.text_10": "Lorsque le combustible est épuisé, la chaleur stockée se dissipe et la production ralentit en passant par les paliers inférieurs avant de s'arrêter",
-
   "sulfuricresonance.ponder.sulfur.header": "Soufre",
   "sulfuricresonance.ponder.sulfur.compatibility.header": "Compatibilité inter-mods du soufre",
   "sulfuricresonance.ponder.sulfur.compatibility.text_1": "Sulfuric Resonance accepte le soufre traité au moyen de tags d'objets communs",
@@ -133,7 +146,6 @@
   "sulfuricresonance.ponder.sulfur.compatibility.text_3": "Le soufre traité et correctement balisé provenant d'autres mods peut remplacer le soufre de Sulfuric Resonance",
   "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Les minerais bruts, les fragments et les blocs de stockage ne sont pas des ingrédients de soufre traité",
   "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Les matériaux utilisant des tags privés ou absents peuvent nécessiter une compatibilité dédiée",
-
   "block.sulfuricresonance.ashesil": "Ashesil",
   "block.sulfuricresonance.living_ember_lamp": "Lampe à braise vivante",
   "subtitles.sulfuricresonance.molten_rotor_rumble": "Le rotor fondu gronde",
@@ -141,13 +153,14 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.header": "Liaison et lecture de la lampe à braise vivante",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_1": "La lampe à braise vivante affiche à distance la chaleur et l'état du combustible d'un four à rotor fondu",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_2": "Avant de la placer, faites un clic droit sur le four en tenant la lampe",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Les coordonnées et la dimension sélectionnées sont enregistrées sur l'objet et affichées dans son infobulle",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Une fois placée, la lampe surveille uniquement le four sélectionné par cette liaison enregistrée",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Un contour bleu pulsant marque le four sélectionné tant que la lampe liée est tenue",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Après le placement, tenir une lampe du même réseau met en évidence le four et toutes les lampes connectées",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_5": "Un four froid ou inactif laisse la lampe éteinte au niveau 0",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_6": "Une chaleur décroissante ou couvante augmente progressivement son éclairage jusqu'au niveau 7",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_7": "Une chaleur embrasée ou bouillonnante augmente progressivement son éclairage jusqu'au niveau 11",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_8": "À chaleur rayonnante, la lampe atteint son éclairage stable de niveau 13",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Lorsqu'il reste au plus 200 ticks de combustible, une lampe chaude vous avertit en pulsant nettement entre les niveaux 9 et 15",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Lorsqu’il reste au plus 200 ticks de combustible et qu’aucun combustible n’est en attente, une lampe chaude vous avertit en pulsant nettement entre les niveaux 9 et 15",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Si le four lié est retiré, déchargé ou dans une autre dimension, la lampe s'éteint progressivement et en toute sécurité",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Reliez de nouveau la lampe avant de la placer à côté d'un autre four"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Casser puis remplacer le four ne rétablit pas la liaison, même au même emplacement",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Accroupissez-vous et faites un clic droit dans le vide avec une lampe liée pour effacer la connexion ; la barre d’action confirme : Connexion au réseau supprimée"
 }

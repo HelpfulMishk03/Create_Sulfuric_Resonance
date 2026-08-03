@@ -1,6 +1,5 @@
 {
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
-
   "item.sulfuricresonance.sulfur": "Schwefel",
   "item.sulfuricresonance.netherwood_dust": "Netherholzstaub",
   "item.sulfuricresonance.lye": "Lauge",
@@ -65,30 +64,47 @@
   "tooltip.sulfuricresonance.ash_ceramic": "Wird für Industriebehälter und zukünftige Ausrüstung verwendet",
   "tooltip.sulfuricresonance.ash_brick.1": "Ein robuster Ziegel aus verbrauchter Asche und Ton",
   "tooltip.sulfuricresonance.ash_brick.2": "Wird für Bauten auf Aschebasis verwendet",
-
+  "menu.sulfuricresonance.thermal_relay_switch": "Thermischer Relaisschalter",
+  "gui.sulfuricresonance.thermal_relay_switch.mode.custom_heat": "Benutzerdefinierte Wärmeausgabe",
+  "gui.sulfuricresonance.thermal_relay_switch.mode.low_fuel": "Warnung bei niedrigem Brennstoff",
+  "gui.sulfuricresonance.thermal_relay_switch.heat_tier": "Wärmestufe",
+  "gui.sulfuricresonance.thermal_relay_switch.redstone": "Redstone",
+  "gui.sulfuricresonance.thermal_relay_switch.glow": "Leuchten (Licht)",
+  "gui.sulfuricresonance.thermal_relay_switch.unheated": "Unbeheizt",
+  "gui.sulfuricresonance.thermal_relay_switch.heated": "Beheizt",
+  "gui.sulfuricresonance.thermal_relay_switch.superheated": "Überhitzt",
+  "gui.sulfuricresonance.thermal_relay_switch.combustion": "Verbrennung",
+  "gui.sulfuricresonance.thermal_relay_switch.heat_scope": "Wärmebereich für niedrigen Brennstoff",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.low_heat": "Niedrige Hitze",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.high_heat": "Hohe Hitze",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.both": "Beide",
+  "gui.sulfuricresonance.thermal_relay_switch.warning_redstone": "Warn-Redstone",
+  "gui.sulfuricresonance.thermal_relay_switch.warning_glow": "Warnleuchten (Licht)",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel_threshold": "Niedriger Brennstoff bei %s Sekunden",
+  "gui.sulfuricresonance.thermal_relay_switch.pulse_rate": "Puls: 10t AN / 10t AUS",
+  "gui.sulfuricresonance.thermal_relay_switch.linked": "Verbunden: %s",
+  "gui.sulfuricresonance.thermal_relay_switch.hottest": "Heißeste Stufe: %s",
+  "gui.sulfuricresonance.thermal_relay_switch.output": "Ausgabe: Redstone %s / Leuchten %s",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel.warning": "Brennstoff: WARNUNG",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel.stable": "Brennstoff: Stabil",
+  "message.sulfuricresonance.thermal_relay_switch.network_removed": "Netzwerkverbindung entfernt",
   "tooltip.sulfuricresonance.sulfur.reactive": "Reaktives Industriematerial",
   "tooltip.sulfuricresonance.sulfur.uses": "Wird in der Schwefelchemie, Gummiherstellung, Verbrennung und Schwefelsäureproduktion verwendet",
-
+  "message.sulfuricresonance.living_ember_lamp.network_removed": "Netzwerkverbindung entfernt",
   "tooltip.sulfuricresonance.sulfur_block.storage": "Verdichteter Schwefel-Lagerblock",
   "tooltip.sulfuricresonance.sulfur_block.unpack": "Kann in 9 Schwefel zerlegt werden",
-
   "tooltip.sulfuricresonance.acid.corrosive": "Stark ätzende Industrieflüssigkeit",
   "tooltip.sulfuricresonance.acid.reactions": "Reagiert mit Wasser und Lava",
   "tooltip.sulfuricresonance.acid.industrial": "Wird in der Schwefelchemie, Gummiverarbeitung und bei industriellen Reaktionen verwendet",
   "tooltip.sulfuricresonance.acid.warning": "Unsachgemäße Handhabung kann schwere Schäden verursachen",
-
   "fluid.sulfuricresonance.sulfuric_acid": "Schwefelsäure",
   "item.sulfuricresonance.sulfuric_acid_bucket": "Schwefelsäureeimer",
   "block.sulfuricresonance.sulfuric_acid": "Schwefelsäure",
   "fluid_type.sulfuricresonance.sulfuric_acid": "Schwefelsäure",
-
   "effect.sulfuricresonance.acid_burn": "Säureverätzung",
   "effect.sulfuricresonance.acid_burn.description": "Erleidet ätzenden Schaden durch Schwefelsäure",
-
   "_comment": "=== PONDER-ÜBERSETZUNGEN ===",
-
   "sulfuricresonance.ponder.perforated_spritzer.header": "Perforierter Sprüher",
-
   "sulfuricresonance.ponder.perforated_spritzer.intro.header": "Verwendung des perforierten Sprühers",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_1": "Der perforierte Sprüher kann Flüssigkeiten speichern und nach unten verteilen",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_2": "Er kann bis zu 3500 mB einer beliebigen Flüssigkeit aufnehmen",
@@ -99,7 +115,6 @@
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_7": "Der Sprüher kann Ackerboden bewässern",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_8": "... und auch Nutzpflanzen gießen!",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_9": "Dadurch wachsen sie etwas schneller, aber nur, wenn der Ackerboden unter ihnen vollständig bewässert ist",
-
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.header": "Kreaturenautomatisierung mit dem perforierten Sprüher",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_1": "Dieser Aufbau nutzt einen perforierten Sprüher, um Kreaturen zu verletzen und ihre Beute einzusammeln",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_2": "Schwefelsäure verursacht Säureverätzung und verletzt wiederholt lebende Kreaturen unter dem Sprüher",
@@ -109,7 +124,6 @@
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_6": "Wird stattdessen Lava zugeführt, werden Kreaturen unter dem Sprüher entzündet",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_7": "Wasser bewirkt das Gegenteil und löscht brennende Kreaturen darunter",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_8": "Wähle die zugeführte Flüssigkeit, um Kreaturen zu verletzen, sie zu entzünden oder Feuer zu löschen",
-
   "sulfuricresonance.ponder.tag.fluids": "Flüssigkeitshandhabung",
   "sulfuricresonance.ponder.tag.fluids.description": "Komponenten, die in Sulfuric Resonance mit Flüssigkeiten umgehen",
   "subtitles.sulfuricresonance.rubber_padding_hit": "Aufprall auf Gummipolster",
@@ -125,7 +139,6 @@
   "sulfuricresonance.ponder.molten_rotor.operation.text_8": "Die vordere Anzeige verfolgt die Kammertemperatur, während der Ofen die einzelnen Hitzestufen durchläuft",
   "sulfuricresonance.ponder.molten_rotor.operation.text_9": "Ingenieursbrillen zeigen Temperatur, Hitzezustand, Belastbarkeit, erzeugte Drehzahl, Brennstoff und Abkühlzeit an",
   "sulfuricresonance.ponder.molten_rotor.operation.text_10": "Wenn der Brennstoff ausgeht, nimmt die gespeicherte Wärme ab und die Leistung sinkt über niedrigere Stufen, bevor der Ofen zum Stillstand kommt",
-
   "sulfuricresonance.ponder.sulfur.header": "Schwefel",
   "sulfuricresonance.ponder.sulfur.compatibility.header": "Modübergreifende Schwefelkompatibilität",
   "sulfuricresonance.ponder.sulfur.compatibility.text_1": "Sulfuric Resonance akzeptiert verarbeiteten Schwefel über gemeinsame Gegenstands-Tags",
@@ -133,7 +146,6 @@
   "sulfuricresonance.ponder.sulfur.compatibility.text_3": "Korrekt getaggter, verarbeiteter Schwefel aus anderen Mods kann den Schwefel aus Sulfuric Resonance ersetzen",
   "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Roherze, Brocken und Lagerblöcke gelten nicht als verarbeitete Schwefeleingaben",
   "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Materialien mit privaten oder fehlenden Tags benötigen möglicherweise eine eigene Kompatibilitätsintegration",
-
   "block.sulfuricresonance.ashesil": "Ashesil",
   "block.sulfuricresonance.living_ember_lamp": "Lebendige Glutlampe",
   "subtitles.sulfuricresonance.molten_rotor_rumble": "Schmelzrotor rumpelt",
@@ -141,13 +153,14 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.header": "Verknüpfen und Ablesen der lebendigen Glutlampe",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_1": "Die lebendige Glutlampe zeigt aus der Ferne den Wärme- und Brennstoffzustand eines Schmelzrotorofens an",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_2": "Klicke vor dem Platzieren mit der Lampe in der Hand mit der rechten Maustaste auf den Ofen",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Die ausgewählten Koordinaten und die Dimension werden auf dem Gegenstand gespeichert und in seinem Tooltip angezeigt",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Nach dem Platzieren überwacht die Lampe ausschließlich den über die gespeicherte Verknüpfung ausgewählten Ofen",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Eine pulsierende blaue Umrandung markiert den ausgewählten Ofen, solange die verknüpfte Lampe gehalten wird",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Nach dem Platzieren umrandet eine Lampe aus demselben Netzwerk sowohl den Ofen als auch jede verbundene Lampe",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_5": "Bei einem kalten oder inaktiven Ofen bleibt die Lampe auf Lichtstufe 0 dunkel",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_6": "Abklingende oder schwelende Hitze erhöht ihre Lichtstufe sanft auf 7",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_7": "Entflammte oder siedende Hitze erhöht ihre Lichtstufe sanft auf 11",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_8": "Bei strahlender Hitze erreicht die Lampe ihre gleichmäßige Lichtstufe 13",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Bei höchstens 200 verbleibenden Brennstoffticks warnt eine heiße Lampe durch deutliches Pulsieren zwischen den Lichtstufen 9 und 15",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Bei höchstens 200 verbleibenden Brennstoffticks und leerer Warteschlange warnt eine heiße Lampe durch deutliches Pulsieren zwischen den Lichtstufen 9 und 15",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Wird der verknüpfte Ofen entfernt, entladen oder befindet er sich in einer anderen Dimension, blendet die Lampe sicher bis zur Dunkelheit ab",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Verknüpfe den Lampengegenstand erneut, bevor du ihn neben einem anderen Ofen platzierst"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Das Abbauen und Ersetzen des Ofens stellt die Verknüpfung nicht wieder her, selbst an derselben Position",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Schleiche und rechtsklicke mit einer verknüpften Lampe in die Luft, um die Verbindung zu löschen; die Aktionsleiste bestätigt: Netzwerkverbindung entfernt"
 }

@@ -41,6 +41,7 @@ public class CreateSulfuricResonance {
       AllBlockEntities.register(modEventBus);
       ModRecipeTypes.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);
+      AllModMenus.register(modEventBus);
       ModParticles.PARTICLE_TYPES.register(modEventBus);
       modEventBus.addListener(ModCapabilities::registerCapabilities);
       AllModSounds.SOUNDS.register(modEventBus);

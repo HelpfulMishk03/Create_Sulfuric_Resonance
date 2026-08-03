@@ -2,6 +2,7 @@ package io.hxneyw.repo.client;
 
 import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.TooltipModifier;
+import io.hxneyw.repo.content.items.LivingEmberLampItem;
 import net.createmod.catnip.lang.FontHelper.Palette;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -129,6 +130,29 @@ public class UniversalTooltipHandler {
          case "acid_etched_copper_sheet" -> lines.add(Component.translatable(
                  "tooltip.sulfuricresonance.acid_etched_copper_sheet.1"
          ).withStyle(ChatFormatting.GOLD));
+
+         case "living_ember_lamp" ->
+                 LivingEmberLampItem.getLink(
+                         event.getItemStack()
+                 ).ifPresent(link -> {
+                    lines.add(
+                            Component.translatable(
+                                    "tooltip.sulfuricresonance."
+                                            + "living_ember_lamp.linked",
+                                    link.position().getX(),
+                                    link.position().getY(),
+                                    link.position().getZ()
+                            ).withStyle(ChatFormatting.AQUA)
+                    );
+
+                    lines.add(
+                            Component.translatable(
+                                    "tooltip.sulfuricresonance."
+                                            + "living_ember_lamp.dimension",
+                                    link.dimension()
+                            ).withStyle(ChatFormatting.DARK_GRAY)
+                    );
+                 });
 
          case "ash_ceramic_crucible" -> lines.add(
                  Component.translatable(

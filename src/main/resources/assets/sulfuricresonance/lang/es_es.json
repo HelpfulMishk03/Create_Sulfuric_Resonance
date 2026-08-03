@@ -1,6 +1,5 @@
 {
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
-
   "item.sulfuricresonance.sulfur": "Azufre",
   "item.sulfuricresonance.netherwood_dust": "Polvo de madera del Nether",
   "item.sulfuricresonance.lye": "Lejía",
@@ -42,13 +41,11 @@
   "tooltip.sulfuricresonance.cinder_sandpaper.1": "Una lámina abrasiva reforzada con compuesto de escoria, dos veces más duradera que el papel de lija rojo",
   "recipe.sulfuricresonance.combustion_mixing": "Mezcla por combustión",
   "create.recipe.heat_requirement.radiant": "Combustión",
-
   "block.sulfuricresonance.rubber_padding.tooltip.summary": "Amortigua las _caídas_ de entidades, rebota objetos a través de áreas _difíciles de alcanzar_ con _maquinaria_ y crea artilugios únicos con el acolchado de caucho.",
   "block.sulfuricresonance.rubber_padding.tooltip.condition1": "Al colocarse",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour1": "Anula el _daño por caída_ de las entidades",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour2": "Rebota _objetos_ de forma predecible",
   "block.sulfuricresonance.rubber_padding.tooltip.behaviour3": "Mantiene el _impulso horizontal_",
-
   "tooltip.sulfuricresonance.spent_ash": "Útil para tintes, cerámica, construcción y química futura",
   "tooltip.sulfuricresonance.ash_ceramic": "Se utiliza en recipientes industriales y futuros equipos",
   "tooltip.sulfuricresonance.ash_brick.1": "Un ladrillo resistente hecho de ceniza residual y arcilla",
@@ -71,14 +68,35 @@
   "item.sulfuricresonance.sulfuric_acid_bucket": "Cubo de ácido sulfúrico",
   "block.sulfuricresonance.sulfuric_acid": "Ácido sulfúrico",
   "fluid_type.sulfuricresonance.sulfuric_acid": "Ácido sulfúrico",
-
+  "menu.sulfuricresonance.thermal_relay_switch": "Interruptor de relé térmico",
+  "gui.sulfuricresonance.thermal_relay_switch.mode.custom_heat": "Salida térmica personalizada",
+  "gui.sulfuricresonance.thermal_relay_switch.mode.low_fuel": "Aviso de combustible bajo",
+  "gui.sulfuricresonance.thermal_relay_switch.heat_tier": "Nivel térmico",
+  "gui.sulfuricresonance.thermal_relay_switch.redstone": "Redstone",
+  "gui.sulfuricresonance.thermal_relay_switch.glow": "Brillo (Luz)",
+  "gui.sulfuricresonance.thermal_relay_switch.unheated": "Sin calentar",
+  "gui.sulfuricresonance.thermal_relay_switch.heated": "Calentado",
+  "gui.sulfuricresonance.thermal_relay_switch.superheated": "Sobrecalentado",
+  "gui.sulfuricresonance.thermal_relay_switch.combustion": "Combustión",
+  "gui.sulfuricresonance.thermal_relay_switch.heat_scope": "Rango térmico de combustible bajo",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.low_heat": "Calor bajo",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.high_heat": "Calor alto",
+  "gui.sulfuricresonance.thermal_relay_switch.scope.both": "Ambos",
+  "gui.sulfuricresonance.thermal_relay_switch.warning_redstone": "Redstone de aviso",
+  "gui.sulfuricresonance.thermal_relay_switch.warning_glow": "Brillo de aviso (Luz)",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel_threshold": "Combustible bajo a %s segundos",
+  "gui.sulfuricresonance.thermal_relay_switch.pulse_rate": "Pulso: 10t activo / 10t inactivo",
+  "gui.sulfuricresonance.thermal_relay_switch.linked": "Enlazados: %s",
+  "gui.sulfuricresonance.thermal_relay_switch.hottest": "Más caliente: %s",
+  "gui.sulfuricresonance.thermal_relay_switch.output": "Salida: Redstone %s / Brillo %s",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel.warning": "Combustible: AVISO",
+  "gui.sulfuricresonance.thermal_relay_switch.fuel.stable": "Combustible: Estable",
+  "message.sulfuricresonance.thermal_relay_switch.network_removed": "Conexión a la red eliminada",
   "effect.sulfuricresonance.acid_burn": "Quemadura por ácido",
   "effect.sulfuricresonance.acid_burn.description": "Recibiendo daño corrosivo por ácido sulfúrico",
-
+  "message.sulfuricresonance.living_ember_lamp.network_removed": "Conexión a la red eliminada",
   "_comment": "=== PONDER TRANSLATIONS ===",
-
   "sulfuricresonance.ponder.perforated_spritzer.header": "Rociador perforado",
-
   "sulfuricresonance.ponder.perforated_spritzer.intro.header": "Uso del rociador perforado",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_1": "El rociador perforado puede almacenar y dispersar fluidos hacia abajo",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_2": "Puede contener hasta 3500 mB de cualquier fluido",
@@ -89,7 +107,6 @@
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_7": "El rociador puede hidratar la tierra de cultivo",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_8": "...¡y también puede regar las cosechas!",
   "sulfuricresonance.ponder.perforated_spritzer.intro.text_9": "Aumenta ligeramente su velocidad de crecimiento, pero solo cuando la tierra de cultivo debajo está completamente hidratada",
-
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.header": "Automatización de mobs con el rociador perforado",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_1": "Esta configuración usa un rociador perforado para dañar mobs y recoger su botín",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_2": "El ácido sulfúrico aplica 'Quemadura por ácido' y daña repetidamente a las entidades vivas debajo del rociador",
@@ -99,11 +116,9 @@
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_6": "Suministrar lava, en cambio, prenderá fuego a las entidades atrapadas debajo del rociador",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_7": "El agua tiene el uso opuesto, extinguiendo a las entidades en llamas de abajo",
   "sulfuricresonance.ponder.perforated_spritzer.mob_automation.text_8": "Elige el fluido suministrado para dañar mobs, prenderles fuego o extinguir las llamas",
-
   "sulfuricresonance.ponder.tag.fluids": "Manejo de fluidos",
   "sulfuricresonance.ponder.tag.fluids.description": "Componentes que manejan fluidos en Sulfuric Resonance",
   "subtitles.sulfuricresonance.rubber_padding_hit": "Golpe en acolchado de caucho",
-
   "sulfuricresonance.ponder.molten_rotor.header": "Horno de rotor fundido",
   "sulfuricresonance.ponder.molten_rotor.operation.header": "Alimentación del horno de rotor fundido",
   "sulfuricresonance.ponder.molten_rotor.operation.text_1": "El Horno de Rotor Fundido convierte el calor acumulado en fuerza rotacional",
@@ -116,7 +131,6 @@
   "sulfuricresonance.ponder.molten_rotor.operation.text_8": "El indicador frontal muestra la temperatura de la cámara al atravesar cada nivel de calor",
   "sulfuricresonance.ponder.molten_rotor.operation.text_9": "Las gafas de ingeniero muestran la temperatura, el estado térmico, la capacidad de estrés, la velocidad generada, el combustible y el tiempo de enfriamiento",
   "sulfuricresonance.ponder.molten_rotor.operation.text_10": "Cuando se agota el combustible, el calor acumulado disminuye y la salida se ralentiza por los niveles inferiores hasta detenerse",
-
   "sulfuricresonance.ponder.sulfur.header": "Azufre",
   "sulfuricresonance.ponder.sulfur.compatibility.header": "Compatibilidad de azufre entre mods",
   "sulfuricresonance.ponder.sulfur.compatibility.text_1": "Sulfuric Resonance acepta azufre procesado mediante etiquetas comunes de objetos",
@@ -124,7 +138,6 @@
   "sulfuricresonance.ponder.sulfur.compatibility.text_3": "El azufre procesado y etiquetado correctamente de otros mods puede sustituir al azufre de Sulfuric Resonance",
   "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Los minerales, fragmentos en bruto y bloques de almacenamiento no se consideran entradas de azufre procesado",
   "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Los materiales que usan etiquetas privadas o inexistentes pueden necesitar compatibilidad específica",
-
   "block.sulfuricresonance.ashesil": "Ashesil",
   "block.sulfuricresonance.ashesil_pane": "Panel de Ashesil",
   "block.sulfuricresonance.living_ember_lamp": "Lámpara de brasa viviente",
@@ -140,13 +153,14 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.header": "Vinculación y lectura de la lámpara de brasa viviente",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_1": "La lámpara de brasa viviente muestra a distancia el calor y el estado del combustible de un horno de rotor fundido",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_2": "Antes de colocarla, haz clic derecho en el horno mientras sostienes la lámpara",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Las coordenadas y la dimensión seleccionadas se guardan en el objeto y aparecen en su descripción",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Una vez colocada, la lámpara solo vigila el horno seleccionado mediante el vínculo guardado",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_3": "Un contorno azul pulsante marca el horno seleccionado mientras sostienes la lámpara vinculada",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_4": "Tras colocarla, sostener una lámpara de la misma red resalta tanto el horno como todas las lámparas conectadas",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_5": "Un horno frío o inactivo mantiene la lámpara apagada en el nivel 0",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_6": "El calor decreciente o humeante eleva suavemente la lámpara al nivel 7",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_7": "El calor encendido o ardiente la eleva suavemente al nivel 11",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_8": "Con calor radiante, la lámpara alcanza su brillo estable de nivel 13",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Cuando quedan 200 tics de combustible o menos, una lámpara caliente avisa pulsando visiblemente entre los niveles 9 y 15",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Cuando quedan 200 tics de combustible o menos y no hay combustible en cola, una lámpara caliente avisa pulsando visiblemente entre los niveles 9 y 15",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Si el horno vinculado se retira, se descarga o está en otra dimensión, la lámpara se desvanece de forma segura hasta apagarse",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Vuelve a vincular el objeto de la lámpara antes de colocarlo junto a otro horno"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Romper y reemplazar el horno no restaura el vínculo, ni siquiera en la misma posición",
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Haz clic derecho en el aire mientras te agachas con una lámpara vinculada para borrar la conexión; la barra de acciones confirma: Conexión a la red eliminada"
 }
