@@ -1,28 +1,28 @@
 {
-  "parent": "sulfuricresonance:embersol_discovery",
+  "parent": "sulfuricresonance:acid_etched",
   "display": {
     "icon": {
-      "id": "sulfuricresonance:infernal_impeller"
+      "id": "sulfuricresonance:thermal_relay_switch"
     },
     "title": {
-      "text": "Shattered Power"
+      "text": "The Switch"
     },
     "description": {
-      "text": "Obtain Blaze Shards and craft the Infernal Impeller."
+      "text": "Manage some advanced crafting to obtain the Thermal Relay Switch."
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "obtain_impeller": {
+    "obtain_switch": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "sulfuricresonance:infernal_impeller"
+              "sulfuricresonance:thermal_relay_switch"
             ]
           }
         ]

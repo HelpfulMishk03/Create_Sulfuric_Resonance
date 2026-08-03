@@ -1,0 +1,23 @@
+{
+  "parent": "sulfuricresonance:the_switch",
+  "display": {
+    "icon": {
+      "id": "minecraft:emerald"
+    },
+    "title": {
+      "text": "Long Gone"
+    },
+    "description": {
+      "text": "Have a villager stand on a Thermal Relay Switch, modelled after the old blacksmith house."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "villager_on_relay": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

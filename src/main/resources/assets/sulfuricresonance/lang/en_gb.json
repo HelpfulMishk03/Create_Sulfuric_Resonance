@@ -64,7 +64,8 @@
   "tooltip.sulfuricresonance.acid.reactions": "Reacts with water and lava",
   "tooltip.sulfuricresonance.acid.industrial": "Used in sulphur chemistry, rubber processing, and industrial reactions",
   "tooltip.sulfuricresonance.acid.warning": "Improper handling may cause major harm",
-
+  "message.sulfuricresonance.thermal_relay_switch.linked": "Thermal Relay linked to furnace at %s, %s, %s",
+  "message.sulfuricresonance.thermal_relay_switch.network_removed": "Removed connection to network",
   "fluid.sulfuricresonance.sulfuric_acid": "Sulphuric Acid",
   "item.sulfuricresonance.sulfuric_acid_bucket": "Sulphuric Acid Bucket",
   "block.sulfuricresonance.sulfuric_acid": "Sulphuric Acid",

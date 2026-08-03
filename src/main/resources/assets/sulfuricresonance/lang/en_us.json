@@ -66,7 +66,8 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Link the Lamp item again before placing it beside a different furnace",
 
   "block.sulfuricresonance.thermal_relay_switch": "Thermal Relay Switch",
-
+  "message.sulfuricresonance.thermal_relay_switch.linked": "Thermal Relay linked to furnace at %s, %s, %s",
+  "message.sulfuricresonance.thermal_relay_switch.network_removed": "Removed connection to network",
   "recipe.sulfuricresonance.combustion_mixing": "Combustion Mixing",
   "create.recipe.heat_requirement.radiant": "Combustion",
 

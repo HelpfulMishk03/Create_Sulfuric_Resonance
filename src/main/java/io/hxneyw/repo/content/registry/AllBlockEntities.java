@@ -4,6 +4,7 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -63,6 +64,17 @@ public class AllBlockEntities {
            () -> Builder.of(
                    LivingEmberLampBlockEntity::new,
                    AllModBlocks.LIVING_EMBER_LAMP.get()
+           ).build(null)
+   );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ThermalRelaySwitchBlockEntity>
+           > THERMAL_RELAY_SWITCH = BLOCK_ENTITIES.register(
+           "thermal_relay_switch",
+           () -> Builder.of(
+                   ThermalRelaySwitchBlockEntity::new,
+                   AllModBlocks.THERMAL_RELAY_SWITCH.get()
            ).build(null)
    );
 
