@@ -1442,48 +1442,6 @@
     {
       "name": "ashesil_glass",
       "from": [
-        4,
-        7,
-        6
-      ],
-      "to": [
-        12,
-        7.2,
-        10
-      ],
-      "rotation": {
-        "angle": 0,
-        "axis": "y",
-        "origin": [
-          7,
-          7,
-          9
-        ]
-      },
-      "faces": {
-        "up": {
-          "uv": [
-            6,
-            4,
-            0,
-            0
-          ],
-          "texture": "#2"
-        },
-        "down": {
-          "uv": [
-            6,
-            4,
-            0,
-            8
-          ],
-          "texture": "#2"
-        }
-      }
-    },
-    {
-      "name": "ashesil_glass",
-      "from": [
         12,
         7,
         6
