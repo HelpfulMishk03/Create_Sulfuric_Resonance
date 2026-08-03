@@ -19,11 +19,11 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     private static final String LINKED_DIMENSION_TAG = "LinkedFurnaceDimension";
     private static final String LINKED_IDENTITY_TAG = "LinkedFurnaceIdentity";
     private static final int VALIDATION_INTERVAL = 10;
-    private static final int LIGHT_STEP_INTERVAL = 2;
+    private static final int LIGHT_STEP_INTERVAL = 1;
     private static final int LOW_FUEL_WARNING_TICKS = 200;
     private static final int LOW_FUEL_PULSE_MIN_LIGHT = 9;
     private static final int LOW_FUEL_PULSE_MAX_LIGHT = 15;
-    private static final int LOW_FUEL_PULSE_HALF_PERIOD = 20;
+    private static final int LOW_FUEL_PULSE_HALF_PERIOD = 10;
 
     @Nullable
     private BlockPos linkedFurnacePos;
@@ -112,10 +112,26 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         };
 
         int remainingFuel = furnace.getDisplayFuelTime();
-        this.lowFuelWarning = !furnace.isCreativeMode()
-                && normalLight >= 10
-                && remainingFuel > 0
-                && remainingFuel <= LOW_FUEL_WARNING_TICKS;
+        int remainingHeatedTime = furnace.getDisplayCooldownTime();
+
+        boolean activeFuelEndingSoon =
+                !furnace.isCreativeMode()
+                        && normalLight >= 10
+                        && remainingFuel > 0
+                        && remainingFuel <= LOW_FUEL_WARNING_TICKS
+                        && furnace.isFuelQueueEmpty();
+
+        boolean heatedStateEndingSoon =
+                !furnace.isCreativeMode()
+                        && remainingFuel <= 0
+                        && normalLight > 0
+                        && remainingHeatedTime > 0
+                        && remainingHeatedTime <= LOW_FUEL_WARNING_TICKS
+                        && furnace.isFuelQueueEmpty();
+
+        this.lowFuelWarning =
+                activeFuelEndingSoon
+                        || heatedStateEndingSoon;
 
         return normalLight;
     }

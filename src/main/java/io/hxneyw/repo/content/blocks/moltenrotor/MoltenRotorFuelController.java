@@ -372,9 +372,14 @@ public final class MoltenRotorFuelController {
         return Math.max(this.remainingBurnTime, 0);
     }
 
+    public boolean isFuelQueueEmpty() {
+        return this.pendingFuel.isEmpty();
+    }
+
     public ItemStack getRenderedFuelStack() {
         return this.activeFuelStack.copy();
     }
+
 
     public MoltenRotorBlockEntity.FuelType getRenderedFuelType() {
         return this.activeFuelType;
