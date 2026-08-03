@@ -7,54 +7,85 @@
   },
   "elements": [
     {
-      "name": "Bottom Slope",
+      "name": "Top Diagonal First",
       "from": [
-        1.4,
-        3.0,
-        8.7
+        3,
+        10,
+        -3.305
       ],
       "to": [
-        14.6,
-        5.1,
-        19.1
+        13,
+        11,
+        8.02
       ],
+      "neoforge_data": {
+        "calculate_normals": true
+      },
+      "rotation": {
+        "angle": 45,
+        "axis": "x",
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      },
       "faces": {
         "east": {
           "uv": [
-            -3.1000000000000014,
-            10.9,
-            7.300000000000001,
-            13.0
+            3,
+            4,
+            4,
+            16
           ],
+          "rotation": 90,
           "texture": "#0"
         },
         "west": {
           "uv": [
-            8.7,
-            10.9,
-            19.1,
-            13.0
+            12,
+            4,
+            13,
+            16
           ],
+          "rotation": 270,
           "texture": "#0"
         },
         "up": {
           "uv": [
-            1.4,
-            8.7,
-            14.6,
-            19.1
+            1,
+            0,
+            15,
+            10
           ],
           "texture": "#0"
         },
         "down": {
           "uv": [
-            1.4,
-            8.7,
-            14.6,
-            19.1
+            3,
+            4,
+            13,
+            16
           ],
+          "rotation": 180,
           "texture": "#0"
         }
+      }
+    },
+    {
+      "name": "Top Diagonal First",
+      "from": [
+        1,
+        11,
+        -3.3
+      ],
+      "to": [
+        15,
+        13,
+        8.02
+      ],
+      "neoforge_data": {
+        "calculate_normals": true
       },
       "rotation": {
         "angle": 45,
@@ -65,113 +96,62 @@
           8
         ]
       },
-      "neoforge_data": {
-        "calculate_normals": true
-      }
-    },
-    {
-      "name": "Bottom Spine",
-      "from": [
-        3.6,
-        5.1,
-        9.8
-      ],
-      "to": [
-        12.4,
-        6.0,
-        18.0
-      ],
       "faces": {
         "east": {
           "uv": [
-            -2.0,
-            10.0,
-            6.199999999999999,
-            10.9
+            14,
+            4,
+            16,
+            16
           ],
+          "rotation": 90,
           "texture": "#0"
         },
         "west": {
           "uv": [
-            9.8,
-            10.0,
-            18.0,
-            10.9
+            0,
+            4,
+            2,
+            16
           ],
+          "rotation": 270,
           "texture": "#0"
         },
         "up": {
           "uv": [
-            3.6,
-            9.8,
-            12.4,
-            18.0
-          ],
-          "texture": "#0"
-        }
-      },
-      "rotation": {
-        "angle": 45,
-        "axis": "x",
-        "origin": [
-          8,
-          8,
-          8
-        ]
-      },
-      "neoforge_data": {
-        "calculate_normals": true
-      }
-    },
-    {
-      "name": "Top Slope",
-      "from": [
-        1.4,
-        10.9,
-        5.8
-      ],
-      "to": [
-        14.6,
-        13.0,
-        19.1
-      ],
-      "faces": {
-        "east": {
-          "uv": [
-            -3.1000000000000014,
-            3.0,
-            10.2,
-            5.1
-          ],
-          "texture": "#0"
-        },
-        "west": {
-          "uv": [
-            5.8,
-            3.0,
-            19.1,
-            5.1
-          ],
-          "texture": "#0"
-        },
-        "up": {
-          "uv": [
-            1.4,
-            5.8,
-            14.6,
-            19.1
+            1,
+            4,
+            15,
+            16
           ],
           "texture": "#0"
         },
         "down": {
           "uv": [
-            1.4,
-            5.8,
-            14.6,
-            19.1
+            1,
+            4,
+            15,
+            16
           ],
+          "rotation": 180,
           "texture": "#0"
         }
+      }
+    },
+    {
+      "name": "Top Diagonal",
+      "from": [
+        3,
+        10,
+        8
+      ],
+      "to": [
+        13,
+        11,
+        19.325
+      ],
+      "neoforge_data": {
+        "calculate_normals": true
       },
       "rotation": {
         "angle": 45,
@@ -182,50 +162,62 @@
           8
         ]
       },
-      "neoforge_data": {
-        "calculate_normals": true
-      }
-    },
-    {
-      "name": "Top Spine",
-      "from": [
-        3.6,
-        10.0,
-        6.9
-      ],
-      "to": [
-        12.4,
-        10.9,
-        18.0
-      ],
       "faces": {
         "east": {
           "uv": [
-            -2.0,
-            5.1,
-            9.1,
-            6.0
+            3,
+            4,
+            4,
+            16
           ],
+          "rotation": 90,
           "texture": "#0"
         },
         "west": {
           "uv": [
-            6.9,
-            5.1,
-            18.0,
-            6.0
+            12,
+            4,
+            13,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            1,
+            3,
+            15,
+            16
           ],
           "texture": "#0"
         },
         "down": {
           "uv": [
-            3.6,
-            6.9,
-            12.4,
-            18.0
+            3,
+            4,
+            13,
+            16
           ],
+          "rotation": 180,
           "texture": "#0"
         }
+      }
+    },
+    {
+      "name": "Top Diagonal",
+      "from": [
+        1,
+        11,
+        8
+      ],
+      "to": [
+        15,
+        13,
+        19.325
+      ],
+      "neoforge_data": {
+        "calculate_normals": true
       },
       "rotation": {
         "angle": 45,
@@ -236,117 +228,312 @@
           8
         ]
       },
-      "neoforge_data": {
-        "calculate_normals": true
+      "faces": {
+        "east": {
+          "uv": [
+            14,
+            4,
+            16,
+            16
+          ],
+          "rotation": 90,
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            0,
+            4,
+            2,
+            16
+          ],
+          "rotation": 270,
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
       }
     },
     {
-      "name": "Guide Rib",
+      "name": "Bottom Diagonal First",
       "from": [
-        1.4,
-        4.2,
-        -0.15
+        3,
+        -3.305,
+        5
       ],
       "to": [
-        14.6,
-        11.8,
-        1.15
+        13,
+        8.02,
+        6
       ],
+      "neoforge_data": {
+        "calculate_normals": true
+      },
+      "rotation": {
+        "angle": -45,
+        "axis": "x",
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      },
       "faces": {
         "north": {
           "uv": [
-            1.4,
-            4.199999999999999,
-            14.6,
-            11.8
+            1,
+            0,
+            15,
+            10
           ],
-          "texture": "#0"
-        },
-        "south": {
-          "uv": [
-            1.4,
-            4.199999999999999,
-            14.6,
-            11.8
-          ],
+          "rotation": 180,
           "texture": "#0"
         },
         "east": {
           "uv": [
-            14.85,
-            4.199999999999999,
-            16.15,
-            11.8
+            3,
+            4,
+            4,
+            16
           ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            3,
+            4,
+            13,
+            16
+          ],
+          "rotation": 180,
           "texture": "#0"
         },
         "west": {
           "uv": [
-            -0.15,
-            4.199999999999999,
-            1.15,
-            11.8
+            12,
+            4,
+            13,
+            16
           ],
-          "texture": "#0"
-        },
-        "up": {
-          "uv": [
-            1.4,
-            -0.15,
-            14.6,
-            1.15
-          ],
-          "texture": "#0"
-        },
-        "down": {
-          "uv": [
-            1.4,
-            -0.15,
-            14.6,
-            1.15
-          ],
+          "rotation": 180,
           "texture": "#0"
         }
       }
     },
     {
-      "name": "Guide Rib Inner",
+      "name": "Bottom Diagonal First",
       "from": [
-        3.8,
-        6.2,
-        1.15
+        1,
+        -3.3,
+        3
       ],
       "to": [
-        12.2,
-        9.8,
-        2.0
+        15,
+        8.02,
+        5
       ],
+      "neoforge_data": {
+        "calculate_normals": true
+      },
+      "rotation": {
+        "angle": -45,
+        "axis": "x",
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      },
       "faces": {
-        "south": {
+        "north": {
           "uv": [
-            3.8,
-            6.199999999999999,
-            12.2,
-            9.8
+            1,
+            4,
+            15,
+            16
           ],
+          "rotation": 180,
           "texture": "#0"
         },
         "east": {
           "uv": [
-            14.0,
-            6.199999999999999,
-            14.85,
-            9.8
+            14,
+            4,
+            16,
+            16
           ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ],
+          "rotation": 180,
           "texture": "#0"
         },
         "west": {
           "uv": [
-            1.15,
-            6.199999999999999,
-            2.0,
-            9.8
+            0,
+            4,
+            2,
+            16
           ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "Bottom Diagonal",
+      "from": [
+        3,
+        8,
+        5
+      ],
+      "to": [
+        13,
+        19.325,
+        6
+      ],
+      "neoforge_data": {
+        "calculate_normals": true
+      },
+      "rotation": {
+        "angle": -45,
+        "axis": "x",
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            3,
+            15,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            3,
+            4,
+            4,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            3,
+            4,
+            13,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            12,
+            4,
+            13,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "Bottom Diagonal",
+      "from": [
+        1,
+        8,
+        3
+      ],
+      "to": [
+        15,
+        19.325,
+        5
+      ],
+      "neoforge_data": {
+        "calculate_normals": true
+      },
+      "rotation": {
+        "angle": -45,
+        "axis": "x",
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            14,
+            4,
+            16,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            1,
+            4,
+            15,
+            16
+          ],
+          "rotation": 180,
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            0,
+            4,
+            2,
+            16
+          ],
+          "rotation": 180,
           "texture": "#0"
         }
       }
@@ -361,6 +548,8 @@
         8
       ],
       "children": [
+        0,
+        1,
         2,
         3
       ]
@@ -373,8 +562,10 @@
         8
       ],
       "children": [
-        0,
-        1
+        4,
+        5,
+        6,
+        7
       ]
     }
   ]

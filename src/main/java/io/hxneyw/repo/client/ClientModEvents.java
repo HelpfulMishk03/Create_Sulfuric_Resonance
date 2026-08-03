@@ -36,6 +36,69 @@ public class ClientModEvents {
    public static final PartialModel ROTOR_HEAT_NEEDLE = new PartialModel(
            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/molten_rotor_needle")
    );
+   private static final ModelResourceLocation[]
+           COMBUSTION_BELT_MODELS = {
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/particle"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/start"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/start_bottom"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/middle"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/middle_bottom"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/end"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/end_bottom"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/diagonal_start"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/diagonal_middle"
+                   )
+           ),
+           ModelResourceLocation.standalone(
+                   ResourceLocation.fromNamespaceAndPath(
+                           "sulfuricresonance",
+                           "block/combustion_belt/diagonal_end"
+                   )
+           )
+   };
 
    @SubscribeEvent
    public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
@@ -79,13 +142,38 @@ public class ClientModEvents {
 
    @SubscribeEvent
    public static void registerAdditionalModels(RegisterAdditional event) {
+       CombustionBeltClientAssets.init();
       ROTOR_SHAFT_LEFT.invalidate();
       ROTOR_SHAFT_RIGHT.invalidate();
       ROTOR_HEAT_NEEDLE.invalidate();
 
-      event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "item/impeller")));
-      event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_left")));
-      event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_right")));
-      event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/molten_rotor_needle")));
+      event.register(ModelResourceLocation.standalone(
+              ResourceLocation.fromNamespaceAndPath(
+                      "sulfuricresonance",
+                      "item/impeller"
+              )
+      ));
+      event.register(ModelResourceLocation.standalone(
+              ResourceLocation.fromNamespaceAndPath(
+                      "sulfuricresonance",
+                      "block/rotor_shaft_left"
+              )
+      ));
+      event.register(ModelResourceLocation.standalone(
+              ResourceLocation.fromNamespaceAndPath(
+                      "sulfuricresonance",
+                      "block/rotor_shaft_right"
+              )
+      ));
+      event.register(ModelResourceLocation.standalone(
+              ResourceLocation.fromNamespaceAndPath(
+                      "sulfuricresonance",
+                      "block/molten_rotor_needle"
+              )
+      ));
+
+      for (ModelResourceLocation model : COMBUSTION_BELT_MODELS) {
+         event.register(model);
+      }
    }
 }

@@ -8,6 +8,10 @@
     "BasinOperatingMixin",
     "BeltBlockEntityMixin"
   ],
+  "client": [
+    "BeltRendererMixin",
+    "BeltVisualMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
