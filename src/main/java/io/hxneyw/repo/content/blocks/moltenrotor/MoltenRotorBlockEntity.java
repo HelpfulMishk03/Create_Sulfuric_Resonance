@@ -172,6 +172,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.fuelController.getDisplayFuelTime();
    }
 
+   public boolean isFuelQueueEmpty() {
+      return this.fuelController.isFuelQueueEmpty();
+   }
+
    public ItemStack getRenderedFuelStack() {
       return this.fuelController.getRenderedFuelStack();
    }
