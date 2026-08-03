@@ -22,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
         modid = CreateSulfuricResonance.MODID,
         value = Dist.CLIENT
 )
-public final class LivingEmberLampBreakParticles {
+public final class CompactBlockBreakParticles {
 
     private static final int DESTROY_PARTICLE_COUNT = 12;
 
-    private LivingEmberLampBreakParticles() {
+    private CompactBlockBreakParticles() {
     }
 
     @SubscribeEvent
@@ -53,7 +53,10 @@ public final class LivingEmberLampBreakParticles {
                         return true;
                     }
                 },
-                AllModBlocks.LIVING_EMBER_LAMP.get()
+                AllModBlocks.LIVING_EMBER_LAMP.get(),
+                AllModBlocks.THERMAL_RELAY_SWITCH.get(),
+                AllModBlocks.PERFORATED_SPRITZER.get(),
+                AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
         );
     }
 
