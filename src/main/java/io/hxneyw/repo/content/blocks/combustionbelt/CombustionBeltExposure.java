@@ -1,0 +1,1343 @@
+package io.hxneyw.repo.content.blocks.combustionbelt;
+
+import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
+import com.simibubi.create.content.kinetics.belt.BeltHelper;
+import com.simibubi.create.content.kinetics.belt.transport.BeltInventory;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
+import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
+import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+
+/**
+ * Continuous moving thermal exposure for Combustion Belt recipes.
+ *
+ * Segment distance and heated travel time accumulate simultaneously while the
+ * item moves. The item is never stopped by CSR. It transforms in place during
+ * movement once both recipe requirements are complete.
+ *
+ * Reversing over the same segment does not add exposure again until that heat
+ * band's progress has fully decayed to zero.
+ */
+public final class CombustionBeltExposure {
+
+    private static final String MOD_ROOT_KEY =
+            "sulfuricresonance";
+
+    private static final String EXPOSURE_ROOT_KEY =
+            "CombustionBeltExposure";
+
+    private static final String SEGMENTS_KEY =
+            "Segments";
+
+    private static final String LAST_QUALIFIED_TICK_KEY =
+            "LastQualifiedTick";
+
+    private static final String LAST_DECAY_TICK_KEY =
+            "LastDecayTick";
+
+    private static final String VISITED_SEGMENTS_KEY =
+            "VisitedSegments";
+
+    private static final String DIMENSION_KEY =
+            "Dimension";
+
+    private static final String POSITION_KEY =
+            "Position";
+
+    public static final long DECAY_GRACE_TICKS = 40L;
+    public static final long DECAY_INTERVAL_TICKS = 20L;
+
+    private static final float MOVEMENT_EPSILON = 0.0001F;
+
+    private static final String PROCESSING_RECIPE_KEY =
+            "ProcessingRecipe";
+
+    private static final String PROCESSING_TICKS_KEY =
+            "ProcessingTicks";
+
+    private static final String
+            PROCESSING_LAST_QUALIFIED_TICK_KEY =
+            "ProcessingLastQualifiedTick";
+
+    private static final String
+            PROCESSING_LAST_DECAY_TICK_KEY =
+            "ProcessingLastDecayTick";
+
+    private CombustionBeltExposure() {
+    }
+
+    public static void tickControllerInventory(
+            BeltBlockEntity controller,
+            MoltenRotorBlockEntity.RotorHeatLevel
+                    liveChainHeatTier
+    ) {
+        Level level = controller.getLevel();
+
+        if (level == null
+                || level.isClientSide()
+                || !controller.isController()) {
+            return;
+        }
+
+        MoltenRotorBlockEntity.RotorHeatLevel
+                authoritativeHeatTier =
+                liveChainHeatTier == null
+                        ? MoltenRotorBlockEntity
+                        .RotorHeatLevel.NONE
+                        : liveChainHeatTier;
+
+        BeltInventory inventory = controller.getInventory();
+
+        if (inventory == null) {
+            return;
+        }
+
+        boolean persistentDataChanged = false;
+        boolean inventoryChanged = false;
+
+        List<TransportedItemStack> transportedItems =
+                inventory.getTransportedItems();
+
+        for (TransportedItemStack transported : transportedItems) {
+            UpdateResult result = tickTransportedStack(
+                    level,
+                    controller,
+                    transported,
+                    authoritativeHeatTier
+            );
+
+            persistentDataChanged |=
+                    result.persistentDataChanged();
+
+            inventoryChanged |= result.inventoryChanged();
+        }
+
+        if (persistentDataChanged || inventoryChanged) {
+            controller.setChanged();
+        }
+
+        if (inventoryChanged) {
+            controller.sendData();
+        }
+    }
+
+    private static UpdateResult tickTransportedStack(
+            Level level,
+            BeltBlockEntity controller,
+            TransportedItemStack transported,
+            MoltenRotorBlockEntity.RotorHeatLevel
+                    liveChainHeatTier
+    ) {
+        ItemStack stack = transported.stack;
+
+        if (stack.isEmpty()) {
+            return UpdateResult.NONE;
+        }
+
+        long gameTime = level.getGameTime();
+        float previousPosition = transported.prevBeltPosition;
+        float currentPosition = transported.beltPosition;
+
+        boolean moving =
+                Math.abs(currentPosition - previousPosition)
+                        > MOVEMENT_EPSILON;
+
+        ExposureDocument document =
+                ExposureDocument.read(stack);
+
+        boolean persistentDataChanged = false;
+        boolean inventoryChanged = false;
+
+        RecipeHolder<CombustionBeltRecipe> holder =
+                findMatchingRecipe(level, stack);
+
+        CombustionBeltRecipe recipe =
+                holder == null
+                        ? null
+                        : holder.value();
+
+        /*
+         * Only items that currently match a Combustion Belt recipe may collect
+         * new thermal exposure. Finished outputs and unrelated transported
+         * items must stay component-clean so normal stacks can merge.
+         */
+        if (moving && recipe != null) {
+            persistentDataChanged |= addTraversedSegments(
+                    level,
+                    controller,
+                    document,
+                    previousPosition,
+                    currentPosition,
+                    gameTime,
+                    liveChainHeatTier
+            );
+        }
+
+        MoltenRotorBlockEntity.RotorHeatLevel currentHeat =
+                getHeatAtCurrentPosition(
+                        level,
+                        controller,
+                        currentPosition,
+                        liveChainHeatTier
+                );
+
+        boolean validMovingHeat =
+                recipe != null
+                        && moving
+                        && recipe.minimumHeat()
+                        .accepts(currentHeat);
+
+        /*
+         * Existing segment bands retain their normal grace and decay rules.
+         * Merely having enough segment distance does not hold the item still.
+         */
+        for (ExposureBand band : ExposureBand.values()) {
+            BandState state = document.getBand(band);
+
+            if (state.segments() <= 0) {
+                continue;
+            }
+
+            if (moving && band.accepts(currentHeat)) {
+                persistentDataChanged |=
+                        state.touch(gameTime);
+            } else if (state.applyDecay(gameTime)) {
+                persistentDataChanged = true;
+            }
+        }
+
+        if (holder == null) {
+            persistentDataChanged |=
+                    document.clearAllExposure();
+        } else {
+            int requiredTicks =
+                    recipe.requiredProcessingTicks(
+                            stack.getCount()
+                    );
+
+            int processingTicks =
+                    document.processingTicksFor(
+                            holder.id()
+                    );
+
+            if (validMovingHeat) {
+                int nextProcessingTicks =
+                        requiredTicks <= 0
+                                ? 0
+                                : Math.min(
+                                        requiredTicks,
+                                        processingTicks + 1
+                                );
+
+                persistentDataChanged |=
+                        document.touchProcessing(
+                                holder.id(),
+                                nextProcessingTicks,
+                                gameTime
+                        );
+
+                processingTicks =
+                        nextProcessingTicks;
+
+                spawnHeatingParticle(
+                        level,
+                        controller,
+                        transported,
+                        gameTime,
+                        stack,
+                        true
+                );
+            } else {
+                persistentDataChanged |=
+                        document.applyProcessingDecay(
+                                holder.id(),
+                                gameTime
+                        );
+
+                processingTicks =
+                        document.processingTicksFor(
+                                holder.id()
+                        );
+            }
+
+            int completedSegments =
+                    document
+                            .getBand(
+                                    recipe.minimumHeat()
+                                            .exposureBand()
+                            )
+                            .segments();
+
+            boolean segmentRequirementMet =
+                    completedSegments
+                            >= recipe.requiredSegments();
+
+            boolean timeRequirementMet =
+                    requiredTicks <= 0
+                            || processingTicks >= requiredTicks;
+
+            /*
+             * Transform during movement. No CSR lock or pause is used.
+             */
+            if (validMovingHeat
+                    && segmentRequirementMet
+                    && timeRequirementMet) {
+
+                spawnCompletionBurst(
+                        level,
+                        controller,
+                        transported,
+                        stack
+                );
+
+                boolean completed = completeRecipe(
+                        level,
+                        transported,
+                        recipe,
+                        stack
+                );
+
+                return new UpdateResult(
+                        persistentDataChanged,
+                        completed
+                );
+            }
+
+            if (moving
+                    && currentHeat
+                    != MoltenRotorBlockEntity
+                    .RotorHeatLevel.NONE
+                    && !validMovingHeat) {
+
+                spawnHeatingParticle(
+                        level,
+                        controller,
+                        transported,
+                        gameTime,
+                        stack,
+                        false
+                );
+            }
+        }
+
+        if (persistentDataChanged) {
+            document.write(stack);
+        }
+
+        return new UpdateResult(
+                persistentDataChanged,
+                inventoryChanged
+        );
+    }
+
+    /**
+     * Adds every physical segment occupied or crossed during the last movement.
+     *
+     * Example:
+     * previous position 1.2 -> current position 4.7
+     * evaluates segments 1, 2, 3, and 4.
+     *
+     * This also includes the insertion segment, fixing the previous off-by-one
+     * behavior where a ten-segment line could report only nine segments.
+     */
+    private static boolean addTraversedSegments(
+            Level level,
+            BeltBlockEntity controller,
+            ExposureDocument document,
+            float previousPosition,
+            float currentPosition,
+            long gameTime,
+            MoltenRotorBlockEntity.RotorHeatLevel
+                    liveChainHeatTier
+    ) {
+        if (controller.beltLength <= 0) {
+            return false;
+        }
+
+        float minimumPosition = Math.min(
+                previousPosition,
+                currentPosition
+        );
+
+        float maximumPosition = Math.max(
+                previousPosition,
+                currentPosition
+        );
+
+        int firstSegment = Math.max(
+                0,
+                (int) Math.floor(minimumPosition)
+        );
+
+        int lastSegment = Math.min(
+                controller.beltLength - 1,
+                (int) Math.floor(maximumPosition)
+        );
+
+        boolean changed = false;
+
+        for (int segment = firstSegment;
+             segment <= lastSegment;
+             segment++) {
+
+            changed |= addSegmentExposure(
+                    level,
+                    controller,
+                    document,
+                    segment,
+                    gameTime,
+                    liveChainHeatTier
+            );
+        }
+
+        return changed;
+    }
+
+    private static boolean addSegmentExposure(
+            Level level,
+            BeltBlockEntity controller,
+            ExposureDocument document,
+            int segment,
+            long gameTime,
+            MoltenRotorBlockEntity.RotorHeatLevel
+                    liveChainHeatTier
+    ) {
+        SegmentHeat segmentHeat = getSegmentHeat(
+                level,
+                controller,
+                segment,
+                liveChainHeatTier
+        );
+
+        if (segmentHeat.heatTier()
+                == MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+            return false;
+        }
+
+        boolean changed = false;
+
+        for (ExposureBand band : ExposureBand.values()) {
+            if (!band.accepts(segmentHeat.heatTier())) {
+                continue;
+            }
+
+            changed |= document
+                    .getBand(band)
+                    .addUniqueSegment(
+                            level.dimension().location(),
+                            segmentHeat.position(),
+                            gameTime
+                    );
+        }
+
+        return changed;
+    }
+
+    private static RecipeHolder<CombustionBeltRecipe>
+    findMatchingRecipe(
+            Level level,
+            ItemStack stack
+    ) {
+        if (stack.isEmpty()) {
+            return null;
+        }
+
+        return level.getRecipeManager()
+                .getRecipeFor(
+                        CombustionBeltRecipeRegistry.TYPE.get(),
+                        new SingleRecipeInput(stack),
+                        level
+                )
+                .orElse(null);
+    }
+
+    private static boolean completeRecipe(
+            Level level,
+            TransportedItemStack transported,
+            CombustionBeltRecipe recipe,
+            ItemStack inputStack
+    ) {
+        ItemStack output = recipe.assemble(
+                new SingleRecipeInput(inputStack),
+                level.registryAccess()
+        );
+
+        if (output.isEmpty()) {
+            return false;
+        }
+
+        long totalOutputCount =
+                (long) inputStack.getCount() * output.getCount();
+
+        if (totalOutputCount <= 0L
+                || totalOutputCount > output.getMaxStackSize()) {
+            return false;
+        }
+
+        output.setCount((int) totalOutputCount);
+        clearCombustionBeltExposure(output);
+
+        transported.stack = output;
+        transported.prevBeltPosition = transported.beltPosition;
+        transported.prevSideOffset = transported.sideOffset;
+        transported.lockedExternally = false;
+        transported.clearFanProcessingData();
+
+        return true;
+    }
+
+    /**
+     * Removes only CSR's Combustion Belt exposure payload from an output stack.
+     * Other mods' and vanilla custom-data entries remain untouched.
+     */
+    private static void clearCombustionBeltExposure(
+            ItemStack stack
+    ) {
+        CustomData customData = stack.get(
+                DataComponents.CUSTOM_DATA
+        );
+
+        if (customData == null) {
+            return;
+        }
+
+        CompoundTag root = customData.copyTag();
+
+        if (!root.contains(
+                MOD_ROOT_KEY,
+                Tag.TAG_COMPOUND
+        )) {
+            return;
+        }
+
+        CompoundTag modRoot =
+                root.getCompound(MOD_ROOT_KEY);
+
+        modRoot.remove(EXPOSURE_ROOT_KEY);
+
+        if (modRoot.isEmpty()) {
+            root.remove(MOD_ROOT_KEY);
+        } else {
+            root.put(MOD_ROOT_KEY, modRoot);
+        }
+
+        if (root.isEmpty()) {
+            stack.remove(DataComponents.CUSTOM_DATA);
+        } else {
+            stack.set(
+                    DataComponents.CUSTOM_DATA,
+                    CustomData.of(root)
+            );
+        }
+    }
+
+    /**
+     * Uses Minecraft's ITEM particle so the client automatically renders
+     * fragments from the transforming input stack's own item texture.
+     *
+     * No recipe colour, tint value, or hexadecimal field is required.
+     */
+    private static void spawnHeatingParticle(
+            Level level,
+            BeltBlockEntity controller,
+            TransportedItemStack transported,
+            long gameTime,
+            ItemStack particleStack,
+            boolean processing
+    ) {
+        if (!(level instanceof ServerLevel serverLevel)
+                || particleStack.isEmpty()) {
+            return;
+        }
+
+        int interval = processing ? 2 : 5;
+
+        int particlePhase = Math.floorMod(
+                System.identityHashCode(transported),
+                interval
+        );
+
+        if ((gameTime + particlePhase)
+                % interval != 0L) {
+            return;
+        }
+
+        Vec3 itemPosition =
+                BeltHelper.getVectorForOffset(
+                        controller,
+                        transported.beltPosition
+                );
+
+        serverLevel.sendParticles(
+                itemParticle(particleStack),
+                itemPosition.x,
+                itemPosition.y + 0.27D,
+                itemPosition.z,
+                processing ? 2 : 1,
+                processing ? 0.11D : 0.07D,
+                processing ? 0.055D : 0.035D,
+                processing ? 0.11D : 0.07D,
+                processing ? 0.012D : 0.006D
+        );
+    }
+
+    private static void spawnCompletionBurst(
+            Level level,
+            BeltBlockEntity controller,
+            TransportedItemStack transported,
+            ItemStack particleStack
+    ) {
+        if (!(level instanceof ServerLevel serverLevel)
+                || particleStack.isEmpty()) {
+            return;
+        }
+
+        Vec3 itemPosition =
+                BeltHelper.getVectorForOffset(
+                        controller,
+                        transported.beltPosition
+                );
+
+        serverLevel.sendParticles(
+                itemParticle(particleStack),
+                itemPosition.x,
+                itemPosition.y + 0.28D,
+                itemPosition.z,
+                12,
+                0.15D,
+                0.08D,
+                0.15D,
+                0.025D
+        );
+    }
+
+    private static ItemParticleOption itemParticle(
+            ItemStack stack
+    ) {
+        ItemStack visualStack = stack.copy();
+        visualStack.setCount(1);
+
+        return new ItemParticleOption(
+                ParticleTypes.ITEM,
+                visualStack
+        );
+    }
+
+    private static MoltenRotorBlockEntity.RotorHeatLevel
+    getHeatAtCurrentPosition(
+            Level level,
+            BeltBlockEntity controller,
+            float beltPosition,
+            MoltenRotorBlockEntity.RotorHeatLevel
+                    liveChainHeatTier
+    ) {
+        if (controller.beltLength <= 0
+                || liveChainHeatTier
+                == MoltenRotorBlockEntity
+                .RotorHeatLevel.NONE) {
+            return MoltenRotorBlockEntity
+                    .RotorHeatLevel.NONE;
+        }
+
+        int segment = Math.clamp(
+                (int) Math.floor(beltPosition),
+                0,
+                controller.beltLength - 1
+        );
+
+        return getSegmentHeat(
+                level,
+                controller,
+                segment,
+                liveChainHeatTier
+        ).heatTier();
+    }
+
+    /**
+     * Processing heat comes only from the live controller-level resolver result
+     * passed by BeltBlockEntityMixin for this exact server tick.
+     *
+     * Cached receivedHeatTier/source fields on individual belt entities are
+     * intentionally ignored here. They are display and synchronization state,
+     * never recipe authorization.
+     */
+    private static SegmentHeat getSegmentHeat(
+            Level level,
+            BeltBlockEntity controller,
+            int segment,
+            MoltenRotorBlockEntity.RotorHeatLevel
+                    liveChainHeatTier
+    ) {
+        if (liveChainHeatTier == null
+                || liveChainHeatTier
+                == MoltenRotorBlockEntity
+                .RotorHeatLevel.NONE
+                || segment < 0
+                || segment >= controller.beltLength) {
+            return SegmentHeat.NONE;
+        }
+
+        BlockPos segmentPosition =
+                BeltHelper.getPositionForOffset(
+                        controller,
+                        segment
+                );
+
+        if (!level.isLoaded(segmentPosition)) {
+            return SegmentHeat.NONE;
+        }
+
+        BlockEntity blockEntity =
+                level.getBlockEntity(segmentPosition);
+
+        if (!(blockEntity
+                instanceof CombustionBeltAccessor accessor)
+                || !accessor
+                .sulfuricresonance$isCombustionBelt()) {
+            return SegmentHeat.NONE;
+        }
+
+        return new SegmentHeat(
+                segmentPosition.immutable(),
+                liveChainHeatTier
+        );
+    }
+
+    public enum ExposureBand {
+        HEATED("Heated", 1),
+        SUPERHEATED("Superheated", 3),
+        COMBUSTION("Combustion", 4);
+
+        private final String nbtKey;
+        private final int minimumRank;
+
+        ExposureBand(
+                String nbtKey,
+                int minimumRank
+        ) {
+            this.nbtKey = nbtKey;
+            this.minimumRank = minimumRank;
+        }
+
+        public String nbtKey() {
+            return this.nbtKey;
+        }
+
+
+        public boolean accepts(
+                MoltenRotorBlockEntity.RotorHeatLevel heatTier
+        ) {
+            return heatTier != null
+                    && heatTier.rank
+                    >= this.minimumRank;
+        }
+    }
+
+    private record SegmentHeat(
+            BlockPos position,
+            MoltenRotorBlockEntity.RotorHeatLevel heatTier
+    ) {
+        private static final SegmentHeat NONE =
+                new SegmentHeat(
+                        BlockPos.ZERO,
+                        MoltenRotorBlockEntity.RotorHeatLevel.NONE
+                );
+    }
+
+    private record UpdateResult(
+            boolean persistentDataChanged,
+            boolean inventoryChanged
+    ) {
+        private static final UpdateResult NONE =
+                new UpdateResult(false, false);
+    }
+
+    private static final class ExposureDocument {
+        private final CompoundTag root;
+        private final CompoundTag modRoot;
+        private final CompoundTag exposureRoot;
+
+        private ExposureDocument(
+                CompoundTag root,
+                CompoundTag modRoot,
+                CompoundTag exposureRoot
+        ) {
+            this.root = root;
+            this.modRoot = modRoot;
+            this.exposureRoot = exposureRoot;
+        }
+
+        private static ExposureDocument read(
+                ItemStack stack
+        ) {
+            CustomData customData = stack.getOrDefault(
+                    DataComponents.CUSTOM_DATA,
+                    CustomData.EMPTY
+            );
+
+            CompoundTag root = customData.copyTag();
+
+            CompoundTag modRoot = root.contains(
+                    MOD_ROOT_KEY,
+                    Tag.TAG_COMPOUND
+            )
+                    ? root.getCompound(MOD_ROOT_KEY)
+                    : new CompoundTag();
+
+            CompoundTag exposureRoot =
+                    modRoot.contains(
+                            EXPOSURE_ROOT_KEY,
+                            Tag.TAG_COMPOUND
+                    )
+                            ? modRoot.getCompound(
+                                    EXPOSURE_ROOT_KEY
+                            )
+                            : new CompoundTag();
+
+            return new ExposureDocument(
+                    root,
+                    modRoot,
+                    exposureRoot
+            );
+        }
+
+        private BandState getBand(
+                ExposureBand band
+        ) {
+            CompoundTag bandTag =
+                    this.exposureRoot.contains(
+                            band.nbtKey(),
+                            Tag.TAG_COMPOUND
+                    )
+                            ? this.exposureRoot.getCompound(
+                                    band.nbtKey()
+                            )
+                            : new CompoundTag();
+
+            return new BandState(
+                    band,
+                    this.exposureRoot,
+                    bandTag
+            );
+        }
+
+        private int processingTicksFor(
+                ResourceLocation recipeId
+        ) {
+            if (!this.exposureRoot
+                    .getString(PROCESSING_RECIPE_KEY)
+                    .equals(recipeId.toString())) {
+                return 0;
+            }
+
+            return Math.max(
+                    0,
+                    this.exposureRoot.getInt(
+                            PROCESSING_TICKS_KEY
+                    )
+            );
+        }
+
+        private boolean touchProcessing(
+                ResourceLocation recipeId,
+                int processingTicks,
+                long gameTime
+        ) {
+            String recipeIdString =
+                    recipeId.toString();
+
+            int clampedTicks =
+                    Math.max(0, processingTicks);
+
+            boolean changed =
+                    !recipeIdString.equals(
+                            this.exposureRoot.getString(
+                                    PROCESSING_RECIPE_KEY
+                            )
+                    )
+                            || clampedTicks
+                            != this.exposureRoot.getInt(
+                                    PROCESSING_TICKS_KEY
+                            )
+                            || gameTime
+                            != this.exposureRoot.getLong(
+                                    PROCESSING_LAST_QUALIFIED_TICK_KEY
+                            )
+                            || gameTime
+                            != this.exposureRoot.getLong(
+                                    PROCESSING_LAST_DECAY_TICK_KEY
+                            );
+
+            if (!changed) {
+                return false;
+            }
+
+            this.exposureRoot.putString(
+                    PROCESSING_RECIPE_KEY,
+                    recipeIdString
+            );
+
+            this.exposureRoot.putInt(
+                    PROCESSING_TICKS_KEY,
+                    clampedTicks
+            );
+
+            this.exposureRoot.putLong(
+                    PROCESSING_LAST_QUALIFIED_TICK_KEY,
+                    gameTime
+            );
+
+            this.exposureRoot.putLong(
+                    PROCESSING_LAST_DECAY_TICK_KEY,
+                    gameTime
+            );
+
+            return true;
+        }
+
+        private boolean applyProcessingDecay(
+                ResourceLocation recipeId,
+                long gameTime
+        ) {
+            if (!this.exposureRoot
+                    .getString(PROCESSING_RECIPE_KEY)
+                    .equals(recipeId.toString())) {
+                return false;
+            }
+
+            int currentTicks =
+                    Math.max(
+                            0,
+                            this.exposureRoot.getInt(
+                                    PROCESSING_TICKS_KEY
+                            )
+                    );
+
+            if (currentTicks <= 0) {
+                return this.clearProcessing();
+            }
+
+            long lastQualifiedTick =
+                    this.exposureRoot.getLong(
+                            PROCESSING_LAST_QUALIFIED_TICK_KEY
+                    );
+
+            if (gameTime - lastQualifiedTick
+                    <= DECAY_GRACE_TICKS) {
+                return false;
+            }
+
+            long lastDecayTick =
+                    this.exposureRoot.getLong(
+                            PROCESSING_LAST_DECAY_TICK_KEY
+                    );
+
+            if (lastDecayTick <= 0L) {
+                lastDecayTick = lastQualifiedTick;
+            }
+
+            long elapsed =
+                    gameTime - lastDecayTick;
+
+            if (elapsed < DECAY_INTERVAL_TICKS) {
+                return false;
+            }
+
+            int decayAmount =
+                    (int) Math.min(
+                            Integer.MAX_VALUE,
+                            elapsed / DECAY_INTERVAL_TICKS
+                    );
+
+            int nextTicks =
+                    Math.max(
+                            0,
+                            currentTicks - decayAmount
+                    );
+
+            if (nextTicks <= 0) {
+                return this.clearProcessing();
+            }
+
+            this.exposureRoot.putInt(
+                    PROCESSING_TICKS_KEY,
+                    nextTicks
+            );
+
+            this.exposureRoot.putLong(
+                    PROCESSING_LAST_DECAY_TICK_KEY,
+                    lastDecayTick
+                            + (long) decayAmount
+                            * DECAY_INTERVAL_TICKS
+            );
+
+            return true;
+        }
+
+        private boolean clearAllExposure() {
+            if (this.exposureRoot.isEmpty()) {
+                return false;
+            }
+
+            for (String key
+                    : this.exposureRoot.getAllKeys().toArray(
+                            String[]::new
+                    )) {
+                this.exposureRoot.remove(key);
+            }
+
+            return true;
+        }
+
+        private boolean clearProcessing() {
+            boolean changed =
+                    this.exposureRoot.contains(
+                            PROCESSING_RECIPE_KEY
+                    )
+                            || this.exposureRoot.contains(
+                                    PROCESSING_TICKS_KEY
+                            )
+                            || this.exposureRoot.contains(
+                                    PROCESSING_LAST_QUALIFIED_TICK_KEY
+                            )
+                            || this.exposureRoot.contains(
+                                    PROCESSING_LAST_DECAY_TICK_KEY
+                            );
+
+            this.exposureRoot.remove(
+                    PROCESSING_RECIPE_KEY
+            );
+
+            this.exposureRoot.remove(
+                    PROCESSING_TICKS_KEY
+            );
+
+            this.exposureRoot.remove(
+                    PROCESSING_LAST_QUALIFIED_TICK_KEY
+            );
+
+            this.exposureRoot.remove(
+                    PROCESSING_LAST_DECAY_TICK_KEY
+            );
+
+            return changed;
+        }
+
+        private void write(ItemStack stack) {
+            for (ExposureBand band
+                    : ExposureBand.values()) {
+
+                if (!this.exposureRoot.contains(
+                        band.nbtKey(),
+                        Tag.TAG_COMPOUND
+                )) {
+                    continue;
+                }
+
+                CompoundTag bandTag =
+                        this.exposureRoot.getCompound(
+                                band.nbtKey()
+                        );
+
+                if (bandTag.getInt(SEGMENTS_KEY) <= 0) {
+                    this.exposureRoot.remove(
+                            band.nbtKey()
+                    );
+                }
+            }
+
+            if (this.exposureRoot.isEmpty()) {
+                this.modRoot.remove(EXPOSURE_ROOT_KEY);
+            } else {
+                this.modRoot.put(
+                        EXPOSURE_ROOT_KEY,
+                        this.exposureRoot
+                );
+            }
+
+            if (this.modRoot.isEmpty()) {
+                this.root.remove(MOD_ROOT_KEY);
+            } else {
+                this.root.put(
+                        MOD_ROOT_KEY,
+                        this.modRoot
+                );
+            }
+
+            if (this.root.isEmpty()) {
+                stack.remove(DataComponents.CUSTOM_DATA);
+            } else {
+                stack.set(
+                        DataComponents.CUSTOM_DATA,
+                        CustomData.of(this.root)
+                );
+            }
+        }
+    }
+
+    private static final class BandState {
+        private final ExposureBand band;
+        private final CompoundTag exposureRoot;
+        private final CompoundTag bandTag;
+
+        private BandState(
+                ExposureBand band,
+                CompoundTag exposureRoot,
+                CompoundTag bandTag
+        ) {
+            this.band = band;
+            this.exposureRoot = exposureRoot;
+            this.bandTag = bandTag;
+        }
+
+        private int segments() {
+            return Math.max(
+                    0,
+                    this.bandTag.getInt(SEGMENTS_KEY)
+            );
+        }
+
+        private boolean touch(long gameTime) {
+            long previousQualifiedTick =
+                    this.bandTag.getLong(
+                            LAST_QUALIFIED_TICK_KEY
+                    );
+
+            long previousDecayTick =
+                    this.bandTag.getLong(
+                            LAST_DECAY_TICK_KEY
+                    );
+
+            if (previousQualifiedTick == gameTime
+                    && previousDecayTick == gameTime) {
+                return false;
+            }
+
+            this.bandTag.putLong(
+                    LAST_QUALIFIED_TICK_KEY,
+                    gameTime
+            );
+
+            this.bandTag.putLong(
+                    LAST_DECAY_TICK_KEY,
+                    gameTime
+            );
+
+            this.save();
+            return true;
+        }
+
+        private boolean addUniqueSegment(
+                ResourceLocation dimension,
+                BlockPos segmentPosition,
+                long gameTime
+        ) {
+            ListTag visitedSegments =
+                    this.bandTag.contains(
+                            VISITED_SEGMENTS_KEY,
+                            Tag.TAG_LIST
+                    )
+                            ? this.bandTag.getList(
+                                    VISITED_SEGMENTS_KEY,
+                                    Tag.TAG_COMPOUND
+                            )
+                            : new ListTag();
+
+            if (containsSegment(
+                    visitedSegments,
+                    dimension,
+                    segmentPosition
+            )) {
+                /*
+                 * Revisiting the same qualifying segment still refreshes the
+                 * grace timer but does not increase progress.
+                 */
+                this.touch(gameTime);
+                return false;
+            }
+
+            CompoundTag visitedSegment =
+                    new CompoundTag();
+
+            visitedSegment.putString(
+                    DIMENSION_KEY,
+                    dimension.toString()
+            );
+
+            visitedSegment.putLong(
+                    POSITION_KEY,
+                    segmentPosition.asLong()
+            );
+
+            visitedSegments.add(visitedSegment);
+
+            this.bandTag.put(
+                    VISITED_SEGMENTS_KEY,
+                    visitedSegments
+            );
+
+            this.bandTag.putInt(
+                    SEGMENTS_KEY,
+                    this.segments() + 1
+            );
+
+            this.bandTag.putLong(
+                    LAST_QUALIFIED_TICK_KEY,
+                    gameTime
+            );
+
+            this.bandTag.putLong(
+                    LAST_DECAY_TICK_KEY,
+                    gameTime
+            );
+
+            this.save();
+            return true;
+        }
+
+        private boolean applyDecay(long gameTime) {
+            int currentSegments = this.segments();
+
+            if (currentSegments <= 0) {
+                return false;
+            }
+
+            long lastQualifiedTick =
+                    this.bandTag.getLong(
+                            LAST_QUALIFIED_TICK_KEY
+                    );
+
+            long lastDecayTick =
+                    this.bandTag.getLong(
+                            LAST_DECAY_TICK_KEY
+                    );
+
+            if (gameTime < lastQualifiedTick
+                    || gameTime < lastDecayTick) {
+
+                this.bandTag.putLong(
+                        LAST_QUALIFIED_TICK_KEY,
+                        gameTime
+                );
+
+                this.bandTag.putLong(
+                        LAST_DECAY_TICK_KEY,
+                        gameTime
+                );
+
+                this.save();
+                return false;
+            }
+
+            long decayStartTick =
+                    lastQualifiedTick
+                            + DECAY_GRACE_TICKS;
+
+            long decayReferenceTick = Math.max(
+                    lastDecayTick,
+                    decayStartTick
+            );
+
+            long elapsedDecayTicks =
+                    gameTime - decayReferenceTick;
+
+            if (elapsedDecayTicks
+                    < DECAY_INTERVAL_TICKS) {
+                return false;
+            }
+
+            int segmentsLost = (int) Math.min(
+                    currentSegments,
+                    elapsedDecayTicks
+                            / DECAY_INTERVAL_TICKS
+            );
+
+            int remainingSegments =
+                    currentSegments - segmentsLost;
+
+            if (remainingSegments <= 0) {
+                this.exposureRoot.remove(
+                        this.band.nbtKey()
+                );
+
+                return true;
+            }
+
+            this.bandTag.putInt(
+                    SEGMENTS_KEY,
+                    remainingSegments
+            );
+
+            this.bandTag.putLong(
+                    LAST_DECAY_TICK_KEY,
+                    decayReferenceTick
+                            + segmentsLost
+                            * DECAY_INTERVAL_TICKS
+            );
+
+            /*
+             * The visited list is intentionally retained until the band reaches
+             * zero. This prevents reverse-belt farming while partial exposure
+             * remains.
+             */
+            this.save();
+            return true;
+        }
+
+        private void save() {
+            this.exposureRoot.put(
+                    this.band.nbtKey(),
+                    this.bandTag
+            );
+        }
+
+        private static boolean containsSegment(
+                ListTag visitedSegments,
+                ResourceLocation dimension,
+                BlockPos segmentPosition
+        ) {
+            String dimensionId =
+                    dimension.toString();
+
+            long position =
+                    segmentPosition.asLong();
+
+            for (int index = 0;
+                 index < visitedSegments.size();
+                 index++) {
+
+                CompoundTag visited =
+                        visitedSegments.getCompound(index);
+
+                if (position
+                        == visited.getLong(POSITION_KEY)
+                        && dimensionId.equals(
+                                visited.getString(
+                                        DIMENSION_KEY
+                                )
+                        )) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+}

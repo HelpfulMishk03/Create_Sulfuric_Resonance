@@ -190,6 +190,7 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "If the linked furnace is removed, unloaded, or in another dimension, the Lamp safely fades back to darkness",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Breaking and replacing the furnace does not restore the link, even at the same position",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network",
-  "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",
-  "item.sulfuricresonance.thermochemical_casing": "Thermochemical Casing"
+  "tooltip.sulfuricresonance.thermochemical_conduit.no_source": "No connected heat source",
+  "tooltip.sulfuricresonance.thermochemical_conduit.transmitting": "Transmitting: %s",
+  "tooltip.sulfuricresonance.thermochemical_conduit.source": "Source: %s, %s, %s"
 }

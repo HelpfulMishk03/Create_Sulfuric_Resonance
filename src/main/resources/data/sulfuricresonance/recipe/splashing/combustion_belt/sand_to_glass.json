@@ -1,0 +1,12 @@
+{
+  "type": "sulfuricresonance:combustion_belt",
+  "ingredient": {
+    "item": "minecraft:sand"
+  },
+  "result": {
+    "id": "minecraft:glass",
+    "count": 1
+  },
+  "minimum_heat": "superheated",
+  "required_heat_units": 30
+}

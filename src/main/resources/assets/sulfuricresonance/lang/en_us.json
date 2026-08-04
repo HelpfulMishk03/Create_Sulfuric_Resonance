@@ -45,6 +45,8 @@
   "item.sulfuricresonance.obsidian_cloth": "Obsidian Cloth",
   "item.sulfuricresonance.cinder_sandpaper": "Cinder Sandpaper",
   "block.sulfuricresonance.thermochemical_conduit": "Thermochemical Conduit",
+  "item.sulfuricresonance.thermochemical_casing": "Thermochemical Casing",
+  "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",
   "tooltip.sulfuricresonance.cinder_sandpaper.1": "An abrasive sheet reinforced with Cinder Compound, twice as durable as red sandpaper",
   "item.sulfuricresonance.unfinished_filament": "Unfinished Filament",
   "item.sulfuricresonance.cinder_filament": "Cinder Filament",
@@ -190,6 +192,7 @@
   "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Raw ores, chunks, and storage blocks are not processed sulfur inputs",
   "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Materials using private or missing tags may require dedicated compatibility",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network",
-  "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",
-  "item.sulfuricresonance.thermochemical_casing": "Thermochemical Casing"
+  "tooltip.sulfuricresonance.thermochemical_conduit.no_source": "No connected heat source",
+  "tooltip.sulfuricresonance.thermochemical_conduit.transmitting": "Transmitting: %s",
+  "tooltip.sulfuricresonance.thermochemical_conduit.source": "Source: %s, %s, %s"
 }

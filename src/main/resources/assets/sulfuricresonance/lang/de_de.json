@@ -163,7 +163,7 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Wird der verknüpfte Ofen entfernt, entladen oder befindet er sich in einer anderen Dimension, blendet die Lampe sicher bis zur Dunkelheit ab",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Das Abbauen und Ersetzen des Ofens stellt die Verknüpfung nicht wieder her, selbst an derselben Position",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Schleiche und rechtsklicke mit einer verknüpften Lampe in die Luft, um die Verbindung zu löschen; die Aktionsleiste bestätigt: Netzwerkverbindung entfernt",
-  "block.sulfuricresonance.thermochemical_conduit": "Thermochemische Leitung",
-  "item.sulfuricresonance.incomplete_thermochemical_casing": "Unvollständiges thermochemisches Gehäuse",
-  "item.sulfuricresonance.thermochemical_casing": "Thermochemisches Gehäuse"
+  "tooltip.sulfuricresonance.thermochemical_conduit.no_source": "Keine verbundene Wärmequelle",
+  "tooltip.sulfuricresonance.thermochemical_conduit.transmitting": "Übertragung: %s",
+  "tooltip.sulfuricresonance.thermochemical_conduit.source": "Quelle: %s, %s, %s"
 }

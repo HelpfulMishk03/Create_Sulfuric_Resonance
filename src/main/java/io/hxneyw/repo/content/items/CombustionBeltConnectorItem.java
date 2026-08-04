@@ -8,6 +8,10 @@ import com.simibubi.create.content.kinetics.belt.BeltSlicer;
 import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -23,7 +27,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Places and extends only marked Combustion Belt chains.
+ *
+ * Existing normal Create belts are deliberately rejected.
+ */
 public class CombustionBeltConnectorItem extends Item {
+
+    /*
+     * Create may rebuild and initialize a sliced/extended belt over more than
+     * one server tick. Re-mark several times so the final rebuilt chain cannot
+     * retain ordinary Create belt segments.
+     */
+    private static final int[] MARK_RETRY_DELAYS = {
+            1, 2, 4, 8
+    };
 
     public CombustionBeltConnectorItem(Properties properties) {
         super(properties);
@@ -41,20 +59,24 @@ public class CombustionBeltConnectorItem extends Item {
                 level.getBlockState(clickedPosition);
 
         /*
-         * Existing belts may only be extended by their matching connector:
+         * Extension is permitted only when the clicked chain already contains
+         * at least one persistent Combustion Belt marker.
          *
-         * - Combustion Belt Connector -> Combustion Belt
-         * - Create Belt Connector     -> normal Create Belt
-         *
-         * This prevents the custom connector from converting or extending
-         * an ordinary Create belt.
+         * This also heals a partially marked chain left by an older extension
+         * bug: after Create rebuilds it, every resulting segment is re-marked.
          */
         if (AllBlocks.BELT.has(clickedState)) {
-            if (player == null
-                    || !isCombustionBelt(
-                    level,
-                    clickedPosition
-            )) {
+            if (player == null) {
+                return InteractionResult.FAIL;
+            }
+
+            List<BlockPos> originalChainAnchors =
+                    getCombustionChainAnchors(
+                            level,
+                            clickedPosition
+                    );
+
+            if (originalChainAnchors.isEmpty()) {
                 return InteractionResult.FAIL;
             }
 
@@ -81,7 +103,7 @@ public class CombustionBeltConnectorItem extends Item {
                     && extensionResult.consumesAction()) {
                 scheduleCombustionBeltChainMarking(
                         level,
-                        clickedPosition
+                        originalChainAnchors
                 );
             }
 
@@ -120,25 +142,25 @@ public class CombustionBeltConnectorItem extends Item {
                 stack.get(AllDataComponents.BELT_FIRST_SHAFT);
 
         /*
-         * Discard an old selection if the original shaft disappeared
-         * or the player moved too far away.
+         * Discard an old selection if the original shaft disappeared or the
+         * player moved too far away.
          */
         if (firstShaft != null
                 && (!BeltConnectorItem.validateAxis(
-                level,
-                firstShaft
-        )
+                        level,
+                        firstShaft
+                )
                 || !firstShaft.closerThan(
-                clickedPosition,
-                BeltConnectorItem.maxLength() * 2
-        ))) {
+                        clickedPosition,
+                        BeltConnectorItem.maxLength() * 2
+                ))) {
 
             stack.remove(AllDataComponents.BELT_FIRST_SHAFT);
             firstShaft = null;
         }
 
         /*
-         * First click: remember this shaft on our custom item.
+         * First click: remember this shaft on the custom item.
          */
         if (firstShaft == null) {
             stack.set(
@@ -168,14 +190,12 @@ public class CombustionBeltConnectorItem extends Item {
                     clickedPosition
             );
 
-            /*
-             * Create initializes the placed BeltBlockEntities after
-             * placement. Mark the completed chain on the following
-             * server tick.
-             */
             scheduleCombustionBeltChainMarking(
                     level,
-                    firstShaft
+                    List.of(
+                            firstShaft,
+                            clickedPosition
+                    )
             );
 
             AllAdvancements.BELT.awardTo(player);
@@ -193,41 +213,11 @@ public class CombustionBeltConnectorItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    private static boolean isCombustionBelt(
-            Level level,
-            BlockPos position
-    ) {
-        BlockEntity blockEntity =
-                level.getBlockEntity(position);
-
-        return blockEntity instanceof CombustionBeltAccessor accessor
-                && accessor.sulfuricresonance$isCombustionBelt();
-    }
-
-    private static void scheduleCombustionBeltChainMarking(
-            Level level,
-            BlockPos beltPosition
-    ) {
-        MinecraftServer server = level.getServer();
-
-        if (server == null) {
-            return;
-        }
-
-        BlockPos savedPosition = beltPosition.immutable();
-
-        server.tell(
-                new TickTask(
-                        server.getTickCount() + 1,
-                        () -> markCombustionBeltChain(
-                                level,
-                                savedPosition
-                        )
-                )
-        );
-    }
-
-    private static void markCombustionBeltChain(
+    /**
+     * Returns every position in the clicked chain only when at least one
+     * segment is already marked as a Combustion Belt.
+     */
+    private static List<BlockPos> getCombustionChainAnchors(
             Level level,
             BlockPos beltPosition
     ) {
@@ -235,32 +225,146 @@ public class CombustionBeltConnectorItem extends Item {
                 level.getBlockEntity(beltPosition);
 
         if (!(blockEntity instanceof BeltBlockEntity belt)) {
-            return;
+            return List.of();
         }
 
-        BlockPos controllerPosition =
-                belt.getController();
-
-        for (BlockPos segmentPosition :
+        List<BlockPos> chain =
                 BeltBlock.getBeltChain(
                         level,
-                        controllerPosition
-                )) {
+                        belt.getController()
+                );
 
+        boolean combustionChain = false;
+
+        for (BlockPos segmentPosition : chain) {
             BlockEntity segmentEntity =
                     level.getBlockEntity(segmentPosition);
 
-            if (!(segmentEntity instanceof BeltBlockEntity segment)) {
+            if (segmentEntity
+                    instanceof CombustionBeltAccessor accessor
+                    && accessor
+                    .sulfuricresonance$isCombustionBelt()) {
+                combustionChain = true;
+                break;
+            }
+        }
+
+        if (!combustionChain) {
+            return List.of();
+        }
+
+        ArrayList<BlockPos> anchors =
+                new ArrayList<>(chain.size() + 1);
+
+        anchors.add(beltPosition.immutable());
+
+        for (BlockPos position : chain) {
+            anchors.add(position.immutable());
+        }
+
+        return anchors;
+    }
+
+    private static void scheduleCombustionBeltChainMarking(
+            Level level,
+            List<BlockPos> anchors
+    ) {
+        MinecraftServer server = level.getServer();
+
+        if (server == null || anchors.isEmpty()) {
+            return;
+        }
+
+        LinkedHashSet<BlockPos> uniqueAnchors =
+                new LinkedHashSet<>();
+
+        for (BlockPos anchor : anchors) {
+            uniqueAnchors.add(anchor.immutable());
+        }
+
+        List<BlockPos> savedAnchors =
+                List.copyOf(uniqueAnchors);
+
+        /*
+         * Mark immediately when Create has already initialized the rebuilt
+         * chain, then repeat on later ticks for delayed initialization.
+         */
+        markCombustionBeltChains(
+                level,
+                savedAnchors
+        );
+
+        for (int delay : MARK_RETRY_DELAYS) {
+            server.tell(
+                    new TickTask(
+                            server.getTickCount() + delay,
+                            () -> markCombustionBeltChains(
+                                    level,
+                                    savedAnchors
+                            )
+                    )
+            );
+        }
+    }
+
+    /**
+     * Resolve every current controller reachable from the saved original chain
+     * positions, then mark every segment in each rebuilt chain.
+     *
+     * This handles controller changes, delayed block-entity initialization,
+     * belt slicing, and belt extension.
+     */
+    private static void markCombustionBeltChains(
+            Level level,
+            List<BlockPos> anchors
+    ) {
+        Set<BlockPos> controllerPositions =
+                new LinkedHashSet<>();
+
+        for (BlockPos anchor : anchors) {
+            if (!level.isLoaded(anchor)) {
                 continue;
             }
 
-            if (!(segment instanceof CombustionBeltAccessor accessor)) {
-                continue;
-            }
+            BlockEntity blockEntity =
+                    level.getBlockEntity(anchor);
 
-            accessor.sulfuricresonance$setCombustionBelt(true);
-            segment.setChanged();
-            segment.sendData();
+            if (blockEntity instanceof BeltBlockEntity belt) {
+                controllerPositions.add(
+                        belt.getController().immutable()
+                );
+            }
+        }
+
+        for (BlockPos controllerPosition :
+                controllerPositions) {
+
+            for (BlockPos segmentPosition :
+                    BeltBlock.getBeltChain(
+                            level,
+                            controllerPosition
+                    )) {
+
+                BlockEntity segmentEntity =
+                        level.getBlockEntity(
+                                segmentPosition
+                        );
+
+                if (!(segmentEntity
+                        instanceof BeltBlockEntity segment)
+                        || !(segment
+                        instanceof CombustionBeltAccessor accessor)) {
+                    continue;
+                }
+
+                accessor
+                        .sulfuricresonance$setCombustionBelt(
+                                true
+                        );
+
+                segment.setChanged();
+                segment.sendData();
+            }
         }
     }
 }

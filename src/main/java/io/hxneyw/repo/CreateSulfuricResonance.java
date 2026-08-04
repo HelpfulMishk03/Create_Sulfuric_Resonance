@@ -8,6 +8,7 @@ import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import io.hxneyw.repo.content.registry.*;
 import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -40,11 +41,13 @@ public class CreateSulfuricResonance {
       AllModBlocks.register(modEventBus);
       AllBlockEntities.register(modEventBus);
       ModRecipeTypes.register(modEventBus);
+      CombustionBeltRecipeRegistry.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);
       AllModMenus.register(modEventBus);
       ModParticles.PARTICLE_TYPES.register(modEventBus);
       modEventBus.addListener(ModCapabilities::registerCapabilities);
       AllModSounds.SOUNDS.register(modEventBus);
+
       AllModFluids.register(modEventBus);
       if (FMLEnvironment.dist.isClient()) {
          modEventBus.addListener(AllModFluids::registerFluidExtensions);

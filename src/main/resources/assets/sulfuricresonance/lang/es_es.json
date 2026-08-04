@@ -163,7 +163,7 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Si el horno vinculado se retira, se descarga o está en otra dimensión, la lámpara se desvanece de forma segura hasta apagarse",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Romper y reemplazar el horno no restaura el vínculo, ni siquiera en la misma posición",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Haz clic derecho en el aire mientras te agachas con una lámpara vinculada para borrar la conexión; la barra de acciones confirma: Conexión a la red eliminada",
-  "block.sulfuricresonance.thermochemical_conduit": "Conducto termoquímico",
-  "item.sulfuricresonance.incomplete_thermochemical_casing": "Carcasa termoquímica incompleta",
-  "item.sulfuricresonance.thermochemical_casing": "Carcasa termoquímica"
+  "tooltip.sulfuricresonance.thermochemical_conduit.no_source": "Sin fuente de calor conectada",
+  "tooltip.sulfuricresonance.thermochemical_conduit.transmitting": "Transmitiendo: %s",
+  "tooltip.sulfuricresonance.thermochemical_conduit.source": "Fuente: %s, %s, %s"
 }
