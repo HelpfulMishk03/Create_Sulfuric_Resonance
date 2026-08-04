@@ -5,6 +5,7 @@ import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -78,6 +79,17 @@ public class AllBlockEntities {
            ).build(null)
    );
 
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ThermochemicalConduitBlockEntity>
+           > THERMOCHEMICAL_CONDUIT =
+           BLOCK_ENTITIES.register(
+                   "thermochemical_conduit",
+                   () -> Builder.of(
+                           ThermochemicalConduitBlockEntity::new,
+                           AllModBlocks.THERMOCHEMICAL_CONDUIT.get()
+                   ).build(null)
+           );
 
    public static void register(IEventBus eventBus) {
       BLOCK_ENTITIES.register(eventBus);

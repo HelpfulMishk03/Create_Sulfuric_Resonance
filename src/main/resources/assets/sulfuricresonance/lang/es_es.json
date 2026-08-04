@@ -162,5 +162,8 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Cuando quedan 200 tics de combustible o menos y no hay combustible en cola, una lámpara caliente avisa pulsando visiblemente entre los niveles 9 y 15",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Si el horno vinculado se retira, se descarga o está en otra dimensión, la lámpara se desvanece de forma segura hasta apagarse",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Romper y reemplazar el horno no restaura el vínculo, ni siquiera en la misma posición",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Haz clic derecho en el aire mientras te agachas con una lámpara vinculada para borrar la conexión; la barra de acciones confirma: Conexión a la red eliminada"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Haz clic derecho en el aire mientras te agachas con una lámpara vinculada para borrar la conexión; la barra de acciones confirma: Conexión a la red eliminada",
+  "block.sulfuricresonance.thermochemical_conduit": "Conducto termoquímico",
+  "item.sulfuricresonance.incomplete_thermochemical_casing": "Carcasa termoquímica incompleta",
+  "item.sulfuricresonance.thermochemical_casing": "Carcasa termoquímica"
 }

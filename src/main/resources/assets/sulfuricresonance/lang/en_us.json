@@ -44,6 +44,7 @@
   "tooltip.sulfuricresonance.cinder_fuel_briquette.2": "Burns 50% longer than charcoal",
   "item.sulfuricresonance.obsidian_cloth": "Obsidian Cloth",
   "item.sulfuricresonance.cinder_sandpaper": "Cinder Sandpaper",
+  "block.sulfuricresonance.thermochemical_conduit": "Thermochemical Conduit",
   "tooltip.sulfuricresonance.cinder_sandpaper.1": "An abrasive sheet reinforced with Cinder Compound, twice as durable as red sandpaper",
   "item.sulfuricresonance.unfinished_filament": "Unfinished Filament",
   "item.sulfuricresonance.cinder_filament": "Cinder Filament",
@@ -139,12 +140,7 @@
   "fluid_type.sulfuricresonance.sulfuric_acid": "Sulfuric Acid",
   "effect.sulfuricresonance.acid_burn": "Acid Burn",
   "effect.sulfuricresonance.acid_burn.description": "Taking corrosive damage from sulfuric acid",
-
   "item.sulfuricresonance.combustion_belt_connector": "Combustion Belt Connector",
-
-
-
-
   "_comment": "=== PONDER TRANSLATIONS ===",
   "sulfuricresonance.ponder.perforated_spritzer.header": "Perforated Spritzer",
   "sulfuricresonance.ponder.perforated_spritzer.intro.header": "Using the Perforated Spritzer",
@@ -193,5 +189,7 @@
   "sulfuricresonance.ponder.sulfur.compatibility.text_3": "Properly tagged processed sulfur from other mods can replace Sulfuric Resonance Sulfur",
   "sulfuricresonance.ponder.sulfur.compatibility.text_4": "Raw ores, chunks, and storage blocks are not processed sulfur inputs",
   "sulfuricresonance.ponder.sulfur.compatibility.text_5": "Materials using private or missing tags may require dedicated compatibility",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network",
+  "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",
+  "item.sulfuricresonance.thermochemical_casing": "Thermochemical Casing"
 }

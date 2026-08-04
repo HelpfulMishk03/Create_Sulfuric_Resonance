@@ -6,7 +6,8 @@
   "mixins": [
     "BasinRecipeMixin",
     "BasinOperatingMixin",
-    "BeltBlockEntityMixin"
+    "BeltBlockEntityMixin",
+    "BeltBlockMixin"
   ],
   "client": [
     "BeltRendererMixin",

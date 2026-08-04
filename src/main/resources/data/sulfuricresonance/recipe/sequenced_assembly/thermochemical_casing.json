@@ -1,0 +1,91 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "create:train_casing"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "id": "sulfuricresonance:thermochemical_casing"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "sulfuricresonance:incomplete_thermochemical_casing"
+        },
+        {
+          "item": "sulfuricresonance:acid_etched_copper_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "sulfuricresonance:incomplete_thermochemical_casing"
+        },
+        {
+          "item": "create:copper_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ],
+      "results": [
+        {
+          "id": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "sulfuricresonance:incomplete_thermochemical_casing"
+        },
+        {
+          "item": "create:copper_sheet"
+        }
+      ],
+      "results": [
+        {
+          "id": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ],
+      "results": [
+        {
+          "id": "sulfuricresonance:incomplete_thermochemical_casing"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "sulfuricresonance:incomplete_thermochemical_casing"
+  }
+}

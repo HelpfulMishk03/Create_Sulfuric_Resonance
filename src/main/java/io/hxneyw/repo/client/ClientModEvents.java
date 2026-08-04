@@ -1,9 +1,11 @@
 package io.hxneyw.repo.client;
 
+import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.simibubi.create.content.processing.basin.BasinRenderer;
 import com.simibubi.create.foundation.block.connected.GlassPaneCTBehaviour;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
 import io.hxneyw.repo.content.entities.ModEntities;
@@ -23,157 +25,174 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 @EventBusSubscriber(
         modid = "sulfuricresonance",
         value = {Dist.CLIENT}
 )
 public class ClientModEvents {
-   public static final PartialModel ROTOR_SHAFT_LEFT = new PartialModel(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_left"));
-   public static final PartialModel ROTOR_SHAFT_RIGHT = new PartialModel(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/rotor_shaft_right"));
-   public static final PartialModel ROTOR_HEAT_NEEDLE = new PartialModel(
-           ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/molten_rotor_needle")
-   );
-   private static final ModelResourceLocation[]
-           COMBUSTION_BELT_MODELS = {
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/particle"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/start"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/start_bottom"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/middle"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/middle_bottom"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/end"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/end_bottom"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/diagonal_start"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/diagonal_middle"
-                   )
-           ),
-           ModelResourceLocation.standalone(
-                   ResourceLocation.fromNamespaceAndPath(
-                           "sulfuricresonance",
-                           "block/combustion_belt/diagonal_end"
-                   )
-           )
-   };
 
-   @SubscribeEvent
-   public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
-      event.registerSpriteSet(ModParticles.COMBUSTION_PURPLE_FLAME.get(), CombustionPurpleFlameParticle.Provider::new);
-      event.registerSpriteSet(ModParticles.ACID_DRIP.get(), AcidDripParticle.Provider::new);
-   }
+    public static final PartialModel ROTOR_SHAFT_LEFT =
+            new PartialModel(
+                    ResourceLocation.fromNamespaceAndPath(
+                            "sulfuricresonance",
+                            "block/rotor_shaft_left"
+                    )
+            );
 
-   @SubscribeEvent
-   public static void onClientSetup(FMLClientSetupEvent event) {
-      event.enqueueWork(() -> {
-         ItemBlockRenderTypes.setRenderLayer(AllModFluids.SULFURIC_ACID.get(), RenderType.translucent());
-         ItemBlockRenderTypes.setRenderLayer(AllModFluids.SULFURIC_ACID_FLOWING.get(), RenderType.translucent());
-         BlockEntityRenderers.register(AllBlockEntities.MOLTEN_ROTOR.get(), MoltenRotorRenderer::new);
-         EntityRenderers.register(ModEntities.PYROCLAST_BOMB.get(), ThrownItemRenderer::new);
-         BlockEntityRenderers.register(AllBlockEntities.PERFORATED_SPRITZER.get(), PerforatedSpritzerRenderer::new);
-         CreateRegistrate.connectedTextures(
-                 () -> new SimpleCTBehaviour(ModSpriteShifts.ASHESIL)
-         ).accept(AllModBlocks.ASHESIL.get());
-         CreateRegistrate.connectedTextures(
-                 () -> new GlassPaneCTBehaviour(ModSpriteShifts.ASHESIL)
-         ).accept(AllModBlocks.ASHESIL_PANE.get());
-      });
-   }
+    public static final PartialModel ROTOR_SHAFT_RIGHT =
+            new PartialModel(
+                    ResourceLocation.fromNamespaceAndPath(
+                            "sulfuricresonance",
+                            "block/rotor_shaft_right"
+                    )
+            );
 
-   @SubscribeEvent
-   public static void registerBlockEntityRenderers(
-           EntityRenderersEvent.RegisterRenderers event
-   ) {
-      event.registerBlockEntityRenderer(
-              AllBlockEntities.ASH_CERAMIC_CRUCIBLE.get(),
-              BasinRenderer::new
+    public static final PartialModel ROTOR_HEAT_NEEDLE =
+            new PartialModel(
+                    ResourceLocation.fromNamespaceAndPath(
+                            "sulfuricresonance",
+                            "block/molten_rotor_needle"
+                    )
+            );
 
-      );
+    @SubscribeEvent
+    public static void registerParticleFactories(
+            RegisterParticleProvidersEvent event
+    ) {
+        event.registerSpriteSet(
+                ModParticles.COMBUSTION_PURPLE_FLAME.get(),
+                CombustionPurpleFlameParticle.Provider::new
+        );
 
-      event.registerBlockEntityRenderer(
-              AllBlockEntities.LIVING_EMBER_LAMP.get(),
-              LivingEmberLampRenderer::new
-      );
+        event.registerSpriteSet(
+                ModParticles.ACID_DRIP.get(),
+                AcidDripParticle.Provider::new
+        );
+    }
 
-   }
+    @SubscribeEvent
+    public static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
 
-   @SubscribeEvent
-   public static void registerAdditionalModels(RegisterAdditional event) {
-       CombustionBeltClientAssets.init();
-      ROTOR_SHAFT_LEFT.invalidate();
-      ROTOR_SHAFT_RIGHT.invalidate();
-      ROTOR_HEAT_NEEDLE.invalidate();
+            /*
+             * Flywheel visual for the conduit shaft.
+             *
+             * This is the missing registration. ShaftRenderer handles
+             * vanilla/off-backend rendering, while this handles normal
+             * Flywheel rendering.
+             */
+            SimpleBlockEntityVisualizer
+                    .builder(AllBlockEntities.THERMOCHEMICAL_CONDUIT.get())
+                    .factory(SingleAxisRotatingVisual::shaft)
+                    .skipVanillaRender(blockEntity -> true)
+                    .apply();
 
-      event.register(ModelResourceLocation.standalone(
-              ResourceLocation.fromNamespaceAndPath(
-                      "sulfuricresonance",
-                      "item/impeller"
-              )
-      ));
-      event.register(ModelResourceLocation.standalone(
-              ResourceLocation.fromNamespaceAndPath(
-                      "sulfuricresonance",
-                      "block/rotor_shaft_left"
-              )
-      ));
-      event.register(ModelResourceLocation.standalone(
-              ResourceLocation.fromNamespaceAndPath(
-                      "sulfuricresonance",
-                      "block/rotor_shaft_right"
-              )
-      ));
-      event.register(ModelResourceLocation.standalone(
-              ResourceLocation.fromNamespaceAndPath(
-                      "sulfuricresonance",
-                      "block/molten_rotor_needle"
-              )
-      ));
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModFluids.SULFURIC_ACID.get(),
+                    RenderType.translucent()
+            );
 
-      for (ModelResourceLocation model : COMBUSTION_BELT_MODELS) {
-         event.register(model);
-      }
-   }
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModFluids.SULFURIC_ACID_FLOWING.get(),
+                    RenderType.translucent()
+            );
+
+            BlockEntityRenderers.register(
+                    AllBlockEntities.MOLTEN_ROTOR.get(),
+                    MoltenRotorRenderer::new
+            );
+
+            EntityRenderers.register(
+                    ModEntities.PYROCLAST_BOMB.get(),
+                    ThrownItemRenderer::new
+            );
+
+            BlockEntityRenderers.register(
+                    AllBlockEntities.PERFORATED_SPRITZER.get(),
+                    PerforatedSpritzerRenderer::new
+            );
+
+            CreateRegistrate.connectedTextures(
+                    () -> new SimpleCTBehaviour(
+                            ModSpriteShifts.ASHESIL
+                    )
+            ).accept(AllModBlocks.ASHESIL.get());
+
+            CreateRegistrate.connectedTextures(
+                    () -> new GlassPaneCTBehaviour(
+                            ModSpriteShifts.ASHESIL
+                    )
+            ).accept(AllModBlocks.ASHESIL_PANE.get());
+        });
+    }
+
+    @SubscribeEvent
+    public static void registerBlockEntityRenderers(
+            EntityRenderersEvent.RegisterRenderers event
+    ) {
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.ASH_CERAMIC_CRUCIBLE.get(),
+                BasinRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_CONDUIT.get(),
+                ThermochemicalConduitRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.LIVING_EMBER_LAMP.get(),
+                LivingEmberLampRenderer::new
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerAdditionalModels(
+            RegisterAdditional event
+    ) {
+        CombustionBeltClientAssets.init();
+
+        ROTOR_SHAFT_LEFT.invalidate();
+        ROTOR_SHAFT_RIGHT.invalidate();
+        ROTOR_HEAT_NEEDLE.invalidate();
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "item/impeller"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/rotor_shaft_left"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/rotor_shaft_right"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/molten_rotor_needle"
+                        )
+                )
+        );
+    }
 }

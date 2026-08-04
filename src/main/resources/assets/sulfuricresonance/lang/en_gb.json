@@ -15,6 +15,7 @@
   "item.sulfuricresonance.vulcanized_rubber": "Vulcanised Rubber",
   "item.sulfuricresonance.molded_rubber_gasket": "Moulded Rubber Gasket",
   "item.sulfuricresonance.infernal_impeller": "Infernal Impeller",
+  "block.sulfuricresonance.thermochemical_conduit": "Thermochemical Conduit",
   "item.sulfuricresonance.flameborne_core": "Flameborne Core",
   "item.sulfuricresonance.corrupt_blaze_cake": "Corrupt Blaze Cake",
   "item.sulfuricresonance.soul_fired_blaze_cake": "Soul-Fired Blaze Cake",
@@ -118,11 +119,7 @@
   "sulfuricresonance.ponder.thermal_relay_switch.text_19": "In Low Fuel mode, every furnace inside the selected heat scope is checked; one warning is enough to pulse the relay.",
   "sulfuricresonance.ponder.thermal_relay_switch.text_20": "Breaking a linked furnace invalidates its stored identity. A replacement at the same coordinates does not inherit the link.",
   "sulfuricresonance.ponder.thermal_relay_switch.text_21": "Unloaded furnace chunks are ignored without being force-loaded, while the saved connection remains available.",
-
   "item.sulfuricresonance.combustion_belt_connector": "Combustion Belt Connector",
-
-
-
   "sulfuricresonance.ponder.thermal_relay_switch.text_22": "Sneak-right-click the placed relay to clear its network and immediately reset redstone and glow to zero.",
   "sulfuricresonance.ponder.thermal_relay_switch.text_23": "One furnace network can support several relays, each with its own saved control profile.",
   "_comment": "=== PONDER TRANSLATIONS ===",
@@ -192,5 +189,7 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "With 200 fuel ticks or less remaining and no fuel queued, a hot Lamp warns you by pulsing noticeably between levels 9 and 15",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "If the linked furnace is removed, unloaded, or in another dimension, the Lamp safely fades back to darkness",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Breaking and replacing the furnace does not restore the link, even at the same position",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network",
+  "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",
+  "item.sulfuricresonance.thermochemical_casing": "Thermochemical Casing"
 }

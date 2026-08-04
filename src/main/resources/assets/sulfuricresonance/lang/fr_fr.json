@@ -162,5 +162,8 @@
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_9": "Lorsqu’il reste au plus 200 ticks de combustible et qu’aucun combustible n’est en attente, une lampe chaude vous avertit en pulsant nettement entre les niveaux 9 et 15",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_10": "Si le four lié est retiré, déchargé ou dans une autre dimension, la lampe s'éteint progressivement et en toute sécurité",
   "sulfuricresonance.ponder.living_ember_lamp.operation.text_11": "Casser puis remplacer le four ne rétablit pas la liaison, même au même emplacement",
-  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Accroupissez-vous et faites un clic droit dans le vide avec une lampe liée pour effacer la connexion ; la barre d’action confirme : Connexion au réseau supprimée"
+  "sulfuricresonance.ponder.living_ember_lamp.operation.text_12": "Accroupissez-vous et faites un clic droit dans le vide avec une lampe liée pour effacer la connexion ; la barre d’action confirme : Connexion au réseau supprimée",
+  "block.sulfuricresonance.thermochemical_conduit": "Conduit thermochimique",
+  "item.sulfuricresonance.incomplete_thermochemical_casing": "Boîtier thermochimique incomplet",
+  "item.sulfuricresonance.thermochemical_casing": "Boîtier thermochimique"
 }

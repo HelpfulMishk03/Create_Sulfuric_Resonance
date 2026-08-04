@@ -10,9 +10,9 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
+import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -106,7 +106,7 @@ public class AllModBlocks {
     public static final DeferredBlock<Block> ASH_BRICK_BLOCK =
             BLOCKS.registerSimpleBlock(
                     "ash_brick_block",
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_GRAY)
                             .strength(2.0f, 6.0f)
                             .requiresCorrectToolForDrops()
@@ -116,7 +116,7 @@ public class AllModBlocks {
     public static final DeferredBlock<SlabBlock> ASH_BRICK_SLAB = BLOCKS.register(
             "ash_brick_slab",
             () -> new SlabBlock(
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_GRAY)
                             .strength(2.0F, 6.0F)
                             .requiresCorrectToolForDrops()
@@ -128,7 +128,7 @@ public class AllModBlocks {
             "ash_brick_stairs",
             () -> new StairBlock(
                     ASH_BRICK_BLOCK.get().defaultBlockState(),
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_GRAY)
                             .strength(2.0F, 6.0F)
                             .requiresCorrectToolForDrops()
@@ -140,7 +140,7 @@ public class AllModBlocks {
             BLOCKS.register(
                     "ash_brick_pillar",
                     () -> new RotatedPillarBlock(
-                            BlockBehaviour.Properties.ofFullCopy(
+                            Properties.ofFullCopy(
                                     ASH_BRICK_BLOCK.get()
                             )
                     )
@@ -149,7 +149,7 @@ public class AllModBlocks {
     public static final DeferredBlock<WallBlock> ASH_BRICK_WALL = BLOCKS.register(
             "ash_brick_wall",
             () -> new WallBlock(
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_GRAY)
                             .strength(2.0F, 6.0F)
                             .requiresCorrectToolForDrops()
@@ -161,7 +161,7 @@ public class AllModBlocks {
             BLOCKS.register(
                     "ash_ceramic_crucible",
                     () -> new AshCeramicCrucibleBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.COLOR_GRAY)
                                     .strength(2.0F, 6.0F)
                                     .requiresCorrectToolForDrops()
@@ -174,7 +174,7 @@ public class AllModBlocks {
             BLOCKS.register(
                     "ashesil",
                     () -> new ConnectedGlassBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.COLOR_GRAY)
                                     .strength(0.3F)
                                     .sound(SoundType.GLASS)
@@ -186,7 +186,7 @@ public class AllModBlocks {
             BLOCKS.register(
                     "ashesil_pane",
                     () -> new ConnectedGlassPaneBlock(
-                            BlockBehaviour.Properties.ofFullCopy(
+                            Properties.ofFullCopy(
                                             net.minecraft.world.level.block.Blocks.GLASS_PANE
                                     )
                                     .mapColor(MapColor.COLOR_GRAY)
@@ -196,11 +196,25 @@ public class AllModBlocks {
                     )
             );
 
+    public static final DeferredBlock<ThermochemicalConduitBlock>
+            THERMOCHEMICAL_CONDUIT =
+            BLOCKS.register(
+                    "thermochemical_conduit",
+                    () -> new ThermochemicalConduitBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
     public static final DeferredBlock<LivingEmberLampBlock> LIVING_EMBER_LAMP =
             BLOCKS.register(
                     "living_ember_lamp",
                     () -> new LivingEmberLampBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(2.5F, 6.0F)
                                     .requiresCorrectToolForDrops()
@@ -216,7 +230,7 @@ public class AllModBlocks {
             BLOCKS.register(
                     "thermal_relay_switch",
                     () -> new ThermalRelaySwitchBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(2.5F, 6.0F)
                                     .requiresCorrectToolForDrops()

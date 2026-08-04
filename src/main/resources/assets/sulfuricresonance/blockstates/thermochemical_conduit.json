@@ -1,0 +1,14 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "sulfuricresonance:block/thermochemical_conduit_horizontal"
+    },
+    "axis=z": {
+      "model": "sulfuricresonance:block/thermochemical_conduit_horizontal",
+      "y": 90
+    },
+    "axis=y": {
+      "model": "sulfuricresonance:block/thermochemical_conduit_vertical"
+    }
+  }
+}

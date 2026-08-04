@@ -1,7 +1,10 @@
 package io.hxneyw.repo.content.items;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllDataComponents;
+import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
+import com.simibubi.create.content.kinetics.belt.BeltSlicer;
 import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
@@ -9,12 +12,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class CombustionBeltConnectorItem extends Item {
@@ -30,7 +36,57 @@ public class CombustionBeltConnectorItem extends Item {
         Level level = context.getLevel();
         Player player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
-        BlockPos clickedShaft = context.getClickedPos();
+        BlockPos clickedPosition = context.getClickedPos();
+        BlockState clickedState =
+                level.getBlockState(clickedPosition);
+
+        /*
+         * Existing belts may only be extended by their matching connector:
+         *
+         * - Combustion Belt Connector -> Combustion Belt
+         * - Create Belt Connector     -> normal Create Belt
+         *
+         * This prevents the custom connector from converting or extending
+         * an ordinary Create belt.
+         */
+        if (AllBlocks.BELT.has(clickedState)) {
+            if (player == null
+                    || !isCombustionBelt(
+                    level,
+                    clickedPosition
+            )) {
+                return InteractionResult.FAIL;
+            }
+
+            BlockHitResult hitResult =
+                    new BlockHitResult(
+                            context.getClickLocation(),
+                            context.getClickedFace(),
+                            clickedPosition,
+                            context.isInside()
+                    );
+
+            ItemInteractionResult extensionResult =
+                    BeltSlicer.useConnector(
+                            clickedState,
+                            level,
+                            clickedPosition,
+                            player,
+                            context.getHand(),
+                            hitResult,
+                            new BeltSlicer.Feedback()
+                    );
+
+            if (!level.isClientSide()
+                    && extensionResult.consumesAction()) {
+                scheduleCombustionBeltChainMarking(
+                        level,
+                        clickedPosition
+                );
+            }
+
+            return extensionResult.result();
+        }
 
         /*
          * Sneaking clears the currently selected first shaft.
@@ -43,7 +99,7 @@ public class CombustionBeltConnectorItem extends Item {
         boolean clickedPositionIsValid =
                 BeltConnectorItem.validateAxis(
                         level,
-                        clickedShaft
+                        clickedPosition
                 );
 
         /*
@@ -68,9 +124,12 @@ public class CombustionBeltConnectorItem extends Item {
          * or the player moved too far away.
          */
         if (firstShaft != null
-                && (!BeltConnectorItem.validateAxis(level, firstShaft)
+                && (!BeltConnectorItem.validateAxis(
+                level,
+                firstShaft
+        )
                 || !firstShaft.closerThan(
-                clickedShaft,
+                clickedPosition,
                 BeltConnectorItem.maxLength() * 2
         ))) {
 
@@ -84,7 +143,7 @@ public class CombustionBeltConnectorItem extends Item {
         if (firstShaft == null) {
             stack.set(
                     AllDataComponents.BELT_FIRST_SHAFT,
-                    clickedShaft
+                    clickedPosition
             );
 
             player.getCooldowns().addCooldown(this, 5);
@@ -92,31 +151,31 @@ public class CombustionBeltConnectorItem extends Item {
         }
 
         /*
-         * Second click: use Create's validation rules.
+         * Second click: use Create's normal belt validation rules.
          */
         if (!BeltConnectorItem.canConnect(
                 level,
                 firstShaft,
-                clickedShaft
+                clickedPosition
         )) {
             return InteractionResult.FAIL;
         }
 
-        if (!firstShaft.equals(clickedShaft)) {
-            /*
-             * Place genuine Create belt blocks while the connector
-             * itself remains a Sulfuric Resonance item.
-             */
+        if (!firstShaft.equals(clickedPosition)) {
             BeltConnectorItem.createBelts(
                     level,
                     firstShaft,
-                    clickedShaft
+                    clickedPosition
             );
 
-            scheduleCombustionBeltMarking(
+            /*
+             * Create initializes the placed BeltBlockEntities after
+             * placement. Mark the completed chain on the following
+             * server tick.
+             */
+            scheduleCombustionBeltChainMarking(
                     level,
-                    firstShaft,
-                    clickedShaft
+                    firstShaft
             );
 
             AllAdvancements.BELT.awardTo(player);
@@ -134,10 +193,20 @@ public class CombustionBeltConnectorItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    private static void scheduleCombustionBeltMarking(
+    private static boolean isCombustionBelt(
             Level level,
-            BlockPos first,
-            BlockPos second
+            BlockPos position
+    ) {
+        BlockEntity blockEntity =
+                level.getBlockEntity(position);
+
+        return blockEntity instanceof CombustionBeltAccessor accessor
+                && accessor.sulfuricresonance$isCombustionBelt();
+    }
+
+    private static void scheduleCombustionBeltChainMarking(
+            Level level,
+            BlockPos beltPosition
     ) {
         MinecraftServer server = level.getServer();
 
@@ -145,68 +214,53 @@ public class CombustionBeltConnectorItem extends Item {
             return;
         }
 
-        /*
-         * Create's belt blocks are placed immediately, but their block
-         * entities may not be available until the following server tick.
-         */
-        BlockPos savedFirst = first.immutable();
-        BlockPos savedSecond = second.immutable();
+        BlockPos savedPosition = beltPosition.immutable();
 
         server.tell(
                 new TickTask(
                         server.getTickCount() + 1,
-                        () -> markCombustionBeltBetween(
+                        () -> markCombustionBeltChain(
                                 level,
-                                savedFirst,
-                                savedSecond
+                                savedPosition
                         )
                 )
         );
     }
 
-    private static void markCombustionBeltBetween(
+    private static void markCombustionBeltChain(
             Level level,
-            BlockPos first,
-            BlockPos second
+            BlockPos beltPosition
     ) {
-        int differenceX = second.getX() - first.getX();
-        int differenceY = second.getY() - first.getY();
-        int differenceZ = second.getZ() - first.getZ();
+        BlockEntity blockEntity =
+                level.getBlockEntity(beltPosition);
 
-        int stepX = Integer.signum(differenceX);
-        int stepY = Integer.signum(differenceY);
-        int stepZ = Integer.signum(differenceZ);
+        if (!(blockEntity instanceof BeltBlockEntity belt)) {
+            return;
+        }
 
-        int length = Math.max(
-                Math.abs(differenceX),
-                Math.max(
-                        Math.abs(differenceY),
-                        Math.abs(differenceZ)
-                )
-        );
+        BlockPos controllerPosition =
+                belt.getController();
 
-        for (int index = 0; index <= length; index++) {
-            BlockPos beltPosition = first.offset(
-                    stepX * index,
-                    stepY * index,
-                    stepZ * index
-            );
+        for (BlockPos segmentPosition :
+                BeltBlock.getBeltChain(
+                        level,
+                        controllerPosition
+                )) {
 
-            BlockEntity blockEntity =
-                    level.getBlockEntity(beltPosition);
+            BlockEntity segmentEntity =
+                    level.getBlockEntity(segmentPosition);
 
-            if (!(blockEntity instanceof BeltBlockEntity belt)) {
+            if (!(segmentEntity instanceof BeltBlockEntity segment)) {
                 continue;
             }
 
-            if (!(belt instanceof CombustionBeltAccessor accessor)) {
+            if (!(segment instanceof CombustionBeltAccessor accessor)) {
                 continue;
             }
 
             accessor.sulfuricresonance$setCombustionBelt(true);
-
-            belt.setChanged();
-            belt.sendData();
+            segment.setChanged();
+            segment.sendData();
         }
     }
 }
