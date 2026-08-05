@@ -30,15 +30,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Stores a multi-furnace relay network and a fully configurable output profile.
- * <p>
- * The hottest valid furnace always selects the player's configured
- * redstone and glow as the base output.
- * <p>
- * Any valid furnace matching the chosen low-fuel scope can temporarily
- * override that base output with the configured pulsing warning.
- */
 public class ThermalRelaySwitchBlockEntity
         extends BlockEntity {
 
@@ -78,14 +69,9 @@ public class ThermalRelaySwitchBlockEntity
     public static final int MAX_COMBUSTION_REDSTONE = 15;
     public static final int MAX_GLOW = 5;
 
-    /**
-     * Ten seconds or less remaining is considered low fuel.
-     */
     private static final int LOW_FUEL_THRESHOLD_TICKS = 200;
 
-    /**
-     * Ten ticks on, ten ticks off.
-     */
+
     private static final int PULSE_HALF_PERIOD_TICKS = 10;
 
     private static final Set<ThermalRelaySwitchBlockEntity>
@@ -100,10 +86,6 @@ public class ThermalRelaySwitchBlockEntity
             ThermalRelaySwitchItem.FurnaceLink
             > linkedFurnaces = new ArrayList<>();
 
-    /*
-     * Legacy saved value retained for world compatibility.
-     * The two GUI tabs are now presentation pages, not output modes.
-     */
     private RelayMode mode = RelayMode.CUSTOM_HEAT;
     private LowFuelScope lowFuelScope =
             LowFuelScope.BOTH;
@@ -169,11 +151,7 @@ public class ThermalRelaySwitchBlockEntity
                         int index,
                         int value
                 ) {
-                    /*
-                     * Server-side changes are made through menu buttons.
-                     * This setter remains complete for vanilla data-slot
-                     * compatibility and client synchronization.
-                     */
+
                     switch (index) {
                         case ThermalRelaySwitchMenu.DATA_MODE -> mode = RelayMode.fromOrdinal(value);
                         case ThermalRelaySwitchMenu
@@ -319,9 +297,7 @@ public class ThermalRelaySwitchBlockEntity
         return List.copyOf(CLIENT_RELAYS);
     }
 
-    /**
-     * Handles vanilla container-button packets from the configuration screen.
-     */
+
     public boolean handleMenuButton(int buttonId) {
         boolean changed = switch (buttonId) {
             case ThermalRelaySwitchMenu.BUTTON_MODE_CUSTOM_HEAT -> setMode(RelayMode.CUSTOM_HEAT);
@@ -415,9 +391,7 @@ public class ThermalRelaySwitchBlockEntity
 
             BlockPos furnacePos = link.position();
 
-            /*
-             * Never request or force-load the target chunk.
-             */
+
             if (!level.isLoaded(furnacePos)) {
                 continue;
             }
@@ -472,10 +446,7 @@ public class ThermalRelaySwitchBlockEntity
             return;
         }
 
-        /*
-         * Low-fuel configuration never replaces normal heat output while the
-         * warning condition is inactive.
-         */
+
         applyOutput(
                 level,
                 baseOutput.redstone(),
@@ -486,11 +457,7 @@ public class ThermalRelaySwitchBlockEntity
     private void applyLowFuelWarning(
             @NotNull Level level
     ) {
-        /*
-         * A real warning still pulses fully off so it remains visible even
-         * when the configured warning strength matches the normal heat
-         * output, such as Combustion 15 and warning 15.
-         */
+
         if (isPulseOff(level)) {
             applyOutput(level, 0, 0);
             return;

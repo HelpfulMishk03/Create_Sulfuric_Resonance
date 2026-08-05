@@ -33,9 +33,7 @@ public class CreateSulfuricResonance {
 
    public CreateSulfuricResonance(IEventBus modEventBus, ModContainer modContainer) {
       LOGGER.info("========== CREATE SULFURIC RESONANCE CONSTRUCTOR CALLED ==========");
-      LOGGER.info("========== PREPARING FOR NEXT SEQUENCE ==========");
       Items.register(modEventBus);
-      LOGGER.info("========== ITEMS.REGISTER CALLED ==========");
       ModTabs.register(modEventBus);
       ModEntities.register(modEventBus);
       AllModBlocks.register(modEventBus);
@@ -62,7 +60,6 @@ public class CreateSulfuricResonance {
 
    @SubscribeEvent
    public void onServerStarting(ServerStartingEvent event) {
-      LOGGER.info("[{}] Server is starting.", "sulfuricresonance");
    }
 
    @EventBusSubscriber(
@@ -80,7 +77,6 @@ public class CreateSulfuricResonance {
 
       @SubscribeEvent
       public static void onClientSetup(FMLClientSetupEvent event) {
-         CreateSulfuricResonance.LOGGER.info("=== CLIENT SETUP EVENT FIRED ===");
          event.enqueueWork(() ->
                  PonderIndex.addPlugin(new SulfuricResonancePonderPlugin())
 

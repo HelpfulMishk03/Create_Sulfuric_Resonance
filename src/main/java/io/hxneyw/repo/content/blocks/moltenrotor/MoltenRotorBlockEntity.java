@@ -51,11 +51,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private final IItemHandler[] sidedFuelHandlers =
            new IItemHandler[Direction.values().length];
 
-   /**
-    * Returns a stable handler instance for capability consumers.
-    * The handler performs side checks dynamically, so rotating the furnace
-    * does not leave capability caches with stale access rules.
-    */
    public IItemHandler getAutomationFuelHandler(@Nullable Direction side) {
       if (side == null) {
          return this.unsidedFuelHandler;
@@ -71,12 +66,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return handler;
    }
 
-   /**
-    * Automation may insert from the open front, top, and either side.
-    * The underside is reserved for future output and the rear is blocked by
-    * the impeller housing. Unsided capability users are accepted for broad
-    * pipe compatibility.
-    */
    public boolean canAutomationInsertFrom(@Nullable Direction side) {
       if (side == null) {
          return true;
@@ -98,10 +87,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this(AllBlockEntities.MOLTEN_ROTOR.get(), pos, state);
    }
 
-   /**
-    * Installed by client-only setup without introducing client classes into
-    * this common block-entity class.
-    */
    public static void setClientSoundTick(
            Consumer<MoltenRotorBlockEntity> soundTick
    ) {
@@ -113,13 +98,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       behaviours.add(new CombustionHeatingBehaviour(this));
    }
 
-   /**
-    * Visual impeller speed follows temperature exactly:
-    * 1 degree Celsius equals 1 RPM.
-    * <p>
-    * This does not change the Create kinetic network output, which remains
-    * controlled by the active heat tier.
-    */
    public float getImpellerRpm() {
       return this.temperatureController.getImpellerRpm();
    }
@@ -148,10 +126,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.creativeMode;
    }
 
-   /**
-    * Permanently identifies this individual furnace block entity. A furnace
-    * placed later at the same coordinates receives a different identity.
-    */
    public @NotNull UUID getFurnaceIdentity() {
       return this.furnaceIdentity;
    }
@@ -172,12 +146,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.fuelController.getDisplayFuelTime();
    }
 
-   /**
-    * Returns whether at least one fuel item is waiting in the automatic queue.
-    * <p>
-    * External heat-monitoring blocks use this to avoid reporting low fuel
-    * while the furnace is already supplied with its next fuel item.
-    */
    public boolean isFuelQueueEmpty() {
       return this.fuelController.isFuelQueueEmpty();
    }

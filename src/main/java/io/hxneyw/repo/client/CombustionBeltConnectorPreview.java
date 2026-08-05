@@ -118,10 +118,6 @@ public final class CombustionBeltConnectorPreview {
 
         BlockPos selected = blockHit.getBlockPos();
 
-        /*
-         * When looking at a non-shaft block, preview toward the
-         * adjacent position on the face being targeted.
-         */
         if (!ShaftBlock.isShaft(
                 level.getBlockState(selected)
         )) {
@@ -202,10 +198,6 @@ public final class CombustionBeltConnectorPreview {
                         + (y == z ? 1 : 0)
                         + (z == x ? 1 : 0);
 
-        /*
-         * Snap the preview onto one of Create's supported belt
-         * directions when the cursor is not perfectly aligned.
-         */
         if (equalAxes == 0) {
             step = findClosestValidStep(
                     shaftAxis,
@@ -230,9 +222,7 @@ public final class CombustionBeltConnectorPreview {
                         ? VALID_COLOR
                         : INVALID_COLOR;
 
-        /*
-         * Lower intervals create a denser, easier-to-read line.
-         */
+
         for (float distance = 0;
              distance < length;
              distance += 0.0625F) {

@@ -21,12 +21,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Links a Living Ember Lamp item to one exact Molten Rotor Furnace.
- *
- * <p>Visual feedback is supplied by LivingEmberLampClientHandler instead of
- * action-bar confirmation messages.</p>
- */
+
 public class LivingEmberLampItem extends BlockItem {
 
     private static final String LINKED_POSITION_TAG =
@@ -57,9 +52,7 @@ public class LivingEmberLampItem extends BlockItem {
         if (level.getBlockEntity(clickedPos)
                 instanceof MoltenRotorBlockEntity furnace) {
 
-            /*
-             * Clearing remains a deliberate air interaction.
-             */
+
             if (player != null && player.isShiftKeyDown()) {
                 return InteractionResult.sidedSuccess(
                         level.isClientSide
@@ -89,9 +82,7 @@ public class LivingEmberLampItem extends BlockItem {
         return super.useOn(context);
     }
 
-    /**
-     * Sneak-right-clicking air clears the held lamp's selected furnace.
-     */
+
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             @NotNull Level level,

@@ -2,19 +2,28 @@ package io.hxneyw.repo.content.items;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllDataComponents;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
+import com.simibubi.create.content.kinetics.belt.BeltPart;
+import com.simibubi.create.content.kinetics.belt.BeltSlope;
 import com.simibubi.create.content.kinetics.belt.BeltSlicer;
 import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
+import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,24 +33,11 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Places and extends only marked Combustion Belt chains.
- *
- * Existing normal Create belts are deliberately rejected.
- */
 public class CombustionBeltConnectorItem extends Item {
-
-    /*
-     * Create may rebuild and initialize a sliced/extended belt over more than
-     * one server tick. Re-mark several times so the final rebuilt chain cannot
-     * retain ordinary Create belt segments.
-     */
-    private static final int[] MARK_RETRY_DELAYS = {
-            1, 2, 4, 8
-    };
 
     public CombustionBeltConnectorItem(Properties properties) {
         super(properties);
@@ -58,25 +54,12 @@ public class CombustionBeltConnectorItem extends Item {
         BlockState clickedState =
                 level.getBlockState(clickedPosition);
 
-        /*
-         * Extension is permitted only when the clicked chain already contains
-         * at least one persistent Combustion Belt marker.
-         *
-         * This also heals a partially marked chain left by an older extension
-         * bug: after Create rebuilds it, every resulting segment is re-marked.
-         */
         if (AllBlocks.BELT.has(clickedState)) {
-            if (player == null) {
-                return InteractionResult.FAIL;
-            }
-
-            List<BlockPos> originalChainAnchors =
-                    getCombustionChainAnchors(
-                            level,
-                            clickedPosition
-                    );
-
-            if (originalChainAnchors.isEmpty()) {
+            if (player == null
+                    || !isCombustionBelt(
+                    level,
+                    clickedPosition
+            )) {
                 return InteractionResult.FAIL;
             }
 
@@ -103,31 +86,24 @@ public class CombustionBeltConnectorItem extends Item {
                     && extensionResult.consumesAction()) {
                 scheduleCombustionBeltChainMarking(
                         level,
-                        originalChainAnchors
+                        clickedPosition
                 );
             }
 
             return extensionResult.result();
         }
 
-        /*
-         * Sneaking clears the currently selected first shaft.
-         */
         if (player != null && player.isShiftKeyDown()) {
             stack.remove(AllDataComponents.BELT_FIRST_SHAFT);
             return InteractionResult.SUCCESS;
         }
 
         boolean clickedPositionIsValid =
-                BeltConnectorItem.validateAxis(
+                isValidBeltShaft(
                         level,
                         clickedPosition
                 );
 
-        /*
-         * Client side only reports whether the click is acceptable.
-         * The server performs placement and inventory changes.
-         */
         if (level.isClientSide()) {
             return clickedPositionIsValid
                     ? InteractionResult.SUCCESS
@@ -141,41 +117,29 @@ public class CombustionBeltConnectorItem extends Item {
         BlockPos firstShaft =
                 stack.get(AllDataComponents.BELT_FIRST_SHAFT);
 
-        /*
-         * Discard an old selection if the original shaft disappeared or the
-         * player moved too far away.
-         */
         if (firstShaft != null
-                && (!BeltConnectorItem.validateAxis(
-                        level,
-                        firstShaft
-                )
+                && (!isValidBeltShaft(
+                level,
+                firstShaft
+        )
                 || !firstShaft.closerThan(
-                        clickedPosition,
-                        BeltConnectorItem.maxLength() * 2
-                ))) {
-
+                clickedPosition,
+                BeltConnectorItem.maxLength() * 2
+        ))) {
             stack.remove(AllDataComponents.BELT_FIRST_SHAFT);
             firstShaft = null;
         }
 
-        /*
-         * First click: remember this shaft on the custom item.
-         */
         if (firstShaft == null) {
             stack.set(
                     AllDataComponents.BELT_FIRST_SHAFT,
                     clickedPosition
             );
-
             player.getCooldowns().addCooldown(this, 5);
             return InteractionResult.SUCCESS;
         }
 
-        /*
-         * Second click: use Create's normal belt validation rules.
-         */
-        if (!BeltConnectorItem.canConnect(
+        if (!canConnect(
                 level,
                 firstShaft,
                 clickedPosition
@@ -184,7 +148,7 @@ public class CombustionBeltConnectorItem extends Item {
         }
 
         if (!firstShaft.equals(clickedPosition)) {
-            BeltConnectorItem.createBelts(
+            createBelts(
                     level,
                     firstShaft,
                     clickedPosition
@@ -192,10 +156,7 @@ public class CombustionBeltConnectorItem extends Item {
 
             scheduleCombustionBeltChainMarking(
                     level,
-                    List.of(
-                            firstShaft,
-                            clickedPosition
-                    )
+                    firstShaft
             );
 
             AllAdvancements.BELT.awardTo(player);
@@ -213,158 +174,433 @@ public class CombustionBeltConnectorItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    /**
-     * Returns every position in the clicked chain only when at least one
-     * segment is already marked as a Combustion Belt.
-     */
-    private static List<BlockPos> getCombustionChainAnchors(
+    private static boolean isValidBeltShaft(
             Level level,
-            BlockPos beltPosition
+            BlockPos position
     ) {
-        BlockEntity blockEntity =
-                level.getBlockEntity(beltPosition);
-
-        if (!(blockEntity instanceof BeltBlockEntity belt)) {
-            return List.of();
+        if (!level.isLoaded(position)) {
+            return false;
         }
 
-        List<BlockPos> chain =
-                BeltBlock.getBeltChain(
-                        level,
-                        belt.getController()
-                );
+        return isSupportedShaftState(
+                level.getBlockState(position)
+        );
+    }
 
-        boolean combustionChain = false;
+    private static boolean isSupportedShaftState(
+            BlockState state
+    ) {
+        return state.getBlock()
+                instanceof ThermochemicalShaftBlock;
+    }
 
-        for (BlockPos segmentPosition : chain) {
-            BlockEntity segmentEntity =
-                    level.getBlockEntity(segmentPosition);
+    private static boolean canConnect(
+            Level level,
+            BlockPos first,
+            BlockPos second
+    ) {
+        if (!level.isLoaded(first)
+                || !level.isLoaded(second)
+                || !second.closerThan(
+                first,
+                BeltConnectorItem.maxLength()
+        )) {
+            return false;
+        }
 
-            if (segmentEntity
-                    instanceof CombustionBeltAccessor accessor
-                    && accessor
-                    .sulfuricresonance$isCombustionBelt()) {
-                combustionChain = true;
-                break;
+        BlockState firstState = level.getBlockState(first);
+        BlockState secondState = level.getBlockState(second);
+
+        if (!isSupportedShaftState(firstState)
+                || !isSupportedShaftState(secondState)
+                || !firstState.hasProperty(
+                BlockStateProperties.AXIS
+        )
+                || !secondState.hasProperty(
+                BlockStateProperties.AXIS
+        )) {
+            return false;
+        }
+
+        BlockPos difference = second.subtract(first);
+        Axis shaftAxis = firstState.getValue(
+                BlockStateProperties.AXIS
+        );
+
+        int x = difference.getX();
+        int y = difference.getY();
+        int z = difference.getZ();
+
+        int equalComponents =
+                (Math.abs(x) == Math.abs(y) ? 1 : 0)
+                        + (Math.abs(y) == Math.abs(z) ? 1 : 0)
+                        + (Math.abs(z) == Math.abs(x) ? 1 : 0);
+
+        if (shaftAxis.choose(x, y, z) != 0
+                || equalComponents != 1
+                || shaftAxis != secondState.getValue(
+                BlockStateProperties.AXIS
+        )
+                || shaftAxis == Axis.Y
+                && x != 0
+                && z != 0) {
+            return false;
+        }
+
+        BlockEntity firstEntity =
+                level.getBlockEntity(first);
+        BlockEntity secondEntity =
+                level.getBlockEntity(second);
+
+        if (!(firstEntity
+                instanceof KineticBlockEntity firstKinetic)
+                || !(secondEntity
+                instanceof KineticBlockEntity secondKinetic)) {
+            return false;
+        }
+
+        float firstSpeed =
+                firstKinetic.getTheoreticalSpeed();
+        float secondSpeed =
+                secondKinetic.getTheoreticalSpeed();
+
+        if (Math.signum(firstSpeed)
+                != Math.signum(secondSpeed)
+                && firstSpeed != 0
+                && secondSpeed != 0) {
+            return false;
+        }
+
+        BlockPos step = BlockPos.containing(
+                Math.signum(x),
+                Math.signum(y),
+                Math.signum(z)
+        );
+
+        int limit = 1000;
+
+        for (BlockPos current = first.offset(step);
+             !current.equals(second) && limit-- > 0;
+             current = current.offset(step)) {
+            BlockState state =
+                    level.getBlockState(current);
+
+            if (isSupportedShaftState(state)
+                    && state.hasProperty(
+                    BlockStateProperties.AXIS
+            )
+                    && state.getValue(
+                    BlockStateProperties.AXIS
+            ) == shaftAxis) {
+                continue;
+            }
+
+            if (!state.canBeReplaced()) {
+                return false;
             }
         }
 
-        if (!combustionChain) {
-            return List.of();
+        return limit > 0;
+    }
+
+    private static void createBelts(
+            Level level,
+            BlockPos start,
+            BlockPos end
+    ) {
+        level.playSound(
+                null,
+                BlockPos.containing(
+                        VecHelper.getCenterOf(
+                                start.offset(end)
+                        ).scale(0.5F)
+                ),
+                SoundEvents.WOOL_PLACE,
+                SoundSource.BLOCKS,
+                0.5F,
+                1.0F
+        );
+
+        BeltSlope slope = getSlopeBetween(start, end);
+        Direction facing = getFacingFromTo(start, end);
+        BlockPos difference = end.subtract(start);
+
+        if (difference.getX() == difference.getZ()) {
+            facing = Direction.get(
+                    facing.getAxisDirection(),
+                    level.getBlockState(start)
+                            .getValue(
+                                    BlockStateProperties.AXIS
+                            )
+                            == Axis.X
+                            ? Axis.Z
+                            : Axis.X
+            );
         }
 
-        ArrayList<BlockPos> anchors =
-                new ArrayList<>(chain.size() + 1);
+        List<BlockPos> positions =
+                getBeltChainBetween(
+                        start,
+                        end,
+                        slope,
+                        facing
+                );
 
-        anchors.add(beltPosition.immutable());
+        BlockState beltState =
+                AllBlocks.BELT.getDefaultState();
 
-        for (BlockPos position : chain) {
-            anchors.add(position.immutable());
+        boolean failed = false;
+
+        for (BlockPos position : positions) {
+            BlockState existingState =
+                    level.getBlockState(position);
+
+            if (existingState.getDestroySpeed(
+                    level,
+                    position
+            ) == -1) {
+                failed = true;
+                break;
+            }
+
+            BeltPart part =
+                    position.equals(start)
+                            ? BeltPart.START
+                            : position.equals(end)
+                            ? BeltPart.END
+                            : BeltPart.MIDDLE;
+
+            boolean pulley =
+                    isSupportedShaftState(existingState);
+
+            if (part == BeltPart.MIDDLE && pulley) {
+                part = BeltPart.PULLEY;
+            }
+
+            if (pulley
+                    && existingState.hasProperty(
+                    BlockStateProperties.AXIS
+            )
+                    && existingState.getValue(
+                    BlockStateProperties.AXIS
+            ) == Axis.Y) {
+                slope = BeltSlope.SIDEWAYS;
+            }
+
+            if (!existingState.canBeReplaced()) {
+                level.destroyBlock(position, false);
+            }
+
+            KineticBlockEntity.switchToBlockState(
+                    level,
+                    position,
+                    ProperWaterloggedBlock.withWater(
+                            level,
+                            beltState
+                                    .setValue(
+                                            BeltBlock.SLOPE,
+                                            slope
+                                    )
+                                    .setValue(
+                                            BeltBlock.PART,
+                                            part
+                                    )
+                                    .setValue(
+                                            BeltBlock.HORIZONTAL_FACING,
+                                            facing
+                                    ),
+                            position
+                    )
+            );
         }
 
-        return anchors;
+        if (!failed) {
+            return;
+        }
+
+        for (BlockPos position : positions) {
+            if (AllBlocks.BELT.has(
+                    level.getBlockState(position)
+            )) {
+                level.destroyBlock(position, false);
+            }
+        }
+    }
+
+    private static Direction getFacingFromTo(
+            BlockPos start,
+            BlockPos end
+    ) {
+        Axis beltAxis =
+                start.getX() == end.getX()
+                        ? Axis.Z
+                        : Axis.X;
+
+        BlockPos difference = end.subtract(start);
+        AxisDirection axisDirection =
+                AxisDirection.POSITIVE;
+
+        if (difference.getX() == 0
+                && difference.getZ() == 0) {
+            axisDirection =
+                    difference.getY() > 0
+                            ? AxisDirection.POSITIVE
+                            : AxisDirection.NEGATIVE;
+        } else if (beltAxis.choose(
+                difference.getX(),
+                0,
+                difference.getZ()
+        ) <= 0) {
+            axisDirection = AxisDirection.NEGATIVE;
+        }
+
+        return Direction.get(
+                axisDirection,
+                beltAxis
+        );
+    }
+
+    private static BeltSlope getSlopeBetween(
+            BlockPos start,
+            BlockPos end
+    ) {
+        BlockPos difference = end.subtract(start);
+
+        if (difference.getY() != 0) {
+            if (difference.getZ() != 0
+                    || difference.getX() != 0) {
+                return difference.getY() > 0
+                        ? BeltSlope.UPWARD
+                        : BeltSlope.DOWNWARD;
+            }
+
+            return BeltSlope.VERTICAL;
+        }
+
+        return BeltSlope.HORIZONTAL;
+    }
+
+    private static List<BlockPos> getBeltChainBetween(
+            BlockPos start,
+            BlockPos end,
+            BeltSlope slope,
+            Direction direction
+    ) {
+        List<BlockPos> positions =
+                new LinkedList<>();
+
+        int limit = 1000;
+        BlockPos current = start;
+
+        do {
+            positions.add(current);
+
+            if (slope == BeltSlope.VERTICAL) {
+                current = current.above(
+                        direction.getAxisDirection()
+                                == AxisDirection.POSITIVE
+                                ? 1
+                                : -1
+                );
+                continue;
+            }
+
+            current = current.relative(direction);
+
+            if (slope != BeltSlope.HORIZONTAL) {
+                current = current.above(
+                        slope == BeltSlope.UPWARD
+                                ? 1
+                                : -1
+                );
+            }
+        } while (!current.equals(end)
+                && limit-- > 0);
+
+        positions.add(end);
+        return positions;
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private static boolean isCombustionBelt(
+            Level level,
+            BlockPos position
+    ) {
+        BlockEntity blockEntity =
+                level.getBlockEntity(position);
+
+        return blockEntity
+                instanceof CombustionBeltAccessor accessor
+                && accessor
+                .sulfuricresonance$isCombustionBelt();
     }
 
     private static void scheduleCombustionBeltChainMarking(
             Level level,
-            List<BlockPos> anchors
+            BlockPos beltPosition
     ) {
         MinecraftServer server = level.getServer();
 
-        if (server == null || anchors.isEmpty()) {
+        if (server == null) {
             return;
         }
 
-        LinkedHashSet<BlockPos> uniqueAnchors =
-                new LinkedHashSet<>();
+        BlockPos savedPosition =
+                beltPosition.immutable();
 
-        for (BlockPos anchor : anchors) {
-            uniqueAnchors.add(anchor.immutable());
-        }
+        int currentTick = server.getTickCount();
 
-        List<BlockPos> savedAnchors =
-                List.copyOf(uniqueAnchors);
-
-        /*
-         * Mark immediately when Create has already initialized the rebuilt
-         * chain, then repeat on later ticks for delayed initialization.
-         */
-        markCombustionBeltChains(
-                level,
-                savedAnchors
-        );
-
-        for (int delay : MARK_RETRY_DELAYS) {
+        for (int delay : new int[]{1, 2, 5}) {
             server.tell(
                     new TickTask(
-                            server.getTickCount() + delay,
-                            () -> markCombustionBeltChains(
+                            currentTick + delay,
+                            () -> markCombustionBeltChain(
                                     level,
-                                    savedAnchors
+                                    savedPosition
                             )
                     )
             );
         }
     }
 
-    /**
-     * Resolve every current controller reachable from the saved original chain
-     * positions, then mark every segment in each rebuilt chain.
-     *
-     * This handles controller changes, delayed block-entity initialization,
-     * belt slicing, and belt extension.
-     */
-    private static void markCombustionBeltChains(
+    private static void markCombustionBeltChain(
             Level level,
-            List<BlockPos> anchors
+            BlockPos beltPosition
     ) {
-        Set<BlockPos> controllerPositions =
-                new LinkedHashSet<>();
+        BlockEntity blockEntity =
+                level.getBlockEntity(beltPosition);
 
-        for (BlockPos anchor : anchors) {
-            if (!level.isLoaded(anchor)) {
+        if (!(blockEntity
+                instanceof BeltBlockEntity belt)) {
+            return;
+        }
+
+        BlockPos controllerPosition =
+                belt.getController();
+
+        for (BlockPos segmentPosition :
+                BeltBlock.getBeltChain(
+                        level,
+                        controllerPosition
+                )) {
+            BlockEntity segmentEntity =
+                    level.getBlockEntity(segmentPosition);
+
+            if (!(segmentEntity
+                    instanceof BeltBlockEntity segment)
+                    || !(segment
+                    instanceof CombustionBeltAccessor accessor)) {
                 continue;
             }
 
-            BlockEntity blockEntity =
-                    level.getBlockEntity(anchor);
-
-            if (blockEntity instanceof BeltBlockEntity belt) {
-                controllerPositions.add(
-                        belt.getController().immutable()
-                );
-            }
-        }
-
-        for (BlockPos controllerPosition :
-                controllerPositions) {
-
-            for (BlockPos segmentPosition :
-                    BeltBlock.getBeltChain(
-                            level,
-                            controllerPosition
-                    )) {
-
-                BlockEntity segmentEntity =
-                        level.getBlockEntity(
-                                segmentPosition
-                        );
-
-                if (!(segmentEntity
-                        instanceof BeltBlockEntity segment)
-                        || !(segment
-                        instanceof CombustionBeltAccessor accessor)) {
-                    continue;
-                }
-
-                accessor
-                        .sulfuricresonance$setCombustionBelt(
-                                true
-                        );
-
-                segment.setChanged();
-                segment.sendData();
-            }
+            accessor.sulfuricresonance$setCombustionBelt(
+                    true
+            );
+            accessor.sulfuricresonance$setThermochemicalPulley(
+                    segment.hasPulley()
+            );
+            segment.setChanged();
+            segment.sendData();
         }
     }
 }

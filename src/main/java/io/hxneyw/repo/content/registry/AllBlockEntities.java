@@ -6,6 +6,8 @@ import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -88,6 +90,32 @@ public class AllBlockEntities {
                    () -> Builder.of(
                            ThermochemicalConduitBlockEntity::new,
                            AllModBlocks.THERMOCHEMICAL_CONDUIT.get()
+                   ).build(null)
+           );
+
+
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ThermochemicalShaftBlockEntity>
+           > THERMOCHEMICAL_SHAFT =
+           BLOCK_ENTITIES.register(
+                   "thermochemical_shaft",
+                   () -> Builder.of(
+                           ThermochemicalShaftBlockEntity::new,
+                           AllModBlocks.THERMOCHEMICAL_SHAFT.get()
+                   ).build(null)
+           );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ThermochemicalGearboxBlockEntity>
+           > THERMOCHEMICAL_GEARBOX =
+           BLOCK_ENTITIES.register(
+                   "thermochemical_gearbox",
+                   () -> Builder.of(
+                           ThermochemicalGearboxBlockEntity::new,
+                           AllModBlocks.THERMOCHEMICAL_GEARBOX.get()
                    ).build(null)
            );
 

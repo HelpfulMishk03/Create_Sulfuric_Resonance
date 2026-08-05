@@ -6,7 +6,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
+@SuppressWarnings("unused")
 @OnlyIn(Dist.CLIENT)
 public class PartialModel {
    private final ResourceLocation modelLocation;

@@ -12,9 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Polished, slotless control panel for one placed Thermal Relay Switch.
- */
 public class ThermalRelaySwitchScreen
         extends AbstractContainerScreen<
         ThermalRelaySwitchMenu
@@ -49,10 +46,6 @@ public class ThermalRelaySwitchScreen
     private Button highHeatScopeButton;
     private Button bothScopeButton;
 
-    /*
-     * The tabs only choose which settings page is visible.
-     * They do not change the relay's live output behavior.
-     */
     private boolean showLowFuelPage;
 
     public ThermalRelaySwitchScreen(
@@ -67,9 +60,6 @@ public class ThermalRelaySwitchScreen
         this.titleLabelX = 12;
         this.titleLabelY = 10;
 
-        /*
-         * This screen has no inventory slots.
-         */
         this.inventoryLabelY = 10_000;
     }
 
@@ -130,7 +120,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_HEATED_REDSTONE_UP,
                 this.menu::getHeatedRedstone,
-                0,
                 ThermalRelaySwitchBlockEntity
                         .MAX_HEATED_REDSTONE,
                 Section.CUSTOM_HEAT
@@ -144,7 +133,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_HEATED_GLOW_UP,
                 this.menu::getHeatedGlow,
-                0,
                 ThermalRelaySwitchBlockEntity.MAX_GLOW,
                 Section.CUSTOM_HEAT
         );
@@ -157,7 +145,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_SUPERHEATED_REDSTONE_UP,
                 this.menu::getSuperheatedRedstone,
-                0,
                 ThermalRelaySwitchBlockEntity
                         .MAX_SUPERHEATED_REDSTONE,
                 Section.CUSTOM_HEAT
@@ -171,7 +158,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_SUPERHEATED_GLOW_UP,
                 this.menu::getSuperheatedGlow,
-                0,
                 ThermalRelaySwitchBlockEntity.MAX_GLOW,
                 Section.CUSTOM_HEAT
         );
@@ -184,7 +170,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_COMBUSTION_REDSTONE_UP,
                 this.menu::getCombustionRedstone,
-                0,
                 ThermalRelaySwitchBlockEntity
                         .MAX_COMBUSTION_REDSTONE,
                 Section.CUSTOM_HEAT
@@ -198,7 +183,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_COMBUSTION_GLOW_UP,
                 this.menu::getCombustionGlow,
-                0,
                 ThermalRelaySwitchBlockEntity.MAX_GLOW,
                 Section.CUSTOM_HEAT
         );
@@ -278,7 +262,6 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_LOW_FUEL_REDSTONE_UP,
                 this.menu::getLowFuelRedstone,
-                0,
                 15,
                 Section.LOW_FUEL
         );
@@ -291,22 +274,17 @@ public class ThermalRelaySwitchScreen
                 ThermalRelaySwitchMenu
                         .BUTTON_LOW_FUEL_GLOW_UP,
                 this.menu::getLowFuelGlow,
-                0,
                 ThermalRelaySwitchBlockEntity.MAX_GLOW,
                 Section.LOW_FUEL
         );
     }
 
-    /**
-     * Adds a minus button at localX and a plus button 66 pixels later.
-     */
     private void addStepper(
             int localX,
             int localY,
             int downId,
             int upId,
             @NotNull IntSupplier value,
-            int minimum,
             int maximum,
             @NotNull Section section
     ) {
@@ -343,7 +321,7 @@ public class ThermalRelaySwitchScreen
                         minus,
                         plus,
                         value,
-                        minimum,
+                        0,
                         maximum,
                         section
                 )
@@ -491,9 +469,7 @@ public class ThermalRelaySwitchScreen
                 PANEL
         );
 
-        /*
-         * Tab divider and selected-mode underline.
-         */
+
         graphics.fill(
                 left + 12,
                 top + 54,

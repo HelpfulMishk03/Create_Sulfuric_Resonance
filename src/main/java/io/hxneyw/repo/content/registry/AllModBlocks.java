@@ -11,6 +11,8 @@ import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
+import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
@@ -204,6 +206,36 @@ public class AllModBlocks {
                             Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(3.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
+
+
+    public static final DeferredBlock<ThermochemicalShaftBlock>
+            THERMOCHEMICAL_SHAFT =
+            BLOCKS.register(
+                    "thermochemical_shaft",
+                    () -> new ThermochemicalShaftBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(2.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ThermochemicalGearboxBlock>
+            THERMOCHEMICAL_GEARBOX =
+            BLOCKS.register(
+                    "thermochemical_gearbox",
+                    () -> new ThermochemicalGearboxBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.5F, 6.0F)
                                     .requiresCorrectToolForDrops()
                                     .sound(SoundType.METAL)
                                     .noOcclusion()

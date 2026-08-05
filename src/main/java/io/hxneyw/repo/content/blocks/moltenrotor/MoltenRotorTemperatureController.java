@@ -6,11 +6,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Owns temperature, heating, cooling, and heat-tier calculation for the
- * Molten Rotor. Kinetic-network updates and visual block-state updates remain
- * orchestrated by the block entity.
- */
+
 public final class MoltenRotorTemperatureController {
     private static final float AMBIENT_TEMPERATURE = 20.0F;
     private static final float MAXIMUM_TEMPERATURE = 1599.0F;
@@ -31,10 +27,7 @@ public final class MoltenRotorTemperatureController {
         this.fuelController = fuelController;
     }
 
-    /**
-     * Advances one server tick of heating or cooling and recalculates the heat
-     * tier. Fuel queue advancement remains owned by the fuel controller.
-     */
+
     public TickResult tick() {
         MoltenRotorBlockEntity.RotorHeatLevel previousTier =
                 this.currentHeatTier;

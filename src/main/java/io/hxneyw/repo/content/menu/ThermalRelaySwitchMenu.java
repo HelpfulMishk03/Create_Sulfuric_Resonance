@@ -14,12 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Slotless configuration menu.
- *
- * Button presses travel through vanilla's container-button packet, so this
- * screen does not require a custom networking payload.
- */
+
 public class ThermalRelaySwitchMenu
         extends AbstractContainerMenu {
 
@@ -73,9 +68,7 @@ public class ThermalRelaySwitchMenu
     @Nullable
     private final ThermalRelaySwitchBlockEntity relay;
 
-    /**
-     * Client constructor used by MenuType.
-     */
+
     public ThermalRelaySwitchMenu(
             int containerId,
             @NotNull Inventory playerInventory
@@ -89,9 +82,7 @@ public class ThermalRelaySwitchMenu
         );
     }
 
-    /**
-     * Server constructor used by the placed relay's MenuProvider.
-     */
+
     public ThermalRelaySwitchMenu(
             int containerId,
             @NotNull Inventory playerInventory,

@@ -1,6 +1,5 @@
 {
   "type": "create:mixing",
-  "heat_requirement": "superheated",
   "ingredients": [
     {
       "item": "sulfuricresonance:spent_ash"
@@ -12,19 +11,21 @@
       "item": "minecraft:clay_ball"
     },
     {
+      "item": "minecraft:clay_ball"
+    },
+    {
       "item": "minecraft:sand"
     },
     {
       "type": "neoforge:single",
-      "amount": 50,
+      "amount": 250,
       "fluid": "minecraft:water"
     }
   ],
-  "processing_time": 150,
   "results": [
     {
-      "id": "sulfuricresonance:ash_ceramic",
-      "amount": 2
+      "id": "sulfuricresonance:wet_ash_ceramic",
+      "count": 2
     }
   ]
 }

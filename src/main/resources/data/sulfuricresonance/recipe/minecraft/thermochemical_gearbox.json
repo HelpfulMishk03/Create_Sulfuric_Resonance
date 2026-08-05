@@ -1,0 +1,24 @@
+{
+  "type": "create:mechanical_crafting",
+  "accept_mirrored": false,
+  "pattern": [
+    "ASA",
+    "SGS",
+    "ASA"
+  ],
+  "key": {
+    "A": {
+      "item": "create:iron_sheet"
+    },
+    "S": {
+      "item": "sulfuricresonance:thermochemical_shaft"
+    },
+    "G": {
+      "item": "create:gearbox"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:thermochemical_gearbox",
+    "count": 1
+  }
+}

@@ -22,9 +22,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-/**
- * Shows one Create-style blue box per distinct selected furnace and relay.
- */
+
 @EventBusSubscriber(
         modid = CreateSulfuricResonance.MODID,
         value = Dist.CLIENT
@@ -75,10 +73,7 @@ public final class ThermalRelaySwitchClientHandler {
         Map<BlockPos, ThermalRelaySwitchBlockEntity>
                 uniqueRelays = new LinkedHashMap<>();
 
-        /*
-         * All furnaces selected on the held item are visible immediately,
-         * before any relay block is placed.
-         */
+
         for (ThermalRelaySwitchItem.FurnaceLink link :
                 ThermalRelaySwitchItem.getLinks(heldStack)) {
             addEndpoint(
@@ -87,9 +82,7 @@ public final class ThermalRelaySwitchClientHandler {
             );
         }
 
-        /*
-         * Also include loaded placed relays in the same network.
-         */
+
         for (ThermalRelaySwitchBlockEntity relay :
                 ThermalRelaySwitchBlockEntity
                         .getLoadedClientRelays()) {

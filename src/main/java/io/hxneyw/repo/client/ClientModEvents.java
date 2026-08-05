@@ -5,6 +5,7 @@ import com.simibubi.create.content.processing.basin.BasinRenderer;
 import com.simibubi.create.foundation.block.connected.GlassPaneCTBehaviour;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
@@ -12,7 +13,11 @@ import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.particles.AcidDripParticle;
 import io.hxneyw.repo.content.particles.CombustionPurpleFlameParticle;
-import io.hxneyw.repo.content.registry.*;
+import io.hxneyw.repo.content.registry.AllBlockEntities;
+import io.hxneyw.repo.content.registry.AllModBlocks;
+import io.hxneyw.repo.content.registry.AllModFluids;
+import io.hxneyw.repo.content.registry.ModParticles;
+import io.hxneyw.repo.content.registry.ModSpriteShifts;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -35,28 +40,31 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 public class ClientModEvents {
 
     public static final PartialModel ROTOR_SHAFT_LEFT =
-            new PartialModel(
-                    ResourceLocation.fromNamespaceAndPath(
-                            "sulfuricresonance",
-                            "block/rotor_shaft_left"
-                    )
-            );
+            partial("block/rotor_shaft_left");
 
     public static final PartialModel ROTOR_SHAFT_RIGHT =
-            new PartialModel(
-                    ResourceLocation.fromNamespaceAndPath(
-                            "sulfuricresonance",
-                            "block/rotor_shaft_right"
-                    )
-            );
+            partial("block/rotor_shaft_right");
 
     public static final PartialModel ROTOR_HEAT_NEEDLE =
-            new PartialModel(
-                    ResourceLocation.fromNamespaceAndPath(
-                            "sulfuricresonance",
-                            "block/molten_rotor_needle"
-                    )
-            );
+            partial("block/molten_rotor_needle");
+
+    public static final PartialModel THERMOCHEMICAL_CONDUIT_SHAFT =
+            partial("block/thermochemical_conduit_shaft");
+
+    public static final PartialModel THERMOCHEMICAL_SHAFT =
+            partial("block/thermochemical_shaft");
+
+    public static final PartialModel THERMOCHEMICAL_GEARBOX_SHAFT =
+            partial("block/thermochemical_gearbox_shaft");
+
+    private static PartialModel partial(String path) {
+        return PartialModel.of(
+                ResourceLocation.fromNamespaceAndPath(
+                        "sulfuricresonance",
+                        path
+                )
+        );
+    }
 
     @SubscribeEvent
     public static void registerParticleFactories(
@@ -76,17 +84,15 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-
-            /*
-             * Flywheel visual for the conduit shaft.
-             *
-             * This is the missing registration. ShaftRenderer handles
-             * vanilla/off-backend rendering, while this handles normal
-             * Flywheel rendering.
-             */
             SimpleBlockEntityVisualizer
-                    .builder(AllBlockEntities.THERMOCHEMICAL_CONDUIT.get())
-                    .factory(SingleAxisRotatingVisual::shaft)
+                    .builder(
+                            AllBlockEntities.THERMOCHEMICAL_SHAFT.get()
+                    )
+                    .factory(
+                            SingleAxisRotatingVisual.of(
+                                    THERMOCHEMICAL_SHAFT
+                            )
+                    )
                     .skipVanillaRender(blockEntity -> true)
                     .apply();
 
@@ -144,6 +150,16 @@ public class ClientModEvents {
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_SHAFT.get(),
+                ThermochemicalShaftRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_GEARBOX.get(),
+                ThermochemicalGearboxRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.LIVING_EMBER_LAMP.get(),
                 LivingEmberLampRenderer::new
         );
@@ -155,42 +171,17 @@ public class ClientModEvents {
     ) {
         CombustionBeltClientAssets.init();
 
-        ROTOR_SHAFT_LEFT.invalidate();
-        ROTOR_SHAFT_RIGHT.invalidate();
-        ROTOR_HEAT_NEEDLE.invalidate();
+        registerStandalone(event);
+    }
 
+    private static void registerStandalone(
+            RegisterAdditional event
+    ) {
         event.register(
                 ModelResourceLocation.standalone(
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "item/impeller"
-                        )
-                )
-        );
-
-        event.register(
-                ModelResourceLocation.standalone(
-                        ResourceLocation.fromNamespaceAndPath(
-                                "sulfuricresonance",
-                                "block/rotor_shaft_left"
-                        )
-                )
-        );
-
-        event.register(
-                ModelResourceLocation.standalone(
-                        ResourceLocation.fromNamespaceAndPath(
-                                "sulfuricresonance",
-                                "block/rotor_shaft_right"
-                        )
-                )
-        );
-
-        event.register(
-                ModelResourceLocation.standalone(
-                        ResourceLocation.fromNamespaceAndPath(
-                                "sulfuricresonance",
-                                "block/molten_rotor_needle"
                         )
                 )
         );

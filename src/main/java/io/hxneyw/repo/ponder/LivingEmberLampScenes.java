@@ -263,8 +263,7 @@ public final class LivingEmberLampScenes {
         animateLampLight(scene, lampPos, 15, 9);
         scene.idle(8);
         animateLampLight(scene, lampPos, 9, 15);
-        // Allow the low-fuel warning to disappear completely before the
-        // missing-furnace explanation begins.
+
         scene.idle(105);
 
         scene.world().setBlock(

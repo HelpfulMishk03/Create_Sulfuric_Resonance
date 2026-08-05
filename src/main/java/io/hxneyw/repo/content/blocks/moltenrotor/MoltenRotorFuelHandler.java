@@ -6,14 +6,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Insertion-only item capability for the Molten Rotor.
- *
- * <p>The furnace is a processing sink rather than a conventional inventory:
- * it accepts exactly one fuel unit per successful transaction, exposes no
- * extractable slot, and delegates every rule to the block entity's central
- * fuel validation path.</p>
- */
+
 public final class MoltenRotorFuelHandler implements IItemHandler {
     private final MoltenRotorBlockEntity furnace;
     private final @Nullable Direction side;

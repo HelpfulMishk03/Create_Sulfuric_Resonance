@@ -14,7 +14,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
-
+@SuppressWarnings("unused")
 public class Items {
    private static final Logger LOGGER = LogUtils.getLogger();
    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems("sulfuricresonance");
@@ -53,6 +53,29 @@ public class Items {
                            new Properties()
                    )
            );
+   public static final DeferredItem<Item> WET_ASH_CERAMIC =
+           ITEMS.register(
+                   "wet_ash_ceramic",
+                   () -> new Item(
+                           new Properties().stacksTo(64)
+                   )
+           );
+
+   public static final DeferredItem<Item> UNFIRED_ASH_BRICK =
+           ITEMS.register(
+                   "unfired_ash_brick",
+                   () -> new Item(
+                           new Properties().stacksTo(64)
+                   )
+           );
+
+   public static final DeferredItem<Item> ACID_RESISTANT_CERAMIC =
+           ITEMS.register(
+                   "acid_resistant_ceramic",
+                   () -> new Item(
+                           new Properties().stacksTo(64)
+                   )
+           );
    public static final DeferredItem<BlockItem> ASHESIL_PANE_ITEM =
            ITEMS.register(
                    "ashesil_pane",
@@ -79,55 +102,22 @@ public class Items {
 
    public static final DeferredItem<Item> ACID_ETCHED_COPPER_SHEET = ITEMS.register("acid_etched_copper_sheet", () -> new Item(new Properties().stacksTo(64)));
 
-   public static final DeferredItem<SequencedAssemblyItem>
-           INCOMPLETE_THERMOCHEMICAL_CASING =
-           ITEMS.register(
-                   "incomplete_thermochemical_casing",
-                   () -> new SequencedAssemblyItem(
-                           new Properties()
-                   )
-           );
+   public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_THERMOCHEMICAL_CASING = ITEMS.register("incomplete_thermochemical_casing", () -> new SequencedAssemblyItem(new Properties()));
 
-   public static final DeferredItem<Item>
-           THERMOCHEMICAL_CASING =
-           ITEMS.register(
-                   "thermochemical_casing",
-                   () -> new Item(
-                           new Properties()
-                                   .stacksTo(64)
-                   )
-           );
+   public static final DeferredItem<Item> THERMOCHEMICAL_CASING = ITEMS.register("thermochemical_casing", () -> new Item(new Properties().stacksTo(64)));
 
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));
-   public static final DeferredItem<ThermalRelaySwitchItem>
-           THERMAL_RELAY_SWITCH_ITEM =
-           ITEMS.register(
-                   "thermal_relay_switch",
-                   () -> new ThermalRelaySwitchItem(
-                           AllModBlocks.THERMAL_RELAY_SWITCH.get(),
-                           new Properties()
-                   )
-           );
+   public static final DeferredItem<ThermalRelaySwitchItem> THERMAL_RELAY_SWITCH_ITEM = ITEMS.register("thermal_relay_switch", () -> new ThermalRelaySwitchItem(AllModBlocks.THERMAL_RELAY_SWITCH.get(), new Properties()));
 
-   public static final DeferredItem<CombustionBeltConnectorItem>
-           COMBUSTION_BELT_CONNECTOR =
-           ITEMS.register(
-                   "combustion_belt_connector",
-                   () -> new CombustionBeltConnectorItem(
-                           new Properties()
-                                   .stacksTo(64)
-                   )
-           );
+   public static final DeferredItem<CombustionBeltConnectorItem> COMBUSTION_BELT_CONNECTOR = ITEMS.register("combustion_belt_connector", () -> new CombustionBeltConnectorItem(new Properties().stacksTo(64)));
 
-   public static final DeferredItem<BlockItem>
-           THERMOCHEMICAL_CONDUIT_ITEM =
-           ITEMS.register(
-                   "thermochemical_conduit",
-                   () -> new BlockItem(
-                           AllModBlocks.THERMOCHEMICAL_CONDUIT.get(),
-                           new Properties()
-                   )
-           );
+   public static final DeferredItem<BlockItem> THERMOCHEMICAL_CONDUIT_ITEM = ITEMS.register("thermochemical_conduit", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CONDUIT.get(), new Properties()));
+
+
+
+   public static final DeferredItem<BlockItem> THERMOCHEMICAL_SHAFT_ITEM = ITEMS.register("thermochemical_shaft", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_SHAFT.get(), new Properties()));
+
+   public static final DeferredItem<BlockItem> THERMOCHEMICAL_GEARBOX_ITEM = ITEMS.register("thermochemical_gearbox", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_GEARBOX.get(), new Properties()));
 
    public static final DeferredItem<Item> UNREFINED_RUBBER = ITEMS.register("unrefined_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> VULCANIZED_RUBBER = ITEMS.register("vulcanized_rubber", () -> new Item(new Properties().stacksTo(64)));

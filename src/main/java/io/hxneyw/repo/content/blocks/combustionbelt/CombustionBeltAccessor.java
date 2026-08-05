@@ -4,15 +4,16 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Server/client state exposed by the BeltBlockEntity mixin.
- */
 public interface CombustionBeltAccessor {
 
     boolean sulfuricresonance$isCombustionBelt();
 
-    void sulfuricresonance$setCombustionBelt(
-            boolean combustionBelt
+    void sulfuricresonance$setCombustionBelt(boolean combustionBelt);
+
+    boolean sulfuricresonance$isThermochemicalPulley();
+
+    void sulfuricresonance$setThermochemicalPulley(
+            boolean thermochemicalPulley
     );
 
     MoltenRotorBlockEntity.RotorHeatLevel
@@ -34,11 +35,4 @@ public interface CombustionBeltAccessor {
     void sulfuricresonance$setHeatFromConduit(
             boolean heatFromConduit
     );
-
-    default boolean sulfuricresonance$hasValidHeatSource() {
-        return sulfuricresonance$isCombustionBelt()
-                && sulfuricresonance$getReceivedHeatTier()
-                != MoltenRotorBlockEntity.RotorHeatLevel.NONE
-                && sulfuricresonance$getHeatSourcePos() != null;
-    }
 }

@@ -34,6 +34,11 @@ public abstract class BeltBlockEntityMixin
 
     @Unique
     private static final String
+            SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY =
+            "ThermochemicalPulley";
+
+    @Unique
+    private static final String
             SULFURICRESONANCE$HEAT_TIER_KEY =
             "CombustionBeltHeatTier";
 
@@ -52,12 +57,11 @@ public abstract class BeltBlockEntityMixin
             SULFURICRESONANCE$HEAT_SCAN_INTERVAL =
             20;
 
-    /*
-     * Used for client synchronization and as a fallback.
-     * Persistent data remains authoritative for the belt marker.
-     */
     @Unique
     private boolean sulfuricresonance$combustionBelt;
+
+    @Unique
+    private boolean sulfuricresonance$thermochemicalPulley;
 
     @Unique
     private int sulfuricresonance$heatScanTicks =
@@ -75,10 +79,6 @@ public abstract class BeltBlockEntityMixin
     @Unique
     private boolean sulfuricresonance$heatFromConduit;
 
-    /*
-     * Authoritative heat for recipe processing during the current server tick.
-     * Cached belt fields are never used as the processing permission.
-     */
     @Unique
     private CombustionBeltHeatResolver.Result
             sulfuricresonance$liveHeatThisTick =
@@ -94,6 +94,7 @@ public abstract class BeltBlockEntityMixin
         return (BlockEntity) (Object) this;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     @Override
     public boolean sulfuricresonance$isCombustionBelt() {
         CompoundTag persistentData =
@@ -128,6 +129,38 @@ public abstract class BeltBlockEntityMixin
         if (!combustionBelt) {
             sulfuricresonance$clearHeatState();
         }
+    }
+
+    @Override
+    public boolean sulfuricresonance$isThermochemicalPulley() {
+        CompoundTag persistentData =
+                sulfuricresonance$self().getPersistentData();
+
+        if (persistentData.contains(
+                SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY,
+                Tag.TAG_BYTE
+        )) {
+            return persistentData.getBoolean(
+                    SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY
+            );
+        }
+
+        return sulfuricresonance$thermochemicalPulley;
+    }
+
+    @Override
+    public void sulfuricresonance$setThermochemicalPulley(
+            boolean thermochemicalPulley
+    ) {
+        sulfuricresonance$thermochemicalPulley =
+                thermochemicalPulley;
+
+        sulfuricresonance$self()
+                .getPersistentData()
+                .putBoolean(
+                        SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY,
+                        thermochemicalPulley
+                );
     }
 
     @Override
@@ -175,14 +208,6 @@ public abstract class BeltBlockEntityMixin
                 heatFromConduit;
     }
 
-    /*
-     * Only the belt controller resolves heat. It scans the complete physical
-     * belt chain and distributes one selected source to every marked segment.
-     *
-     * This makes the Combustion Belt itself a continuous heated processing
-     * surface without allowing shafts or unrelated kinetic blocks to relay
-     * heat.
-     */
     @Inject(
             method = "tick",
             at = @At("HEAD"),
@@ -196,24 +221,21 @@ public abstract class BeltBlockEntityMixin
 
         Level level = controller.getLevel();
 
-        /*
-         * Clear first so an early return can never reuse the previous tick's
-         * valid heat result.
-         */
         sulfuricresonance$liveHeatThisTick =
                 CombustionBeltHeatResolver.Result.NONE;
 
         if (level == null
                 || level.isClientSide()
-                || !controller.isController()
-                || !sulfuricresonance$isCombustionBelt()) {
+                || !controller.isController()) {
             return;
         }
 
-        /*
-         * This live result is the only authority allowed to advance or finish
-         * a Combustion Belt recipe during this server tick.
-         */
+        if (!sulfuricresonance$repairCombustionBeltChain(
+                controller
+        )) {
+            return;
+        }
+
         CombustionBeltHeatResolver.Result result =
                 CombustionBeltHeatResolver.resolveChain(
                         level,
@@ -223,10 +245,6 @@ public abstract class BeltBlockEntityMixin
         sulfuricresonance$liveHeatThisTick =
                 result;
 
-        /*
-         * Cached fields still refresh at the lower rate for client visuals,
-         * packets, goggles/debug data, and reduced network traffic.
-         */
         sulfuricresonance$heatScanTicks++;
 
         if (sulfuricresonance$heatScanTicks
@@ -240,6 +258,99 @@ public abstract class BeltBlockEntityMixin
                 controller,
                 result
         );
+    }
+
+    @Unique
+    private static boolean
+    sulfuricresonance$repairCombustionBeltChain(
+            BeltBlockEntity controller
+    ) {
+        Level level = controller.getLevel();
+
+        if (level == null
+                || controller.beltLength <= 0) {
+            return false;
+        }
+
+        boolean combustionChain = false;
+
+        for (int segment = 0;
+             segment < controller.beltLength;
+             segment++) {
+            BlockPos segmentPosition =
+                    BeltHelper.getPositionForOffset(
+                            controller,
+                            segment
+                    );
+
+            if (!level.isLoaded(segmentPosition)) {
+                continue;
+            }
+
+            BlockEntity blockEntity =
+                    level.getBlockEntity(segmentPosition);
+
+            if (blockEntity
+                    instanceof CombustionBeltAccessor accessor
+                    && (accessor
+                    .sulfuricresonance$isCombustionBelt()
+                    || accessor
+                    .sulfuricresonance$isThermochemicalPulley())) {
+                combustionChain = true;
+                break;
+            }
+        }
+
+        if (!combustionChain) {
+            return false;
+        }
+
+        for (int segment = 0;
+             segment < controller.beltLength;
+             segment++) {
+            BlockPos segmentPosition =
+                    BeltHelper.getPositionForOffset(
+                            controller,
+                            segment
+                    );
+
+            if (!level.isLoaded(segmentPosition)) {
+                continue;
+            }
+
+            BlockEntity blockEntity =
+                    level.getBlockEntity(segmentPosition);
+
+            if (!(blockEntity
+                    instanceof BeltBlockEntity segmentBelt)
+                    || !(segmentBelt
+                    instanceof CombustionBeltAccessor accessor)) {
+                continue;
+            }
+
+            boolean pulley = segmentBelt.hasPulley();
+            boolean changed =
+                    !accessor
+                    .sulfuricresonance$isCombustionBelt()
+                    || accessor
+                    .sulfuricresonance$isThermochemicalPulley()
+                    != pulley;
+
+            if (!changed) {
+                continue;
+            }
+
+            accessor.sulfuricresonance$setCombustionBelt(
+                    true
+            );
+            accessor.sulfuricresonance$setThermochemicalPulley(
+                    pulley
+            );
+            segmentBelt.setChanged();
+            segmentBelt.sendData();
+        }
+
+        return true;
     }
 
     @Unique
@@ -332,10 +443,6 @@ public abstract class BeltBlockEntityMixin
         }
     }
 
-    /*
-     * Process exposure after Create moves the item. Segment distance and active
-     * heating time accumulate while the stack continues travelling.
-     */
     @Inject(
             method = "tick",
             at = @At("TAIL"),
@@ -355,10 +462,6 @@ public abstract class BeltBlockEntityMixin
                 sulfuricresonance$liveHeatThisTick.heatTier()
         );
 
-        /*
-         * Prevent accidental reuse if Create ever invokes an unusual partial
-         * tick path.
-         */
         sulfuricresonance$liveHeatThisTick =
                 CombustionBeltHeatResolver.Result.NONE;
     }
@@ -376,13 +479,6 @@ public abstract class BeltBlockEntityMixin
                 SULFURICRESONANCE$HEAT_SCAN_INTERVAL;
     }
 
-    /*
-     * Include the marker in normal saved/update data.
-     *
-     * The heat fields are derived cache. They are written so client packets and
-     * /data get block can inspect the live state, but server-side disk loading
-     * deliberately clears them and performs a fresh scan.
-     */
     @Inject(
             method = "write",
             at = @At("TAIL"),
@@ -397,6 +493,11 @@ public abstract class BeltBlockEntityMixin
         compound.putBoolean(
                 SULFURICRESONANCE$COMBUSTION_BELT_KEY,
                 sulfuricresonance$isCombustionBelt()
+        );
+
+        compound.putBoolean(
+                SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY,
+                sulfuricresonance$isThermochemicalPulley()
         );
 
         if (!sulfuricresonance$isCombustionBelt()) {
@@ -434,11 +535,6 @@ public abstract class BeltBlockEntityMixin
         }
     }
 
-    /*
-     * Receive the persistent belt marker on both server and client.
-     * Heat is accepted only from client update packets. A server world load
-     * clears the derived cache and scans the live sources again immediately.
-     */
     @Inject(
             method = "read",
             at = @At("TAIL"),
@@ -476,6 +572,32 @@ public abstract class BeltBlockEntityMixin
             sulfuricresonance$combustionBelt =
                     persistentData.getBoolean(
                             SULFURICRESONANCE$COMBUSTION_BELT_KEY
+                    );
+        }
+
+        if (compound.contains(
+                SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY,
+                Tag.TAG_BYTE
+        )) {
+            boolean thermochemicalPulley =
+                    compound.getBoolean(
+                            SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY
+                    );
+
+            sulfuricresonance$thermochemicalPulley =
+                    thermochemicalPulley;
+
+            persistentData.putBoolean(
+                    SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY,
+                    thermochemicalPulley
+            );
+        } else if (persistentData.contains(
+                SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY,
+                Tag.TAG_BYTE
+        )) {
+            sulfuricresonance$thermochemicalPulley =
+                    persistentData.getBoolean(
+                            SULFURICRESONANCE$THERMOCHEMICAL_PULLEY_KEY
                     );
         }
 

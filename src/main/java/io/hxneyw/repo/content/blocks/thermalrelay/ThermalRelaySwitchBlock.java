@@ -50,13 +50,7 @@ public class ThermalRelaySwitchBlock
     public static final IntegerProperty POWER =
             BlockStateProperties.POWER;
 
-    /**
-     * Player-configurable visual level:
-     * 0 = off through 5 = maximum.
-     *
-     * The corresponding Minecraft block-light values are deliberately
-     * subdued: 0, 2, 4, 6, 8, and 10.
-     */
+
     public static final IntegerProperty GLOW =
             IntegerProperty.create("glow", 0, 5);
 
@@ -124,10 +118,7 @@ public class ThermalRelaySwitchBlock
         builder.add(FACING, POWER, GLOW);
     }
 
-    /**
-     * Use this method in AllModBlocks as the block registration's lightLevel
-     * function. The relay is intentionally capped at light level 10.
-     */
+
     public static int getRelayLightLevel(
             @NotNull BlockState state
     ) {
@@ -235,10 +226,7 @@ public class ThermalRelaySwitchBlock
         }
     }
 
-    /**
-     * Shift-right-click clears this placed relay.
-     * Right-clicking with another relay item copies the network to that item.
-     */
+
     @Override
     protected @NotNull ItemInteractionResult useItemOn(
             @NotNull ItemStack stack,
@@ -294,18 +282,11 @@ public class ThermalRelaySwitchBlock
             return ItemInteractionResult.SUCCESS;
         }
 
-        /*
-         * Let held tools such as Create's wrench perform their own action.
-         * The configuration menu is intentionally empty-hand only.
-         */
         return ItemInteractionResult
                 .PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
-    /**
-     * Empty-hand right-click opens the configuration screen.
-     * Shift-right-click still disconnects the placed relay.
-     */
+
     @Override
     protected @NotNull InteractionResult useWithoutItem(
             @NotNull BlockState state,

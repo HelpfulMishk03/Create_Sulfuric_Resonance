@@ -14,10 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Keeps Flywheel's original Create belt geometry and replaces only its
- * scrolling texture for marked Combustion Belts.
- */
+
 @Mixin(
         value = BeltVisual.class,
         remap = false

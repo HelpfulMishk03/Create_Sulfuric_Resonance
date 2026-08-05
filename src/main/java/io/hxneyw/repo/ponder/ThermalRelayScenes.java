@@ -20,20 +20,6 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Complete Thermal Relay Switch tutorial.
- *
- * The scene intentionally demonstrates the real player workflow rather than
- * presenting the relay as a generic threshold switch:
- *
- * 1. Select a furnace with the relay item.
- * 2. Place the linked relay.
- * 3. Open the configuration screen.
- * 4. Configure independent heat outputs.
- * 5. Use the analog signal for automation.
- * 6. Configure and observe low-fuel warning pulses.
- * 7. Understand multi-furnace evaluation and identity invalidation.
- */
 public final class ThermalRelayScenes {
 
     private ThermalRelayScenes() {
@@ -123,13 +109,13 @@ public final class ThermalRelayScenes {
          */
         scene.world().setBlocks(
                 primaryFurnace,
-                furnaceState(HeatLevel.NONE),
+                furnaceState(),
                 false
         );
 
         scene.world().setBlocks(
                 secondaryFurnace,
-                furnaceState(HeatLevel.NONE),
+                furnaceState(),
                 false
         );
 
@@ -223,9 +209,7 @@ public final class ThermalRelayScenes {
                 .pointAt(primaryFurnaceTop);
         scene.idle(170);
 
-        /*
-         * PLACING THE LINKED RELAY
-         */
+
         scene.world().showSection(
                 relaySupport,
                 Direction.UP
@@ -289,9 +273,7 @@ public final class ThermalRelayScenes {
                 .pointAt(relayTop);
         scene.idle(230);
 
-        /*
-         * OPENING THE CONFIGURATION SCREEN
-         */
+
         scene.overlay().showControls(
                         relayTop,
                         Pointing.DOWN,
@@ -357,9 +339,7 @@ public final class ThermalRelayScenes {
                 }
         );
 
-        /*
-         * SHOWING AN AUTOMATION OUTPUT
-         */
+
         scene.world().showSection(
                 outputSupports,
                 Direction.UP
@@ -384,9 +364,7 @@ public final class ThermalRelayScenes {
                 .pointAt(wireTop);
         scene.idle(180);
 
-        /*
-         * HEATED
-         */
+
         scene.world().modifyBlock(
                 primaryFurnacePos,
                 state -> state.setValue(
@@ -410,9 +388,7 @@ public final class ThermalRelayScenes {
                 .pointAt(relayCenter);
         scene.idle(150);
 
-        /*
-         * SUPERHEATED
-         */
+
         scene.world().modifyBlock(
                 primaryFurnacePos,
                 state -> state.setValue(
@@ -436,13 +412,7 @@ public final class ThermalRelayScenes {
                 .pointAt(relayCenter);
         scene.idle(150);
 
-        /*
-         * COMBUSTION
-         *
-         * Combustion uses the same external furnace block visual as the
-         * highest Create heat appearance, while the furnace block entity
-         * retains the distinct internal RADIANT/Combustion tier.
-         */
+
         setRelayOutput(scene, relayPos, 15, 3);
         setWirePower(scene, wirePos, 15);
         scene.effects().indicateRedstone(clutchPos);
@@ -486,9 +456,7 @@ public final class ThermalRelayScenes {
                 .pointAt(clutchCenter);
         scene.idle(225);
 
-        /*
-         * LOW-FUEL MODE
-         */
+
         scene.overlay().showControls(
                         relayTop,
                         Pointing.DOWN,
@@ -543,10 +511,6 @@ public final class ThermalRelayScenes {
                 .pointAt(relayTop);
         scene.idle(235);
 
-        /*
-         * Three clear one-second warning pulses:
-         * 10 ticks on, 10 ticks off.
-         */
         for (int pulse = 0; pulse < 3; pulse++) {
             setRelayOutput(scene, relayPos, 15, 2);
             setWirePower(scene, wirePos, 15);
@@ -621,9 +585,6 @@ public final class ThermalRelayScenes {
                 .pointAt(relayCenter);
         scene.idle(265);
 
-        /*
-         * IDENTITY VALIDATION
-         */
         scene.addKeyframe();
         scene.idle(10);
 
@@ -655,9 +616,6 @@ public final class ThermalRelayScenes {
                 .pointAt(relayCenter);
         scene.idle(255);
 
-        /*
-         * DISCONNECTING AND CLOSING
-         */
         scene.overlay().showControls(
                         relayTop,
                         Pointing.DOWN,
@@ -731,14 +689,13 @@ public final class ThermalRelayScenes {
 
     private static net.minecraft.world.level.block.state.BlockState
     furnaceState(
-            @NotNull HeatLevel heatLevel
-    ) {
+            ) {
         return AllModBlocks.MOLTEN_ROTOR_FURNACE
                 .get()
                 .defaultBlockState()
                 .setValue(
                         MoltenRotorBlock.HEAT_LEVEL,
-                        heatLevel
+                        HeatLevel.NONE
                 );
     }
 }

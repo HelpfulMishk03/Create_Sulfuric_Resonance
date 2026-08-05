@@ -20,9 +20,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
-/**
- * Shows pulsing Create-style blue outlines for a held linked lamp item.
- */
+
 @EventBusSubscriber(
         modid = CreateSulfuricResonance.MODID,
         value = Dist.CLIENT

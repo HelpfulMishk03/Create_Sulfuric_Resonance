@@ -27,6 +27,8 @@ public class ModTabs {
                   output.accept(
                           Items.THERMOCHEMICAL_CONDUIT_ITEM.get()
                   );
+                  output.accept(Items.THERMOCHEMICAL_SHAFT_ITEM.get());
+                  output.accept(Items.THERMOCHEMICAL_GEARBOX_ITEM.get());
                   output.accept(Items.RUBBER_PADDING.get());
 
 // Sulfur and combustion
@@ -64,17 +66,24 @@ public class ModTabs {
 
 // Ash materials and construction
                   output.accept(Items.SPENT_ASH.get());
+
+                  output.accept(Items.WET_ASH_CERAMIC.get());
                   output.accept(Items.ASH_CERAMIC.get());
+                  output.accept(Items.ACID_RESISTANT_CERAMIC.get());
+
                   output.accept(Items.ASH_CERAMIC_CRUCIBLE_ITEM.get());
+
+                  output.accept(Items.UNFIRED_ASH_BRICK.get());
                   output.accept(Items.ASH_BRICK.get());
+
                   output.accept(Items.ASH_BRICK_BLOCK_ITEM.get());
                   output.accept(Items.ASH_BRICK_SLAB_ITEM.get());
                   output.accept(Items.ASH_BRICK_STAIRS_ITEM.get());
                   output.accept(Items.ASH_BRICK_WALL_ITEM.get());
                   output.accept(Items.ASH_BRICK_PILLAR_ITEM.get());
+
                   output.accept(Items.ASHESIL_ITEM.get());
                   output.accept(Items.ASHESIL_PANE_ITEM.get());
-
 // Pyroclastic equipment
                   output.accept(Items.PYROCLASTIC_POWDER.get());
                   output.accept(Items.PYROCLAST_BOMB.get());

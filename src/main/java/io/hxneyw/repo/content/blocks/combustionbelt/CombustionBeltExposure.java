@@ -25,16 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Continuous moving thermal exposure for Combustion Belt recipes.
- *
- * Segment distance and heated travel time accumulate simultaneously while the
- * item moves. The item is never stopped by CSR. It transforms in place during
- * movement once both recipe requirements are complete.
- *
- * Reversing over the same segment does not add exposure again until that heat
- * band's progress has fully decayed to zero.
- */
 public final class CombustionBeltExposure {
 
     private static final String MOD_ROOT_KEY =
@@ -163,7 +153,6 @@ public final class CombustionBeltExposure {
                 ExposureDocument.read(stack);
 
         boolean persistentDataChanged = false;
-        boolean inventoryChanged = false;
 
         RecipeHolder<CombustionBeltRecipe> holder =
                 findMatchingRecipe(level, stack);
@@ -173,23 +162,6 @@ public final class CombustionBeltExposure {
                         ? null
                         : holder.value();
 
-        /*
-         * Only items that currently match a Combustion Belt recipe may collect
-         * new thermal exposure. Finished outputs and unrelated transported
-         * items must stay component-clean so normal stacks can merge.
-         */
-        if (moving && recipe != null) {
-            persistentDataChanged |= addTraversedSegments(
-                    level,
-                    controller,
-                    document,
-                    previousPosition,
-                    currentPosition,
-                    gameTime,
-                    liveChainHeatTier
-            );
-        }
-
         MoltenRotorBlockEntity.RotorHeatLevel currentHeat =
                 getHeatAtCurrentPosition(
                         level,
@@ -198,16 +170,37 @@ public final class CombustionBeltExposure {
                         liveChainHeatTier
                 );
 
-        boolean validMovingHeat =
+        boolean heatMeetsRecipe =
                 recipe != null
-                        && moving
                         && recipe.minimumHeat()
                         .accepts(currentHeat);
 
-        /*
-         * Existing segment bands retain their normal grace and decay rules.
-         * Merely having enough segment distance does not hold the item still.
-         */
+        boolean validMovingHeat =
+                heatMeetsRecipe
+                        && moving;
+
+        if (recipe != null) {
+            persistentDataChanged |= document.retainOnly(
+                    recipe.minimumHeat().exposureBand()
+            );
+        }
+
+        if (validMovingHeat) {
+            persistentDataChanged |= addTraversedSegments(
+                    level,
+                    controller,
+                    document,
+                    previousPosition,
+                    currentPosition,
+                    gameTime,
+                    liveChainHeatTier,
+                    recipe.minimumHeat().exposureBand()
+            );
+        } else if (!heatMeetsRecipe) {
+            persistentDataChanged |=
+                    document.clearAllExposure();
+        }
+
         for (ExposureBand band : ExposureBand.values()) {
             BandState state = document.getBand(band);
 
@@ -261,8 +254,7 @@ public final class CombustionBeltExposure {
                         controller,
                         transported,
                         gameTime,
-                        stack,
-                        true
+                        stack
                 );
             } else {
                 persistentDataChanged |=
@@ -293,9 +285,6 @@ public final class CombustionBeltExposure {
                     requiredTicks <= 0
                             || processingTicks >= requiredTicks;
 
-            /*
-             * Transform during movement. No CSR lock or pause is used.
-             */
             if (validMovingHeat
                     && segmentRequirementMet
                     && timeRequirementMet) {
@@ -314,27 +303,27 @@ public final class CombustionBeltExposure {
                         stack
                 );
 
-                return new UpdateResult(
-                        persistentDataChanged,
-                        completed
-                );
+                if (completed) {
+                    return new UpdateResult(
+                            persistentDataChanged,
+                            true
+                    );
+                }
             }
+        }
 
-            if (moving
-                    && currentHeat
-                    != MoltenRotorBlockEntity
-                    .RotorHeatLevel.NONE
-                    && !validMovingHeat) {
+        if (isExpectedToLeaveBelt(
+                controller,
+                previousPosition,
+                currentPosition
+        )) {
+            boolean cleared =
+                    clearCombustionBeltExposure(stack);
 
-                spawnHeatingParticle(
-                        level,
-                        controller,
-                        transported,
-                        gameTime,
-                        stack,
-                        false
-                );
-            }
+            return new UpdateResult(
+                    persistentDataChanged || cleared,
+                    false
+            );
         }
 
         if (persistentDataChanged) {
@@ -343,20 +332,30 @@ public final class CombustionBeltExposure {
 
         return new UpdateResult(
                 persistentDataChanged,
-                inventoryChanged
+                false
         );
     }
 
-    /**
-     * Adds every physical segment occupied or crossed during the last movement.
-     *
-     * Example:
-     * previous position 1.2 -> current position 4.7
-     * evaluates segments 1, 2, 3, and 4.
-     *
-     * This also includes the insertion segment, fixing the previous off-by-one
-     * behavior where a ten-segment line could report only nine segments.
-     */
+    private static boolean isExpectedToLeaveBelt(
+            BeltBlockEntity controller,
+            float previousPosition,
+            float currentPosition
+    ) {
+        float movement =
+                currentPosition - previousPosition;
+
+        if (movement > MOVEMENT_EPSILON) {
+            return currentPosition + movement
+                    >= controller.beltLength - 0.5F;
+        }
+
+        if (movement < -MOVEMENT_EPSILON) {
+            return currentPosition + movement <= 0.5F;
+        }
+
+        return false;
+    }
+
     private static boolean addTraversedSegments(
             Level level,
             BeltBlockEntity controller,
@@ -365,7 +364,8 @@ public final class CombustionBeltExposure {
             float currentPosition,
             long gameTime,
             MoltenRotorBlockEntity.RotorHeatLevel
-                    liveChainHeatTier
+                    liveChainHeatTier,
+            ExposureBand requiredBand
     ) {
         if (controller.beltLength <= 0) {
             return false;
@@ -403,7 +403,8 @@ public final class CombustionBeltExposure {
                     document,
                     segment,
                     gameTime,
-                    liveChainHeatTier
+                    liveChainHeatTier,
+                    requiredBand
             );
         }
 
@@ -417,7 +418,8 @@ public final class CombustionBeltExposure {
             int segment,
             long gameTime,
             MoltenRotorBlockEntity.RotorHeatLevel
-                    liveChainHeatTier
+                    liveChainHeatTier,
+            ExposureBand requiredBand
     ) {
         SegmentHeat segmentHeat = getSegmentHeat(
                 level,
@@ -426,28 +428,17 @@ public final class CombustionBeltExposure {
                 liveChainHeatTier
         );
 
-        if (segmentHeat.heatTier()
-                == MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+        if (!requiredBand.accepts(segmentHeat.heatTier())) {
             return false;
         }
 
-        boolean changed = false;
-
-        for (ExposureBand band : ExposureBand.values()) {
-            if (!band.accepts(segmentHeat.heatTier())) {
-                continue;
-            }
-
-            changed |= document
-                    .getBand(band)
-                    .addUniqueSegment(
-                            level.dimension().location(),
-                            segmentHeat.position(),
-                            gameTime
-                    );
-        }
-
-        return changed;
+        return document
+                .getBand(requiredBand)
+                .addUniqueSegment(
+                        level.dimension().location(),
+                        segmentHeat.position(),
+                        gameTime
+                );
     }
 
     private static RecipeHolder<CombustionBeltRecipe>
@@ -503,11 +494,7 @@ public final class CombustionBeltExposure {
         return true;
     }
 
-    /**
-     * Removes only CSR's Combustion Belt exposure payload from an output stack.
-     * Other mods' and vanilla custom-data entries remain untouched.
-     */
-    private static void clearCombustionBeltExposure(
+    private static boolean clearCombustionBeltExposure(
             ItemStack stack
     ) {
         CustomData customData = stack.get(
@@ -515,7 +502,7 @@ public final class CombustionBeltExposure {
         );
 
         if (customData == null) {
-            return;
+            return false;
         }
 
         CompoundTag root = customData.copyTag();
@@ -524,11 +511,18 @@ public final class CombustionBeltExposure {
                 MOD_ROOT_KEY,
                 Tag.TAG_COMPOUND
         )) {
-            return;
+            return false;
         }
 
         CompoundTag modRoot =
                 root.getCompound(MOD_ROOT_KEY);
+
+        if (!modRoot.contains(
+                EXPOSURE_ROOT_KEY,
+                Tag.TAG_COMPOUND
+        )) {
+            return false;
+        }
 
         modRoot.remove(EXPOSURE_ROOT_KEY);
 
@@ -546,28 +540,23 @@ public final class CombustionBeltExposure {
                     CustomData.of(root)
             );
         }
+
+        return true;
     }
 
-    /**
-     * Uses Minecraft's ITEM particle so the client automatically renders
-     * fragments from the transforming input stack's own item texture.
-     *
-     * No recipe colour, tint value, or hexadecimal field is required.
-     */
     private static void spawnHeatingParticle(
             Level level,
             BeltBlockEntity controller,
             TransportedItemStack transported,
             long gameTime,
-            ItemStack particleStack,
-            boolean processing
+            ItemStack particleStack
     ) {
         if (!(level instanceof ServerLevel serverLevel)
                 || particleStack.isEmpty()) {
             return;
         }
 
-        int interval = processing ? 2 : 5;
+        int interval = 2;
 
         int particlePhase = Math.floorMod(
                 System.identityHashCode(transported),
@@ -590,11 +579,11 @@ public final class CombustionBeltExposure {
                 itemPosition.x,
                 itemPosition.y + 0.27D,
                 itemPosition.z,
-                processing ? 2 : 1,
-                processing ? 0.11D : 0.07D,
-                processing ? 0.055D : 0.035D,
-                processing ? 0.11D : 0.07D,
-                processing ? 0.012D : 0.006D
+                2,
+                0.11D,
+                0.055D,
+                0.11D,
+                0.012D
         );
     }
 
@@ -670,14 +659,6 @@ public final class CombustionBeltExposure {
         ).heatTier();
     }
 
-    /**
-     * Processing heat comes only from the live controller-level resolver result
-     * passed by BeltBlockEntityMixin for this exact server tick.
-     *
-     * Cached receivedHeatTier/source fields on individual belt entities are
-     * intentionally ignored here. They are display and synchronization state,
-     * never recipe authorization.
-     */
     private static SegmentHeat getSegmentHeat(
             Level level,
             BeltBlockEntity controller,
@@ -739,7 +720,6 @@ public final class CombustionBeltExposure {
         public String nbtKey() {
             return this.nbtKey;
         }
-
 
         public boolean accepts(
                 MoltenRotorBlockEntity.RotorHeatLevel heatTier
@@ -930,7 +910,7 @@ public final class CombustionBeltExposure {
                             )
                     );
 
-            if (currentTicks <= 0) {
+            if (currentTicks == 0) {
                 return this.clearProcessing();
             }
 
@@ -972,7 +952,7 @@ public final class CombustionBeltExposure {
                             currentTicks - decayAmount
                     );
 
-            if (nextTicks <= 0) {
+            if (nextTicks == 0) {
                 return this.clearProcessing();
             }
 
@@ -989,6 +969,29 @@ public final class CombustionBeltExposure {
             );
 
             return true;
+        }
+
+        private boolean retainOnly(
+                ExposureBand requiredBand
+        ) {
+            boolean changed = false;
+
+            for (ExposureBand band : ExposureBand.values()) {
+                if (band == requiredBand
+                        || !this.exposureRoot.contains(
+                                band.nbtKey()
+                        )) {
+                    continue;
+                }
+
+                this.exposureRoot.remove(
+                        band.nbtKey()
+                );
+
+                changed = true;
+            }
+
+            return changed;
         }
 
         private boolean clearAllExposure() {
@@ -1165,10 +1168,7 @@ public final class CombustionBeltExposure {
                     dimension,
                     segmentPosition
             )) {
-                /*
-                 * Revisiting the same qualifying segment still refreshes the
-                 * grace timer but does not increase progress.
-                 */
+
                 this.touch(gameTime);
                 return false;
             }
@@ -1292,11 +1292,6 @@ public final class CombustionBeltExposure {
                             * DECAY_INTERVAL_TICKS
             );
 
-            /*
-             * The visited list is intentionally retained until the band reaches
-             * zero. This prevents reverse-belt farming while partial exposure
-             * remains.
-             */
             this.save();
             return true;
         }

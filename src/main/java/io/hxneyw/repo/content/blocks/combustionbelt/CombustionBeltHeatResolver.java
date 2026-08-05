@@ -6,13 +6,20 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
-import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalHeatResolver;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
+import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -20,20 +27,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Resolves live heat for one complete marked Combustion Belt chain.
- *
- * Heat is accepted only through a real Create kinetic path attached to one of
- * the belt's pulley segments.
- *
- * Shafts, gearboxes, cogwheels, chain drives, clutches, gearshifts, speed
- * controllers, and compatible custom kinetic connections may exist between the
- * pulley and the Thermochemical Conduit.
- *
- * Belt block entities are never traversed. A belt may receive heat at a pulley,
- * but it cannot relay heat from one pulley to the other.
- */
 public final class CombustionBeltHeatResolver {
+    private static final int MAX_BELTS_PER_FURNACE = 10;
+    private static final int MAX_STRAIGHT_CONNECTORS_BETWEEN_BELTS = 3;
+    private static final int MAX_COMPONENT_BELTS = 256;
+    private static final long REGISTRY_STALE_TICKS = 40L;
+    private static final Map<Level, ControllerRegistry> CONTROLLER_REGISTRIES =
+            Collections.synchronizedMap(new WeakHashMap<>());
 
     private CombustionBeltHeatResolver() {
     }
@@ -42,267 +42,937 @@ public final class CombustionBeltHeatResolver {
             Level level,
             BeltBlockEntity controller
     ) {
-        if (level.isClientSide()
-                || controller == null
-                || !controller.isController()
-                || controller.beltLength <= 0) {
+        return resolveAllocatedSource(
+                level,
+                controller,
+                null
+        );
+    }
+
+    public static Result resolveRelaySource(
+            Level level,
+            BeltBlockEntity controller,
+            BlockPos excludedThermalNode
+    ) {
+        return resolveAllocatedSource(
+                level,
+                controller,
+                excludedThermalNode
+        );
+    }
+
+    private static Result resolveAllocatedSource(
+            Level level,
+            BeltBlockEntity targetController,
+            @Nullable BlockPos excludedThermalNode
+    ) {
+        if (!isValidController(level, targetController)) {
             return Result.NONE;
         }
 
-        Result bestResult = Result.NONE;
+        BlockPos targetPosition =
+                targetController.getBlockPos().immutable();
+        ControllerRegistry registry = registerController(
+                level,
+                targetController
+        );
+        Component component = discoverRegisteredComponents(
+                level,
+                registry
+        );
 
-        for (int segment = 0;
-             segment < controller.beltLength;
-             segment++) {
+        if (!component.controllers().containsKey(targetPosition)) {
+            return Result.NONE;
+        }
 
-            BlockPos pulleyPosition =
-                    BeltHelper.getPositionForOffset(
-                            controller,
-                            segment
-                    );
+        Map<BlockPos, SourceCandidate> assignments;
+        long gameTime = level.getGameTime();
 
-            if (!level.isLoaded(pulleyPosition)) {
-                continue;
+        if (excludedThermalNode == null) {
+            if (registry.allocationTick != gameTime) {
+                registry.assignments = allocateSources(
+                        level,
+                        component,
+                        null,
+                        null
+                );
+                registry.allocationTick = gameTime;
             }
-
-            BlockEntity blockEntity =
-                    level.getBlockEntity(pulleyPosition);
-
-            if (!(blockEntity
-                    instanceof BeltBlockEntity pulley)
-                    || !pulley.hasPulley()
-                    || !(pulley
-                    instanceof CombustionBeltAccessor accessor)
-                    || !accessor
-                    .sulfuricresonance$isCombustionBelt()) {
-                continue;
-            }
-
-            bestResult = chooseBetterResult(
-                    bestResult,
-                    resolveFromPulley(
-                            level,
-                            pulley
-                    )
+            assignments = registry.assignments;
+        } else {
+            assignments = allocateSources(
+                    level,
+                    component,
+                    targetPosition,
+                    excludedThermalNode
             );
         }
 
-        return bestResult;
-    }
+        SourceCandidate assigned = assignments.get(targetPosition);
 
-    /**
-     * Starts at one real belt pulley, exits through its actual shaft connection,
-     * and searches only the physically attached non-belt kinetic branch.
-     */
-    private static Result resolveFromPulley(
-            Level level,
-            BeltBlockEntity pulley
-    ) {
-        if (!pulley.hasNetwork()
-                || pulley.network == null) {
+        if (assigned == null) {
             return Result.NONE;
         }
 
-        Long targetNetworkId = pulley.network;
+        return new Result(
+                assigned.heatTier(),
+                assigned.furnacePosition(),
+                assigned.fromConduit(),
+                assigned.distance()
+        );
+    }
 
-        ArrayDeque<KineticBlockEntity> pending =
-                new ArrayDeque<>();
+    private static ControllerRegistry registerController(
+            Level level,
+            BeltBlockEntity controller
+    ) {
+        ControllerRegistry registry;
 
-        Set<BlockPos> visited =
-                new HashSet<>();
-
-        visited.add(pulley.getBlockPos());
-
-        /*
-         * A belt is allowed only as the starting receiver. Every neighbouring
-         * BeltBlockEntity is rejected, preventing traversal across the belt.
-         */
-        for (KineticBlockEntity neighbour
-                : getConnectedNeighbours(
-                        level,
-                        pulley,
-                        targetNetworkId
-                )) {
-
-            if (neighbour instanceof BeltBlockEntity) {
-                continue;
-            }
-
-            if (visited.add(neighbour.getBlockPos())) {
-                pending.addLast(neighbour);
-            }
+        synchronized (CONTROLLER_REGISTRIES) {
+            registry = CONTROLLER_REGISTRIES.computeIfAbsent(
+                    level,
+                    ignored -> new ControllerRegistry()
+            );
         }
 
-        Result bestResult = Result.NONE;
+        long gameTime = level.getGameTime();
+        BlockPos position = controller.getBlockPos().immutable();
+        RegisteredController previous = registry.controllers.put(
+                position,
+                new RegisteredController(controller, gameTime)
+        );
 
-        while (!pending.isEmpty()) {
-            KineticBlockEntity current =
-                    pending.removeFirst();
+        if (previous == null
+                || previous.controller() != controller) {
+            registry.allocationTick = Long.MIN_VALUE;
+        }
 
-            if (current.isRemoved()
-                    || current.getLevel() != level
-                    || !targetNetworkId.equals(
-                    current.network
-            )
-                    || current instanceof BeltBlockEntity) {
+        boolean removed = registry.controllers.entrySet().removeIf(
+                entry -> isStaleController(
+                        level,
+                        entry.getKey(),
+                        entry.getValue(),
+                        gameTime
+                )
+        );
+
+        if (removed) {
+            registry.allocationTick = Long.MIN_VALUE;
+        }
+
+        return registry;
+    }
+
+    private static boolean isStaleController(
+            Level level,
+            BlockPos position,
+            RegisteredController registered,
+            long gameTime
+    ) {
+        if (gameTime - registered.lastSeenTick()
+                > REGISTRY_STALE_TICKS) {
+            return true;
+        }
+
+        if (!level.isLoaded(position)) {
+            return false;
+        }
+
+        BlockEntity blockEntity = level.getBlockEntity(position);
+        return blockEntity != registered.controller()
+                || !isValidController(
+                level,
+                registered.controller()
+        );
+    }
+
+    private static Component discoverRegisteredComponents(
+            Level level,
+            ControllerRegistry registry
+    ) {
+        Map<BlockPos, BeltBlockEntity> controllers =
+                new LinkedHashMap<>();
+        Map<BlockPos, Map<BlockPos, Long>> edges =
+                new LinkedHashMap<>();
+
+        List<RegisteredController> registeredControllers =
+                List.copyOf(registry.controllers.values());
+
+        for (RegisteredController registered
+                : registeredControllers) {
+            BeltBlockEntity controller = registered.controller();
+
+            if (!isValidController(level, controller)) {
                 continue;
             }
 
-            if (current
-                    instanceof ThermochemicalConduitBlockEntity
-                    conduit) {
+            Component component = discoverComponent(
+                    level,
+                    controller
+            );
 
-                MoltenRotorBlockEntity.RotorHeatLevel
-                        liveHeatTier =
-                        conduit.getLiveValidatedHeatTier();
+            for (Map.Entry<BlockPos, BeltBlockEntity> entry
+                    : component.controllers().entrySet()) {
+                controllers.putIfAbsent(
+                        entry.getKey(),
+                        entry.getValue()
+                );
+                RegisteredController previous =
+                        registry.controllers.putIfAbsent(
+                                entry.getKey(),
+                                new RegisteredController(
+                                        entry.getValue(),
+                                        level.getGameTime()
+                                )
+                        );
 
-                if (liveHeatTier
-                        != MoltenRotorBlockEntity
-                        .RotorHeatLevel.NONE) {
-
-                    bestResult = chooseBetterResult(
-                            bestResult,
-                            new Result(
-                                    liveHeatTier,
-                                    conduit.getBlockPos()
-                                            .immutable(),
-                                    true,
-                                    distanceSquared(
-                                            pulley.getBlockPos(),
-                                            conduit.getBlockPos()
-                                    )
-                            )
-                    );
+                if (previous == null) {
+                    registry.allocationTick = Long.MIN_VALUE;
                 }
             }
 
-            for (KineticBlockEntity neighbour
-                    : getConnectedNeighbours(
-                            level,
-                            current,
-                            targetNetworkId
-                    )) {
+            for (Map.Entry<BlockPos, Map<BlockPos, Long>> edgeEntry
+                    : component.edges().entrySet()) {
+                Map<BlockPos, Long> merged = edges.computeIfAbsent(
+                        edgeEntry.getKey(),
+                        ignored -> new LinkedHashMap<>()
+                );
 
-                if (neighbour instanceof BeltBlockEntity) {
+                for (Map.Entry<BlockPos, Long> neighbour
+                        : edgeEntry.getValue().entrySet()) {
+                    merged.merge(
+                            neighbour.getKey(),
+                            neighbour.getValue(),
+                            Math::min
+                    );
+                }
+            }
+        }
+
+        return new Component(controllers, edges);
+    }
+
+    private static Component discoverComponent(
+            Level level,
+            BeltBlockEntity startController
+    ) {
+        Map<BlockPos, BeltBlockEntity> controllers =
+                new LinkedHashMap<>();
+        Map<BlockPos, Map<BlockPos, Long>> edges =
+                new LinkedHashMap<>();
+        Queue<BlockPos> pending = new ArrayDeque<>();
+
+        BlockPos startPosition =
+                startController.getBlockPos().immutable();
+
+        controllers.put(startPosition, startController);
+        edges.put(startPosition, new LinkedHashMap<>());
+        pending.add(startPosition);
+
+        while (!pending.isEmpty()) {
+            if (controllers.size() > MAX_COMPONENT_BELTS) {
+                return Component.EMPTY;
+            }
+
+            BlockPos currentPosition = pending.remove();
+            BeltBlockEntity currentController =
+                    controllers.get(currentPosition);
+
+            Map<BlockPos, Long> neighbours =
+                    discoverNeighbours(
+                            level,
+                            currentController
+                    );
+
+            for (Map.Entry<BlockPos, Long> entry
+                    : neighbours.entrySet()) {
+                BlockPos neighbourPosition = entry.getKey();
+                long distance = entry.getValue();
+                BeltBlockEntity neighbourController =
+                        controllerAt(
+                                level,
+                                neighbourPosition
+                        );
+
+                if (neighbourController == null) {
                     continue;
                 }
 
-                if (visited.add(neighbour.getBlockPos())) {
-                    pending.addLast(neighbour);
+                edges.computeIfAbsent(
+                        currentPosition,
+                        ignored -> new LinkedHashMap<>()
+                ).merge(
+                        neighbourPosition,
+                        distance,
+                        Math::min
+                );
+
+                edges.computeIfAbsent(
+                        neighbourPosition,
+                        ignored -> new LinkedHashMap<>()
+                ).merge(
+                        currentPosition,
+                        distance,
+                        Math::min
+                );
+
+                if (!controllers.containsKey(neighbourPosition)) {
+                    controllers.put(
+                            neighbourPosition,
+                            neighbourController
+                    );
+                    pending.add(neighbourPosition);
                 }
             }
         }
 
-        return bestResult;
+        return new Component(controllers, edges);
     }
 
-    /**
-     * Reproduces Create's kinetic neighbour discovery using its public
-     * connection test. This supports standard adjacent shaft connections plus
-     * diagonal and custom propagation locations supplied by kinetic blocks.
-     */
-    private static List<KineticBlockEntity>
-    getConnectedNeighbours(
+    private static Map<BlockPos, Long> discoverNeighbours(
             Level level,
-            KineticBlockEntity current,
-            Long targetNetworkId
+            BeltBlockEntity controller
     ) {
-        List<BlockPos> potentialLocations =
-                new ArrayList<>();
+        Map<BlockPos, Long> neighbours =
+                new LinkedHashMap<>();
 
-        BlockPos currentPosition =
-                current.getBlockPos();
+        for (BlockPos targetPulley : pulleyPositions(
+                level,
+                controller
+        )) {
+            for (Direction direction : Direction.values()) {
+                addDirectNeighbour(
+                        level,
+                        controller,
+                        targetPulley,
+                        direction,
+                        neighbours
+                );
 
-        for (Direction direction : Direction.values()) {
-            BlockPos neighbourPosition =
-                    currentPosition.relative(direction);
+                addStraightNeighbours(
+                        level,
+                        controller,
+                        targetPulley,
+                        direction,
+                        neighbours
+                );
 
-            if (level.isLoaded(neighbourPosition)) {
-                potentialLocations.add(
-                        neighbourPosition
+                addTurnNeighbours(
+                        level,
+                        controller,
+                        targetPulley,
+                        direction,
+                        neighbours
+                );
+
+                addInheritedBeltNeighbour(
+                        level,
+                        controller,
+                        targetPulley,
+                        direction,
+                        neighbours
                 );
             }
         }
 
-        BlockState currentState =
-                current.getBlockState();
+        return neighbours;
+    }
 
-        if (currentState.getBlock()
-                instanceof IRotate rotatingBlock) {
+    private static void addInheritedBeltNeighbour(
+            Level level,
+            BeltBlockEntity targetController,
+            BlockPos targetPulley,
+            Direction direction,
+            Map<BlockPos, Long> neighbours
+    ) {
+        BlockPos interfacePosition =
+                targetPulley.relative(direction);
 
-            potentialLocations =
-                    current.addPropagationLocations(
-                            rotatingBlock,
-                            currentState,
-                            potentialLocations
-                    );
+        if (!level.isLoaded(interfacePosition)
+                || lacksReciprocalShaftConnection(
+                level,
+                targetPulley,
+                interfacePosition,
+                direction
+        )) {
+            return;
         }
 
-        Set<BlockPos> uniqueLocations =
-                new LinkedHashSet<>(
-                        potentialLocations
+        BlockState interfaceState =
+                level.getBlockState(interfacePosition);
+
+        if (!ThermochemicalHeatResolver
+                .isBeltHeatInterface(interfaceState)) {
+            return;
+        }
+
+        ThermochemicalHeatResolver.InheritedBeltSource
+                inheritedSource =
+                ThermochemicalHeatResolver
+                        .findInheritedBeltSource(
+                                level,
+                                interfacePosition
+                        );
+
+        if (inheritedSource == null) {
+            return;
+        }
+
+        BeltBlockEntity sourceController =
+                controllerAt(
+                        level,
+                        inheritedSource.controllerPosition()
                 );
 
-        List<KineticBlockEntity> connected =
-                new ArrayList<>();
+        if (sourceController == null
+                || sourceController.getBlockPos().equals(
+                targetController.getBlockPos()
+        )) {
+            return;
+        }
 
-        for (BlockPos neighbourPosition
-                : uniqueLocations) {
+        neighbours.merge(
+                sourceController.getBlockPos().immutable(),
+                saturatedAdd(
+                        inheritedSource.distance(),
+                        1L
+                ),
+                Math::min
+        );
+    }
 
-            if (!level.isLoaded(neighbourPosition)) {
+    private static void addDirectNeighbour(
+            Level level,
+            BeltBlockEntity targetController,
+            BlockPos targetPulley,
+            Direction direction,
+            Map<BlockPos, Long> neighbours
+    ) {
+        BlockPos sourcePulley =
+                targetPulley.relative(direction);
+
+        if (!isMarkedPulley(level, sourcePulley)
+                || lacksReciprocalShaftConnection(
+                level,
+                targetPulley,
+                sourcePulley,
+                direction
+        )) {
+            return;
+        }
+
+        addNeighbourController(
+                level,
+                targetController,
+                sourcePulley,
+                1L,
+                neighbours
+        );
+    }
+
+    private static void addStraightNeighbours(
+            Level level,
+            BeltBlockEntity targetController,
+            BlockPos targetPulley,
+            Direction direction,
+            Map<BlockPos, Long> neighbours
+    ) {
+        BlockPos previousPosition = targetPulley;
+
+        for (int connectorCount = 1;
+             connectorCount
+                     <= MAX_STRAIGHT_CONNECTORS_BETWEEN_BELTS;
+             connectorCount++) {
+            BlockPos connectorPosition =
+                    connectedBridgeConnector(
+                            level,
+                            previousPosition,
+                            direction
+                    );
+
+            if (connectorPosition == null) {
+                return;
+            }
+
+            BlockPos sourcePulley =
+                    connectorPosition.relative(direction);
+
+            if (isMarkedPulley(level, sourcePulley)
+                    && !lacksReciprocalShaftConnection(
+                    level,
+                    connectorPosition,
+                    sourcePulley,
+                    direction
+            )) {
+                addNeighbourController(
+                        level,
+                        targetController,
+                        sourcePulley,
+                        connectorCount + 1L,
+                        neighbours
+                );
+            }
+
+            previousPosition = connectorPosition;
+        }
+    }
+
+    private static void addTurnNeighbours(
+            Level level,
+            BeltBlockEntity targetController,
+            BlockPos targetPulley,
+            Direction directionToConnector,
+            Map<BlockPos, Long> neighbours
+    ) {
+        BlockPos connectorPosition =
+                connectedBridgeConnector(
+                        level,
+                        targetPulley,
+                        directionToConnector
+                );
+
+        if (connectorPosition == null) {
+            return;
+        }
+
+        for (Direction directionToSourceBelt
+                : Direction.values()) {
+            if (directionToSourceBelt
+                    == directionToConnector
+                    || directionToSourceBelt
+                    == directionToConnector.getOpposite()) {
                 continue;
             }
 
-            BlockEntity blockEntity =
-                    level.getBlockEntity(
-                            neighbourPosition
+            BlockPos sourcePulley =
+                    connectorPosition.relative(
+                            directionToSourceBelt
                     );
 
-            if (!(blockEntity
-                    instanceof KineticBlockEntity neighbour)
-                    || neighbour.isRemoved()
-                    || neighbour.getLevel() != level
-                    || !targetNetworkId.equals(
-                    neighbour.network
+            if (!isMarkedPulley(level, sourcePulley)
+                    || lacksReciprocalShaftConnection(
+                    level,
+                    connectorPosition,
+                    sourcePulley,
+                    directionToSourceBelt
             )) {
                 continue;
             }
 
-            boolean connectedEitherWay =
-                    RotationPropagator.isConnected(
-                            current,
-                            neighbour
+            addNeighbourController(
+                    level,
+                    targetController,
+                    sourcePulley,
+                    2L,
+                    neighbours
+            );
+        }
+    }
+
+    private static @Nullable BlockPos connectedBridgeConnector(
+            Level level,
+            BlockPos origin,
+            Direction direction
+    ) {
+        BlockPos connectorPosition =
+                origin.relative(direction);
+
+        if (!level.isLoaded(connectorPosition)) {
+            return null;
+        }
+
+        BlockState connectorState =
+                level.getBlockState(connectorPosition);
+
+        if (!ThermochemicalHeatResolver.isBridgeConnector(
+                connectorState
+        )) {
+            return null;
+        }
+
+        return lacksReciprocalShaftConnection(
+                level,
+                origin,
+                connectorPosition,
+                direction
+        )
+                ? null
+                : connectorPosition;
+    }
+
+    private static void addNeighbourController(
+            Level level,
+            BeltBlockEntity targetController,
+            BlockPos sourcePulley,
+            long distance,
+            Map<BlockPos, Long> neighbours
+    ) {
+        BeltBlockEntity sourceController =
+                findControllerForPulley(
+                        level,
+                        sourcePulley
+                );
+
+        if (sourceController == null) {
+            return;
+        }
+
+        BlockPos sourcePosition =
+                sourceController.getBlockPos().immutable();
+
+        if (sourcePosition.equals(
+                targetController.getBlockPos()
+        )) {
+            return;
+        }
+
+        neighbours.merge(
+                sourcePosition,
+                distance,
+                Math::min
+        );
+    }
+
+    private static Map<BlockPos, SourceCandidate> allocateSources(
+            Level level,
+            Component component,
+            @Nullable BlockPos excludedControllerPosition,
+            @Nullable BlockPos excludedThermalNode
+    ) {
+        Map<BlockPos, Map<BlockPos, SourceCandidate>>
+                directSources = new LinkedHashMap<>();
+
+        for (Map.Entry<BlockPos, BeltBlockEntity> entry
+                : component.controllers().entrySet()) {
+            directSources.put(
+                    entry.getKey(),
+                    resolveDirectSources(
+                            level,
+                            entry.getValue(),
+                            excludedControllerPosition != null
+                                    && excludedControllerPosition.equals(
+                                    entry.getKey()
+                            )
+                                    ? excludedThermalNode
+                                    : null
                     )
-                            || RotationPropagator.isConnected(
-                                    neighbour,
-                                    current
+            );
+        }
+
+        Map<BlockPos, Map<BlockPos, SourceCandidate>>
+                candidatesByBelt = new LinkedHashMap<>();
+
+        for (Map.Entry<BlockPos, Map<BlockPos, SourceCandidate>>
+                sourceEntry : directSources.entrySet()) {
+            if (sourceEntry.getValue().isEmpty()) {
+                continue;
+            }
+
+            Map<BlockPos, Long> graphDistances =
+                    shortestDistances(
+                            sourceEntry.getKey(),
+                            component.edges()
+                    );
+
+            for (Map.Entry<BlockPos, Long> distanceEntry
+                    : graphDistances.entrySet()) {
+                BlockPos beltPosition = distanceEntry.getKey();
+                long beltDistance = distanceEntry.getValue();
+
+                for (SourceCandidate directSource
+                        : sourceEntry.getValue().values()) {
+                    SourceCandidate candidate =
+                            new SourceCandidate(
+                                    directSource.furnacePosition(),
+                                    directSource.heatTier(),
+                                    directSource.fromConduit()
+                                            || beltDistance > 0L,
+                                    saturatedAdd(
+                                            directSource.distance(),
+                                            beltDistance
+                                    )
                             );
 
-            if (connectedEitherWay) {
-                connected.add(neighbour);
+                    candidatesByBelt
+                            .computeIfAbsent(
+                                    beltPosition,
+                                    ignored -> new LinkedHashMap<>()
+                            )
+                            .merge(
+                                    candidate.furnacePosition(),
+                                    candidate,
+                                    CombustionBeltHeatResolver
+                                            ::chooseBetterSourceCandidate
+                            );
+                }
             }
         }
 
-        return connected;
+        List<AllocationCandidate> allocationCandidates =
+                createAllocationCandidates(candidatesByBelt);
+
+        allocationCandidates.sort(
+                Comparator
+                        .comparingLong(
+                                (AllocationCandidate candidate) ->
+                                        candidate.source().distance()
+                        )
+                        .thenComparing(
+                                Comparator.comparingInt(
+                                        (AllocationCandidate candidate) ->
+                                                candidate.source()
+                                                        .heatTier().rank
+                                ).reversed()
+                        )
+                        .thenComparingLong(
+                                candidate -> candidate.source()
+                                        .furnacePosition().asLong()
+                        )
+                        .thenComparingLong(
+                                candidate -> candidate.beltPosition()
+                                        .asLong()
+                        )
+        );
+
+        return assignSources(allocationCandidates);
     }
 
-    private static Result chooseBetterResult(
-            Result current,
-            Result candidate
+    private static List<AllocationCandidate>
+    createAllocationCandidates(
+            Map<BlockPos, Map<BlockPos, SourceCandidate>>
+                    candidatesByBelt
     ) {
-        if (candidate == null
-                || candidate.heatTier()
-                == MoltenRotorBlockEntity
-                .RotorHeatLevel.NONE
-                || candidate.sourcePosition() == null) {
-            return current;
+        List<AllocationCandidate> allocationCandidates =
+                new ArrayList<>();
+
+        for (Map.Entry<BlockPos, Map<BlockPos, SourceCandidate>>
+                beltEntry : candidatesByBelt.entrySet()) {
+            for (SourceCandidate candidate
+                    : beltEntry.getValue().values()) {
+                allocationCandidates.add(
+                        new AllocationCandidate(
+                                beltEntry.getKey(),
+                                candidate
+                        )
+                );
+            }
         }
 
-        if (current.heatTier()
-                == MoltenRotorBlockEntity
-                .RotorHeatLevel.NONE
-                || current.sourcePosition() == null) {
+        return allocationCandidates;
+    }
+
+    private static Map<BlockPos, SourceCandidate> assignSources(
+            List<AllocationCandidate> allocationCandidates
+    ) {
+        Map<BlockPos, Integer> furnaceLoads = new HashMap<>();
+        Map<BlockPos, SourceCandidate> assignments =
+                new LinkedHashMap<>();
+
+        for (AllocationCandidate allocation
+                : allocationCandidates) {
+            if (assignments.containsKey(
+                    allocation.beltPosition()
+            )) {
+                continue;
+            }
+
+            BlockPos furnacePosition =
+                    allocation.source().furnacePosition();
+            int currentLoad = furnaceLoads.getOrDefault(
+                    furnacePosition,
+                    0
+            );
+
+            if (currentLoad >= MAX_BELTS_PER_FURNACE) {
+                continue;
+            }
+
+            assignments.put(
+                    allocation.beltPosition(),
+                    allocation.source()
+            );
+            furnaceLoads.put(
+                    furnacePosition,
+                    currentLoad + 1
+            );
+        }
+
+        return assignments;
+    }
+
+    private static Map<BlockPos, SourceCandidate>
+    resolveDirectSources(
+            Level level,
+            BeltBlockEntity controller,
+            @Nullable BlockPos excludedThermalNode
+    ) {
+        Map<BlockPos, SourceCandidate> sources =
+                new LinkedHashMap<>();
+
+        for (BlockPos pulley : pulleyPositions(
+                level,
+                controller
+        )) {
+            for (Direction direction : Direction.values()) {
+                BlockPos sourcePosition =
+                        pulley.relative(direction);
+
+                if (excludedThermalNode != null
+                        && excludedThermalNode.equals(
+                        sourcePosition
+                )) {
+                    continue;
+                }
+
+                if (!level.isLoaded(sourcePosition)
+                        || lacksReciprocalShaftConnection(
+                        level,
+                        pulley,
+                        sourcePosition,
+                        direction
+                )) {
+                    continue;
+                }
+
+                BlockEntity blockEntity =
+                        level.getBlockEntity(sourcePosition);
+
+                if (blockEntity
+                        instanceof MoltenRotorBlockEntity furnace) {
+                    if (furnace.getCurrentHeatTier()
+                            == MoltenRotorBlockEntity
+                            .RotorHeatLevel.NONE) {
+                        continue;
+                    }
+
+                    SourceCandidate candidate =
+                            new SourceCandidate(
+                                    sourcePosition.immutable(),
+                                    furnace.getCurrentHeatTier(),
+                                    false,
+                                    1L
+                            );
+
+                    sources.merge(
+                            candidate.furnacePosition(),
+                            candidate,
+                            CombustionBeltHeatResolver
+                                    ::chooseBetterSourceCandidate
+                    );
+                    continue;
+                }
+
+                BlockState sourceState =
+                        level.getBlockState(sourcePosition);
+
+                if (!ThermochemicalHeatResolver
+                        .isBeltHeatInterface(sourceState)) {
+                    continue;
+                }
+
+                ThermochemicalHeatResolver.Result thermalResult =
+                        ThermochemicalHeatResolver.resolveNetworkOnly(
+                                level,
+                                sourcePosition
+                        );
+
+                if (thermalResult.heatTier()
+                        == MoltenRotorBlockEntity.RotorHeatLevel.NONE
+                        || thermalResult.sourcePos() == null) {
+                    continue;
+                }
+
+                SourceCandidate candidate =
+                        new SourceCandidate(
+                                thermalResult.sourcePos().immutable(),
+                                thermalResult.heatTier(),
+                                true,
+                                saturatedAdd(
+                                        thermalResult.totalDistance(),
+                                        1L
+                                )
+                        );
+
+                sources.merge(
+                        candidate.furnacePosition(),
+                        candidate,
+                        CombustionBeltHeatResolver
+                                ::chooseBetterSourceCandidate
+                );
+            }
+        }
+
+        return sources;
+    }
+
+    private static Map<BlockPos, Long> shortestDistances(
+            BlockPos start,
+            Map<BlockPos, Map<BlockPos, Long>> edges
+    ) {
+        Map<BlockPos, Long> distances = new HashMap<>();
+        PriorityQueue<PathStep> pending =
+                new PriorityQueue<>(
+                        Comparator.comparingLong(PathStep::distance)
+                );
+
+        distances.put(start, 0L);
+        pending.add(new PathStep(start, 0L));
+
+        while (!pending.isEmpty()) {
+            PathStep step = pending.remove();
+            long knownDistance = distances.getOrDefault(
+                    step.position(),
+                    Long.MAX_VALUE
+            );
+
+            if (step.distance() != knownDistance) {
+                continue;
+            }
+
+            for (Map.Entry<BlockPos, Long> neighbour
+                    : edges.getOrDefault(
+                    step.position(),
+                    Map.of()
+            ).entrySet()) {
+                long nextDistance = saturatedAdd(
+                        step.distance(),
+                        neighbour.getValue()
+                );
+                long oldDistance = distances.getOrDefault(
+                        neighbour.getKey(),
+                        Long.MAX_VALUE
+                );
+
+                if (nextDistance >= oldDistance) {
+                    continue;
+                }
+
+                distances.put(
+                        neighbour.getKey(),
+                        nextDistance
+                );
+                pending.add(
+                        new PathStep(
+                                neighbour.getKey(),
+                                nextDistance
+                        )
+                );
+            }
+        }
+
+        return distances;
+    }
+
+    private static SourceCandidate chooseBetterSourceCandidate(
+            SourceCandidate current,
+            SourceCandidate candidate
+    ) {
+        if (candidate.distance() < current.distance()) {
             return candidate;
+        }
+
+        if (candidate.distance() > current.distance()) {
+            return current;
         }
 
         if (candidate.heatTier().rank
@@ -315,38 +985,203 @@ public final class CombustionBeltHeatResolver {
             return current;
         }
 
-        if (candidate.heatTier().displayTemp
-                > current.heatTier().displayTemp) {
-            return candidate;
-        }
-
-        if (candidate.heatTier().displayTemp
-                < current.heatTier().displayTemp) {
-            return current;
-        }
-
-        return candidate.distanceSquared()
-                < current.distanceSquared()
+        return candidate.furnacePosition().asLong()
+                < current.furnacePosition().asLong()
                 ? candidate
                 : current;
     }
 
-    private static long distanceSquared(
-            BlockPos first,
-            BlockPos second
+    private static long saturatedAdd(
+            long first,
+            long second
     ) {
-        long deltaX =
-                (long) first.getX() - second.getX();
+        if (first == Long.MAX_VALUE
+                || second > Long.MAX_VALUE - first) {
+            return Long.MAX_VALUE;
+        }
 
-        long deltaY =
-                (long) first.getY() - second.getY();
+        return first + second;
+    }
 
-        long deltaZ =
-                (long) first.getZ() - second.getZ();
+    private static @Nullable BeltBlockEntity
+    findControllerForPulley(
+            Level level,
+            BlockPos pulley
+    ) {
+        if (!isMarkedPulley(level, pulley)) {
+            return null;
+        }
 
-        return deltaX * deltaX
-                + deltaY * deltaY
-                + deltaZ * deltaZ;
+        BeltBlockEntity controller =
+                BeltHelper.getControllerBE(
+                        level,
+                        pulley
+                );
+
+        return isValidController(level, controller)
+                ? controller
+                : null;
+    }
+
+    private static @Nullable BeltBlockEntity controllerAt(
+            Level level,
+            BlockPos controllerPosition
+    ) {
+        if (!level.isLoaded(controllerPosition)) {
+            return null;
+        }
+
+        BlockEntity blockEntity =
+                level.getBlockEntity(controllerPosition);
+
+        return blockEntity instanceof BeltBlockEntity controller
+                && isValidController(level, controller)
+                ? controller
+                : null;
+    }
+
+    private static Set<BlockPos> pulleyPositions(
+            Level level,
+            BeltBlockEntity controller
+    ) {
+        Set<BlockPos> pulleys = new LinkedHashSet<>();
+
+        for (int offset = 0;
+             offset < controller.beltLength;
+             offset++) {
+            BlockPos position =
+                    BeltHelper.getPositionForOffset(
+                            controller,
+                            offset
+                    );
+
+            if (isMarkedPulley(level, position)) {
+                pulleys.add(position.immutable());
+            }
+        }
+
+        return pulleys;
+    }
+
+    private static boolean isMarkedPulley(
+            Level level,
+            BlockPos position
+    ) {
+        if (!level.isLoaded(position)) {
+            return false;
+        }
+
+        BlockEntity blockEntity =
+                level.getBlockEntity(position);
+
+        return blockEntity instanceof BeltBlockEntity belt
+                && belt.hasPulley()
+                && blockEntity
+                instanceof CombustionBeltAccessor accessor
+                && accessor.sulfuricresonance$isCombustionBelt()
+                && accessor.sulfuricresonance$isThermochemicalPulley();
+    }
+
+    private static boolean lacksReciprocalShaftConnection(
+            Level level,
+            BlockPos firstPosition,
+            BlockPos secondPosition,
+            Direction direction
+    ) {
+        BlockState firstState =
+                level.getBlockState(firstPosition);
+        BlockState secondState =
+                level.getBlockState(secondPosition);
+
+        if (firstState.getBlock()
+                instanceof IRotate firstRotate
+                && secondState.getBlock()
+                instanceof IRotate secondRotate
+                && firstRotate.hasShaftTowards(
+                level,
+                firstPosition,
+                firstState,
+                direction
+        )
+                && secondRotate.hasShaftTowards(
+                level,
+                secondPosition,
+                secondState,
+                direction.getOpposite()
+        )) {
+            return false;
+        }
+
+        BlockEntity firstEntity =
+                level.getBlockEntity(firstPosition);
+        BlockEntity secondEntity =
+                level.getBlockEntity(secondPosition);
+
+        return !(firstEntity
+                instanceof KineticBlockEntity firstKinetic
+                && secondEntity
+                instanceof KineticBlockEntity secondKinetic
+                && (RotationPropagator.isConnected(
+                firstKinetic,
+                secondKinetic
+        ) || RotationPropagator.isConnected(
+                secondKinetic,
+                firstKinetic
+        )));
+    }
+
+    private static boolean isValidController(
+            Level level,
+            @Nullable BeltBlockEntity controller
+    ) {
+        return !level.isClientSide()
+                && controller != null
+                && controller.isController()
+                && controller.beltLength > 0;
+    }
+
+
+    private static final class ControllerRegistry {
+        private final Map<BlockPos, RegisteredController> controllers =
+                new LinkedHashMap<>();
+        private long allocationTick = Long.MIN_VALUE;
+        private Map<BlockPos, SourceCandidate> assignments = Map.of();
+    }
+
+    private record RegisteredController(
+            BeltBlockEntity controller,
+            long lastSeenTick
+    ) {
+    }
+
+    private record Component(
+            Map<BlockPos, BeltBlockEntity> controllers,
+            Map<BlockPos, Map<BlockPos, Long>> edges
+    ) {
+        private static final Component EMPTY = new Component(
+                Map.of(),
+                Map.of()
+        );
+    }
+
+    private record SourceCandidate(
+            BlockPos furnacePosition,
+            MoltenRotorBlockEntity.RotorHeatLevel heatTier,
+            boolean fromConduit,
+            long distance
+    ) {
+    }
+
+    private record AllocationCandidate(
+            BlockPos beltPosition,
+            SourceCandidate source
+    ) {
+    }
+
+    private record PathStep(
+            BlockPos position,
+            long distance
+    ) {
     }
 
     public record Result(
@@ -355,13 +1190,11 @@ public final class CombustionBeltHeatResolver {
             boolean fromConduit,
             long distanceSquared
     ) {
-        public static final Result NONE =
-                new Result(
-                        MoltenRotorBlockEntity
-                                .RotorHeatLevel.NONE,
-                        null,
-                        false,
-                        Long.MAX_VALUE
-                );
+        public static final Result NONE = new Result(
+                MoltenRotorBlockEntity.RotorHeatLevel.NONE,
+                null,
+                false,
+                Long.MAX_VALUE
+        );
     }
 }

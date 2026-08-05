@@ -18,6 +18,5 @@ public class ModEntities {
 
    public static void register(IEventBus eventBus) {
       ENTITY_TYPES.register(eventBus);
-      CreateSulfuricResonance.LOGGER.info("Entity types registered for Sulfuric Resonance");
    }
 }

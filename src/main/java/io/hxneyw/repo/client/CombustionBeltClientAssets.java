@@ -6,12 +6,6 @@ import net.createmod.catnip.render.SpriteShiftEntry;
 import net.createmod.catnip.render.SpriteShifter;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Client-side scrolling textures for marked Combustion Belts.
- * <p>
- * Create supplies the installed belt geometry. Sulfuric Resonance supplies
- * the replacement belt textures.
- */
 public final class CombustionBeltClientAssets {
 
     public static final SpriteShiftEntry BELT =

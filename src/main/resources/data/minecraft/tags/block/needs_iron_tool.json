@@ -1,6 +1,9 @@
 {
   "replace": false,
   "values": [
-    "sulfuricresonance:molten_rotor_furnace"
+    "sulfuricresonance:molten_rotor_furnace",
+    "sulfuricresonance:thermochemical_conduit",
+    "sulfuricresonance:thermochemical_shaft",
+    "sulfuricresonance:thermochemical_gearbox"
   ]
 }

@@ -24,13 +24,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Thermal Relay Switch item.
- *
- * <p>The held stack stores a persistent, deduplicated list of selected Molten
- * Rotor Furnaces. Each normal furnace right-click adds to the existing list;
- * it never replaces the previous selection.</p>
- */
+
 public class ThermalRelaySwitchItem extends BlockItem {
 
     private static final String NETWORK_TAG = "RelayNetwork";
@@ -40,10 +34,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
     private static final String DIMENSION_TAG = "Dimension";
     private static final String IDENTITY_TAG = "Identity";
 
-    /*
-     * Legacy single-selection keys from the first Phase 2 attempt.
-     * They are migrated automatically when encountered.
-     */
+
     private static final String LEGACY_POSITION_TAG =
             "LinkedFurnacePos";
 
@@ -72,10 +63,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
         if (level.getBlockEntity(clickedPos)
                 instanceof MoltenRotorBlockEntity furnace) {
 
-            /*
-             * Sneak-right-clicking a furnace deliberately does nothing.
-             * Connections are cleared only by sneak-right-clicking air.
-             */
+
             if (player != null && player.isShiftKeyDown()) {
                 return InteractionResult.sidedSuccess(
                         level.isClientSide
@@ -104,9 +92,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
         return super.useOn(context);
     }
 
-    /**
-     * Sneak-right-clicking air clears the entire held selection.
-     */
+
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
             @NotNull Level level,
@@ -140,9 +126,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
         );
     }
 
-    /**
-     * Keep the item-level fallback as well as the explicit glint component.
-     */
+
     @Override
     public boolean isFoil(@NotNull ItemStack stack) {
         return hasConnections(stack)
@@ -174,9 +158,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
         );
     }
 
-    /**
-     * Adds a furnace without replacing any existing endpoint.
-     */
+
     public static void addFurnace(
             ItemStack stack,
             FurnaceLink newLink
@@ -205,10 +187,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
                 }
         );
 
-        /*
-         * Do not depend only on Item#isFoil. The stack component guarantees
-         * Minecraft's normal enchantment-glint renderer is enabled.
-         */
+
         stack.set(
                 DataComponents.ENCHANTMENT_GLINT_OVERRIDE,
                 true
@@ -319,9 +298,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
             }
         }
 
-        /*
-         * Migrate a stack produced by the earlier one-furnace implementation.
-         */
+
         if (tag.contains(LEGACY_POSITION_TAG)
                 && tag.contains(LEGACY_DIMENSION_TAG)
                 && tag.hasUUID(LEGACY_IDENTITY_TAG)) {

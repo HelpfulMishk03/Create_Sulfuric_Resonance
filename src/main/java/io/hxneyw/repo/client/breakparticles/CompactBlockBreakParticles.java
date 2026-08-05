@@ -48,15 +48,16 @@ public final class CompactBlockBreakParticles {
                                 pos
                         );
 
-                        // Stop vanilla from generating particles for every
-                        // separate box in the lamp's complex voxel shape.
                         return true;
                     }
                 },
                 AllModBlocks.LIVING_EMBER_LAMP.get(),
                 AllModBlocks.THERMAL_RELAY_SWITCH.get(),
                 AllModBlocks.PERFORATED_SPRITZER.get(),
-                AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+                AllModBlocks.MOLTEN_ROTOR_FURNACE.get(),
+                AllModBlocks.THERMOCHEMICAL_GEARBOX.get(),
+                AllModBlocks.THERMOCHEMICAL_SHAFT.get(),
+                AllModBlocks.THERMOCHEMICAL_CONDUIT.get()
         );
     }
 

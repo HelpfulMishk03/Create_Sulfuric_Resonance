@@ -1,6 +1,7 @@
 package io.hxneyw.repo.ponder;
 
 import io.hxneyw.repo.CreateSulfuricResonance;
+import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.ponder.api.registration.PonderPlugin;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
@@ -9,16 +10,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class SulfuricResonancePonderPlugin implements PonderPlugin {
+public final class SulfuricResonancePonderPlugin implements PonderPlugin {
+
+    private static final int REGISTERED_SCENES = 10;
 
     @NotNull
     @Override
     public String getModId() {
-        CreateSulfuricResonance.LOGGER.info(
-                "Ponder Plugin loading for: {}",
-                "sulfuricresonance"
-        );
-        return "sulfuricresonance";
+        return CreateSulfuricResonance.MODID;
     }
 
     @Override
@@ -30,6 +29,50 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
         );
 
         try {
+            ResourceLocation thermochemicalShaftId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_SHAFT.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalShaftId,
+                    "thermoshaft/shaft",
+                    ThermochemicalShaftScenes::operation
+            );
+
+            ResourceLocation thermochemicalGearboxId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_GEARBOX.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalGearboxId,
+                    "thermogearbox/gearbox",
+                    ThermochemicalGearboxScenes::operation
+            );
+
+            ResourceLocation combustionBeltConnectorId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.COMBUSTION_BELT_CONNECTOR.get()
+                    );
+
+            helper.addStoryBoard(
+                    combustionBeltConnectorId,
+                    "combustionbelt/belt",
+                    CombustionBeltScenes::operation
+            );
+
+            ResourceLocation thermochemicalConduitId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_CONDUIT.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalConduitId,
+                    "thermoconduit/conduit",
+                    ThermochemicalConduitScenes::operation
+            );
+
             ResourceLocation spritzerId =
                     BuiltInRegistries.BLOCK.getKey(
                             AllModBlocks.PERFORATED_SPRITZER.get()
@@ -39,13 +82,15 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                     spritzerId,
                     "perforated_spritzer/intro",
                     PerforatedSpritzerScenes::intro,
-                    AllPonderTags.FLUIDS);
+                    AllPonderTags.FLUIDS
+            );
 
             helper.addStoryBoard(
                     spritzerId,
                     "perforated_spritzer/mob_automation",
                     PerforatedSpritzerScenes::mobAutomation,
-                    AllPonderTags.FLUIDS);
+                    AllPonderTags.FLUIDS
+            );
 
             ResourceLocation moltenRotorId =
                     BuiltInRegistries.BLOCK.getKey(
@@ -56,11 +101,6 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                     moltenRotorId,
                     "molten_rotor/operation",
                     MoltenRotorScenes::operation
-            );
-
-            ResourceLocation sulfurId = ResourceLocation.fromNamespaceAndPath(
-                    CreateSulfuricResonance.MODID,
-                    "sulfur"
             );
 
             ResourceLocation thermalRelayId =
@@ -75,7 +115,11 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
                             ThermalRelayScenes::thermalRelaySwitch
                     );
 
-
+            ResourceLocation sulfurId =
+                    ResourceLocation.fromNamespaceAndPath(
+                            CreateSulfuricResonance.MODID,
+                            "sulfur"
+                    );
 
             helper.addStoryBoard(
                     sulfurId,
@@ -95,38 +139,26 @@ public class SulfuricResonancePonderPlugin implements PonderPlugin {
             );
 
             CreateSulfuricResonance.LOGGER.info(
-                    "Successfully registered 5 Ponder scenes"
+                    "Loaded {} Ponder scenes",
+                    REGISTERED_SCENES
             );
-
-
-
         } catch (Exception exception) {
             CreateSulfuricResonance.LOGGER.error(
-                    "Failed to register Ponder scenes!",
+                    "Failed to register Ponder scenes",
                     exception
             );
-
         }
     }
-
-
 
     @Override
     public void registerTags(
             @NotNull PonderTagRegistrationHelper<ResourceLocation> helper
     ) {
-        CreateSulfuricResonance.LOGGER.info(
-                "Registering Ponder tags..."
-        );
-
         try {
             AllPonderTags.register(helper);
-            CreateSulfuricResonance.LOGGER.info(
-                    "Successfully registered Ponder tags"
-            );
         } catch (Exception exception) {
             CreateSulfuricResonance.LOGGER.error(
-                    "Failed to register Ponder tags!",
+                    "Failed to register Ponder tags",
                     exception
             );
         }

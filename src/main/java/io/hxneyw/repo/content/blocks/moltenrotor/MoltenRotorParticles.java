@@ -13,13 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Client-side visual effects for the Molten Rotor.
- *
- * <p>This class is deliberately behavior-preserving: particle probabilities,
- * positions, velocities, sounds, and fuel/tier checks are copied unchanged
- * from MoltenRotorBlock.</p>
- */
+
 public final class MoltenRotorParticles {
    private MoltenRotorParticles() {
    }
@@ -111,11 +105,7 @@ public final class MoltenRotorParticles {
               intensity
       );
 
-      /*
-       * Original slit locations, direction and normal SMOKE type.
-       * Only one slit emits on a given display tick so the exhaust
-       * stays defined instead of building into a giant cloud.
-       */
+
       if (random.nextFloat() < 0.37F) {
          double[] slitOffsets = {-0.25, 0.0, 0.25};
          double slitOffset = slitOffsets[random.nextInt(slitOffsets.length)];
@@ -369,11 +359,7 @@ public final class MoltenRotorParticles {
            boolean radiant,
            boolean soulBlazeFuel
    ) {
-      /*
-       * Blaze Cake fire uses a low ring around the cake's footprint
-       * rather than the generic center anchors. This keeps the cake
-       * visible while making the flame look attached to its edges.
-       */
+
       int flameChance =
               radiant
                       ? 2
@@ -408,10 +394,7 @@ public final class MoltenRotorParticles {
               ringAnchors[anchorIndex]
       );
 
-      /*
-       * A rare opposite flame gives superheated cakes a stable ring
-       * without creating the former wall of particles.
-       */
+
       if (intensity >= 0.70F && random.nextInt(8) == 0) {
          int oppositeIndex =
                  (anchorIndex + ringAnchors.length / 2)
@@ -521,10 +504,7 @@ public final class MoltenRotorParticles {
            RandomSource random,
            float intensity
    ) {
-      /*
-       * A light interior trail suggests that smoke is being pulled
-       * toward the original rear slits without competing with them.
-       */
+
       int smokeChance =
               intensity < 0.55F ? 24 : 18;
 

@@ -16,14 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
-/**
- * Owns Molten Rotor held-item routing, fuel insertion feedback, insertion
- * sounds, and empty-hand status output.
- *
- * <p>This class intentionally preserves the existing interaction behavior.
- * Wrench handling remains in {@link MoltenRotorBlock} because those callbacks
- * are inherited from Create's {@code IWrenchable} API.</p>
- */
+
 final class MoltenRotorInteractions {
    private MoltenRotorInteractions() {
    }
@@ -34,19 +27,12 @@ final class MoltenRotorInteractions {
            BlockPos pos,
            Player player
    ) {
-      /*
-       * Empty-hand interaction belongs to useWithoutItem().
-       */
+
       if (stack.isEmpty()) {
          return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
       }
 
-      /*
-       * IMPORTANT: classify the held item without first requiring the client to
-       * have a MoltenRotorBlockEntity instance. The old early furnace == null
-       * branch routed every item into Item#useOn: logs placed as blocks and coal
-       * appeared to do nothing.
-       */
+
       ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
       MoltenRotorBlockEntity.FuelType fuelType =
               resolvedFuel == null || resolvedFuel.isInvalid()
@@ -61,19 +47,12 @@ final class MoltenRotorInteractions {
               fuelType != null
                       && fuelType != MoltenRotorBlockEntity.FuelType.NONE;
 
-      /*
-       * Non-fuels must skip the furnace's empty-hand/status interaction and
-       * continue to the held item's own useOn method. BlockItems can therefore
-       * place against the furnace normally.
-       */
+
       if (!creativeCake && !tnt && !netherStar && !dragonBreath && !recognizedFuel) {
          return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
       }
 
-      /*
-       * The client has enough information to claim accepted furnace items now.
-       * Actual mutation remains server-only.
-       */
+
       if (level.isClientSide) {
          return ItemInteractionResult.SUCCESS;
       }
@@ -176,7 +155,7 @@ final class MoltenRotorInteractions {
    ) {
       MoltenRotorBlockEntity furnace = getBlockEntity(level, pos);
 
-      // Return PASS if there is no furnace or no status to show.
+
       if (furnace == null || !furnace.shouldShowStatus()) {
          return InteractionResult.PASS;
       }

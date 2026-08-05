@@ -29,7 +29,6 @@ public class AllModArmInteractionPoints {
 
    public static void register(IEventBus eventBus) {
       ARM_INTERACTION_POINTS.register(eventBus);
-      CreateSulfuricResonance.LOGGER.info("Registered Molten Rotor arm interaction point");
    }
 
    public static class MoltenRotorType extends ArmInteractionPointType {

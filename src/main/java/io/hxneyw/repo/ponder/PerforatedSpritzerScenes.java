@@ -320,10 +320,6 @@ public class PerforatedSpritzerScenes {
               .pointAt(util.vector().centerOf(fanPos))
               .placeNearTarget();
 
-      /*
-       * Ponder does not always simulate fan/entity collision identically to a
-       * running world, so move the showcased drop in deterministic steps.
-       */
       for (int tick = 0; tick < 22; tick++) {
          scene.world().modifyEntities(
                  ItemEntity.class,
@@ -371,11 +367,7 @@ public class PerforatedSpritzerScenes {
               .pointAt(util.vector().centerOf(targetPos).add(0.0, 0.9, 0.0))
               .placeNearTarget();
 
-      /*
-       * Ponder does not reliably render Minecraft's normal entity fire layer.
-       * Keep the real fire state, then wrap the mob in attached flame and smoke
-       * particles so the ignition is unmistakable without placing a fire block.
-       */
+
       for (int pulse = 0; pulse < 5; pulse++) {
          emitSprayPulse(
                  scene,

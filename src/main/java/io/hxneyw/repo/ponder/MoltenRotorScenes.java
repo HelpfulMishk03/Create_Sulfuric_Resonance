@@ -86,10 +86,7 @@ public final class MoltenRotorScenes {
 
         scene.idle(105);
 
-        /*
-         * Creative heat mode is used only inside the demonstration so the
-         * scene can move through its heat states without waiting for fuel.
-         */
+
         scene.world().modifyBlockEntity(
                 furnacePos,
                 MoltenRotorBlockEntity.class,
@@ -104,11 +101,6 @@ public final class MoltenRotorScenes {
                 ),
                 false
         );
-
-        /*
-         * Negative speeds intentionally reverse the original Ponder shaft
-         * direction so it matches the requested in-game presentation.
-         */
         scene.world().setKineticSpeed(
                 util.select()
                         .position(westShaftPos)

@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shapeless",
+  "type": "create:compacting",
   "ingredients": [
     {
       "item": "sulfuricresonance:spent_ash"
@@ -8,8 +8,10 @@
       "item": "minecraft:clay_ball"
     }
   ],
-  "result": {
-    "id": "sulfuricresonance:ash_brick",
-    "count": 1
-  }
+  "results": [
+    {
+      "id": "sulfuricresonance:unfired_ash_brick",
+      "count": 2
+    }
+  ]
 }

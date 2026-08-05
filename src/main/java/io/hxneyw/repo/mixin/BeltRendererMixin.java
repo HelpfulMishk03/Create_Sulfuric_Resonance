@@ -12,10 +12,6 @@ import net.minecraft.world.item.DyeColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-/**
- * Keeps Create's original belt geometry and replaces only its scrolling
- * texture for marked Combustion Belts.
- */
 @Mixin(
         value = BeltRenderer.class,
         remap = false
