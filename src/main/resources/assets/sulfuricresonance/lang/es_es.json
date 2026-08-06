@@ -29,9 +29,10 @@
   "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "Después de renovar el tramo, usa una Caja de Engranajes Termoquímica cuando la ruta deba girar, ascender o ramificarse",
 
   "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Conduce una rama válida hasta una polea de la Cinta de Combustión para convertir la red de calor en procesamiento de objetos",
-
+  "advancements.sulfuricresonance.root.title": "Bienvenido a Create: Sulfuric Resonance",
+  "advancements.sulfuricresonance.root.description": "Abre la pantalla de avances para descubrir la progresión de combustión, química y termoquímica.",
   "sulfuricresonance.ponder.combustion_belt.operation.text_13": "Un Controlador de Velocidad de Rotación es la mejor forma de ajustar el procesamiento: las cintas más lentas dan a los objetos más tiempo bajo calor, mientras que las más rápidas solo aumentan el rendimiento si la receta sigue cumpliendo sus requisitos de distancia y tiempo",
-
+  "message.sulfuricresonance.progression_unlocked": "Se ha desbloqueado la progresión de Create: Sulfuric Resonance. Abre la pantalla de avances para comenzar.",
   "sulfuricresonance.ponder.combustion_belt.operation.text_14": "El Calor Reactivo sigue una sola cadena física: generar, transmitir, renovar, dirigir y finalmente procesar",
   "item.sulfuricresonance.molten_ember_pellet": "Gránulo de brasa fundida",
   "item.sulfuricresonance.infernal_coke": "Coque infernal",

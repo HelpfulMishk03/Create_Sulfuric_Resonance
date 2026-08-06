@@ -39,26 +39,12 @@ final class ThermochemicalRenderHelper {
             return;
         }
 
-        float renderTime =
-                AnimationTickHolder.getRenderTime(
-                        blockEntity.getLevel()
+        float angleRadians =
+                KineticBlockEntityRenderer.getAngleForBe(
+                        blockEntity,
+                        blockEntity.getBlockPos(),
+                        targetAxis
                 );
-
-        float offset =
-                KineticBlockEntityRenderer
-                        .getRotationOffsetForPosition(
-                                blockEntity,
-                                blockEntity.getBlockPos(),
-                                targetAxis
-                        );
-
-        float angleDegrees = (
-                renderTime
-                        * blockEntity.getSpeed()
-                        * (float) 1.0
-                        * 3.0F / 10.0F
-                        + offset
-        ) % 360.0F;
 
         poseStack.pushPose();
         poseStack.translate(
@@ -70,8 +56,8 @@ final class ThermochemicalRenderHelper {
         switch (targetAxis) {
             case X -> {
                 poseStack.mulPose(
-                        Axis.XP.rotationDegrees(
-                                angleDegrees
+                        Axis.XP.rotation(
+                                angleRadians
                         )
                 );
                 poseStack.mulPose(
@@ -81,14 +67,14 @@ final class ThermochemicalRenderHelper {
                 );
             }
             case Y -> poseStack.mulPose(
-                    Axis.YP.rotationDegrees(
-                            angleDegrees
+                    Axis.YP.rotation(
+                            angleRadians
                     )
             );
             case Z -> {
                 poseStack.mulPose(
-                        Axis.ZP.rotationDegrees(
-                                angleDegrees
+                        Axis.ZP.rotation(
+                                angleRadians
                         )
                 );
                 poseStack.mulPose(

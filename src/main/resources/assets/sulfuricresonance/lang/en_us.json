@@ -320,9 +320,10 @@
   "item.sulfuricresonance.coke": "Coke",
   "sulfuricresonance.ponder.tag.reactive_heat": "Reactive Heat",
   "sulfuricresonance.ponder.tag.reactive_heat.description": "Generate thermochemical heat, route it through physical kinetic connections, renew its reach with Conduits, and deliver it to Combustion Belts.",
-
+  "advancements.sulfuricresonance.root.title": "Welcome to Create: Sulfuric Resonance",
+  "advancements.sulfuricresonance.root.description": "Open Advancements to discover combustion, chemistry, and thermochemical progression.",
   "sulfuricresonance.ponder.molten_rotor.operation.text_11": "The Molten Rotor is the source; Thermochemical Shafts carry its rotation and heat into the network",
-
+  "message.sulfuricresonance.progression_unlocked": "Create: Sulfuric Resonance progression unlocked. Open Advancements to begin.",
   "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Reach a Thermochemical Conduit before the source-side transmission allowance is exhausted",
 
   "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "After renewing the span, use a Thermochemical Gearbox when the route must turn, climb, or branch",

@@ -27,11 +27,12 @@
   "sulfuricresonance.ponder.molten_rotor.operation.text_11": "Le Rotor fondu est la source ; les Arbres thermochimiques transmettent sa rotation et sa chaleur au réseau",
 
   "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Atteignez un Conduit thermochimique avant d'épuiser la portée de transmission disponible depuis la source",
-
+  "message.sulfuricresonance.progression_unlocked": "La progression de Create: Sulfuric Resonance est débloquée. Ouvrez l’écran des progrès pour commencer.",
   "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "Après avoir renouvelé la portée, utilisez une Boîte d'engrenages thermochimique lorsque le trajet doit tourner, monter ou se ramifier",
 
   "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Acheminez une branche valide vers une poulie de Tapis de combustion afin de transformer le réseau thermique en chaîne de traitement d'objets",
-
+  "advancements.sulfuricresonance.root.title": "Bienvenue dans Create: Sulfuric Resonance",
+  "advancements.sulfuricresonance.root.description": "Ouvrez l’écran des progrès pour découvrir la progression liée à la combustion, à la chimie et à la thermochimie.",
   "sulfuricresonance.ponder.combustion_belt.operation.text_13": "Un Contrôleur de vitesse de rotation est le meilleur moyen de régler le traitement : les tapis plus lents offrent davantage de temps de chauffe aux objets, tandis que les tapis plus rapides n'augmentent le débit que si la recette respecte toujours ses exigences de distance et de durée",
 
   "sulfuricresonance.ponder.combustion_belt.operation.text_14": "La Chaleur réactive suit une seule chaîne physique : produire, transmettre, renouveler, acheminer, puis traiter",

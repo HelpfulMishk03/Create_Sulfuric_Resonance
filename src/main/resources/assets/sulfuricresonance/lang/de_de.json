@@ -24,12 +24,13 @@
   "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "Nutze nach der Erneuerung der Reichweite ein thermochemisches Getriebe, wenn die Route abbiegen, ansteigen oder sich verzweigen muss",
 
   "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Leite einen gültigen Zweig in die Riemenscheibe eines Verbrennungsbands, um das Wärmenetzwerk zur Gegenstandsverarbeitung zu nutzen",
-
+  "advancements.sulfuricresonance.root.title": "Willkommen bei Create: Sulfuric Resonance",
+  "advancements.sulfuricresonance.root.description": "Öffne den Fortschrittsbildschirm, um die Entwicklung rund um Verbrennung, Chemie und Thermochemie zu entdecken.",
   "sulfuricresonance.ponder.combustion_belt.operation.text_13": "Ein Drehzahlregler eignet sich am besten zur Steuerung der Verarbeitung: Langsamere Bänder geben Gegenständen mehr Zeit unter Hitze, während schnellere Bänder den Durchsatz nur erhöhen, wenn die Distanz- und Zeitanforderungen des Rezepts weiterhin erfüllt werden",
 
   "sulfuricresonance.ponder.combustion_belt.operation.text_14": "Reaktive Hitze folgt einer einzigen physischen Kette: erzeugen, übertragen, erneuern, leiten und schließlich verarbeiten",
   "item.sulfuricresonance.molten_ember_pellet": "Geschmolzenes Glutpellet",
-  "item.sulfuricresonance.infernal_coke": "Infernalischer Koks",
+  "item.sulfuricresonance.infernal_coke": "Infernalischer Koks","message.sulfuricresonance.progression_unlocked": "Der Fortschrittsbaum von Create: Sulfuric Resonance wurde freigeschaltet. Öffne den Fortschrittsbildschirm, um zu beginnen.",
   "block.sulfuricresonance.carbon_deposit_block": "Kohlenstoffablagerungsblock",
   "block.sulfuricresonance.infernal_carbon_deposit_block": "Infernalischer Kohlenstoffablagerungsblock",
   "item.sulfuricresonance.obsidian_fiber_mold_filled": "Gefüllte Obsidianfaserform",

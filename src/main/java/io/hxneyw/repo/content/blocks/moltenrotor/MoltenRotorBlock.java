@@ -192,14 +192,4 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
       }
    }
 
-   @OnlyIn(Dist.CLIENT)
-   public void animateTick(
-           @NotNull BlockState state,
-           @NotNull Level level,
-           @NotNull BlockPos pos,
-           @NotNull RandomSource random
-   ) {
-      MoltenRotorParticles.animateTick(state, level, pos, random);
-   }
-
 }

@@ -3,6 +3,7 @@ package io.hxneyw.repo.content.blocks.moltenrotor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import io.hxneyw.repo.CreateSulfuricResonance;
@@ -22,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -202,9 +204,9 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
          float leftAngleRadians =
                  this.toLocalShaftAngle(
-                         KineticBlockEntityRenderer.getAngleForBe(
+                         this.getConnectedShaftAngle(
                                  furnace,
-                                 furnace.getBlockPos().relative(leftDirection),
+                                 leftDirection,
                                  shaftAxis
                          ),
                          facing
@@ -212,9 +214,9 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
          float rightAngleRadians =
                  this.toLocalShaftAngle(
-                         KineticBlockEntityRenderer.getAngleForBe(
+                         this.getConnectedShaftAngle(
                                  furnace,
-                                 furnace.getBlockPos().relative(rightDirection),
+                                 rightDirection,
                                  shaftAxis
                          ),
                          facing
@@ -267,6 +269,38 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
             hasLoggedOnce = true;
          }
       }
+   }
+
+
+   private float getConnectedShaftAngle(
+           MoltenRotorBlockEntity furnace,
+           Direction direction,
+           Direction.Axis shaftAxis
+   ) {
+      if (furnace.getLevel() != null) {
+         BlockEntity adjacentBlockEntity =
+                 furnace.getLevel().getBlockEntity(
+                         furnace.getBlockPos().relative(direction)
+                 );
+
+         if (adjacentBlockEntity
+                 instanceof KineticBlockEntity adjacentKinetic
+                 && KineticBlockEntityRenderer
+                 .getRotationAxisOf(adjacentKinetic)
+                 == shaftAxis) {
+            return KineticBlockEntityRenderer.getAngleForBe(
+                    adjacentKinetic,
+                    adjacentKinetic.getBlockPos(),
+                    shaftAxis
+            );
+         }
+      }
+
+      return KineticBlockEntityRenderer.getAngleForBe(
+              furnace,
+              furnace.getBlockPos(),
+              shaftAxis
+      );
    }
 
 

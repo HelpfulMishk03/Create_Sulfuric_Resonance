@@ -1,4 +1,5 @@
 {
+  "parent": "sulfuricresonance:root",
   "display": {
     "icon": {
       "id": "sulfuricresonance:embersol"
@@ -9,7 +10,6 @@
     "description": {
       "text": "Obtain Embersol, a substance flowing with the strange heat and essence of the Nether."
     },
-    "background": "sulfuricresonance:textures/gui/advancements/backgrounds/sulfur_resonance.png",
     "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,

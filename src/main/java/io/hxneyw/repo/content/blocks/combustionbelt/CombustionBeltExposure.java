@@ -93,7 +93,6 @@ public final class CombustionBeltExposure {
         Level level = controller.getLevel();
 
         if (level == null
-                || level.isClientSide()
                 || !controller.isController()) {
             return;
         }
@@ -111,11 +110,19 @@ public final class CombustionBeltExposure {
             return;
         }
 
-        boolean persistentDataChanged = false;
-        boolean inventoryChanged = false;
-
         List<TransportedItemStack> transportedItems =
                 inventory.getTransportedItems();
+
+
+        if (level.isClientSide()) {
+            for (TransportedItemStack transported : transportedItems) {
+                centerTransportedItem(transported);
+            }
+            return;
+        }
+
+        boolean persistentDataChanged = false;
+        boolean inventoryChanged = false;
 
         for (TransportedItemStack transported : transportedItems) {
             UpdateResult result = tickTransportedStack(
@@ -152,6 +159,8 @@ public final class CombustionBeltExposure {
         if (stack.isEmpty()) {
             return UpdateResult.NONE;
         }
+
+        centerTransportedItem(transported);
 
         long gameTime = level.getGameTime();
         float previousPosition = transported.prevBeltPosition;
@@ -359,6 +368,13 @@ public final class CombustionBeltExposure {
         );
     }
 
+    private static void centerTransportedItem(
+            TransportedItemStack transported
+    ) {
+
+        transported.angle = 180;
+    }
+
     private static boolean isExpectedToLeaveBelt(
             BeltBlockEntity controller,
             float previousPosition,
@@ -510,7 +526,10 @@ public final class CombustionBeltExposure {
 
         transported.stack = output;
         transported.prevBeltPosition = transported.beltPosition;
-        transported.prevSideOffset = transported.sideOffset;
+
+
+        transported.angle = 180;
+
         transported.lockedExternally = false;
         transported.clearFanProcessingData();
 
@@ -562,7 +581,7 @@ public final class CombustionBeltExposure {
         }
     }
 
-    private static boolean clearCombustionBeltExposure(
+    private static void clearCombustionBeltExposure(
             ItemStack stack
     ) {
         CustomData customData = stack.get(
@@ -570,7 +589,7 @@ public final class CombustionBeltExposure {
         );
 
         if (customData == null) {
-            return false;
+            return;
         }
 
         CompoundTag root = customData.copyTag();
@@ -579,7 +598,7 @@ public final class CombustionBeltExposure {
                 MOD_ROOT_KEY,
                 Tag.TAG_COMPOUND
         )) {
-            return false;
+            return;
         }
 
         CompoundTag modRoot =
@@ -589,7 +608,7 @@ public final class CombustionBeltExposure {
                 EXPOSURE_ROOT_KEY,
                 Tag.TAG_COMPOUND
         )) {
-            return false;
+            return;
         }
 
         modRoot.remove(EXPOSURE_ROOT_KEY);
@@ -608,8 +627,6 @@ public final class CombustionBeltExposure {
                     CustomData.of(root)
             );
         }
-
-        return true;
     }
 
     private static void spawnHeatingParticle(
@@ -624,7 +641,7 @@ public final class CombustionBeltExposure {
             return;
         }
 
-        int interval = 2;
+        int interval = 8;
 
         int particlePhase = Math.floorMod(
                 System.identityHashCode(transported),
@@ -642,16 +659,24 @@ public final class CombustionBeltExposure {
                         transported.beltPosition
                 );
 
+        double velocityX =
+                (serverLevel.random.nextDouble() - 0.5D)
+                        * 0.025D;
+
+        double velocityZ =
+                (serverLevel.random.nextDouble() - 0.5D)
+                        * 0.025D;
+
         serverLevel.sendParticles(
                 itemParticle(particleStack),
                 itemPosition.x,
-                itemPosition.y + 0.27D,
+                itemPosition.y + 0.43D,
                 itemPosition.z,
-                2,
-                0.11D,
-                0.055D,
-                0.11D,
-                0.012D
+                0,
+                velocityX,
+                0.045D,
+                velocityZ,
+                1.0D
         );
     }
 
@@ -672,17 +697,32 @@ public final class CombustionBeltExposure {
                         transported.beltPosition
                 );
 
-        serverLevel.sendParticles(
-                itemParticle(particleStack),
-                itemPosition.x,
-                itemPosition.y + 0.28D,
-                itemPosition.z,
-                12,
-                0.15D,
-                0.08D,
-                0.15D,
-                0.025D
-        );
+        for (int particle = 0; particle < 4; particle++) {
+            double velocityX =
+                    (serverLevel.random.nextDouble() - 0.5D)
+                            * 0.065D;
+
+            double velocityY =
+                    0.055D
+                            + serverLevel.random.nextDouble()
+                            * 0.035D;
+
+            double velocityZ =
+                    (serverLevel.random.nextDouble() - 0.5D)
+                            * 0.065D;
+
+            serverLevel.sendParticles(
+                    itemParticle(particleStack),
+                    itemPosition.x,
+                    itemPosition.y + 0.45D,
+                    itemPosition.z,
+                    0,
+                    velocityX,
+                    velocityY,
+                    velocityZ,
+                    1.0D
+            );
+        }
     }
 
     private static ItemParticleOption itemParticle(

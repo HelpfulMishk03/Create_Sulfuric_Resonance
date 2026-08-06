@@ -255,6 +255,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
       if (this.level != null && this.level.isClientSide) {
          clientSoundTick.accept(this);
+         MoltenRotorParticles.tickClient(this);
          return;
       }
 
@@ -390,10 +391,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    }
 
    private void spawnRadiantParticles(ServerLevel sl) {
-      /*
-       * A restrained one-time transition flash. Continuous chamber
-       * flames are handled client-side by MoltenRotorBlock.
-       */
+      
+
+
       double x = this.worldPosition.getX() + 0.5;
       double y = this.worldPosition.getY() + 0.28;
       double z = this.worldPosition.getZ() + 0.5;
