@@ -37,7 +37,8 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
             helper.addStoryBoard(
                     thermochemicalShaftId,
                     "thermoshaft/shaft",
-                    ThermochemicalShaftScenes::operation
+                    ThermochemicalShaftScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             ResourceLocation thermochemicalGearboxId =
@@ -48,7 +49,8 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
             helper.addStoryBoard(
                     thermochemicalGearboxId,
                     "thermogearbox/gearbox",
-                    ThermochemicalGearboxScenes::operation
+                    ThermochemicalGearboxScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             ResourceLocation combustionBeltConnectorId =
@@ -59,7 +61,8 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
             helper.addStoryBoard(
                     combustionBeltConnectorId,
                     "combustionbelt/belt",
-                    CombustionBeltScenes::operation
+                    CombustionBeltScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             ResourceLocation thermochemicalConduitId =
@@ -70,7 +73,8 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
             helper.addStoryBoard(
                     thermochemicalConduitId,
                     "thermoconduit/conduit",
-                    ThermochemicalConduitScenes::operation
+                    ThermochemicalConduitScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             ResourceLocation spritzerId =
@@ -100,7 +104,8 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
             helper.addStoryBoard(
                     moltenRotorId,
                     "molten_rotor/operation",
-                    MoltenRotorScenes::operation
+                    MoltenRotorScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             ResourceLocation thermalRelayId =

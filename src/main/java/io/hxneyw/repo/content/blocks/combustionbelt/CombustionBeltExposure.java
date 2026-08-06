@@ -62,8 +62,9 @@ public final class CombustionBeltExposure {
     private static final String POSITION_KEY =
             "Position";
 
-    public static final long DECAY_GRACE_TICKS = 40L;
-    public static final long DECAY_INTERVAL_TICKS = 20L;
+    public static final long PROGRESS_RESET_SECONDS = 5L;
+    private static final long PROGRESS_RESET_GRACE_TICKS =
+            PROGRESS_RESET_SECONDS * 20L;
 
     private static final float MOVEMENT_EPSILON = 0.0001F;
 
@@ -207,9 +208,6 @@ public final class CombustionBeltExposure {
                     liveChainHeatTier,
                     recipe.minimumHeat().exposureBand()
             );
-        } else if (!heatMeetsRecipe) {
-            persistentDataChanged |=
-                    document.clearAllExposure();
         }
 
         for (ExposureBand band : ExposureBand.values()) {
@@ -219,7 +217,7 @@ public final class CombustionBeltExposure {
                 continue;
             }
 
-            if (moving && band.accepts(currentHeat)) {
+            if (band.accepts(currentHeat)) {
                 persistentDataChanged |=
                         state.touch(gameTime);
             } else if (state.applyDecay(gameTime)) {
@@ -246,9 +244,9 @@ public final class CombustionBeltExposure {
                         requiredTicks <= 0
                                 ? 0
                                 : Math.min(
-                                        requiredTicks,
-                                        processingTicks + 1
-                                );
+                                requiredTicks,
+                                processingTicks + 1
+                        );
 
                 persistentDataChanged |=
                         document.touchProcessing(
@@ -267,6 +265,13 @@ public final class CombustionBeltExposure {
                         gameTime,
                         stack
                 );
+            } else if (heatMeetsRecipe) {
+                persistentDataChanged |=
+                        document.touchProcessing(
+                                holder.id(),
+                                processingTicks,
+                                gameTime
+                        );
             } else {
                 persistentDataChanged |=
                         document.applyProcessingDecay(
@@ -334,11 +339,12 @@ public final class CombustionBeltExposure {
                 previousPosition,
                 currentPosition
         )) {
-            boolean cleared =
-                    clearCombustionBeltExposure(stack);
+            if (persistentDataChanged) {
+                document.write(stack);
+            }
 
             return new UpdateResult(
-                    persistentDataChanged || cleared,
+                    persistentDataChanged,
                     false
             );
         }
@@ -849,8 +855,8 @@ public final class CombustionBeltExposure {
                             Tag.TAG_COMPOUND
                     )
                             ? modRoot.getCompound(
-                                    EXPOSURE_ROOT_KEY
-                            )
+                            EXPOSURE_ROOT_KEY
+                    )
                             : new CompoundTag();
 
             return new ExposureDocument(
@@ -869,8 +875,8 @@ public final class CombustionBeltExposure {
                             Tag.TAG_COMPOUND
                     )
                             ? this.exposureRoot.getCompound(
-                                    band.nbtKey()
-                            )
+                            band.nbtKey()
+                    )
                             : new CompoundTag();
 
             return new BandState(
@@ -916,16 +922,16 @@ public final class CombustionBeltExposure {
                     )
                             || clampedTicks
                             != this.exposureRoot.getInt(
-                                    PROCESSING_TICKS_KEY
-                            )
+                            PROCESSING_TICKS_KEY
+                    )
                             || gameTime
                             != this.exposureRoot.getLong(
-                                    PROCESSING_LAST_QUALIFIED_TICK_KEY
-                            )
+                            PROCESSING_LAST_QUALIFIED_TICK_KEY
+                    )
                             || gameTime
                             != this.exposureRoot.getLong(
-                                    PROCESSING_LAST_DECAY_TICK_KEY
-                            );
+                            PROCESSING_LAST_DECAY_TICK_KEY
+                    );
 
             if (!changed) {
                 return false;
@@ -981,56 +987,26 @@ public final class CombustionBeltExposure {
                             PROCESSING_LAST_QUALIFIED_TICK_KEY
                     );
 
+            if (gameTime < lastQualifiedTick) {
+                this.exposureRoot.putLong(
+                        PROCESSING_LAST_QUALIFIED_TICK_KEY,
+                        gameTime
+                );
+
+                this.exposureRoot.putLong(
+                        PROCESSING_LAST_DECAY_TICK_KEY,
+                        gameTime
+                );
+
+                return true;
+            }
+
             if (gameTime - lastQualifiedTick
-                    <= DECAY_GRACE_TICKS) {
+                    < PROGRESS_RESET_GRACE_TICKS) {
                 return false;
             }
 
-            long lastDecayTick =
-                    this.exposureRoot.getLong(
-                            PROCESSING_LAST_DECAY_TICK_KEY
-                    );
-
-            if (lastDecayTick <= 0L) {
-                lastDecayTick = lastQualifiedTick;
-            }
-
-            long elapsed =
-                    gameTime - lastDecayTick;
-
-            if (elapsed < DECAY_INTERVAL_TICKS) {
-                return false;
-            }
-
-            int decayAmount =
-                    (int) Math.min(
-                            Integer.MAX_VALUE,
-                            elapsed / DECAY_INTERVAL_TICKS
-                    );
-
-            int nextTicks =
-                    Math.max(
-                            0,
-                            currentTicks - decayAmount
-                    );
-
-            if (nextTicks == 0) {
-                return this.clearProcessing();
-            }
-
-            this.exposureRoot.putInt(
-                    PROCESSING_TICKS_KEY,
-                    nextTicks
-            );
-
-            this.exposureRoot.putLong(
-                    PROCESSING_LAST_DECAY_TICK_KEY,
-                    lastDecayTick
-                            + (long) decayAmount
-                            * DECAY_INTERVAL_TICKS
-            );
-
-            return true;
+            return this.clearAllExposure();
         }
 
         private boolean retainOnly(
@@ -1041,8 +1017,8 @@ public final class CombustionBeltExposure {
             for (ExposureBand band : ExposureBand.values()) {
                 if (band == requiredBand
                         || !this.exposureRoot.contains(
-                                band.nbtKey()
-                        )) {
+                        band.nbtKey()
+                )) {
                     continue;
                 }
 
@@ -1063,8 +1039,8 @@ public final class CombustionBeltExposure {
 
             for (String key
                     : this.exposureRoot.getAllKeys().toArray(
-                            String[]::new
-                    )) {
+                    String[]::new
+            )) {
                 this.exposureRoot.remove(key);
             }
 
@@ -1077,14 +1053,14 @@ public final class CombustionBeltExposure {
                             PROCESSING_RECIPE_KEY
                     )
                             || this.exposureRoot.contains(
-                                    PROCESSING_TICKS_KEY
-                            )
+                            PROCESSING_TICKS_KEY
+                    )
                             || this.exposureRoot.contains(
-                                    PROCESSING_LAST_QUALIFIED_TICK_KEY
-                            )
+                            PROCESSING_LAST_QUALIFIED_TICK_KEY
+                    )
                             || this.exposureRoot.contains(
-                                    PROCESSING_LAST_DECAY_TICK_KEY
-                            );
+                            PROCESSING_LAST_DECAY_TICK_KEY
+                    );
 
             this.exposureRoot.remove(
                     PROCESSING_RECIPE_KEY
@@ -1220,9 +1196,9 @@ public final class CombustionBeltExposure {
                             Tag.TAG_LIST
                     )
                             ? this.bandTag.getList(
-                                    VISITED_SEGMENTS_KEY,
-                                    Tag.TAG_COMPOUND
-                            )
+                            VISITED_SEGMENTS_KEY,
+                            Tag.TAG_COMPOUND
+                    )
                             : new ListTag();
 
             if (containsSegment(
@@ -1286,14 +1262,7 @@ public final class CombustionBeltExposure {
                             LAST_QUALIFIED_TICK_KEY
                     );
 
-            long lastDecayTick =
-                    this.bandTag.getLong(
-                            LAST_DECAY_TICK_KEY
-                    );
-
-            if (gameTime < lastQualifiedTick
-                    || gameTime < lastDecayTick) {
-
+            if (gameTime < lastQualifiedTick) {
                 this.bandTag.putLong(
                         LAST_QUALIFIED_TICK_KEY,
                         gameTime
@@ -1305,56 +1274,18 @@ public final class CombustionBeltExposure {
                 );
 
                 this.save();
-                return false;
-            }
-
-            long decayStartTick =
-                    lastQualifiedTick
-                            + DECAY_GRACE_TICKS;
-
-            long decayReferenceTick = Math.max(
-                    lastDecayTick,
-                    decayStartTick
-            );
-
-            long elapsedDecayTicks =
-                    gameTime - decayReferenceTick;
-
-            if (elapsedDecayTicks
-                    < DECAY_INTERVAL_TICKS) {
-                return false;
-            }
-
-            int segmentsLost = (int) Math.min(
-                    currentSegments,
-                    elapsedDecayTicks
-                            / DECAY_INTERVAL_TICKS
-            );
-
-            int remainingSegments =
-                    currentSegments - segmentsLost;
-
-            if (remainingSegments <= 0) {
-                this.exposureRoot.remove(
-                        this.band.nbtKey()
-                );
-
                 return true;
             }
 
-            this.bandTag.putInt(
-                    SEGMENTS_KEY,
-                    remainingSegments
+            if (gameTime - lastQualifiedTick
+                    < PROGRESS_RESET_GRACE_TICKS) {
+                return false;
+            }
+
+            this.exposureRoot.remove(
+                    this.band.nbtKey()
             );
 
-            this.bandTag.putLong(
-                    LAST_DECAY_TICK_KEY,
-                    decayReferenceTick
-                            + segmentsLost
-                            * DECAY_INTERVAL_TICKS
-            );
-
-            this.save();
             return true;
         }
 
@@ -1386,10 +1317,10 @@ public final class CombustionBeltExposure {
                 if (position
                         == visited.getLong(POSITION_KEY)
                         && dimensionId.equals(
-                                visited.getString(
-                                        DIMENSION_KEY
-                                )
-                        )) {
+                        visited.getString(
+                                DIMENSION_KEY
+                        )
+                )) {
                     return true;
                 }
             }

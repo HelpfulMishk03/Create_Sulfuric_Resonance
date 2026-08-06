@@ -16,11 +16,25 @@
     "hidden": false
   },
   "criteria": {
-    "place_perforated_spritzer": {
+    "place_spritzer": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "sulfuricresonance:perforated_spritzer"
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "sulfuricresonance:perforated_spritzer"
+              ]
+            }
+          }
+        ]
       }
     }
-  }
+  },
+  "requirements": [
+    [
+      "place_spritzer"
+    ]
+  ]
 }

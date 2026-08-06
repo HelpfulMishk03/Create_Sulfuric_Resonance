@@ -20,6 +20,25 @@
   "tooltip.sulfuricresonance.thermochemical_gearbox": "Distribue la rotation et la chaleur thermochimique sur ses six faces.",
   "item.sulfuricresonance.obsidian_fiber": "Fibre d'obsidienne",
   "item.sulfuricresonance.latex_clump": "Amas de latex",
+  "item.sulfuricresonance.coke": "Coke",
+  "sulfuricresonance.ponder.tag.reactive_heat": "Chaleur réactive",
+  "sulfuricresonance.ponder.tag.reactive_heat.description": "Produisez de la chaleur thermochimique, acheminez-la par des connexions cinétiques physiques, renouvelez sa portée avec des conduits et transmettez-la aux tapis de combustion.",
+
+  "sulfuricresonance.ponder.molten_rotor.operation.text_11": "Le Rotor fondu est la source ; les Arbres thermochimiques transmettent sa rotation et sa chaleur au réseau",
+
+  "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Atteignez un Conduit thermochimique avant d'épuiser la portée de transmission disponible depuis la source",
+
+  "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "Après avoir renouvelé la portée, utilisez une Boîte d'engrenages thermochimique lorsque le trajet doit tourner, monter ou se ramifier",
+
+  "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Acheminez une branche valide vers une poulie de Tapis de combustion afin de transformer le réseau thermique en chaîne de traitement d'objets",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_13": "Un Contrôleur de vitesse de rotation est le meilleur moyen de régler le traitement : les tapis plus lents offrent davantage de temps de chauffe aux objets, tandis que les tapis plus rapides n'augmentent le débit que si la recette respecte toujours ses exigences de distance et de durée",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_14": "La Chaleur réactive suit une seule chaîne physique : produire, transmettre, renouveler, acheminer, puis traiter",
+  "item.sulfuricresonance.molten_ember_pellet": "Granulé de braise en fusion",
+  "item.sulfuricresonance.infernal_coke": "Coke infernal",
+  "block.sulfuricresonance.carbon_deposit_block": "Bloc de dépôt de carbone",
+  "block.sulfuricresonance.infernal_carbon_deposit_block": "Bloc de dépôt de carbone infernal",
   "item.sulfuricresonance.wet_ash_ceramic": "Céramique de cendre humide",
   "item.sulfuricresonance.unfired_ash_brick": "Brique de cendre non cuite",
   "item.sulfuricresonance.acid_resistant_ceramic": "Céramique résistante à l’acide",

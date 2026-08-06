@@ -299,6 +299,17 @@ public final class MoltenRotorScenes {
         );
 
         scene.idle(55);
+        scene.overlay()
+                .showText(120)
+                .text(
+                        "The Molten Rotor is the source; Thermochemical Shafts carry its rotation and heat into the network"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(furnacePos))
+                .placeNearTarget();
+
+        scene.idle(130);
         scene.markAsFinished();
     }
 }

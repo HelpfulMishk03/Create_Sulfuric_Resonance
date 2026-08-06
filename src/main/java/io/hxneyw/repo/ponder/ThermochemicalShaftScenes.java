@@ -182,7 +182,17 @@ public final class ThermochemicalShaftScenes {
                 .pointAt(shaftCenter)
                 .placeNearTarget();
         scene.idle(140);
+        scene.overlay()
+                .showText(120)
+                .text(
+                        "Reach a Thermochemical Conduit before the source-side transmission allowance is exhausted"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.BLUE)
+                .pointAt(shaftCenter)
+                .placeNearTarget();
 
+        scene.idle(130);
         scene.markAsFinished();
     }
 }

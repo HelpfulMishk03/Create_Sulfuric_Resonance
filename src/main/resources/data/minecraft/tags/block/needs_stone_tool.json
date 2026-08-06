@@ -3,6 +3,8 @@
   "values": [
     "sulfuricresonance:sulfur_block",
     "sulfuricresonance:rubber_padding",
-    "sulfuricresonance:perforated_spritzer"
+    "sulfuricresonance:perforated_spritzer",
+    "sulfuricresonance:carbon_deposit_block",
+    "sulfuricresonance:infernal_carbon_deposit_block"
   ]
 }

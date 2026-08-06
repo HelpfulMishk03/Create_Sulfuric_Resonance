@@ -15,6 +15,7 @@ import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearbox
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -81,6 +82,25 @@ public class AllModBlocks {
                             .instrument(NoteBlockInstrument.HARP)
             )
     );
+    public static final DeferredBlock<Block> CARBON_DEPOSIT_BLOCK =
+            BLOCKS.registerSimpleBlock(
+                    "carbon_deposit_block",
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .strength(3.0F, 6.0F)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.DEEPSLATE)
+            );
+
+    public static final DeferredBlock<Block> INFERNAL_CARBON_DEPOSIT_BLOCK =
+            BLOCKS.registerSimpleBlock(
+                    "infernal_carbon_deposit_block",
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_BLACK)
+                            .strength(4.0F, 8.0F)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.DEEPSLATE)
+            );
     public static final DeferredBlock<LiquidBlock> SULFURIC_ACID_BLOCK = BLOCKS.register(
             "sulfuric_acid",
             () -> new SulfuricAcidBlock(

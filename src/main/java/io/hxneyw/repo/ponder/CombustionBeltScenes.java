@@ -40,25 +40,6 @@ public final class CombustionBeltScenes {
         scene.scaleSceneView(0.85F);
         scene.setSceneOffsetY(-0.5F);
 
-        /*
-         * NBT layout:
-         *
-         * x = 0 .. 4
-         * y = 1
-         * z = 2
-         *
-         * The Belt faces EAST. Its pulley axis is therefore Z.
-         *
-         * Added demonstration route:
-         *
-         * Molten Rotor at (0, 1, 4), facing EAST
-         * Thermochemical Conduit at (0, 1, 3), axis Z
-         * Starting Belt pulley at (0, 1, 2), axis Z
-         *
-         * This creates one real, straight physical heat connection:
-         *
-         * Molten Rotor -> Conduit -> Combustion Belt pulley
-         */
         BlockPos beltStart = util.grid().at(0, 1, 2);
         BlockPos beltCenter = util.grid().at(2, 1, 2);
         BlockPos beltEnd = util.grid().at(4, 1, 2);
@@ -287,11 +268,18 @@ public final class CombustionBeltScenes {
                 .pointAt(beltCenterTop)
                 .placeNearTarget();
         scene.idle(140);
+        scene.overlay()
+                .showText(155)
+                .text(
+                        "A Rotation Speed Controller is the best way to tune processing: slower Belts give items more heated time, while faster Belts increase throughput only when the recipe still meets both its distance and time requirements"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.BLUE)
+                .pointAt(beltCenterTop)
+                .placeNearTarget();
 
-        /*
-         * Heat-loss demonstration:
-         * the Belt continues moving, but its processing state becomes cold.
-         */
+        scene.idle(165);
+
         clearBeltItems(scene, beltStart);
         scene.world().createItemOnBelt(
                 beltStart,
@@ -361,13 +349,7 @@ public final class CombustionBeltScenes {
                 .placeNearTarget();
         scene.idle(135);
 
-        /*
-         * Condensed conversion demonstration.
-         *
-         * Ponder does not run the full server recipe pipeline reliably, so the
-         * scene places the input at the centre, then substitutes the output at
-         * the exact same Belt position after showing the real requirements.
-         */
+
         clearBeltItems(scene, beltStart);
         scene.world().createItemOnBelt(
                 beltCenter,
@@ -385,13 +367,7 @@ public final class CombustionBeltScenes {
                 .pointAt(beltCenterTop)
                 .placeNearTarget();
 
-        /*
-         * Keep the Belt rotating throughout the conversion.
-         *
-         * Setting kinetic speed to zero makes Create temporarily use its
-         * stationary Belt rendering path, which hides the CSR scrolling
-         * texture and makes the scene appear to become an ordinary Belt.
-         */
+
         scene.idle(8);
         clearBeltItems(scene, beltStart);
         scene.world().createItemOnBelt(
@@ -400,11 +376,9 @@ public final class CombustionBeltScenes {
                 glass.copy()
         );
         scene.effects().indicateSuccess(beltCenter);
-        scene.idle(132);
+        scene.idle(135);
 
-        /*
-         * Insufficient-tier demonstration.
-         */
+
         scene.world().modifyBlock(
                 rotorPos,
                 state -> heatedRotor,
@@ -426,7 +400,7 @@ public final class CombustionBeltScenes {
         );
 
         scene.overlay()
-                .showText(135)
+                .showText(130)
                 .text(
                         "Heat below a recipe's minimum tier carries the input through unchanged"
                 )
@@ -434,7 +408,7 @@ public final class CombustionBeltScenes {
                 .colored(PonderPalette.OUTPUT)
                 .pointAt(beltCenterTop)
                 .placeNearTarget();
-        scene.idle(145);
+        scene.idle(140);
 
         scene.world().modifyBlock(
                 rotorPos,
@@ -458,6 +432,18 @@ public final class CombustionBeltScenes {
                 .pointAt(util.vector().centerOf(beltEnd))
                 .placeNearTarget();
         scene.idle(150);
+
+        scene.overlay()
+                .showText(135)
+                .text(
+                        "Reactive Heat follows one physical chain: generate, transmit, renew, route, then process"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.GREEN)
+                .pointAt(beltCenterTop)
+                .placeNearTarget();
+
+        scene.idle(145);
 
         scene.markAsFinished();
     }

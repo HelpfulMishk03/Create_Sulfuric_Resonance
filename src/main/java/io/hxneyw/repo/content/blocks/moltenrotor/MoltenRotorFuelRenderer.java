@@ -56,7 +56,7 @@ public final class MoltenRotorFuelRenderer {
         }
 
         switch (fuelType) {
-            case COAL, CHARCOAL -> renderCoalPile(
+            case COAL, CHARCOAL, COKE, INFERNAL_COKE -> renderCoalPile(
                     furnace,
                     fuelStack,
                     fuelModel,
@@ -93,6 +93,17 @@ public final class MoltenRotorFuelRenderer {
                     light,
                     overlay,
                     0.27F
+            );
+
+            case CARBON_DEPOSIT_BLOCK,
+                 INFERNAL_CARBON_DEPOSIT_BLOCK -> renderRestingFuel(
+                    fuelStack,
+                    fuelModel,
+                    ms,
+                    buffer,
+                    light,
+                    overlay,
+                    0.36F
             );
 
             default -> renderRestingFuel(

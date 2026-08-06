@@ -39,9 +39,20 @@ public class ModTabs {
                   output.accept(Items.FLAMEBORNE_CORE.get());
                   output.accept(Items.EMBERSOL.get());
                   output.accept(Items.BLAZE_SHARD.get());
+
+
+
+                  //Fuels
+                  output.accept(Items.COKE.get());
+                  output.accept(Items.CARBON_DEPOSIT_BLOCK_ITEM);
+                  output.accept(Items.INFERNAL_COKE.get());
+                  output.accept(Items.INFERNAL_CARBON_DEPOSIT_BLOCK_ITEM);
+                  output.accept(Items.MOLTEN_EMBER_PELLET.get());
+                  output.accept(Items.CINDER_FUEL_BRIQUETTE.get());
                   output.accept(Items.CORRUPT_BLAZE_CAKE.get());
                   output.accept(Items.SOUL_FIRED_BLAZE_CAKE.get());
-                  output.accept(Items.CINDER_FUEL_BRIQUETTE.get());
+
+
 
 // Cinder and advanced machine materials
                   output.accept(Items.NETHERWOOD_DUST.get());

@@ -672,6 +672,51 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
               1,
               3500.0F,
               1.0F
+      ),
+
+      MOLTEN_EMBER_PELLET(
+              "molten_ember_pellet",
+              25.0F,
+              950.0F,
+              32,
+              1000.0F,
+              1.0F
+      ),
+
+      COKE(
+        "coke",
+                13.0F,
+                850.0F,
+                32,
+                613.0F,
+                1.0F
+      ),
+
+      INFERNAL_COKE(
+        "infernal_coke",
+                26.0F,
+                1400.0F,
+                8,
+                1600.0F,
+                1.0F
+      ),
+
+      CARBON_DEPOSIT_BLOCK(
+        "carbon_deposit_block",
+                13.0F,
+                1100.0F,
+                4,
+                5517.0F,
+                1.0F
+      ),
+
+      INFERNAL_CARBON_DEPOSIT_BLOCK(
+        "infernal_carbon_deposit_block",
+                26.0F,
+                1400.0F,
+                4,
+                14400.0F,
+                1.0F
       );
 
       public final String serializedId;

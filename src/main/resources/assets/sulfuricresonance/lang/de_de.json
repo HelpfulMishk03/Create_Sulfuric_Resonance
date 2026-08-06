@@ -13,6 +13,25 @@
   "item.sulfuricresonance.pyroclast_bomb": "Pyroklastbombe",
   "item.sulfuricresonance.reinforced_cinder_compound": "Verstärkte Schlackenmischung",
   "item.sulfuricresonance.obsidian_fiber_mold": "Obsidianfaserform",
+  "item.sulfuricresonance.coke": "Koks",
+  "sulfuricresonance.ponder.tag.reactive_heat": "Reaktive Hitze",
+  "sulfuricresonance.ponder.tag.reactive_heat.description": "Erzeuge thermochemische Hitze, leite sie durch physische kinetische Verbindungen, erneuere ihre Reichweite mit Leitungen und führe sie Verbrennungsbändern zu.",
+
+  "sulfuricresonance.ponder.molten_rotor.operation.text_11": "Der Schmelzrotor ist die Quelle; thermochemische Wellen leiten seine Rotation und Hitze in das Netzwerk weiter",
+
+  "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Erreiche eine thermochemische Leitung, bevor die quellseitige Übertragungsreichweite aufgebraucht ist",
+
+  "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "Nutze nach der Erneuerung der Reichweite ein thermochemisches Getriebe, wenn die Route abbiegen, ansteigen oder sich verzweigen muss",
+
+  "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Leite einen gültigen Zweig in die Riemenscheibe eines Verbrennungsbands, um das Wärmenetzwerk zur Gegenstandsverarbeitung zu nutzen",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_13": "Ein Drehzahlregler eignet sich am besten zur Steuerung der Verarbeitung: Langsamere Bänder geben Gegenständen mehr Zeit unter Hitze, während schnellere Bänder den Durchsatz nur erhöhen, wenn die Distanz- und Zeitanforderungen des Rezepts weiterhin erfüllt werden",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_14": "Reaktive Hitze folgt einer einzigen physischen Kette: erzeugen, übertragen, erneuern, leiten und schließlich verarbeiten",
+  "item.sulfuricresonance.molten_ember_pellet": "Geschmolzenes Glutpellet",
+  "item.sulfuricresonance.infernal_coke": "Infernalischer Koks",
+  "block.sulfuricresonance.carbon_deposit_block": "Kohlenstoffablagerungsblock",
+  "block.sulfuricresonance.infernal_carbon_deposit_block": "Infernalischer Kohlenstoffablagerungsblock",
   "item.sulfuricresonance.obsidian_fiber_mold_filled": "Gefüllte Obsidianfaserform",
   "sulfuricresonance.ponder.thermochemical_shaft.operation.header": "Rotation und thermochemische Wärme übertragen",
   "sulfuricresonance.ponder.thermochemical_shaft.operation.text_1": "Thermochemische Wellen übertragen normale kinetische Rotation wie Create-Wellen",

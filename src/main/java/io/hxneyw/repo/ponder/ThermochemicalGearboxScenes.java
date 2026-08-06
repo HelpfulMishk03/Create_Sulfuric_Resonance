@@ -530,7 +530,17 @@ public final class ThermochemicalGearboxScenes {
                 .pointAt(gearboxCenter)
                 .placeNearTarget();
         scene.idle(155);
+        scene.overlay()
+                .showText(125)
+                .text(
+                        "Route a valid branch into a Combustion Belt pulley to turn the heat network into item processing"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(gearboxCenter)
+                .placeNearTarget();
 
+        scene.idle(135);
         scene.markAsFinished();
     }
 

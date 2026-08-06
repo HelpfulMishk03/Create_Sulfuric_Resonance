@@ -16,6 +16,25 @@
   "tooltip.sulfuricresonance.thermochemical_gearbox": "Routes rotation and thermochemical heat through all six faces.",
   "item.sulfuricresonance.latex_clump": "Latex Clump",
   "item.sulfuricresonance.wet_ash_ceramic": "Wet Ash Ceramic",
+  "item.sulfuricresonance.coke": "Coke",
+  "sulfuricresonance.ponder.tag.reactive_heat": "Reactive Heat",
+  "sulfuricresonance.ponder.tag.reactive_heat.description": "Generate thermochemical heat, route it through physical kinetic connections, renew its reach with Conduits, and deliver it to Combustion Belts.",
+
+  "sulfuricresonance.ponder.molten_rotor.operation.text_11": "The Molten Rotor is the source; Thermochemical Shafts carry its rotation and heat into the network",
+
+  "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Reach a Thermochemical Conduit before the source-side transmission allowance is exhausted",
+
+  "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "After renewing the span, use a Thermochemical Gearbox when the route must turn, climb, or branch",
+
+  "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Route a valid branch into a Combustion Belt pulley to turn the heat network into item processing",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_13": "A Rotation Speed Controller is the best way to tune processing: slower Belts give items more heated time, while faster Belts increase throughput only when the recipe still meets both its distance and time requirements",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_14": "Reactive Heat follows one physical chain: generate, transmit, renew, route, then process",
+  "item.sulfuricresonance.molten_ember_pellet": "Molten Ember Pellet",
+  "item.sulfuricresonance.infernal_coke": "Infernal Coke",
+  "block.sulfuricresonance.carbon_deposit_block": "Carbon Deposit Block",
+  "block.sulfuricresonance.infernal_carbon_deposit_block": "Infernal Carbon Deposit Block",
   "item.sulfuricresonance.unfired_ash_brick": "Unfired Ash Brick",
   "item.sulfuricresonance.acid_resistant_ceramic": "Acid-Resistant Ceramic",
   "sulfuricresonance.ponder.thermochemical_shaft.operation.header": "Routing Rotation and Thermochemical Heat",

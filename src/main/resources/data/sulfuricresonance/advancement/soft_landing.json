@@ -19,8 +19,22 @@
     "place_rubber_padding": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "sulfuricresonance:rubber_padding"
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "sulfuricresonance:rubber_padding"
+              ]
+            }
+          }
+        ]
       }
     }
-  }
+  },
+  "requirements": [
+    [
+      "place_rubber_padding"
+    ]
+  ]
 }

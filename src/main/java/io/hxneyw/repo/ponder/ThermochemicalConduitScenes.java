@@ -361,7 +361,17 @@ public final class ThermochemicalConduitScenes {
                 .pointAt(conduitCenter)
                 .placeNearTarget();
         scene.idle(140);
+        scene.overlay()
+                .showText(125)
+                .text(
+                        "After renewing the span, use a Thermochemical Gearbox when the route must turn, climb, or branch"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.GREEN)
+                .pointAt(conduitCenter)
+                .placeNearTarget();
 
+        scene.idle(135);
         scene.markAsFinished();
     }
 }

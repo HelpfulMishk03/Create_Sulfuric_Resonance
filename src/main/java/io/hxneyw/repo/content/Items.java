@@ -28,7 +28,49 @@ public class Items {
    public static final DeferredItem<Item> ASH_BRICK = ITEMS.register("ash_brick", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> ASH_BRICK_BLOCK_ITEM = ITEMS.register("ash_brick_block", () -> new BlockItem(AllModBlocks.ASH_BRICK_BLOCK.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASH_BRICK_PILLAR_ITEM = ITEMS.register("ash_brick_pillar", () -> new BlockItem(AllModBlocks.ASH_BRICK_PILLAR.get(), new Properties()));
+   public static final DeferredItem<Item> MOLTEN_EMBER_PELLET =
+           ITEMS.register(
+                   "molten_ember_pellet",
+                   () -> new Item(
+                           new Item.Properties()
+                                   .stacksTo(64)
+                                   .fireResistant()
+                   )
+           );
+   public static final DeferredItem<Item> COKE =
+           ITEMS.register(
+                   "coke",
+                   () -> new Item(
+                           new Properties().stacksTo(64)
+                   )
+           );
+   public static final DeferredItem<Item> INFERNAL_COKE =
+           ITEMS.register(
+                   "infernal_coke",
+                   () -> new Item(
+                           new Properties()
+                                   .stacksTo(64)
+                                   .fireResistant()
+                   )
+           );
+   public static final DeferredItem<BlockItem> CARBON_DEPOSIT_BLOCK_ITEM =
+           ITEMS.register(
+                   "carbon_deposit_block",
+                   () -> new BlockItem(
+                           AllModBlocks.CARBON_DEPOSIT_BLOCK.get(),
+                           new Properties()
+                   )
+           );
 
+   public static final DeferredItem<BlockItem>
+           INFERNAL_CARBON_DEPOSIT_BLOCK_ITEM =
+           ITEMS.register(
+                   "infernal_carbon_deposit_block",
+                   () -> new BlockItem(
+                           AllModBlocks.INFERNAL_CARBON_DEPOSIT_BLOCK.get(),
+                           new Properties().fireResistant()
+                   )
+           );
    public static final DeferredItem<BlockItem> ASH_BRICK_SLAB_ITEM = ITEMS.register("ash_brick_slab", () -> new BlockItem(AllModBlocks.ASH_BRICK_SLAB.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASH_BRICK_STAIRS_ITEM = ITEMS.register("ash_brick_stairs", () -> new BlockItem(AllModBlocks.ASH_BRICK_STAIRS.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASH_BRICK_WALL_ITEM = ITEMS.register("ash_brick_wall", () -> new BlockItem(AllModBlocks.ASH_BRICK_WALL.get(), new Properties()));

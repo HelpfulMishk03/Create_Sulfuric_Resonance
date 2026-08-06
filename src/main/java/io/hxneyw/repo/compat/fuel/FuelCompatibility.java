@@ -60,6 +60,36 @@ public final class FuelCompatibility {
             );
         }
 
+        if (stack.is(Items.MOLTEN_EMBER_PELLET.get())) {
+            return ResolvedFuel.fromType(
+                    FuelType.MOLTEN_EMBER_PELLET
+            );
+        }
+
+        if (stack.is(Items.CARBON_DEPOSIT_BLOCK_ITEM.get())) {
+            return ResolvedFuel.fromType(
+                    FuelType.CARBON_DEPOSIT_BLOCK
+            );
+        }
+
+        if (stack.is(Items.INFERNAL_CARBON_DEPOSIT_BLOCK_ITEM.get())) {
+            return ResolvedFuel.fromType(
+                    FuelType.INFERNAL_CARBON_DEPOSIT_BLOCK
+            );
+        }
+
+        if (stack.is(Items.COKE.get())) {
+            return ResolvedFuel.fromType(
+                    FuelType.COKE
+            );
+        }
+
+        if (stack.is(Items.INFERNAL_COKE.get())) {
+            return ResolvedFuel.fromType(
+                    FuelType.INFERNAL_COKE
+            );
+        }
+
         if (stack.is(ModItemTags.MOLTEN_ROTOR_CHARCOAL)) {
             return ResolvedFuel.fromType(FuelType.CHARCOAL);
         }

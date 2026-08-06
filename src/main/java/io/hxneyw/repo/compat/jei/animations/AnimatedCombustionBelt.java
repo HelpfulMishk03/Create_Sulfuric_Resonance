@@ -36,7 +36,9 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
     private static final long ITEM_CYCLE_MILLIS = 2800L;
     private static final float BELT_SPEED = 32.0F;
     private static final Direction BELT_FACING = Direction.EAST;
-
+    private static final float PULLEY_INSET = 0.15F;
+    private static final float BELT_VERTICAL_OFFSET = 0.01F;
+    private static final float PULLEY_VERTICAL_OFFSET = 0.10F;
     private int displayedSegments = 4;
 
     public AnimatedCombustionBelt withDisplayedSegments(
@@ -91,9 +93,9 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
 
         Lighting.setupFor3DItems();
         RenderSystem.setShaderColor(
-                1.33F,
-                1.33F,
-                1.33F,
+                1.19F,
+                1.19F,
+                1.19F,
                 1.0F
         );
 
@@ -101,14 +103,15 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
                 matrixStack,
                 vertexConsumer,
                 beltState.setValue(BeltBlock.PART, BeltPart.START),
-                0.25F,
+                PULLEY_INSET,
                 false
         );
+
         renderPulley(
                 matrixStack,
                 vertexConsumer,
                 beltState.setValue(BeltBlock.PART, BeltPart.END),
-                this.displayedSegments - 1.25F,
+                this.displayedSegments - 1.0F - PULLEY_INSET,
                 true
         );
 
@@ -187,7 +190,11 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
             );
 
             PoseStack localTransforms = new PoseStack();
-            localTransforms.translate(index, -0.05, 0.0);
+            localTransforms.translate(
+                    index,
+                    BELT_VERTICAL_OFFSET,
+                    0.0
+            );
             TransformStack.of(localTransforms)
                     .center()
                     .rotateYDegrees(
@@ -237,7 +244,11 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
                 ).light(LightTexture.FULL_BRIGHT);
 
         PoseStack localTransforms = new PoseStack();
-        localTransforms.translate(position, 0.10, 0.0);
+        localTransforms.translate(
+                position,
+                PULLEY_VERTICAL_OFFSET,
+                0.0
+        );
         TransformStack.of(localTransforms)
                 .center()
                 .rotateZDegrees(getCurrentAngle())
@@ -261,7 +272,7 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
         float progress = (Util.getMillis() % ITEM_CYCLE_MILLIS)
                 / (float) ITEM_CYCLE_MILLIS;
         float itemX = xOffset - 24.0F + progress * 48.0F;
-        float itemY = yOffset + 9.0F - progress * 6.7F;
+        float itemY = yOffset + 9.0F - progress * 6.2F;
 
         PoseStack matrixStack = graphics.pose();
         matrixStack.pushPose();

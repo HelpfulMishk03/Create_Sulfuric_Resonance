@@ -18,6 +18,25 @@
   "tooltip.sulfuricresonance.thermochemical_shaft": "Transmite rotación y calor termoquímico en línea recta.",
   "tooltip.sulfuricresonance.thermochemical_gearbox": "Distribuye rotación y calor termoquímico a través de sus seis caras.",
   "item.sulfuricresonance.latex_clump": "Grumo de látex",
+  "item.sulfuricresonance.coke": "Coque",
+  "sulfuricresonance.ponder.tag.reactive_heat": "Calor reactivo",
+  "sulfuricresonance.ponder.tag.reactive_heat.description": "Genera calor termoquímico, condúcelo mediante conexiones cinéticas físicas, renueva su alcance con conductos y entrégalo a cintas de combustión.",
+
+  "sulfuricresonance.ponder.molten_rotor.operation.text_11": "El Rotor Fundido es la fuente; los Ejes Termoquímicos transportan su rotación y calor hacia la red",
+
+  "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Alcanza un Conducto Termoquímico antes de agotar la distancia de transmisión disponible desde la fuente",
+
+  "sulfuricresonance.ponder.thermochemical_conduit.operation.text_13": "Después de renovar el tramo, usa una Caja de Engranajes Termoquímica cuando la ruta deba girar, ascender o ramificarse",
+
+  "sulfuricresonance.ponder.thermochemical_gearbox.operation.text_14": "Conduce una rama válida hasta una polea de la Cinta de Combustión para convertir la red de calor en procesamiento de objetos",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_13": "Un Controlador de Velocidad de Rotación es la mejor forma de ajustar el procesamiento: las cintas más lentas dan a los objetos más tiempo bajo calor, mientras que las más rápidas solo aumentan el rendimiento si la receta sigue cumpliendo sus requisitos de distancia y tiempo",
+
+  "sulfuricresonance.ponder.combustion_belt.operation.text_14": "El Calor Reactivo sigue una sola cadena física: generar, transmitir, renovar, dirigir y finalmente procesar",
+  "item.sulfuricresonance.molten_ember_pellet": "Gránulo de brasa fundida",
+  "item.sulfuricresonance.infernal_coke": "Coque infernal",
+  "block.sulfuricresonance.carbon_deposit_block": "Bloque de depósito de carbono",
+  "block.sulfuricresonance.infernal_carbon_deposit_block": "Bloque de depósito de carbono infernal",
   "item.sulfuricresonance.wet_ash_ceramic": "Cerámica de ceniza húmeda",
   "item.sulfuricresonance.unfired_ash_brick": "Ladrillo de ceniza sin cocer",
   "item.sulfuricresonance.acid_resistant_ceramic": "Cerámica resistente al ácido",
