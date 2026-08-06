@@ -4,6 +4,8 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.compat.jei.EmptyBackground;
 import com.simibubi.create.compat.jei.category.CreateRecipeCategory.Info;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
+import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplay;
+import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplayRegistry;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
@@ -13,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -90,28 +93,29 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
     public void registerCategories(
             IRecipeCategoryRegistration registration
     ) {
+        IGuiHelper guiHelper = registration
+                .getJeiHelpers()
+                .getGuiHelper();
+
         Info<BasinRecipe> categoryInfo = new Info<>(
                 CombustionMixingCategory.RECIPE_TYPE,
                 Component.translatable(
                         "recipe.sulfuricresonance.combustion_mixing"
                 ),
                 new EmptyBackground(177, 103),
-                registration.getJeiHelpers()
-                        .getGuiHelper()
-                        .createDrawableItemStack(
-                                new ItemStack(
-                                        AllBlocks.MECHANICAL_MIXER.get()
-                                )
-                        ),
+                guiHelper.createDrawableItemStack(
+                        new ItemStack(
+                                AllBlocks.MECHANICAL_MIXER.get()
+                        )
+                ),
                 CombustionMixingJeiPlugin::getAllMixingRecipes,
                 Collections.emptyList()
         );
 
         registration.addRecipeCategories(
                 new CombustionMixingCategory(categoryInfo),
-                new CombustionBeltCategory(
-                        registration.getJeiHelpers().getGuiHelper()
-                )
+                new CombustionBeltCategory(guiHelper),
+                new MoltenRotorFuelCategory(guiHelper)
         );
     }
 
@@ -128,6 +132,11 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 CombustionBeltCategory.RECIPE_TYPE,
                 getAllCombustionBeltRecipes()
         );
+
+        registration.addRecipes(
+                MoltenRotorFuelCategory.RECIPE_TYPE,
+                getAllMoltenRotorFuels()
+        );
     }
 
     @Override
@@ -136,6 +145,10 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
     ) {
         ItemStack crucible = new ItemStack(
                 AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
+        );
+
+        ItemStack moltenRotor = new ItemStack(
+                AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
         );
 
         registration.addRecipeCatalyst(
@@ -167,9 +180,7 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 CombustionMixingCategory.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
-                new ItemStack(
-                        AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
-                ),
+                moltenRotor,
                 CombustionMixingCategory.RECIPE_TYPE
         );
 
@@ -180,10 +191,13 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 CombustionBeltCategory.RECIPE_TYPE
         );
         registration.addRecipeCatalyst(
-                new ItemStack(
-                        AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
-                ),
+                moltenRotor,
                 CombustionBeltCategory.RECIPE_TYPE
+        );
+
+        registration.addRecipeCatalyst(
+                moltenRotor,
+                MoltenRotorFuelCategory.RECIPE_TYPE
         );
     }
 
@@ -221,5 +235,10 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 .stream()
                 .map(RecipeHolder::value)
                 .toList();
+    }
+
+    private static List<MoltenRotorFuelDisplay>
+    getAllMoltenRotorFuels() {
+        return MoltenRotorFuelDisplayRegistry.createDisplays();
     }
 }

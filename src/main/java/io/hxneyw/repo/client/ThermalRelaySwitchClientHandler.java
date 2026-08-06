@@ -4,8 +4,6 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.outliner.Outliner;
@@ -21,7 +19,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-
 
 @EventBusSubscriber(
         modid = CreateSulfuricResonance.MODID,
@@ -62,49 +59,13 @@ public final class ThermalRelaySwitchClientHandler {
                         heldStack
                 );
 
-        if (networkId == null) {
-            return;
-        }
-
-        Map<FurnaceKey,
-                ThermalRelaySwitchItem.FurnaceLink>
-                uniqueFurnaces = new LinkedHashMap<>();
-
-        Map<BlockPos, ThermalRelaySwitchBlockEntity>
-                uniqueRelays = new LinkedHashMap<>();
-
-
-        for (ThermalRelaySwitchItem.FurnaceLink link :
-                ThermalRelaySwitchItem.getLinks(heldStack)) {
-            addEndpoint(
-                    uniqueFurnaces,
-                    link
-            );
-        }
-
-
-        for (ThermalRelaySwitchBlockEntity relay :
-                ThermalRelaySwitchBlockEntity
-                        .getLoadedClientRelays()) {
-            if (relay.getLevel() != level
-                    || !networkId.equals(
-                    relay.getNetworkId()
-            )) {
-                continue;
-            }
-
-            uniqueRelays.putIfAbsent(
-                    relay.getBlockPos(),
-                    relay
-            );
-
-            for (ThermalRelaySwitchItem.FurnaceLink link :
-                    relay.getFurnaceLinks()) {
-                addEndpoint(
-                        uniqueFurnaces,
-                        link
+        ThermalRelaySwitchItem.FurnaceLink link =
+                ThermalRelaySwitchItem.getLinkedFurnace(
+                        heldStack
                 );
-            }
+
+        if (networkId == null || link == null) {
+            return;
         }
 
         int color =
@@ -112,32 +73,32 @@ public final class ThermalRelaySwitchClientHandler {
                         ? DARK_BLUE
                         : LIGHT_BLUE;
 
-        for (Map.Entry<
-                BlockPos,
+        for (ThermalRelaySwitchBlockEntity relay :
                 ThermalRelaySwitchBlockEntity
-                > entry : uniqueRelays.entrySet()) {
+                        .getLoadedClientRelays()) {
+            if (relay.getLevel() != level
+                    || !link.equals(
+                    relay.getFurnaceLink()
+            )) {
+                continue;
+            }
+
             renderRelay(
                     level,
                     player,
-                    networkId,
-                    entry.getKey(),
+                    link,
+                    relay.getBlockPos(),
                     color
             );
         }
 
-        for (Map.Entry<
-                FurnaceKey,
-                ThermalRelaySwitchItem.FurnaceLink
-                > entry : uniqueFurnaces.entrySet()) {
-            renderEndpoint(
-                    level,
-                    player,
-                    networkId,
-                    entry.getKey(),
-                    entry.getValue(),
-                    color
-            );
-        }
+        renderEndpoint(
+                level,
+                player,
+                networkId,
+                link,
+                color
+        );
     }
 
     private static ItemStack getHeldRelayStack(
@@ -162,21 +123,10 @@ public final class ThermalRelaySwitchClientHandler {
         return ItemStack.EMPTY;
     }
 
-    private static void addEndpoint(
-            Map<FurnaceKey,
-                    ThermalRelaySwitchItem.FurnaceLink> endpoints,
-            ThermalRelaySwitchItem.FurnaceLink link
-    ) {
-        endpoints.putIfAbsent(
-                FurnaceKey.from(link),
-                link
-        );
-    }
-
     private static void renderRelay(
             ClientLevel level,
             LocalPlayer player,
-            UUID networkId,
+            ThermalRelaySwitchItem.FurnaceLink link,
             BlockPos pos,
             int color
     ) {
@@ -189,7 +139,7 @@ public final class ThermalRelaySwitchClientHandler {
 
         if (!(level.getBlockEntity(pos)
                 instanceof ThermalRelaySwitchBlockEntity relay)
-                || !networkId.equals(relay.getNetworkId())) {
+                || !link.equals(relay.getFurnaceLink())) {
             return;
         }
 
@@ -208,7 +158,7 @@ public final class ThermalRelaySwitchClientHandler {
         Outliner.getInstance()
                 .showAABB(
                         new RelayOutlineKey(
-                                networkId,
+                                link,
                                 pos.immutable()
                         ),
                         box,
@@ -223,7 +173,6 @@ public final class ThermalRelaySwitchClientHandler {
             ClientLevel level,
             LocalPlayer player,
             UUID networkId,
-            FurnaceKey key,
             ThermalRelaySwitchItem.FurnaceLink link,
             int color
     ) {
@@ -271,7 +220,7 @@ public final class ThermalRelaySwitchClientHandler {
                 .showAABB(
                         new OutlineKey(
                                 networkId,
-                                key
+                                link
                         ),
                         box,
                         2
@@ -281,31 +230,15 @@ public final class ThermalRelaySwitchClientHandler {
                 .colored(color);
     }
 
-    private record FurnaceKey(
-            String dimension,
-            BlockPos position,
-            UUID furnaceIdentity
-    ) {
-        private static FurnaceKey from(
-                ThermalRelaySwitchItem.FurnaceLink link
-        ) {
-            return new FurnaceKey(
-                    link.dimension(),
-                    link.position(),
-                    link.furnaceIdentity()
-            );
-        }
-    }
-
     private record RelayOutlineKey(
-            UUID networkId,
+            ThermalRelaySwitchItem.FurnaceLink furnace,
             BlockPos relayPosition
     ) {
     }
 
     private record OutlineKey(
             UUID networkId,
-            FurnaceKey furnace
+            ThermalRelaySwitchItem.FurnaceLink furnace
     ) {
     }
 }

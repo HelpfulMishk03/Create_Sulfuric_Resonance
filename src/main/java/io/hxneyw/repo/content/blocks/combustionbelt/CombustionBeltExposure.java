@@ -8,6 +8,7 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import java.util.List;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -16,7 +17,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -26,6 +29,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
 public final class CombustionBeltExposure {
+
+    private static final ResourceLocation ROLLING_FIRE_ADVANCEMENT =
+            ResourceLocation.fromNamespaceAndPath(
+                    "sulfuricresonance",
+                    "rolling_fire"
+            );
+
+    private static final double ROLLING_FIRE_RADIUS_SQUARED = 64.0D;
 
     private static final String MOD_ROOT_KEY =
             "sulfuricresonance";
@@ -304,6 +315,12 @@ public final class CombustionBeltExposure {
                 );
 
                 if (completed) {
+                    awardRollingFire(
+                            level,
+                            controller,
+                            transported
+                    );
+
                     return new UpdateResult(
                             persistentDataChanged,
                             true
@@ -492,6 +509,51 @@ public final class CombustionBeltExposure {
         transported.clearFanProcessingData();
 
         return true;
+    }
+
+    private static void awardRollingFire(
+            Level level,
+            BeltBlockEntity controller,
+            TransportedItemStack transported
+    ) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        MinecraftServer server = serverLevel.getServer();
+
+        AdvancementHolder advancement =
+                server.getAdvancements().get(
+                        ROLLING_FIRE_ADVANCEMENT
+                );
+
+        if (advancement == null) {
+            return;
+        }
+
+        Vec3 completionPosition =
+                BeltHelper.getVectorForOffset(
+                        controller,
+                        transported.beltPosition
+                );
+
+        for (ServerPlayer player : serverLevel.getPlayers(candidate ->
+                !candidate.isSpectator()
+                        && candidate.position().distanceToSqr(
+                        completionPosition
+                ) <= ROLLING_FIRE_RADIUS_SQUARED
+        )) {
+            if (player.getAdvancements()
+                    .getOrStartProgress(advancement)
+                    .isDone()) {
+                continue;
+            }
+
+            player.getAdvancements().award(
+                    advancement,
+                    "processed_item"
+            );
+        }
     }
 
     private static boolean clearCombustionBeltExposure(

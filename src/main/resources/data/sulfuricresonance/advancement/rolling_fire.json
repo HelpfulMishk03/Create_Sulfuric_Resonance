@@ -1,0 +1,23 @@
+{
+  "parent": "sulfuricresonance:routed_reaction",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:combustion_belt_connector"
+    },
+    "title": {
+      "text": "Rolling Fire"
+    },
+    "description": {
+      "text": "Process your first item on a Combustion Belt."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "processed_item": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

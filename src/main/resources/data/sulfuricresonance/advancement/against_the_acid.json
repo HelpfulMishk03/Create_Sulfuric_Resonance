@@ -1,14 +1,14 @@
 {
-  "parent": "sulfuricresonance:im_flattered",
+  "parent": "sulfuricresonance:heatproof",
   "display": {
     "icon": {
-      "id": "sulfuricresonance:ash_ceramic"
+      "id": "sulfuricresonance:acid_resistant_ceramic"
     },
     "title": {
-      "text": "Heatproof"
+      "text": "Against the Acid"
     },
     "description": {
-      "text": "Fire Wet Ash Ceramic into heat-resistant Ash Ceramic."
+      "text": "Produce Acid-Resistant Ceramic."
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "obtain_ash_ceramic": {
+    "obtain_acid_resistant_ceramic": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "sulfuricresonance:ash_ceramic"
+              "sulfuricresonance:acid_resistant_ceramic"
             ]
           }
         ]

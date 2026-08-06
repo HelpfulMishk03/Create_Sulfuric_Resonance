@@ -175,11 +175,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
            @NotNull Player player,
            @NotNull BlockHitResult hit
    ) {
-      return MoltenRotorInteractions.useWithoutItem(
-              level,
-              pos,
-              player
-      );
+      return InteractionResult.PASS;
    }
 
    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {

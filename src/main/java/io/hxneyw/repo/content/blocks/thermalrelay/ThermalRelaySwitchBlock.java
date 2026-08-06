@@ -1,10 +1,11 @@
 package io.hxneyw.repo.content.blocks.thermalrelay;
 
 import com.mojang.serialization.MapCodec;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import io.hxneyw.repo.content.blocks.WrenchInteractionHelper;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import io.hxneyw.repo.content.menu.ThermalRelaySwitchMenu;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
-import java.util.List;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,7 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ThermalRelaySwitchBlock
         extends HorizontalDirectionalBlock
-        implements EntityBlock {
+        implements EntityBlock, IWrenchable {
 
     public static final MapCodec<ThermalRelaySwitchBlock> CODEC =
             simpleCodec(ThermalRelaySwitchBlock::new);
@@ -213,16 +214,16 @@ public class ThermalRelaySwitchBlock
         UUID networkId =
                 ThermalRelaySwitchItem.getNetworkId(stack);
 
-        List<ThermalRelaySwitchItem.FurnaceLink> links =
-                ThermalRelaySwitchItem.getLinks(stack);
+        ThermalRelaySwitchItem.FurnaceLink link =
+                ThermalRelaySwitchItem.getLinkedFurnace(stack);
 
-        if (networkId == null || links.isEmpty()) {
+        if (networkId == null || link == null) {
             return;
         }
 
         if (level.getBlockEntity(pos)
                 instanceof ThermalRelaySwitchBlockEntity relay) {
-            relay.setConnections(networkId, links);
+            relay.setConnection(networkId, link);
         }
     }
 
@@ -237,6 +238,20 @@ public class ThermalRelaySwitchBlock
             @NotNull InteractionHand hand,
             @NotNull BlockHitResult hit
     ) {
+        ItemInteractionResult wrenchResult =
+                WrenchInteractionHelper.handle(
+                        this,
+                        stack,
+                        state,
+                        player,
+                        hand,
+                        hit
+                );
+
+        if (wrenchResult != null) {
+            return wrenchResult;
+        }
+
         if (!(level.getBlockEntity(pos)
                 instanceof ThermalRelaySwitchBlockEntity relay)) {
             return ItemInteractionResult
@@ -264,16 +279,16 @@ public class ThermalRelaySwitchBlock
                 instanceof ThermalRelaySwitchItem) {
             UUID networkId = relay.getNetworkId();
 
-            List<ThermalRelaySwitchItem.FurnaceLink> links =
-                    relay.getFurnaceLinks();
+            ThermalRelaySwitchItem.FurnaceLink link =
+                    relay.getFurnaceLink();
 
             if (!level.isClientSide
                     && networkId != null
-                    && !links.isEmpty()) {
-                ThermalRelaySwitchItem.setConnections(
+                    && link != null) {
+                ThermalRelaySwitchItem.setConnection(
                         stack,
                         networkId,
-                        links
+                        link
                 );
 
                 player.getInventory().setChanged();
@@ -388,6 +403,19 @@ public class ThermalRelaySwitchBlock
         };
     }
 
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    public BlockState getRotatedBlockState(
+            BlockState originalState,
+            Direction targetedFace
+    ) {
+        return originalState.setValue(
+                FACING,
+                originalState.getValue(FACING).getClockWise()
+        );
+    }
+
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public @NotNull BlockState rotate(
             @NotNull BlockState state,
@@ -399,6 +427,7 @@ public class ThermalRelaySwitchBlock
         );
     }
 
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public @NotNull BlockState mirror(
             @NotNull BlockState state,

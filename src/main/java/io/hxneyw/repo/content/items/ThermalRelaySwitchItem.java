@@ -1,9 +1,6 @@
 package io.hxneyw.repo.content.items;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
@@ -24,7 +21,6 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
 public class ThermalRelaySwitchItem extends BlockItem {
 
     private static final String NETWORK_TAG = "RelayNetwork";
@@ -34,13 +30,10 @@ public class ThermalRelaySwitchItem extends BlockItem {
     private static final String DIMENSION_TAG = "Dimension";
     private static final String IDENTITY_TAG = "Identity";
 
-
     private static final String LEGACY_POSITION_TAG =
             "LinkedFurnacePos";
-
     private static final String LEGACY_DIMENSION_TAG =
             "LinkedFurnaceDimension";
-
     private static final String LEGACY_IDENTITY_TAG =
             "LinkedFurnaceIdentity";
 
@@ -60,38 +53,32 @@ public class ThermalRelaySwitchItem extends BlockItem {
         ItemStack stack = context.getItemInHand();
         BlockPos clickedPos = context.getClickedPos();
 
-        if (level.getBlockEntity(clickedPos)
-                instanceof MoltenRotorBlockEntity furnace) {
+        if (!(level.getBlockEntity(clickedPos)
+                instanceof MoltenRotorBlockEntity furnace)) {
+            return super.useOn(context);
+        }
 
-
-            if (player != null && player.isShiftKeyDown()) {
-                return InteractionResult.sidedSuccess(
-                        level.isClientSide
-                );
-            }
-
-            FurnaceLink clickedFurnace = new FurnaceLink(
-                    clickedPos.immutable(),
-                    level.dimension().location().toString(),
-                    furnace.getFurnaceIdentity()
-            );
-
-            if (!level.isClientSide) {
-                addFurnace(
-                        stack,
-                        clickedFurnace
-                );
-                markInventoryChanged(player);
-            }
-
+        if (player != null && player.isShiftKeyDown()) {
             return InteractionResult.sidedSuccess(
                     level.isClientSide
             );
         }
 
-        return super.useOn(context);
-    }
+        FurnaceLink clickedFurnace = new FurnaceLink(
+                clickedPos.immutable(),
+                level.dimension().location().toString(),
+                furnace.getFurnaceIdentity()
+        );
 
+        if (!level.isClientSide) {
+            setLinkedFurnace(stack, clickedFurnace);
+            markInventoryChanged(player);
+        }
+
+        return InteractionResult.sidedSuccess(
+                level.isClientSide
+        );
+    }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(
@@ -126,7 +113,6 @@ public class ThermalRelaySwitchItem extends BlockItem {
         );
     }
 
-
     @Override
     public boolean isFoil(@NotNull ItemStack stack) {
         return hasConnections(stack)
@@ -136,7 +122,7 @@ public class ThermalRelaySwitchItem extends BlockItem {
     public static boolean hasConnections(
             ItemStack stack
     ) {
-        return !getLinks(stack).isEmpty();
+        return getLinkedFurnace(stack) != null;
     }
 
     @Nullable
@@ -150,16 +136,14 @@ public class ThermalRelaySwitchItem extends BlockItem {
                 : null;
     }
 
-    public static List<FurnaceLink> getLinks(
+    @Nullable
+    public static FurnaceLink getLinkedFurnace(
             ItemStack stack
     ) {
-        return readLinks(
-                getCustomTag(stack)
-        );
+        return readStoredLink(getCustomTag(stack));
     }
 
-
-    public static void addFurnace(
+    public static void setLinkedFurnace(
             ItemStack stack,
             FurnaceLink newLink
     ) {
@@ -167,26 +151,23 @@ public class ThermalRelaySwitchItem extends BlockItem {
                 DataComponents.CUSTOM_DATA,
                 stack,
                 tag -> {
-                    UUID networkId = tag.hasUUID(NETWORK_TAG)
-                            ? tag.getUUID(NETWORK_TAG)
-                            : UUID.randomUUID();
+                    FurnaceLink existing =
+                            readStoredLink(tag);
 
-                    Map<FurnaceKey, FurnaceLink> links =
-                            readUniqueLinks(tag);
+                    UUID networkId =
+                            existing != null
+                                    && existing.equals(newLink)
+                                    && tag.hasUUID(NETWORK_TAG)
+                                    ? tag.getUUID(NETWORK_TAG)
+                                    : UUID.randomUUID();
 
-                    links.putIfAbsent(
-                            FurnaceKey.from(newLink),
-                            newLink
-                    );
-
-                    writeLinks(
+                    writeLink(
                             tag,
                             networkId,
-                            links.values()
+                            newLink
                     );
                 }
         );
-
 
         stack.set(
                 DataComponents.ENCHANTMENT_GLINT_OVERRIDE,
@@ -194,32 +175,17 @@ public class ThermalRelaySwitchItem extends BlockItem {
         );
     }
 
-    public static void setConnections(
+    public static void setConnection(
             ItemStack stack,
             UUID networkId,
-            List<FurnaceLink> links
+            FurnaceLink link
     ) {
-        Map<FurnaceKey, FurnaceLink> unique =
-                new LinkedHashMap<>();
-
-        for (FurnaceLink link : links) {
-            unique.putIfAbsent(
-                    FurnaceKey.from(link),
-                    link
-            );
-        }
-
-        if (unique.isEmpty()) {
-            clearConnections(stack);
-            return;
-        }
-
         CompoundTag tag = getCustomTag(stack);
 
-        writeLinks(
+        writeLink(
                 tag,
                 networkId,
-                unique.values()
+                link
         );
 
         CustomData.set(
@@ -258,19 +224,10 @@ public class ThermalRelaySwitchItem extends BlockItem {
         );
     }
 
-    private static List<FurnaceLink> readLinks(
+    @Nullable
+    private static FurnaceLink readStoredLink(
             CompoundTag tag
     ) {
-        return List.copyOf(
-                readUniqueLinks(tag).values()
-        );
-    }
-
-    private static Map<FurnaceKey, FurnaceLink>
-    readUniqueLinks(CompoundTag tag) {
-        Map<FurnaceKey, FurnaceLink> unique =
-                new LinkedHashMap<>();
-
         if (tag.contains(
                 LINKED_FURNACES_TAG,
                 Tag.TAG_LIST
@@ -283,47 +240,29 @@ public class ThermalRelaySwitchItem extends BlockItem {
             for (int index = 0;
                  index < storedLinks.size();
                  index++) {
-                CompoundTag linkTag =
-                        storedLinks.getCompound(index);
-
-                FurnaceLink link =
-                        readLink(linkTag);
+                FurnaceLink link = readLink(
+                        storedLinks.getCompound(index)
+                );
 
                 if (link != null) {
-                    unique.putIfAbsent(
-                            FurnaceKey.from(link),
-                            link
-                    );
+                    return link;
                 }
             }
         }
 
-
         if (tag.contains(LEGACY_POSITION_TAG)
                 && tag.contains(LEGACY_DIMENSION_TAG)
                 && tag.hasUUID(LEGACY_IDENTITY_TAG)) {
-            FurnaceLink legacyLink =
-                    new FurnaceLink(
-                            BlockPos.of(
-                                    tag.getLong(
-                                            LEGACY_POSITION_TAG
-                                    )
-                            ),
-                            tag.getString(
-                                    LEGACY_DIMENSION_TAG
-                            ),
-                            tag.getUUID(
-                                    LEGACY_IDENTITY_TAG
-                            )
-                    );
-
-            unique.putIfAbsent(
-                    FurnaceKey.from(legacyLink),
-                    legacyLink
+            return new FurnaceLink(
+                    BlockPos.of(
+                            tag.getLong(LEGACY_POSITION_TAG)
+                    ),
+                    tag.getString(LEGACY_DIMENSION_TAG),
+                    tag.getUUID(LEGACY_IDENTITY_TAG)
             );
         }
 
-        return unique;
+        return null;
     }
 
     @Nullable
@@ -345,31 +284,28 @@ public class ThermalRelaySwitchItem extends BlockItem {
         );
     }
 
-    private static void writeLinks(
+    private static void writeLink(
             CompoundTag tag,
             UUID networkId,
-            Iterable<FurnaceLink> links
+            FurnaceLink link
     ) {
+        CompoundTag linkTag = new CompoundTag();
+
+        linkTag.putLong(
+                POSITION_TAG,
+                link.position().asLong()
+        );
+        linkTag.putString(
+                DIMENSION_TAG,
+                link.dimension()
+        );
+        linkTag.putUUID(
+                IDENTITY_TAG,
+                link.furnaceIdentity()
+        );
+
         ListTag storedLinks = new ListTag();
-
-        for (FurnaceLink link : links) {
-            CompoundTag linkTag = new CompoundTag();
-
-            linkTag.putLong(
-                    POSITION_TAG,
-                    link.position().asLong()
-            );
-            linkTag.putString(
-                    DIMENSION_TAG,
-                    link.dimension()
-            );
-            linkTag.putUUID(
-                    IDENTITY_TAG,
-                    link.furnaceIdentity()
-            );
-
-            storedLinks.add(linkTag);
-        }
+        storedLinks.add(linkTag);
 
         tag.putUUID(
                 NETWORK_TAG,
@@ -413,21 +349,5 @@ public class ThermalRelaySwitchItem extends BlockItem {
             String dimension,
             UUID furnaceIdentity
     ) {
-    }
-
-    private record FurnaceKey(
-            String dimension,
-            BlockPos position,
-            UUID furnaceIdentity
-    ) {
-        private static FurnaceKey from(
-                FurnaceLink link
-        ) {
-            return new FurnaceKey(
-                    link.dimension(),
-                    link.position(),
-                    link.furnaceIdentity()
-            );
-        }
     }
 }

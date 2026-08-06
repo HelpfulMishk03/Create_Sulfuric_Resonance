@@ -1,14 +1,14 @@
 {
-  "parent": "sulfuricresonance:im_flattered",
+  "parent": "sulfuricresonance:sulfurous_beginnings",
   "display": {
     "icon": {
-      "id": "sulfuricresonance:ash_ceramic"
+      "id": "sulfuricresonance:unrefined_rubber"
     },
     "title": {
-      "text": "Heatproof"
+      "text": "Natural Elasticity"
     },
     "description": {
-      "text": "Fire Wet Ash Ceramic into heat-resistant Ash Ceramic."
+      "text": "Produce your first batch of Unrefined Rubber."
     },
     "frame": "task",
     "show_toast": true,
@@ -16,13 +16,13 @@
     "hidden": false
   },
   "criteria": {
-    "obtain_ash_ceramic": {
+    "obtain_unrefined_rubber": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "sulfuricresonance:ash_ceramic"
+              "sulfuricresonance:unrefined_rubber"
             ]
           }
         ]

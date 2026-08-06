@@ -1,28 +1,28 @@
 {
-  "parent": "sulfuricresonance:im_flattered",
+  "parent": "sulfuricresonance:the_switch",
   "display": {
     "icon": {
-      "id": "sulfuricresonance:ash_ceramic"
+      "id": "sulfuricresonance:thermochemical_conduit"
     },
     "title": {
-      "text": "Heatproof"
+      "text": "Routed Reaction"
     },
     "description": {
-      "text": "Fire Wet Ash Ceramic into heat-resistant Ash Ceramic."
+      "text": "Route furnace heat through a thermochemical connection."
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "obtain_ash_ceramic": {
+    "obtain_thermochemical_conduit": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "sulfuricresonance:ash_ceramic"
+              "sulfuricresonance:thermochemical_conduit"
             ]
           }
         ]

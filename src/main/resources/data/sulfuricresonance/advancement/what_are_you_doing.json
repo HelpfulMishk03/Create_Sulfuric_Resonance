@@ -1,0 +1,23 @@
+{
+  "parent": "sulfuricresonance:rolling_fire",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:combustion_belt_connector"
+    },
+    "title": {
+      "text": "What Are You Doing?"
+    },
+    "description": {
+      "text": "Process yourself—or at least try to—for 30 seconds on a Combustion Belt at Combustion heat."
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "survive_combustion_belt": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

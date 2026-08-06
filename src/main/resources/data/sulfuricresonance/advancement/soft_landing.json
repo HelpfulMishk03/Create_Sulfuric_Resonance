@@ -1,0 +1,26 @@
+{
+  "parent": "sulfuricresonance:pressure_and_heat",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:rubber_padding"
+    },
+    "title": {
+      "text": "Soft Landing"
+    },
+    "description": {
+      "text": "Place Rubber Padding to cushion even the hardest falls."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "place_rubber_padding": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "sulfuricresonance:rubber_padding"
+      }
+    }
+  }
+}

@@ -1,8 +1,38 @@
 {
   "multipart": [
     {
+      "when": {
+        "facing": "north"
+      },
       "apply": {
         "model": "sulfuricresonance:block/living_ember_lamp"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/living_ember_lamp",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/living_ember_lamp",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/living_ember_lamp",
+        "y": 270
       }
     }
   ]

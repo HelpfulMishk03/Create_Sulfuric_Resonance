@@ -41,8 +41,6 @@ public final class ThermalRelayScenes {
         BlockPos primaryFurnacePos =
                 util.grid().at(0, 1, 2);
 
-        BlockPos secondaryFurnacePos =
-                util.grid().at(0, 1, 4);
 
         BlockPos relaySupportPos =
                 util.grid().at(2, 1, 2);
@@ -65,8 +63,6 @@ public final class ThermalRelayScenes {
         Selection primaryFurnace =
                 util.select().position(primaryFurnacePos);
 
-        Selection secondaryFurnace =
-                util.select().position(secondaryFurnacePos);
 
         Selection relaySupport =
                 util.select().position(relaySupportPos);
@@ -89,8 +85,6 @@ public final class ThermalRelayScenes {
         Vec3 primaryFurnaceTop =
                 util.vector().topOf(primaryFurnacePos);
 
-        Vec3 secondaryFurnaceTop =
-                util.vector().topOf(secondaryFurnacePos);
 
         Vec3 relayCenter =
                 util.vector().centerOf(relayPos);
@@ -113,11 +107,6 @@ public final class ThermalRelayScenes {
                 false
         );
 
-        scene.world().setBlocks(
-                secondaryFurnace,
-                furnaceState(),
-                false
-        );
 
         scene.world().setBlocks(
                 outputSupports,
@@ -192,8 +181,8 @@ public final class ThermalRelayScenes {
                 .colored(PonderPalette.BLUE)
                 .text(
                         "Right-click a Molten Rotor Furnace "
-                                + "with the relay item to add it "
-                                + "to the selected network"
+                                + "with the relay item to select "
+                                + "that furnace"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
@@ -202,8 +191,8 @@ public final class ThermalRelayScenes {
 
         scene.overlay().showText(130)
                 .text(
-                        "More furnaces can be selected before "
-                                + "the relay is placed"
+                        "Each relay item stores one furnace; "
+                                + "selecting another replaces its link"
                 )
                 .placeNearTarget()
                 .pointAt(primaryFurnaceTop);
@@ -242,7 +231,7 @@ public final class ThermalRelayScenes {
                 .colored(PonderPalette.BLUE)
                 .text(
                         "Placing the item completes the connection "
-                                + "and stores the entire selected network"
+                                + "and stores its selected furnace"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
@@ -266,7 +255,7 @@ public final class ThermalRelayScenes {
         scene.overlay().showText(190)
                 .text(
                         "Holding another connected relay item "
-                                + "reveals the linked furnaces "
+                                + "reveals the linked furnace "
                                 + "and matching placed relays"
                 )
                 .placeNearTarget()
@@ -365,18 +354,16 @@ public final class ThermalRelayScenes {
         scene.idle(180);
 
 
-        scene.world().modifyBlock(
+        applyHeatDemonstration(
+                scene,
                 primaryFurnacePos,
-                state -> state.setValue(
-                        MoltenRotorBlock.HEAT_LEVEL,
-                        HeatLevel.KINDLED
-                ),
-                true
+                HeatLevel.KINDLED,
+                relayPos,
+                5,
+                1,
+                wirePos,
+                relayPos
         );
-
-        setRelayOutput(scene, relayPos, 5, 1);
-        setWirePower(scene, wirePos, 5);
-        scene.effects().indicateRedstone(relayPos);
 
         scene.overlay().showText(110)
                 .colored(PonderPalette.GREEN)
@@ -389,18 +376,16 @@ public final class ThermalRelayScenes {
         scene.idle(150);
 
 
-        scene.world().modifyBlock(
+        applyHeatDemonstration(
+                scene,
                 primaryFurnacePos,
-                state -> state.setValue(
-                        MoltenRotorBlock.HEAT_LEVEL,
-                        HeatLevel.SEETHING
-                ),
-                true
+                HeatLevel.SEETHING,
+                relayPos,
+                10,
+                2,
+                wirePos,
+                wirePos
         );
-
-        setRelayOutput(scene, relayPos, 10, 2);
-        setWirePower(scene, wirePos, 10);
-        scene.effects().indicateRedstone(wirePos);
 
         scene.overlay().showText(110)
                 .colored(PonderPalette.GREEN)
@@ -491,10 +476,9 @@ public final class ThermalRelayScenes {
         scene.overlay().showText(245)
                 .colored(PonderPalette.RED)
                 .text(
-                        "Low Fuel Warning settings monitor every valid "
-                                + "linked furnace and pulses when a "
-                                + "qualifying furnace has ten seconds "
-                                + "of fuel or less"
+                        "Low Fuel Warning monitors the linked furnace "
+                                + "and pulses when it matches the selected "
+                                + "heat scope with ten seconds of fuel or less"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
@@ -503,9 +487,9 @@ public final class ThermalRelayScenes {
 
         scene.overlay().showText(195)
                 .text(
-                        "The heat scope can target Heated furnaces, "
-                                + "Superheated and Combustion furnaces, "
-                                + "or both ranges"
+                        "The heat scope can target Heated, "
+                                + "Superheated and Combustion, "
+                                + "or both ranges on that furnace"
                 )
                 .placeNearTarget()
                 .pointAt(relayTop);
@@ -533,53 +517,21 @@ public final class ThermalRelayScenes {
                 .pointAt(wireTop);
         scene.idle(215);
 
-        /*
-         * MULTI-FURNACE EVALUATION
-         */
-        scene.world().showSection(
-                secondaryFurnace,
-                Direction.DOWN
-        );
-
-        scene.idle(12);
-
-        scene.overlay().showControls(
-                        secondaryFurnaceTop,
-                        Pointing.DOWN,
-                        40
-                )
-                .rightClick()
-                .withItem(
-                        new ItemStack(
-                                Items.THERMAL_RELAY_SWITCH_ITEM.get()
-                        )
-                );
-
-        scene.idle(8);
-
-        scene.overlay().showOutline(
-                PonderPalette.BLUE,
-                "thermal_relay_secondary_furnace_link",
-                secondaryFurnace,
-                200
-        );
-
         scene.overlay().showText(160)
                 .colored(PonderPalette.BLUE)
                 .text(
-                        "In Custom Heat mode, the hottest valid furnace "
-                                + "selects the output profile"
+                        "In Custom Heat mode, the linked furnace's "
+                                + "current heat selects the output profile"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
-                .pointAt(secondaryFurnaceTop);
+                .pointAt(primaryFurnaceTop);
         scene.idle(200);
 
         scene.overlay().showText(225)
                 .text(
-                        "In Low Fuel mode, every furnace inside the "
-                                + "selected heat scope is checked; "
-                                + "one warning is enough to pulse the relay"
+                        "In Low Fuel mode, only the linked furnace "
+                                + "is checked against the selected heat scope"
                 )
                 .placeNearTarget()
                 .pointAt(relayCenter);
@@ -629,7 +581,7 @@ public final class ThermalRelayScenes {
         scene.overlay().showText(205)
                 .text(
                         "Sneak-right-click the placed relay to clear "
-                                + "its network and immediately reset "
+                                + "its furnace link and immediately reset "
                                 + "redstone and glow to zero"
                 )
                 .attachKeyFrame()
@@ -640,8 +592,8 @@ public final class ThermalRelayScenes {
         scene.overlay().showText(180)
                 .colored(PonderPalette.GREEN)
                 .text(
-                        "One furnace network can support several relays, "
-                                + "each with its own saved control profile"
+                        "One Molten Rotor Furnace can support any number "
+                                + "of relays, each with its own control profile"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
@@ -649,6 +601,30 @@ public final class ThermalRelayScenes {
         scene.idle(220);
 
         scene.markAsFinished();
+    }
+
+    private static void applyHeatDemonstration(
+            @NotNull SceneBuilder scene,
+            @NotNull BlockPos furnacePos,
+            @NotNull HeatLevel heatLevel,
+            @NotNull BlockPos relayPos,
+            int redstone,
+            int glow,
+            @NotNull BlockPos wirePos,
+            @NotNull BlockPos indicationPos
+    ) {
+        scene.world().modifyBlock(
+                furnacePos,
+                state -> state.setValue(
+                        MoltenRotorBlock.HEAT_LEVEL,
+                        heatLevel
+                ),
+                true
+        );
+
+        setRelayOutput(scene, relayPos, redstone, glow);
+        setWirePower(scene, wirePos, redstone);
+        scene.effects().indicateRedstone(indicationPos);
     }
 
     private static void setRelayOutput(

@@ -895,25 +895,12 @@ public class ThermalRelaySwitchScreen
                 Component.translatable(
                         "gui.sulfuricresonance."
                                 + "thermal_relay_switch."
-                                + "linked",
-                        this.menu.getLinkedCount()
-                ),
-                20,
-                211,
-                MUTED
-        );
-
-        draw(
-                graphics,
-                Component.translatable(
-                        "gui.sulfuricresonance."
-                                + "thermal_relay_switch."
                                 + "hottest",
                         heatBandName(
                                 this.menu.getCurrentHeatBand()
                         )
                 ),
-                117,
+                20,
                 211,
                 MUTED
         );

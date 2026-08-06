@@ -49,6 +49,11 @@ repositories {
         repository.url = uri('https://repo.spongepowered.org/repository/maven-public/')
     }
 
+    maven { MavenArtifactRepository repository ->
+        repository.name = 'TerraformersMC'
+        repository.url = uri('https://maven.terraformersmc.com/')
+    }
+
     mavenCentral()
 }
 
@@ -85,6 +90,18 @@ neoForge {
     }
 }
 
+final boolean loadJeiRuntime =
+        providers.gradleProperty("load_jei")
+                .orElse("true")
+                .get()
+                .toBoolean()
+
+final boolean loadEmiRuntime =
+        providers.gradleProperty("load_emi")
+                .orElse("true")
+                .get()
+                .toBoolean()
+
 dependencies {
     ExternalModuleDependency createSlimDependency =
             dependencies.create(
@@ -101,8 +118,25 @@ dependencies {
 
     implementation("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    compileOnly(
+            "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    )
+
+    if (loadJeiRuntime) {
+        runtimeOnly(
+                "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+        )
+    }
+
+    compileOnly(
+            "dev.emi:emi-neoforge:${emi_version}:api"
+    )
+
+    if (loadEmiRuntime) {
+        runtimeOnly(
+                "dev.emi:emi-neoforge:${emi_version}"
+        )
+    }
 
     annotationProcessor('org.spongepowered:mixin:0.8.7:processor')
 }

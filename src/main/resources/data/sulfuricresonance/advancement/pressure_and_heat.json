@@ -1,28 +1,28 @@
 {
-  "parent": "sulfuricresonance:im_flattered",
+  "parent": "sulfuricresonance:natural_elasticity",
   "display": {
     "icon": {
-      "id": "sulfuricresonance:ash_ceramic"
+      "id": "sulfuricresonance:vulcanized_rubber"
     },
     "title": {
-      "text": "Heatproof"
+      "text": "Pressure and Heat"
     },
     "description": {
-      "text": "Fire Wet Ash Ceramic into heat-resistant Ash Ceramic."
+      "text": "Vulcanize Unrefined Rubber through pressure and heat."
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
   "criteria": {
-    "obtain_ash_ceramic": {
+    "obtain_vulcanized_rubber": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "sulfuricresonance:ash_ceramic"
+              "sulfuricresonance:vulcanized_rubber"
             ]
           }
         ]

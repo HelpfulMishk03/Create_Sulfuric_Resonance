@@ -4,11 +4,8 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import io.hxneyw.repo.content.menu.ThermalRelaySwitchMenu;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -82,9 +79,8 @@ public class ThermalRelaySwitchBlockEntity
     @Nullable
     private UUID networkId;
 
-    private final List<
-            ThermalRelaySwitchItem.FurnaceLink
-            > linkedFurnaces = new ArrayList<>();
+    @Nullable
+    private ThermalRelaySwitchItem.FurnaceLink linkedFurnace;
 
     private RelayMode mode = RelayMode.CUSTOM_HEAT;
     private LowFuelScope lowFuelScope =
@@ -139,7 +135,7 @@ public class ThermalRelaySwitchBlockEntity
                         case ThermalRelaySwitchMenu
                                      .DATA_CURRENT_GLOW -> getCurrentGlow();
                         case ThermalRelaySwitchMenu
-                                     .DATA_LINKED_COUNT -> linkedFurnaces.size();
+                                     .DATA_LINKED_COUNT -> linkedFurnace == null ? 0 : 1;
                         case ThermalRelaySwitchMenu
                                      .DATA_LOW_FUEL_ACTIVE -> lowFuelWarningActive ? 1 : 0;
                         default -> 0;
@@ -188,7 +184,6 @@ public class ThermalRelaySwitchBlockEntity
                                      .DATA_LOW_FUEL_ACTIVE -> lowFuelWarningActive =
                                 value != 0;
                         default -> {
-                            // Current output and linked count are read-only.
                         }
                     }
                 }
@@ -228,32 +223,12 @@ public class ThermalRelaySwitchBlockEntity
         relay.evaluateOutputs(level);
     }
 
-    public void setConnections(
+    public void setConnection(
             @NotNull UUID networkId,
-            @NotNull List<
-                    ThermalRelaySwitchItem.FurnaceLink
-                    > links
+            @NotNull ThermalRelaySwitchItem.FurnaceLink link
     ) {
         this.networkId = networkId;
-        this.linkedFurnaces.clear();
-
-        Map<FurnaceKey,
-                ThermalRelaySwitchItem.FurnaceLink> unique =
-                new LinkedHashMap<>();
-
-        for (ThermalRelaySwitchItem.FurnaceLink link :
-                links) {
-            unique.putIfAbsent(
-                    FurnaceKey.from(link),
-                    link
-            );
-        }
-
-        this.linkedFurnaces.addAll(unique.values());
-
-        if (this.linkedFurnaces.isEmpty()) {
-            this.networkId = null;
-        }
+        this.linkedFurnace = link;
 
         forceImmediateEvaluation();
         markAndSync();
@@ -262,10 +237,10 @@ public class ThermalRelaySwitchBlockEntity
     public void clearConnections() {
         boolean alreadyClear =
                 this.networkId == null
-                        && this.linkedFurnaces.isEmpty();
+                        && this.linkedFurnace == null;
 
         this.networkId = null;
-        this.linkedFurnaces.clear();
+        this.linkedFurnace = null;
         this.currentHeatBand =
                 HeatBand.UNHEATED.ordinal();
         this.lowFuelWarningActive = false;
@@ -283,9 +258,10 @@ public class ThermalRelaySwitchBlockEntity
         return this.networkId;
     }
 
-    public List<ThermalRelaySwitchItem.FurnaceLink>
-    getFurnaceLinks() {
-        return List.copyOf(this.linkedFurnaces);
+    @Nullable
+    public ThermalRelaySwitchItem.FurnaceLink
+    getFurnaceLink() {
+        return this.linkedFurnace;
     }
 
     public ContainerData getMenuData() {
@@ -377,75 +353,58 @@ public class ThermalRelaySwitchBlockEntity
     private void evaluateOutputs(
             @NotNull Level level
     ) {
-        HeatBand hottest = HeatBand.UNHEATED;
+        HeatBand current = HeatBand.UNHEATED;
         boolean qualifyingLowFuel = false;
 
-        String relayDimension =
-                level.dimension().location().toString();
+        ThermalRelaySwitchItem.FurnaceLink link =
+                this.linkedFurnace;
 
-        for (ThermalRelaySwitchItem.FurnaceLink link :
-                this.linkedFurnaces) {
-            if (!relayDimension.equals(link.dimension())) {
-                continue;
-            }
-
+        if (link != null
+                && level.dimension()
+                .location()
+                .toString()
+                .equals(link.dimension())) {
             BlockPos furnacePos = link.position();
 
-
-            if (!level.isLoaded(furnacePos)) {
-                continue;
-            }
-
-            if (!(level.getBlockEntity(furnacePos)
-                    instanceof MoltenRotorBlockEntity furnace)) {
-                continue;
-            }
-
-            if (!link.furnaceIdentity().equals(
+            if (level.isLoaded(furnacePos)
+                    && level.getBlockEntity(furnacePos)
+                    instanceof MoltenRotorBlockEntity furnace
+                    && link.furnaceIdentity().equals(
                     furnace.getFurnaceIdentity()
             )) {
-                continue;
-            }
+                current = HeatBand.from(
+                        furnace.getCurrentHeatTier()
+                );
 
-            HeatBand band = HeatBand.from(
-                    furnace.getCurrentHeatTier()
-            );
+                boolean activeFuelEndingSoon =
+                        this.lowFuelScope.matches(current)
+                                && isActiveFuelEndingSoon(
+                                furnace,
+                                current
+                        );
 
-            if (band.rank() > hottest.rank()) {
-                hottest = band;
-            }
+                boolean heatedStateEndingSoon =
+                        isHeatedStateEndingSoon(
+                                furnace,
+                                current
+                        );
 
-            boolean activeFuelEndingSoon =
-                    this.lowFuelScope.matches(band)
-                            && isActiveFuelEndingSoon(
-                            furnace,
-                            band
-                    );
-
-            boolean heatedStateEndingSoon =
-                    isHeatedStateEndingSoon(
-                            furnace,
-                            band
-                    );
-
-            if (!qualifyingLowFuel
-                    && (activeFuelEndingSoon
-                    || heatedStateEndingSoon)) {
-                qualifyingLowFuel = true;
+                qualifyingLowFuel =
+                        activeFuelEndingSoon
+                                || heatedStateEndingSoon;
             }
         }
 
-        this.currentHeatBand = hottest.ordinal();
+        this.currentHeatBand = current.ordinal();
         this.lowFuelWarningActive = qualifyingLowFuel;
 
         ConfiguredOutput baseOutput =
-                configuredOutputFor(hottest);
+                configuredOutputFor(current);
 
         if (qualifyingLowFuel) {
             applyLowFuelWarning(level);
             return;
         }
-
 
         applyOutput(
                 level,
@@ -793,28 +752,28 @@ public class ThermalRelaySwitchBlockEntity
     private ListTag createStoredLinks() {
         ListTag storedLinks = new ListTag();
 
-        for (ThermalRelaySwitchItem.FurnaceLink link :
-                this.linkedFurnaces) {
-            CompoundTag linkTag = new CompoundTag();
-
-            linkTag.putLong(
-                    POSITION_TAG,
-                    link.position().asLong()
-            );
-
-            linkTag.putString(
-                    DIMENSION_TAG,
-                    link.dimension()
-            );
-
-            linkTag.putUUID(
-                    IDENTITY_TAG,
-                    link.furnaceIdentity()
-            );
-
-            storedLinks.add(linkTag);
+        if (this.linkedFurnace == null) {
+            return storedLinks;
         }
 
+        CompoundTag linkTag = new CompoundTag();
+
+        linkTag.putLong(
+                POSITION_TAG,
+                this.linkedFurnace.position().asLong()
+        );
+
+        linkTag.putString(
+                DIMENSION_TAG,
+                this.linkedFurnace.dimension()
+        );
+
+        linkTag.putUUID(
+                IDENTITY_TAG,
+                this.linkedFurnace.furnaceIdentity()
+        );
+
+        storedLinks.add(linkTag);
         return storedLinks;
     }
 
@@ -874,7 +833,7 @@ public class ThermalRelaySwitchBlockEntity
         UUID savedNetworkId = this.networkId;
 
         if (savedNetworkId == null
-                || this.linkedFurnaces.isEmpty()) {
+                || this.linkedFurnace == null) {
             return;
         }
 
@@ -899,7 +858,7 @@ public class ThermalRelaySwitchBlockEntity
         loadConfiguration(tag);
 
         this.networkId = null;
-        this.linkedFurnaces.clear();
+        this.linkedFurnace = null;
         this.currentHeatBand =
                 HeatBand.UNHEATED.ordinal();
         this.lowFuelWarningActive = false;
@@ -918,10 +877,6 @@ public class ThermalRelaySwitchBlockEntity
                 Tag.TAG_COMPOUND
         );
 
-        Map<FurnaceKey,
-                ThermalRelaySwitchItem.FurnaceLink> unique =
-                new LinkedHashMap<>();
-
         for (int index = 0;
              index < storedLinks.size();
              index++) {
@@ -934,7 +889,8 @@ public class ThermalRelaySwitchBlockEntity
                 continue;
             }
 
-            ThermalRelaySwitchItem.FurnaceLink link =
+            this.networkId = tag.getUUID(NETWORK_TAG);
+            this.linkedFurnace =
                     new ThermalRelaySwitchItem.FurnaceLink(
                             BlockPos.of(
                                     linkTag.getLong(POSITION_TAG)
@@ -942,20 +898,7 @@ public class ThermalRelaySwitchBlockEntity
                             linkTag.getString(DIMENSION_TAG),
                             linkTag.getUUID(IDENTITY_TAG)
                     );
-
-            unique.putIfAbsent(
-                    FurnaceKey.from(link),
-                    link
-            );
-        }
-
-        if (!unique.isEmpty()) {
-            this.networkId =
-                    tag.getUUID(NETWORK_TAG);
-
-            this.linkedFurnaces.addAll(
-                    unique.values()
-            );
+            break;
         }
 
         forceImmediateEvaluation();
@@ -1210,20 +1153,10 @@ public class ThermalRelaySwitchBlockEntity
     }
 
     public enum HeatBand {
-        UNHEATED(0),
-        HEATED(1),
-        SUPERHEATED(2),
-        COMBUSTION(3);
-
-        private final int rank;
-
-        HeatBand(int rank) {
-            this.rank = rank;
-        }
-
-        public int rank() {
-            return this.rank;
-        }
+        UNHEATED,
+        HEATED,
+        SUPERHEATED,
+        COMBUSTION;
 
         public static HeatBand fromOrdinal(int value) {
             HeatBand[] values = values();
@@ -1258,19 +1191,5 @@ public class ThermalRelaySwitchBlockEntity
     ) {
     }
 
-    private record FurnaceKey(
-            String dimension,
-            BlockPos position,
-            UUID furnaceIdentity
-    ) {
-        private static FurnaceKey from(
-                ThermalRelaySwitchItem.FurnaceLink link
-        ) {
-            return new FurnaceKey(
-                    link.dimension(),
-                    link.position(),
-                    link.furnaceIdentity()
-            );
-        }
-    }
+
 }
