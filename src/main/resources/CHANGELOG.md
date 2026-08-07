@@ -6,7 +6,81 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
-## [0.0.2.6-beta] — Ashen Resonance
+## [0.2.7-beta] — Reactive Heat
+
+### Summary
+
+Reactive Heat introduces a complete thermochemical transmission system centered around the Molten Rotor Furnace. Heat can now be generated, transmitted, routed, monitored, and consumed across an industrial network while expanding combustion progression, recipe integration, automation, and compatibility.
+
+**CHANGED VERSIONING TO PROPER 0.2.7**
+
+### Added
+
+#### Thermochemical Network
+
+- Added Thermochemical Shaft.
+- Added Encased Thermochemical Shaft variants.
+- Added Thermochemical Conduit.
+- Added Thermochemical Gearbox.
+- Added Thermochemical Casing.
+- Added Combustion Belt.
+- Added Thermal Relay Switch.
+- Added complete thermochemical heat transmission, routing, monitoring, and belt-processing systems.
+- Added complete Ponder scenes for all new thermochemical machinery.
+
+#### Materials
+
+- Added Obsidian Cloth.
+- Added Unfinished Filament.
+- Added Cinder Filament.
+- Added Acid-Etched Copper Sheet.
+- Added Wet Ash Ceramic.
+- Added Unfired Ash Brick.
+- Added Acid-Resistant Ceramic.
+- Expanded ash and ceramic progression.
+
+#### Molten Rotor Fuels
+
+- Added Coke.
+- Added Molten Ember Pellet.
+- Added Infernal Coke.
+- Added Carbon Deposit Block.
+- Added Infernal Carbon Deposit Block.
+- Added reversible storage recipes.
+
+#### Recipe Viewers
+
+- Added native JEI support.
+- Added native EMI support.
+- Added combined JEI + EMI compatibility.
+
+#### Progression
+
+- Added new advancements for thermochemical machinery, combustion processing, rubber progression, and material refinement.
+
+### Changed
+
+- Improved Living Ember Lamp behaviour and transitions.
+- Improved Thermochemical network rules and routing.
+- Improved Combustion Belt propagation.
+- Improved Molten Rotor automation and fuel handling.
+- Improved JEI and EMI layouts.
+- Updated recipes throughout combustion and ceramic progression.
+- Updated English (US), English (UK), Spanish, French, and German localization.
+- Updated textures, models, and visual consistency.
+
+### Fixed
+
+- Fixed JEI/EMI compatibility issues.
+- Fixed thermochemical routing issues.
+- Fixed advancement trigger issues.
+- Fixed rendering, particle, transparency, and Z-fighting issues.
+- Fixed recipe viewer alignment.
+- Fixed translation and model issues.
+- Fixed Molten Rotor fuel synchronization and save compatibility.
+
+
+## [0.2.6-beta] — Ashen Resonance
 
 ### Added
 
@@ -77,7 +151,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Fixed missing or inconsistent creative-tab placement for newly added content.
 - Fixed item and block presentation inconsistencies discovered during the final visual pass.
 
-## [0.0.2.5-beta] — Compatibility, Guidance, and Progression
+## [0.2.5-beta] — Compatibility, Guidance, and Progression
 
 ### Updated
 
@@ -125,7 +199,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Explains compatibility with properly tagged external Sulfur dusts.
 - Explains why raw ores, chunks, and storage blocks are not accepted as processed Sulfur inputs.
 
-## [0.0.2.4-beta1] - Progression Hotfix
+## 0.2.4-beta1] - Progression Hotfix
 
 ### Fixed
 
@@ -133,7 +207,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Replaced the Molten Rotor Furnace's Flameborne Core ingredient with Blaze Shard.
 - Restored a valid progression path from early Blaze processing to the Molten Rotor Furnace and then into sulfur chemistry.
 
-## [0.0.2.4-beta] - Ponder, Projectile, and Build Stability Update
+## [0.2.4-beta] - Ponder, Projectile, and Build Stability Update
 
 ### Added
 
@@ -155,7 +229,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Corrected the displayed Ponder shaft rotation direction.
 - Reduced the Pyroclast Bomb's hand-thrown launch velocity for a heavier, shorter arc.
 - Reduced the Pyroclast Bomb's Potato Cannon velocity for more controllable range.
-- Updated public documentation and release metadata to version `0.0.2.4-beta`.
+- Updated public documentation and release metadata to version `0.2.4-beta`.
 
 ### Fixed
 
@@ -178,7 +252,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Furnace lighting is still based on Minecraft's normal block-light behavior and renderer effects rather than truly directional light propagation.
 - Additional Ponder coverage and recipe explanations may still be expanded during beta.
 
-## [0.0.2.3-betaA] - Pre-Release Public
+## [0.2.3-betaA] - Pre-Release Public
 
 ### Added
 
@@ -292,7 +366,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Reworked client registration to keep rendering classes out of dedicated-server initialization.
 - Reworked compatibility code into dedicated compatibility packages.
 - Updated the development environment to Java 21, Minecraft 1.21.1, NeoForge 21.1.243+, Create 6.0.10, Flywheel 1.0.6, Ponder 1.0.x, and supported JEI 19.x builds.
-- Updated metadata to version `0.0.2.3-betaA` and author `Hxney`.
+- Updated metadata to version `0.2.3-betaA` and author `Hxney`.
 
 ### Fixed
 
@@ -328,7 +402,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Balancing, recipe progression, visuals, naming, and broad mod compatibility may change during beta.
 - Tag-based support is broader than before but does not guarantee compatibility with every modded fuel.
 
-## [0.0.2.1-betaA through 0.0.2.1-betaE] - Source Restoration Baseline
+## [0.2.1-betaA through 0.2.1-betaE] - Source Restoration Baseline
 
 ### Added and restored
 
@@ -349,7 +423,7 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 - Fixed recipe serializer and recipe-type generic issues.
 - Fixed numerous renderer regressions and restored a stable visual baseline.
 
-## [0.0.1.9-beta] - Earlier Surviving Beta
+## [0.1.9-beta] - Earlier Surviving Beta
 
 - Earlier compiled beta used as one source of reference during restoration.
 - Included the original foundation of the Molten Rotor Furnace, sulfur chemistry, rubber content, Perforated Spritzer, and Pyroclast systems.
@@ -357,4 +431,4 @@ This project is still in beta. Older entries are reconstructed from surviving bu
 
 ## Project history note
 
-Create: Sulfuric Resonance is developed and maintained by **Hxney**. Approximately eight months of active development led to the `0.0.2.4-beta` public-beta candidate, excluding an approximately one-year interruption caused by unforeseen life emergencies.
+Create: Sulfuric Resonance is developed and maintained by **Hxney**. Approximately eight months of active development led to the `0.2.4-beta` public-beta candidate, excluding an approximately one-year interruption caused by unforeseen life emergencies.

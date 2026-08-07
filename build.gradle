@@ -18,11 +18,6 @@ java {
     }
 }
 
-/*
- * Resolve the main source set once without configuring it through a closure.
- * Generated data is added by processResources below, so no
- * additional source-set resource configuration is required.
- */
 final NamedDomainObjectProvider<SourceSet> mainSourceSetProvider =
         sourceSets.named(SourceSet.MAIN_SOURCE_SET_NAME)
 
@@ -156,10 +151,6 @@ tasks.withType(JavaCompile).configureEach { JavaCompile compileTask ->
 }
 
 tasks.named('processResources', ProcessResources).configure { ProcessResources resourceTask ->
-    /*
-     * The refmap is produced by compileJava, so compile first and then copy it
-     * into the processed resources output.
-     */
     resourceTask.dependsOn(tasks.named('compileJava'))
     resourceTask.from(generatedRefmapDirectory)
 }
