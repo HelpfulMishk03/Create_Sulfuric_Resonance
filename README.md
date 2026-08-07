@@ -2,7 +2,7 @@
 
 **Create: Sulfuric Resonance** is an independently developed NeoForge addon for Create that expands combustion, kinetic heat generation, Sulfur chemistry, Sulfuric Acid processing, rubber engineering, ash-based materials, and industrial automation.
 
-> **Beta notice:** Version **0.0.2.6-beta — Ashen Resonance** is a public beta release. Core systems are functional and tested, but balancing, recipes, visuals, names, and compatibility may still change before a stable release. Back up important worlds before updating beta versions.
+> **Beta notice:** Version **0.2.7-beta — Reactive Heat** is the current public beta release. Reactive Heat introduces complete thermochemical heat infrastructure, expanded combustion progression, native JEI and EMI support, new industrial fuels, and extensive gameplay polish. Core systems are functional and tested, though balancing and compatibility may continue to evolve before the first stable release. Back up important worlds before updating beta versions.
 
 ## Supported Versions
 
@@ -11,12 +11,13 @@
 - Create **6.0.10 or newer**
 - Java **21**
 - JEI **19.39.0.372 or newer** — optional and client-side
+- EMI **1.1.24 or newer** - optional and client side
 
-> **JEI compatibility notice:** Some JEI builds may render blank fluid textures in Combustion Mixing recipes. The recipe, tooltip, and fluid amount can still be registered correctly.
+> **JEI compatibility notice:** Some JEI builds may render blank fluid Mixing recipes. The recipe, tooltip, and fluid amount can still be seen correctly. 
 
 ## Development Status
 
-> **Public beta:** `0.0.2.6-beta` expands the mod with the **Ashen Resonance** material family, new Create-compatible tools, a custom crucible, heat-responsive lighting, additional building blocks, custom sounds, a rebuilt advancement tree, and expanded localization.
+> **Public beta:** `0.2.7-beta` expands the mod with the **Ashen Resonance** material family, new Create-compatible tools, a custom crucible, heat-responsive lighting, additional building blocks, custom sounds, a rebuilt advancement tree, and expanded localization.
 
 Create: Sulfuric Resonance is a solo project. Feedback and clear bug reports are appreciated, though updates may take time.
 
@@ -45,11 +46,37 @@ Major capabilities include:
 
 Combustion Mixing extends Create Basin processing with recipes that require the Molten Rotor Furnace's highest heat tiers.
 
-The **Ceramic Crucible** expands the mod's heat-resistant processing identity and provides a foundation for specialized combustion recipes.
+The **Ash Ceramic Crucible Basin** replaces the standard Create Basin for Combustion Mixing recipes and serves as the dedicated vessel for CSR's high-temperature industrial chemistry.
 
-### Ashen Resonance Materials
+### Thermochemical Heat Network
 
-Version `0.0.2.6-beta` introduces a new family of ash-derived materials and components:
+Reactive Heat introduces a complete thermochemical heat transmission system built around the Molten Rotor Furnace.
+
+- Thermochemical Shaft
+- Encased Thermochemical Shaft
+- Thermochemical Conduit
+- Thermochemical Gearbox
+- Thermochemical Casing
+- Combustion Belt
+- Thermal Relay Switch
+
+Heat can now be generated, transmitted, routed, monitored, and consumed throughout an industrial factory.
+
+### Industrial Fuels
+
+The Molten Rotor Furnace now supports:
+
+- Coke
+- Molten Ember Pellet
+- Infernal Coke
+- Carbon Deposit Block
+- Infernal Carbon Deposit Block
+
+Each fuel provides unique temperatures, burn durations, and industrial applications.
+
+### Ashen Resonance & Thermochemical Materials
+
+Version `0.2.7-beta` introduces a new family of ash-derived materials and components:
 
 - **Ash Brick**
 - **Ash Ceramic**
@@ -138,6 +165,23 @@ Ponder scenes are included for:
 - Molten Rotor Furnace operation, heat progression, kinetic output, gauge behaviour, and cooldown;
 - Cross-Mod Sulfur Compatibility, explaining accepted common tags and processed external Sulfur inputs;
 - Living Ember Lamp linking and heat-responsive behaviour.
+- Thermochemical Shaft.
+- Thermochemical Conduit.
+- Thermochemical Gearbox.
+- Combustion Belt.
+- Thermal Relay Switch.
+
+### Recipe Viewers
+
+CSR now includes native support for **JEI** and **EMI**.
+
+Dedicated categories:
+
+- Molten Rotor Fuels
+- Combustion Mixing
+- Combustion Belt Processing
+
+Both viewers may be installed independently or together.
 
 ### Localization
 
@@ -151,7 +195,7 @@ Current localization support includes:
 
 ## User Experience and Presentation
 
-Version `0.0.2.6-beta` includes a broad inventory and visual-consistency pass.
+Version `0.2.7-beta` includes a broad inventory and visual-consistency pass.
 
 - Stack sizes were reviewed for consistency.
 - Creative-tab ordering was reorganized.
@@ -188,9 +232,10 @@ Do not install development source folders or an embedded Create dependency. Crea
 - Continue Molten Rotor visual and balance polish.
 - Expand latex, rubber, and vulcanisation progression.
 - Add more Combustion and Sulfuric Acid recipes.
-- Expand Ash Ceramic and Ceramic Crucible processing.
+- Expand Ash Ceramic Crucible Basin processing.
+- Expand sulfur-based industrial processing.
+- Introduce intelligent thermochemical automation.
 - Continue dedicated-server and large-modpack compatibility testing.
-- Add EMI support.
 - Introduce new machinery and later material tiers.
 
 ## License and Distribution

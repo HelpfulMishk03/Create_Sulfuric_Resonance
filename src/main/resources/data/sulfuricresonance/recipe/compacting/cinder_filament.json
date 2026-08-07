@@ -1,0 +1,17 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:blaze_shard"
+    },
+    {
+      "item": "sulfuricresonance:unfinished_filament"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:cinder_filament",
+      "count": 1
+    }
+  ]
+}

@@ -3,6 +3,7 @@ package io.hxneyw.repo.content.blocks.moltenrotor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import io.hxneyw.repo.CreateSulfuricResonance;
@@ -22,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 
@@ -124,16 +126,14 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
       float currentTemp = furnace.getDisplayTemperature();
       float tempPercent = Mth.clamp((currentTemp - 20.0F) / 1579.0F, 0.0F, 1.0F);
 
-      // 1. Calculate and smooth ONLY the base temperature angle first
       float baseTargetAngle = tempPercent * 90.0F;
       float prevAngle = previousAngles.getOrDefault(furnace, baseTargetAngle);
       float smoothingFactor = 0.15F;
       float interpolatedAngle = Mth.lerp(smoothingFactor, prevAngle, baseTargetAngle);
 
-      // Store the smooth base angle for the next frame
       previousAngles.put(furnace, interpolatedAngle);
 
-      // 2. Add the violent shaking AFTER smoothing so it doesn't get dampened
+
       if (tempPercent > 0.95F) {
          float time =
                  (float)(
@@ -204,9 +204,9 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
          float leftAngleRadians =
                  this.toLocalShaftAngle(
-                         KineticBlockEntityRenderer.getAngleForBe(
+                         this.getConnectedShaftAngle(
                                  furnace,
-                                 furnace.getBlockPos().relative(leftDirection),
+                                 leftDirection,
                                  shaftAxis
                          ),
                          facing
@@ -214,9 +214,9 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
          float rightAngleRadians =
                  this.toLocalShaftAngle(
-                         KineticBlockEntityRenderer.getAngleForBe(
+                         this.getConnectedShaftAngle(
                                  furnace,
-                                 furnace.getBlockPos().relative(rightDirection),
+                                 rightDirection,
                                  shaftAxis
                          ),
                          facing
@@ -272,16 +272,43 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
    }
 
 
+   private float getConnectedShaftAngle(
+           MoltenRotorBlockEntity furnace,
+           Direction direction,
+           Direction.Axis shaftAxis
+   ) {
+      if (furnace.getLevel() != null) {
+         BlockEntity adjacentBlockEntity =
+                 furnace.getLevel().getBlockEntity(
+                         furnace.getBlockPos().relative(direction)
+                 );
+
+         if (adjacentBlockEntity
+                 instanceof KineticBlockEntity adjacentKinetic
+                 && KineticBlockEntityRenderer
+                 .getRotationAxisOf(adjacentKinetic)
+                 == shaftAxis) {
+            return KineticBlockEntityRenderer.getAngleForBe(
+                    adjacentKinetic,
+                    adjacentKinetic.getBlockPos(),
+                    shaftAxis
+            );
+         }
+      }
+
+      return KineticBlockEntityRenderer.getAngleForBe(
+              furnace,
+              furnace.getBlockPos(),
+              shaftAxis
+      );
+   }
+
+
    private float toLocalShaftAngle(
            float worldAxisAngleRadians,
            Direction facing
    ) {
-      /*
-       * The base half-shaft models rotate around local +X. After the
-       * whole model is turned to face SOUTH or WEST, local +X points
-       * along the negative world shaft axis. Negating only those two
-       * facings reproduces Create's positive-world-axis rotation.
-       */
+
       return switch (facing) {
          case SOUTH, WEST -> -worldAxisAngleRadians;
          default -> worldAxisAngleRadians;
@@ -308,11 +335,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
       float angle =
               this.getImpellerRotationAngle(furnace);
       if (angle != 0.0F) {
-         /*
-          * rotateToFacing() already places the model in its local frame.
-          * One local-Z rotation keeps all four horizontal facings
-          * visually consistent without extra direction reversals.
-          */
+
          ms.mulPose(Axis.ZP.rotationDegrees(angle));
       }
 
@@ -338,11 +361,6 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
          return 0.0D;
       }
 
-      /*
-       * Keep time as a double. Converting the world's long game time
-       * to float causes visible stepping after the world has been
-       * running for a while.
-       */
       return furnace.getLevel().getGameTime()
               + (double) this.currentPartialTicks;
    }
@@ -373,24 +391,12 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
       double elapsedTicks =
               renderTime - rotationState.lastRenderTime;
 
-      /*
-       * Do not integrate a long period while the renderer was not
-       * visible. Normal low-FPS frame gaps remain fully accurate.
-       */
       if (elapsedTicks < 0.0D || elapsedTicks > 20.0D) {
          elapsedTicks = 0.0D;
       }
 
       rotationState.lastRenderTime = renderTime;
 
-      /*
-       * Exact visual relationship:
-       * 1 degree Celsius = 1 RPM.
-       *
-       * One RPM advances 0.3 degrees per game tick:
-       * 360 degrees / 60 seconds / 20 ticks = 0.3.
-       * Integrating the angle prevents phase jumps as temperature changes.
-       */
       double impellerRpm =
               furnace.getImpellerRpm();
 

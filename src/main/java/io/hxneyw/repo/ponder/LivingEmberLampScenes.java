@@ -46,10 +46,15 @@ public final class LivingEmberLampScenes {
         UUID ponderFurnaceIdentity = UUID.randomUUID();
         LivingEmberLampItem.setLink(
                 linkedLamp,
-                furnacePos,
-                "minecraft:overworld",
-                ponderFurnaceIdentity
+                new LivingEmberLampItem.FurnaceLink(
+                        furnacePos,
+                        "minecraft:overworld",
+                        ponderFurnaceIdentity
+                )
         );
+
+        ItemStack clearedLamp = linkedLamp.copy();
+        LivingEmberLampItem.clearLink(clearedLamp);
 
         scene.configureBasePlate(0, 0, 5);
         scene.showBasePlate();
@@ -107,10 +112,17 @@ public final class LivingEmberLampScenes {
 
         scene.idle(125);
 
+        scene.overlay().showOutline(
+                PonderPalette.BLUE,
+                "living_ember_lamp_selected_furnace",
+                util.select().position(furnacePos),
+                125
+        );
+
         scene.overlay()
                 .showText(125)
                 .text(
-                        "The selected coordinates and dimension are stored on the item and shown in its tooltip"
+                        "A pulsing blue outline marks the selected furnace while the linked Lamp is held"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)
@@ -154,13 +166,27 @@ public final class LivingEmberLampScenes {
 
         scene.idle(20);
 
+        scene.overlay().showOutline(
+                PonderPalette.BLUE,
+                "living_ember_lamp_network_furnace",
+                util.select().position(furnacePos),
+                130
+        );
+
+        scene.overlay().showOutline(
+                PonderPalette.BLUE,
+                "living_ember_lamp_network_lamp",
+                util.select().position(lampPos),
+                130
+        );
+
         scene.overlay()
                 .showText(130)
                 .text(
-                        "Once placed, the Lamp watches only the furnace selected by that stored link"
+                        "After placement, holding a Lamp from the same network outlines both the furnace and every connected Lamp"
                 )
                 .attachKeyFrame()
-                .colored(PonderPalette.GREEN)
+                .colored(PonderPalette.BLUE)
                 .pointAt(util.vector().centerOf(lampPos))
                 .placeNearTarget();
 
@@ -221,7 +247,7 @@ public final class LivingEmberLampScenes {
         scene.overlay()
                 .showText(175)
                 .text(
-                        "With 200 fuel ticks or less remaining, a hot Lamp warns you by pulsing noticeably between levels 9 and 15"
+                        "With 200 fuel ticks or less remaining and no fuel queued, a hot Lamp warns you by pulsing noticeably between levels 9 and 15"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.OUTPUT)
@@ -237,8 +263,7 @@ public final class LivingEmberLampScenes {
         animateLampLight(scene, lampPos, 15, 9);
         scene.idle(8);
         animateLampLight(scene, lampPos, 9, 15);
-        // Allow the low-fuel warning to disappear completely before the
-        // missing-furnace explanation begins.
+
         scene.idle(105);
 
         scene.world().setBlock(
@@ -262,16 +287,50 @@ public final class LivingEmberLampScenes {
         scene.idle(145);
 
         scene.overlay()
-                .showText(135)
+                .showText(145)
                 .text(
-                        "Link the Lamp item again before placing it beside a different furnace"
+                        "Breaking and replacing the furnace does not restore the link, even at the same position"
                 )
                 .attachKeyFrame()
-                .colored(PonderPalette.INPUT)
+                .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(lampPos))
                 .placeNearTarget();
 
-        scene.idle(145);
+        scene.idle(155);
+
+        scene.overlay()
+                .showControls(
+                        util.vector().topOf(lampPos)
+                                .add(0.0, 0.45, 0.0),
+                        Pointing.DOWN,
+                        80
+                )
+                .whileSneaking()
+                .rightClick()
+                .withItem(linkedLamp);
+
+        scene.overlay()
+                .showText(165)
+                .text(
+                        "Sneak-right-click air with a linked Lamp to clear the connection; the action bar confirms Removed connection to network"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.INPUT)
+                .pointAt(util.vector().topOf(lampPos))
+                .placeNearTarget();
+
+        scene.idle(110);
+
+        scene.overlay()
+                .showControls(
+                        util.vector().topOf(lampPos)
+                                .add(0.0, 0.45, 0.0),
+                        Pointing.DOWN,
+                        55
+                )
+                .withItem(clearedLamp);
+
+        scene.idle(75);
         scene.markAsFinished();
     }
 

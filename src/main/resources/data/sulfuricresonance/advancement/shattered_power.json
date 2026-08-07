@@ -10,7 +10,7 @@
     "description": {
       "text": "Obtain Blaze Shards and craft the Infernal Impeller."
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

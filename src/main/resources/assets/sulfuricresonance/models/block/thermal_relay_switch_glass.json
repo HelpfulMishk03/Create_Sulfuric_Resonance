@@ -1,0 +1,298 @@
+{
+  "format_version": "1.9.0",
+  "credit": "Made with Blockbench",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "0": "sulfuricresonance:block/thermal_relay_switch",
+    "1": "sulfuricresonance:block/sides_of_relay",
+    "2": "sulfuricresonance:block/cap",
+    "3": "sulfuricresonance:block/connections",
+    "4": "sulfuricresonance:block/control",
+    "particle": "sulfuricresonance:block/thermal_relay_switch"
+  },
+  "elements": [
+    {
+      "name": "ashesil_glass",
+      "from": [
+        3,
+        6,
+        6
+      ],
+      "to": [
+        4,
+        7,
+        10
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7,
+          6,
+          9
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            5.5,
+            13.5,
+            6,
+            14
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            8,
+            11,
+            10,
+            11.5
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            6,
+            13.5,
+            6.5,
+            14
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            10,
+            11,
+            12,
+            11.5
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "ashesil_glass",
+      "from": [
+        4,
+        6,
+        5
+      ],
+      "to": [
+        12,
+        7,
+        6
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7,
+          6,
+          9
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            9.5,
+            8.5,
+            13.5,
+            9
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            7.5,
+            13.5,
+            8,
+            14
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            10,
+            3,
+            14,
+            3.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            13.5,
+            7.5,
+            14,
+            8
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "ashesil_glass",
+      "from": [
+        4,
+        6,
+        10
+      ],
+      "to": [
+        12,
+        7,
+        11
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7,
+          6,
+          9
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            10,
+            5,
+            14,
+            5.5
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            11.5,
+            13.5,
+            12,
+            14
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            10,
+            5.5,
+            14,
+            6
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            13.5,
+            11.5,
+            14,
+            12
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "ashesil_glass",
+      "from": [
+        12,
+        6,
+        6
+      ],
+      "to": [
+        13,
+        7,
+        10
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7,
+          6,
+          9
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            13.5,
+            12.5,
+            14,
+            13
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            0,
+            12,
+            2,
+            12.5
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            13,
+            13.5,
+            13.5,
+            14
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            12,
+            1,
+            14,
+            1.5
+          ],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "name": "top_panel_glass",
+      "from": [
+        4,
+        7,
+        6
+      ],
+      "to": [
+        12,
+        7.2,
+        10
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7,
+          7,
+          9
+        ]
+      },
+      "faces": {
+        "up": {
+          "uv": [
+            6,
+            4,
+            0,
+            0
+          ],
+          "texture": "#2"
+        },
+        "down": {
+          "uv": [
+            6,
+            4,
+            0,
+            8
+          ],
+          "texture": "#2"
+        }
+      }
+    }
+  ],
+  "ambientocclusion": false
+}

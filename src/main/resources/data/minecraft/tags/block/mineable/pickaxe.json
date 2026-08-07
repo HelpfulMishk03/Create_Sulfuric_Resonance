@@ -10,6 +10,11 @@
     "sulfuricresonance:ash_brick_stairs",
     "sulfuricresonance:ash_brick_wall",
     "sulfuricresonance:ash_brick_pillar",
-    "sulfuricresonance:ashesil"
+    "sulfuricresonance:ashesil",
+    "sulfuricresonance:thermochemical_conduit",
+    "sulfuricresonance:thermochemical_shaft",
+    "sulfuricresonance:thermochemical_gearbox",
+    "sulfuricresonance:carbon_deposit_block",
+    "sulfuricresonance:infernal_carbon_deposit_block"
   ]
 }

@@ -38,13 +38,13 @@ public abstract class BasinRecipeMixin {
          return;
       }
 
-      // Every combustion recipe requires the Ceramic Crucible.
+
       if (!(basin instanceof AshCeramicCrucibleBlockEntity)) {
          cir.setReturnValue(false);
          return;
       }
 
-      // The Crucible must be directly above a Radiant Molten Rotor Furnace.
+
       if (!createSulfuricResonance$hasRadiantHeat(basin)) {
          cir.setReturnValue(false);
       }

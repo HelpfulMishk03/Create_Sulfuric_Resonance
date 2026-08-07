@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:the_switch",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:thermochemical_conduit"
+    },
+    "title": {
+      "text": "Routed Reaction"
+    },
+    "description": {
+      "text": "Route furnace heat through a thermochemical connection."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_thermochemical_conduit": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:thermochemical_conduit"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

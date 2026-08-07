@@ -5,7 +5,13 @@
   "refmap": "sulfuricresonance.refmap.json",
   "mixins": [
     "BasinRecipeMixin",
-    "BasinOperatingMixin"
+    "BasinOperatingMixin",
+    "BeltBlockEntityMixin",
+    "BeltBlockMixin"
+  ],
+  "client": [
+    "BeltRendererMixin",
+    "BeltVisualMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:heatproof",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:acid_resistant_ceramic"
+    },
+    "title": {
+      "text": "Against the Acid"
+    },
+    "description": {
+      "text": "Produce Acid-Resistant Ceramic."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_acid_resistant_ceramic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:acid_resistant_ceramic"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

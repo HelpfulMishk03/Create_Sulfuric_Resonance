@@ -1,0 +1,18 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "create:copper_sheet"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "sulfuricresonance:sulfuric_acid"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:acid_etched_copper_sheet"
+    }
+  ]
+}

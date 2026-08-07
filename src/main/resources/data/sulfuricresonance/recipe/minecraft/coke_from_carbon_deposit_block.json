@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:carbon_deposit_block"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:coke",
+    "count": 9
+  }
+}

@@ -86,10 +86,7 @@ public final class MoltenRotorScenes {
 
         scene.idle(105);
 
-        /*
-         * Creative heat mode is used only inside the demonstration so the
-         * scene can move through its heat states without waiting for fuel.
-         */
+
         scene.world().modifyBlockEntity(
                 furnacePos,
                 MoltenRotorBlockEntity.class,
@@ -104,11 +101,6 @@ public final class MoltenRotorScenes {
                 ),
                 false
         );
-
-        /*
-         * Negative speeds intentionally reverse the original Ponder shaft
-         * direction so it matches the requested in-game presentation.
-         */
         scene.world().setKineticSpeed(
                 util.select()
                         .position(westShaftPos)
@@ -307,6 +299,17 @@ public final class MoltenRotorScenes {
         );
 
         scene.idle(55);
+        scene.overlay()
+                .showText(120)
+                .text(
+                        "The Molten Rotor is the source; Thermochemical Shafts carry its rotation and heat into the network"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(furnacePos))
+                .placeNearTarget();
+
+        scene.idle(130);
         scene.markAsFinished();
     }
 }

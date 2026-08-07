@@ -10,13 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-/**
- * Renders the Molten Rotor's active fuel and chamber kindling.
- *
- * <p>This class intentionally contains only fuel-scene rendering. All item
- * counts, positions, scales, rotations, and display contexts are preserved
- * from the original renderer.</p>
- */
+
 public final class MoltenRotorFuelRenderer {
     private MoltenRotorFuelRenderer() {
     }
@@ -62,7 +56,7 @@ public final class MoltenRotorFuelRenderer {
         }
 
         switch (fuelType) {
-            case COAL, CHARCOAL -> renderCoalPile(
+            case COAL, CHARCOAL, COKE, INFERNAL_COKE -> renderCoalPile(
                     furnace,
                     fuelStack,
                     fuelModel,
@@ -101,6 +95,17 @@ public final class MoltenRotorFuelRenderer {
                     0.27F
             );
 
+            case CARBON_DEPOSIT_BLOCK,
+                 INFERNAL_CARBON_DEPOSIT_BLOCK -> renderRestingFuel(
+                    fuelStack,
+                    fuelModel,
+                    ms,
+                    buffer,
+                    light,
+                    overlay,
+                    0.36F
+            );
+
             default -> renderRestingFuel(
                     fuelStack,
                     fuelModel,
@@ -136,17 +141,12 @@ public final class MoltenRotorFuelRenderer {
             ms.pushPose();
 
             if (visibleCount == 1) {
-                /*
-                 * One coal needs a dedicated transform because the item model's
-                 * visual center sits lower than the multi-coal arrangement.
-                 */
+
                 ms.translate(0.0, -0.165, 0.045);
                 ms.mulPose(Axis.ZP.rotationDegrees(-8.0F));
                 ms.scale(0.23F, 0.23F, 0.23F);
             } else {
-                /*
-                 * Preserve the existing two- and three-coal arrangements.
-                 */
+
                 ms.translate(position[0], position[1], position[2]);
                 ms.mulPose(
                         Axis.ZP.rotationDegrees((float) position[3])
@@ -481,10 +481,7 @@ public final class MoltenRotorFuelRenderer {
     ) {
         ms.pushPose();
 
-        /*
-         * GROUND already gives flat item models the correct seated
-         * orientation. Do not add another 90-degree rotation.
-         */
+
         ms.translate(0.0, -0.245, 0.078);
         ms.scale(0.48F, 0.48F, 0.48F);
 

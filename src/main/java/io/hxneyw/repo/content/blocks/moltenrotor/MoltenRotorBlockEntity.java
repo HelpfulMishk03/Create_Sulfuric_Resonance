@@ -34,8 +34,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    private int clientUpdateCounter = 0;
    private int lastNotifiedFuelCount = 0;
-   private MoltenRotorBlockEntity.RotorHeatLevel lastSentHeatTier =
-           MoltenRotorBlockEntity.RotorHeatLevel.NONE;
+   private RotorHeatLevel lastSentHeatTier =
+           RotorHeatLevel.NONE;
    private boolean creativeMode = false;
    private boolean kineticsInitialized = false;
    private UUID furnaceIdentity = UUID.randomUUID();
@@ -51,11 +51,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private final IItemHandler[] sidedFuelHandlers =
            new IItemHandler[Direction.values().length];
 
-   /**
-    * Returns a stable handler instance for capability consumers.
-    * The handler performs side checks dynamically, so rotating the furnace
-    * does not leave capability caches with stale access rules.
-    */
    public IItemHandler getAutomationFuelHandler(@Nullable Direction side) {
       if (side == null) {
          return this.unsidedFuelHandler;
@@ -71,12 +66,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return handler;
    }
 
-   /**
-    * Automation may insert from the open front, top, and either side.
-    * The underside is reserved for future output and the rear is blocked by
-    * the impeller housing. Unsided capability users are accepted for broad
-    * pipe compatibility.
-    */
    public boolean canAutomationInsertFrom(@Nullable Direction side) {
       if (side == null) {
          return true;
@@ -98,10 +87,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this(AllBlockEntities.MOLTEN_ROTOR.get(), pos, state);
    }
 
-   /**
-    * Installed by client-only setup without introducing client classes into
-    * this common block-entity class.
-    */
    public static void setClientSoundTick(
            Consumer<MoltenRotorBlockEntity> soundTick
    ) {
@@ -113,13 +98,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       behaviours.add(new CombustionHeatingBehaviour(this));
    }
 
-   /**
-    * Visual impeller speed follows temperature exactly:
-    * 1 degree Celsius equals 1 RPM.
-    * <p>
-    * This does not change the Create kinetic network output, which remains
-    * controlled by the active heat tier.
-    */
    public float getImpellerRpm() {
       return this.temperatureController.getImpellerRpm();
    }
@@ -148,10 +126,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.creativeMode;
    }
 
-   /**
-    * Permanently identifies this individual furnace block entity. A furnace
-    * placed later at the same coordinates receives a different identity.
-    */
    public @NotNull UUID getFurnaceIdentity() {
       return this.furnaceIdentity;
    }
@@ -160,7 +134,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.getCurrentHeatTier().baseStressCapacity;
    }
 
-   public MoltenRotorBlockEntity.RotorHeatLevel getCurrentHeatTier() {
+   public RotorHeatLevel getCurrentHeatTier() {
       return this.temperatureController.getHeatTier();
    }
 
@@ -226,16 +200,16 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          return;
       }
 
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
+      RotorHeatLevel newTier =
               this.applyNextCreativeTier();
 
       if (this.level instanceof ServerLevel serverLevel
-              && newTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+              && newTier == RotorHeatLevel.RADIANT) {
          this.spawnRadiantParticles(serverLevel);
       }
    }
 
-   private MoltenRotorBlockEntity.RotorHeatLevel applyNextCreativeTier() {
+   private RotorHeatLevel applyNextCreativeTier() {
       RotorHeatLevel newTier = getNewTier();
 
       float newTemperature = switch (newTier) {
@@ -281,6 +255,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
       if (this.level != null && this.level.isClientSide) {
          clientSoundTick.accept(this);
+         MoltenRotorParticles.tickClient(this);
          return;
       }
 
@@ -306,9 +281,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private void tickTemperatureSystem() {
       MoltenRotorTemperatureController.TickResult temperatureTick =
               this.temperatureController.tick();
-      MoltenRotorBlockEntity.RotorHeatLevel previousTier =
+      RotorHeatLevel previousTier =
               temperatureTick.previousTier();
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
+      RotorHeatLevel newTier =
               this.applyTemperatureTick(temperatureTick);
 
       if (newTier != this.lastSentHeatTier) {
@@ -316,9 +291,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          this.clientUpdateCounter = 0;
          this.sendData();
 
-         if (newTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
+         if (newTier == RotorHeatLevel.RADIANT
                  && previousTier
-                 != MoltenRotorBlockEntity.RotorHeatLevel.RADIANT
+                 != RotorHeatLevel.RADIANT
                  && this.level instanceof ServerLevel serverLevel) {
             this.spawnRadiantParticles(serverLevel);
          }
@@ -328,12 +303,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
    }
 
-   private MoltenRotorBlockEntity.RotorHeatLevel applyTemperatureTick(
+   private RotorHeatLevel applyTemperatureTick(
            MoltenRotorTemperatureController.TickResult temperatureTick
    ) {
-      MoltenRotorBlockEntity.RotorHeatLevel previousTier =
+      RotorHeatLevel previousTier =
               temperatureTick.previousTier();
-      MoltenRotorBlockEntity.RotorHeatLevel newTier =
+      RotorHeatLevel newTier =
               temperatureTick.currentTier();
 
       if (temperatureTick.tierChanged()) {
@@ -357,8 +332,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       );
    }
 
-   private boolean tierAffectsRotation(MoltenRotorBlockEntity.RotorHeatLevel from, MoltenRotorBlockEntity.RotorHeatLevel to) {
-      return from == MoltenRotorBlockEntity.RotorHeatLevel.NONE != (to == MoltenRotorBlockEntity.RotorHeatLevel.NONE) || from.rpmCap != to.rpmCap;
+   private boolean tierAffectsRotation(RotorHeatLevel from, RotorHeatLevel to) {
+      return from == RotorHeatLevel.NONE != (to == RotorHeatLevel.NONE) || from.rpmCap != to.rpmCap;
    }
 
    private void notifyKineticNetworkOfChange() {
@@ -416,10 +391,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    }
 
    private void spawnRadiantParticles(ServerLevel sl) {
-      /*
-       * A restrained one-time transition flash. Continuous chamber
-       * flames are handled client-side by MoltenRotorBlock.
-       */
+      
+
+
       double x = this.worldPosition.getX() + 0.5;
       double y = this.worldPosition.getY() + 0.28;
       double z = this.worldPosition.getZ() + 0.5;
@@ -508,7 +482,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
       int displayedStress =
               this.getCurrentHeatTier()
-                      != MoltenRotorBlockEntity.RotorHeatLevel.NONE
+                      != RotorHeatLevel.NONE
                       ? (int)this.getTotalStressOutput()
                       : 0;
 
@@ -608,7 +582,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
 
       if (this.getCurrentHeatTier()
-              == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+              == RotorHeatLevel.RADIANT) {
 
          tooltip.add(
                  Component.literal("✦ RADIANT TIER ACTIVE")
@@ -698,6 +672,51 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
               1,
               3500.0F,
               1.0F
+      ),
+
+      MOLTEN_EMBER_PELLET(
+              "molten_ember_pellet",
+              25.0F,
+              950.0F,
+              32,
+              1000.0F,
+              1.0F
+      ),
+
+      COKE(
+        "coke",
+                13.0F,
+                850.0F,
+                32,
+                613.0F,
+                1.0F
+      ),
+
+      INFERNAL_COKE(
+        "infernal_coke",
+                26.0F,
+                1400.0F,
+                8,
+                1600.0F,
+                1.0F
+      ),
+
+      CARBON_DEPOSIT_BLOCK(
+        "carbon_deposit_block",
+                13.0F,
+                1100.0F,
+                4,
+                5517.0F,
+                1.0F
+      ),
+
+      INFERNAL_CARBON_DEPOSIT_BLOCK(
+        "infernal_carbon_deposit_block",
+                26.0F,
+                1400.0F,
+                4,
+                14400.0F,
+                1.0F
       );
 
       public final String serializedId;

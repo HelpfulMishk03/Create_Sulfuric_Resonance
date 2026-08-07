@@ -8,6 +8,7 @@ import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import io.hxneyw.repo.content.registry.*;
 import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -32,18 +33,19 @@ public class CreateSulfuricResonance {
 
    public CreateSulfuricResonance(IEventBus modEventBus, ModContainer modContainer) {
       LOGGER.info("========== CREATE SULFURIC RESONANCE CONSTRUCTOR CALLED ==========");
-      LOGGER.info("========== PREPARING FOR NEXT SEQUENCE ==========");
       Items.register(modEventBus);
-      LOGGER.info("========== ITEMS.REGISTER CALLED ==========");
       ModTabs.register(modEventBus);
       ModEntities.register(modEventBus);
       AllModBlocks.register(modEventBus);
       AllBlockEntities.register(modEventBus);
       ModRecipeTypes.register(modEventBus);
+      CombustionBeltRecipeRegistry.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);
+      AllModMenus.register(modEventBus);
       ModParticles.PARTICLE_TYPES.register(modEventBus);
       modEventBus.addListener(ModCapabilities::registerCapabilities);
       AllModSounds.SOUNDS.register(modEventBus);
+
       AllModFluids.register(modEventBus);
       if (FMLEnvironment.dist.isClient()) {
          modEventBus.addListener(AllModFluids::registerFluidExtensions);
@@ -58,7 +60,6 @@ public class CreateSulfuricResonance {
 
    @SubscribeEvent
    public void onServerStarting(ServerStartingEvent event) {
-      LOGGER.info("[{}] Server is starting.", "sulfuricresonance");
    }
 
    @EventBusSubscriber(
@@ -76,7 +77,6 @@ public class CreateSulfuricResonance {
 
       @SubscribeEvent
       public static void onClientSetup(FMLClientSetupEvent event) {
-         CreateSulfuricResonance.LOGGER.info("=== CLIENT SETUP EVENT FIRED ===");
          event.enqueueWork(() ->
                  PonderIndex.addPlugin(new SulfuricResonancePonderPlugin())
 

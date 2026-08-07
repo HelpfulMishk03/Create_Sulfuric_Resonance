@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:heatproof",
+  "parent": "sulfuricresonance:against_the_acid",
   "display": {
     "icon": {
       "id": "sulfuricresonance:ash_ceramic_crucible"
@@ -8,7 +8,7 @@
       "text": "The Foundation"
     },
     "description": {
-      "text": "With the Ash Ceramic you've obtained, craft a heatproof Ceramic Crucible."
+      "text": "Craft a Ceramic Crucible for combustion processing."
     },
     "frame": "goal",
     "show_toast": true,

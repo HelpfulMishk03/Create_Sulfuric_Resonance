@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "minecraft:hay_block"
+  },
+  "result": {
+    "id": "sulfuricresonance:spent_ash",
+    "count": 4
+  },
+  "experience": 0.2,
+  "cookingtime": 200
+}

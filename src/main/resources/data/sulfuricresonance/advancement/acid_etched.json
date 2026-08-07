@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:controlled_chemistry",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:acid_etched_copper_sheet"
+    },
+    "title": {
+      "text": "Acid Etched"
+    },
+    "description": {
+      "text": "Use the spout and some Sulfuric Acid to etch a precision Copper Sheet."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_acid_sheet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:acid_etched_copper_sheet"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

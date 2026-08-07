@@ -1,14 +1,25 @@
 package io.hxneyw.repo.content.blocks.livingemberlamp;
 
+import com.mojang.serialization.MapCodec;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import io.hxneyw.repo.content.blocks.WrenchInteractionHelper;
 import io.hxneyw.repo.content.items.LivingEmberLampItem;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -16,13 +27,19 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class LivingEmberLampBlock extends Block implements EntityBlock {
+public class LivingEmberLampBlock
+        extends HorizontalDirectionalBlock
+        implements EntityBlock, IWrenchable {
+
+    public static final MapCodec<LivingEmberLampBlock> CODEC =
+            simpleCodec(LivingEmberLampBlock::new);
 
     public static final IntegerProperty LIGHT_LEVEL =
             IntegerProperty.create("light_level", 0, 15);
@@ -90,7 +107,26 @@ public class LivingEmberLampBlock extends Block implements EntityBlock {
     public LivingEmberLampBlock(BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(
-                this.stateDefinition.any().setValue(LIGHT_LEVEL, 0)
+                this.stateDefinition.any()
+                        .setValue(FACING, Direction.NORTH)
+                        .setValue(LIGHT_LEVEL, 0)
+        );
+    }
+
+    @Override
+    protected @NotNull MapCodec<
+            ? extends HorizontalDirectionalBlock
+            > codec() {
+        return CODEC;
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(
+            @NotNull BlockPlaceContext context
+    ) {
+        return defaultBlockState().setValue(
+                FACING,
+                context.getHorizontalDirection().getOpposite()
         );
     }
 
@@ -98,7 +134,7 @@ public class LivingEmberLampBlock extends Block implements EntityBlock {
     protected void createBlockStateDefinition(
             StateDefinition.Builder<Block, BlockState> builder
     ) {
-        builder.add(LIGHT_LEVEL);
+        builder.add(FACING, LIGHT_LEVEL);
     }
 
     @Override
@@ -119,6 +155,69 @@ public class LivingEmberLampBlock extends Block implements EntityBlock {
             @NotNull CollisionContext context
     ) {
         return SHAPE;
+    }
+
+    @Override
+    protected @NotNull ItemInteractionResult useItemOn(
+            @NotNull ItemStack stack,
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull InteractionHand hand,
+            @NotNull BlockHitResult hit
+    ) {
+        ItemInteractionResult wrenchResult =
+                WrenchInteractionHelper.handle(
+                        this,
+                        stack,
+                        state,
+                        player,
+                        hand,
+                        hit
+                );
+
+        if (wrenchResult != null) {
+            return wrenchResult;
+        }
+
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    public BlockState getRotatedBlockState(
+            BlockState originalState,
+            Direction targetedFace
+    ) {
+        return originalState.setValue(
+                FACING,
+                originalState.getValue(FACING).getClockWise()
+        );
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    public @NotNull BlockState rotate(
+            @NotNull BlockState state,
+            @NotNull Rotation rotation
+    ) {
+        return state.setValue(
+                FACING,
+                rotation.rotate(state.getValue(FACING))
+        );
+    }
+
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    public @NotNull BlockState mirror(
+            @NotNull BlockState state,
+            @NotNull Mirror mirror
+    ) {
+        return state.setValue(
+                FACING,
+                mirror.mirror(state.getValue(FACING))
+        );
     }
 
     @Override

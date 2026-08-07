@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:thermochemical_casing"
+    },
+    {
+      "item": "sulfuricresonance:thermochemical_shaft"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "sulfuricresonance:thermochemical_conduit"
+  }
+}

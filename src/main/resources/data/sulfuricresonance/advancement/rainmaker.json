@@ -1,0 +1,40 @@
+{
+  "parent": "sulfuricresonance:pressure_and_heat",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:perforated_spritzer"
+    },
+    "title": {
+      "text": "Rainmaker"
+    },
+    "description": {
+      "text": "Place a Perforated Spritzer."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "place_spritzer": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "sulfuricresonance:perforated_spritzer"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place_spritzer"
+    ]
+  ]
+}

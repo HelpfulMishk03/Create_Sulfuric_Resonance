@@ -1,0 +1,14 @@
+{
+  "type": "sulfuricresonance:combustion_belt",
+  "ingredient": {
+    "item": "sulfuricresonance:wet_ash_ceramic"
+  },
+  "result": {
+    "id": "sulfuricresonance:ash_ceramic",
+    "count": 1
+  },
+  "minimum_heat": "superheated",
+  "required_segments": 6,
+  "base_processing_ticks": 140,
+  "processing_ticks_per_item": 10
+}

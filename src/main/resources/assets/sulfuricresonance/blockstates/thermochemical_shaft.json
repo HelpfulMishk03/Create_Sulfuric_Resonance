@@ -1,0 +1,72 @@
+{
+  "variants": {
+    "axis=x,casing=none": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_static",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y,casing=none": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_static"
+    },
+    "axis=z,casing=none": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_static",
+      "x": 90
+    },
+    "axis=x,casing=andesite": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_andesite",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "axis=y,casing=andesite": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_andesite"
+    },
+    "axis=z,casing=andesite": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_andesite",
+      "x": 90,
+      "uvlock": true
+    },
+    "axis=x,casing=brass": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_brass",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "axis=y,casing=brass": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_brass"
+    },
+    "axis=z,casing=brass": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_brass",
+      "x": 90,
+      "uvlock": true
+    },
+    "axis=x,casing=copper": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_copper",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "axis=y,casing=copper": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_copper"
+    },
+    "axis=z,casing=copper": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_copper",
+      "x": 90,
+      "uvlock": true
+    },
+    "axis=x,casing=railway": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_railway",
+      "x": 90,
+      "y": 90,
+      "uvlock": true
+    },
+    "axis=y,casing=railway": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_railway"
+    },
+    "axis=z,casing=railway": {
+      "model": "sulfuricresonance:block/thermochemical_shaft_encased_railway",
+      "x": 90,
+      "uvlock": true
+    }
+  }
+}

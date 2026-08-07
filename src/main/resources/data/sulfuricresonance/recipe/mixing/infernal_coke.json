@@ -1,0 +1,21 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "superheated",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:coke"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:ember_catalyst"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:infernal_coke",
+      "count": 1
+    }
+  ]
+}

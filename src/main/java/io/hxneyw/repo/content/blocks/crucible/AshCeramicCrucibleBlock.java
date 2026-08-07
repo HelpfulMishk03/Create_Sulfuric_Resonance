@@ -16,14 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AshCeramicCrucibleBlock extends BasinBlock {
 
-    /*
-     * Matches the finished Blockbench model:
-     * - open 10 x 10 pixel interior
-     * - solid ceramic floor
-     * - 2-pixel-thick walls
-     * - raised rim
-     * - four feet
-     */
+
     private static final VoxelShape SHAPE = Shapes.or(
             // Inner floor
             Block.box(2, 0, 2, 14, 4, 14),

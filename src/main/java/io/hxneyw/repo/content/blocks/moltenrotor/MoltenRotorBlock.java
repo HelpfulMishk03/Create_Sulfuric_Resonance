@@ -175,11 +175,7 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
            @NotNull Player player,
            @NotNull BlockHitResult hit
    ) {
-      return MoltenRotorInteractions.useWithoutItem(
-              level,
-              pos,
-              player
-      );
+      return InteractionResult.PASS;
    }
 
    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
@@ -194,16 +190,6 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
       if (!level.isClientSide && level.getBlockEntity(pos) instanceof MoltenRotorBlockEntity furnace) {
          furnace.initializeKinetics();
       }
-   }
-
-   @OnlyIn(Dist.CLIENT)
-   public void animateTick(
-           @NotNull BlockState state,
-           @NotNull Level level,
-           @NotNull BlockPos pos,
-           @NotNull RandomSource random
-   ) {
-      MoltenRotorParticles.animateTick(state, level, pos, random);
    }
 
 }

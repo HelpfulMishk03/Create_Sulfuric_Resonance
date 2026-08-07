@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:sulfurous_beginnings",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:unrefined_rubber"
+    },
+    "title": {
+      "text": "Natural Elasticity"
+    },
+    "description": {
+      "text": "Produce your first batch of Unrefined Rubber."
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_unrefined_rubber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:unrefined_rubber"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

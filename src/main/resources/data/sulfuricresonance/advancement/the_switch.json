@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:acid_etched",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:thermal_relay_switch"
+    },
+    "title": {
+      "text": "The Switch"
+    },
+    "description": {
+      "text": "Manage some advanced crafting to obtain the Thermal Relay Switch."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_switch": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:thermal_relay_switch"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

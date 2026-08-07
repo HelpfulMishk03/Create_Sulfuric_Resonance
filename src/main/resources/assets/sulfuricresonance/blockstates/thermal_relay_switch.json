@@ -1,0 +1,36 @@
+{
+  "multipart": [
+    {
+      "when": { "facing": "north" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_solid" }
+    },
+    {
+      "when": { "facing": "north" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_glass" }
+    },
+    {
+      "when": { "facing": "east" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_solid", "y": 90 }
+    },
+    {
+      "when": { "facing": "east" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_glass", "y": 90 }
+    },
+    {
+      "when": { "facing": "south" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_solid", "y": 180 }
+    },
+    {
+      "when": { "facing": "south" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_glass", "y": 180 }
+    },
+    {
+      "when": { "facing": "west" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_solid", "y": 270 }
+    },
+    {
+      "when": { "facing": "west" },
+      "apply": { "model": "sulfuricresonance:block/thermal_relay_switch_glass", "y": 270 }
+    }
+  ]
+}

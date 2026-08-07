@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:natural_elasticity",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:vulcanized_rubber"
+    },
+    "title": {
+      "text": "Pressure and Heat"
+    },
+    "description": {
+      "text": "Vulcanize Unrefined Rubber through pressure and heat."
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_vulcanized_rubber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:vulcanized_rubber"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -14,11 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Owns the Molten Rotor's active fuel, queued fuel, burn timing, and
- * fuel-specific save data. Temperature tiers and kinetic output remain in the
- * block entity.
- */
 public final class MoltenRotorFuelController {
     private final MoltenRotorBlockEntity furnace;
 
@@ -118,10 +113,7 @@ public final class MoltenRotorFuelController {
             return true;
         }
 
-        /*
-         * Special fuels keep their exclusive queue rules.
-         * Ordinary fuels may be mixed in insertion order.
-         */
+
         if (this.hasPendingSpecialFuel()) {
             return false;
         }
@@ -372,6 +364,7 @@ public final class MoltenRotorFuelController {
         return Math.max(this.remainingBurnTime, 0);
     }
 
+
     public boolean isFuelQueueEmpty() {
         return this.pendingFuel.isEmpty();
     }
@@ -379,7 +372,6 @@ public final class MoltenRotorFuelController {
     public ItemStack getRenderedFuelStack() {
         return this.activeFuelStack.copy();
     }
-
 
     public MoltenRotorBlockEntity.FuelType getRenderedFuelType() {
         return this.activeFuelType;
@@ -396,7 +388,7 @@ public final class MoltenRotorFuelController {
             );
         }
 
-        /* Preserve visuals for saves made before exact stick stacks existed. */
+
         while (renderedStacks.size()
                 < Math.min(this.activeLogStickCount, 4)) {
             renderedStacks.add(

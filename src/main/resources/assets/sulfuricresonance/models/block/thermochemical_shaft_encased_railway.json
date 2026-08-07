@@ -1,0 +1,8 @@
+{
+  "parent": "sulfuricresonance:block/thermochemical_shaft_encased_base",
+  "textures": {
+    "casing": "create:block/railway_casing",
+    "opening": "create:block/gearbox",
+    "particle": "create:block/railway_casing"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "BCB",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "sulfuricresonance:vulcanized_rubber"
+    },
+    "B": {
+      "item": "sulfuricresonance:obsidian_cloth"
+    },
+  "C": {
+    "item": "sulfuricresonance:cinder_filament"
+  }
+  },
+  "result": {
+    "id": "sulfuricresonance:combustion_belt_connector",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:shaft"
+    },
+    {
+      "item": "create:shaft"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:thermochemical_shaft",
+    "count": 2
+  }
+}
