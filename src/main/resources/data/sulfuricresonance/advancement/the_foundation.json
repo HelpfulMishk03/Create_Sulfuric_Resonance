@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:ash_ceramic_crucible"
     },
     "title": {
-      "text": "The Foundation"
+      "translate": "advancements.sulfuricresonance.the_foundation.title"
     },
     "description": {
-      "text": "Craft a Ceramic Crucible for combustion processing."
+      "translate": "advancements.sulfuricresonance.the_foundation.description"
     },
     "frame": "goal",
     "show_toast": true,

@@ -56,7 +56,11 @@ public final class CompactBlockBreakParticles {
                 AllModBlocks.MOLTEN_ROTOR_FURNACE.get(),
                 AllModBlocks.THERMOCHEMICAL_GEARBOX.get(),
                 AllModBlocks.THERMOCHEMICAL_SHAFT.get(),
-                AllModBlocks.THERMOCHEMICAL_CONDUIT.get()
+                AllModBlocks.THERMOCHEMICAL_CONDUIT.get(),
+                AllModBlocks.THERMOCHEMICAL_COGWHEEL.get(),
+                AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(),
+                AllModBlocks.SULFUR_BURNER.get(),
+                AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
         );
     }
 

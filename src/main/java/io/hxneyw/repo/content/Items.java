@@ -63,6 +63,17 @@ public class Items {
                            new Properties()
                    )
            );
+   public static final DeferredItem<BlockItem>
+           SULFUR_BURNER_ITEM =
+           ITEMS.register(
+                   "sulfur_burner",
+                   () -> new BlockItem(
+                           AllModBlocks
+                                   .SULFUR_BURNER
+                                   .get(),
+                           new Item.Properties()
+                   )
+           );
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));
    public static final DeferredItem<Item> WET_ASH_CERAMIC = ITEMS.register("wet_ash_ceramic", () -> new Item(new Properties().stacksTo(64)));
 

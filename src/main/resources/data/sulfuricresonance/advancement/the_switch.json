@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:thermal_relay_switch"
     },
     "title": {
-      "text": "The Switch"
+      "translate": "advancements.sulfuricresonance.the_switch.title"
     },
     "description": {
-      "text": "Manage some advanced crafting to obtain the Thermal Relay Switch."
+      "translate": "advancements.sulfuricresonance.the_switch.description"
     },
     "frame": "goal",
     "show_toast": true,

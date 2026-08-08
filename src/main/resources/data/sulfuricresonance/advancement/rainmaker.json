@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:perforated_spritzer"
     },
     "title": {
-      "text": "Rainmaker"
+      "translate": "advancements.sulfuricresonance.rainmaker.title"
     },
     "description": {
-      "text": "Place a Perforated Spritzer."
+      "translate": "advancements.sulfuricresonance.rainmaker.description"
     },
     "frame": "task",
     "show_toast": true,

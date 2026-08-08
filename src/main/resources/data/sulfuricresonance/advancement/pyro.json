@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:pyroclast_bomb"
     },
     "title": {
-      "text": "Pyro"
+      "translate": "advancements.sulfuricresonance.pyro.title"
     },
     "description": {
-      "text": "Craft a Pyroclast Bomb and discover its explosive potential."
+      "translate": "advancements.sulfuricresonance.pyro.description"
     },
     "frame": "task",
     "show_toast": true,

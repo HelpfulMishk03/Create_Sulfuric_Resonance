@@ -9,6 +9,7 @@ import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlock;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
+import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
@@ -343,6 +344,25 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                     .requiresCorrectToolForDrops()
                                     .sound(SoundType.METAL)
                                     .noOcclusion()
+                    )
+            );
+    public static final DeferredBlock<SulfurBurnerBlock>
+            SULFUR_BURNER =
+            BLOCKS.register(
+                    "sulfur_burner",
+                    () -> new SulfurBurnerBlock(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                                    .lightLevel(state -> switch (
+                                            state.getValue(SulfurBurnerBlock.HEAT_LEVEL)
+                                            ) {
+                                        case KINDLED, SEETHING -> 4;
+                                        default -> 0;
+                                    })
                     )
             );
 

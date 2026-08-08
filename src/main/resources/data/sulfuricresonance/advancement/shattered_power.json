@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:infernal_impeller"
     },
     "title": {
-      "text": "Shattered Power"
+      "translate": "advancements.sulfuricresonance.shattered_power.title"
     },
     "description": {
-      "text": "Obtain Blaze Shards and craft the Infernal Impeller."
+      "translate": "advancements.sulfuricresonance.shattered_power.description"
     },
     "frame": "task",
     "show_toast": true,

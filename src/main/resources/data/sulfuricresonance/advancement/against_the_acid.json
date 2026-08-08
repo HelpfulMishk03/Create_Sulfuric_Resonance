@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:acid_resistant_ceramic"
     },
     "title": {
-      "text": "Against the Acid"
+      "translate": "advancements.sulfuricresonance.against_the_acid.title"
     },
     "description": {
-      "text": "Produce Acid-Resistant Ceramic."
+      "translate": "advancements.sulfuricresonance.against_the_acid.description"
     },
     "frame": "task",
     "show_toast": true,

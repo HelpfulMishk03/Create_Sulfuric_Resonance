@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:unrefined_rubber"
     },
     "title": {
-      "text": "Natural Elasticity"
+      "translate": "advancements.sulfuricresonance.natural_elasticity.title"
     },
     "description": {
-      "text": "Produce your first batch of Unrefined Rubber."
+      "translate": "advancements.sulfuricresonance.natural_elasticity.description"
     },
     "frame": "task",
     "show_toast": true,

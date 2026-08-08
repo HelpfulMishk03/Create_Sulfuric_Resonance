@@ -6,6 +6,53 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+
+### 0.2.8-beta — Sulfurous Capabilities
+
+0.2.8 expands the thermochemical infrastructure introduced in 0.2.7 with new sulfur-based fuels, heat sources, materials, and dedicated kinetic components.
+
+#### Added
+
+* Brimstone Core
+* Sulfurous Fuel Compound
+* Sulfur Fuel Briquette
+* Tempered Ashesil
+* Tempered Ashesil Pane
+* Thermochemical Cogwheel
+* Large Thermochemical Cogwheel
+* Sulfur Burner
+* Sulfur Burner Ponder scene
+
+#### Changed
+
+* Standard Create cogwheels no longer transmit thermochemical heat.
+* Thermochemical heat transmission through cogwheels now requires dedicated Thermochemical Cogwheels.
+* Minimum supported Create version is now **6.0.7+**.
+* JEI support updated to **19.42.0.387**.
+
+#### Fixed
+
+* Updated language entries.
+* Fixed JEI rendering issues.
+* Additional compatibility and presentation fixes.
+
+### 0.2.7-beta — Reactive Heat
+
+Introduced the core thermochemical heat infrastructure used by later CSR systems.
+
+Major additions included:
+
+* Thermochemical Shaft
+* Thermochemical Conduit
+* Thermochemical Gearbox
+* Combustion Belt
+* Thermal Relay Switch
+* Expanded Molten Rotor Furnace fuels
+* Additional ceramic and industrial material processing
+* Expanded Ponder support
+* JEI and EMI integration improvements
+
+
 ## [0.2.7-beta] — Reactive Heat
 
 ### Summary

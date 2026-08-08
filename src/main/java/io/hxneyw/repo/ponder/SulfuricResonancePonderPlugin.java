@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 10;
+    private static final int REGISTERED_SCENES = 11;
 
     @NotNull
     @Override
@@ -130,6 +130,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     sulfurId,
                     "sulfur/compatibility",
                     SulfurScenes::compatibility
+            );
+
+            ResourceLocation sulfurBurnerId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.SULFUR_BURNER.get()
+                    );
+
+            helper.addStoryBoard(
+                    sulfurBurnerId,
+                    "sulfur_burner/operation",
+                    SulfurScenes::burner,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             ResourceLocation livingEmberLampId =

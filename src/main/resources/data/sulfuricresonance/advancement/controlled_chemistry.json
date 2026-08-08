@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:sulfuric_acid_bucket"
     },
     "title": {
-      "text": "Controlled Chemistry"
+      "translate": "advancements.sulfuricresonance.controlled_chemistry.title"
     },
     "description": {
-      "text": "Produce Sulfuric Acid through controlled combustion chemistry in a Ceramic Crucible."
+      "translate": "advancements.sulfuricresonance.controlled_chemistry.description"
     },
     "frame": "task",
     "show_toast": true,

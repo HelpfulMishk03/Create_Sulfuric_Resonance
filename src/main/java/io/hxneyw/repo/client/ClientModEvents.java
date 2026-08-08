@@ -9,6 +9,7 @@ import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
+import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerRenderer;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelRenderer;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelVisual;
 import io.hxneyw.repo.content.entities.ModEntities;
@@ -172,6 +173,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.registerBlockEntityRenderer(
                 AllBlockEntities.ASH_CERAMIC_CRUCIBLE.get(),
                 BasinRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.SULFUR_BURNER.get(),
+                SulfurBurnerRenderer::new
         );
 
         event.registerBlockEntityRenderer(

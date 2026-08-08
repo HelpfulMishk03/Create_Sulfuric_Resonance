@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:vulcanized_rubber"
     },
     "title": {
-      "text": "Pressure and Heat"
+      "translate": "advancements.sulfuricresonance.pressure_and_heat.title"
     },
     "description": {
-      "text": "Vulcanize Unrefined Rubber through pressure and heat."
+      "translate": "advancements.sulfuricresonance.pressure_and_heat.description"
     },
     "frame": "goal",
     "show_toast": true,

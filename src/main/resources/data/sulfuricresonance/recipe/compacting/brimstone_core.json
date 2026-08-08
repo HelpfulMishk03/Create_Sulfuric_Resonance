@@ -2,10 +2,13 @@
   "type": "create:compacting",
   "ingredients": [
     {
-      "tag": "c:sulfur"
+      "item": "minecraft:deepslate"
     },
     {
-      "item": "sulfuricresonance:ember_catalyst"
+      "item": "sulfuricresonance:embersol"
+    },
+    {
+      "tag": "c:sulfur"
     }
   ],
   "results": [

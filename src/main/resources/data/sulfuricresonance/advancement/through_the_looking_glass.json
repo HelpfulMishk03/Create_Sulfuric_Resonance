@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:ashesil"
     },
     "title": {
-      "text": "Through the Looking Glass"
+      "translate": "advancements.sulfuricresonance.through_the_looking_glass.title"
     },
     "description": {
-      "text": "Produce Ashesil through heated mixing"
+      "translate": "advancements.sulfuricresonance.through_the_looking_glass.description"
     },
     "frame": "task",
     "show_toast": true,

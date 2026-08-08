@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:living_ember_lamp"
     },
     "title": {
-      "text": "Ember Relay"
+      "translate": "advancements.sulfuricresonance.ember_relay.title"
     },
     "description": {
-      "text": "Craft a Living Ember Lamp to monitor a Molten Rotor Furnace from afar."
+      "translate": "advancements.sulfuricresonance.ember_relay.description"
     },
     "frame": "goal",
     "show_toast": true,

@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:ash_brick"
     },
     "title": {
-      "text": "Ashen Industry"
+      "translate": "advancements.sulfuricresonance.ashen_industry.title"
     },
     "description": {
-      "text": "Fire Unfired Ash Bricks into durable Ash Bricks."
+      "translate": "advancements.sulfuricresonance.ashen_industry.description"
     },
     "frame": "task",
     "show_toast": true,

@@ -1,14 +1,14 @@
 {
-  "parent": "sulfuricresonance:pressure_and_heat",
+  "parent": "sulfuricresonance:sulfurous_beginnings",
   "display": {
     "icon": {
-      "id": "sulfuricresonance:rubber_padding"
+      "id": "sulfuricresonance:sulfur_burner"
     },
     "title": {
-      "translate": "advancements.sulfuricresonance.soft_landing.title"
+      "translate": "advancements.sulfuricresonance.sulfurous_heat.title"
     },
     "description": {
-      "translate": "advancements.sulfuricresonance.soft_landing.description"
+      "translate": "advancements.sulfuricresonance.sulfurous_heat.description"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "place_rubber_padding": {
+    "place_burner": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "location": [
@@ -24,7 +24,7 @@
             "condition": "minecraft:match_tool",
             "predicate": {
               "items": [
-                "sulfuricresonance:rubber_padding"
+                "sulfuricresonance:sulfur_burner"
               ]
             }
           }
@@ -34,7 +34,7 @@
   },
   "requirements": [
     [
-      "place_rubber_padding"
+      "place_burner"
     ]
   ]
 }
