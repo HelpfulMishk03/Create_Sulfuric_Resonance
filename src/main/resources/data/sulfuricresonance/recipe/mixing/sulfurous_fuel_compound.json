@@ -1,0 +1,26 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "superheated",
+  "ingredients": [
+    {
+      "tag": "c:sulfur"
+    },
+    {
+      "tag": "c:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:coke"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:sulfurous_fuel_compound",
+      "count": 2
+    }
+  ]
+}

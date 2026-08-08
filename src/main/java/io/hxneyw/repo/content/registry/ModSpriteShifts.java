@@ -19,7 +19,18 @@ public final class ModSpriteShifts {
                             "block/ashesil_connected"
                     )
             );
-
+    public static final CTSpriteShiftEntry TEMPERED_ASHESIL =
+            CTSpriteShifter.getCT(
+                    AllCTTypes.OMNIDIRECTIONAL,
+                    ResourceLocation.fromNamespaceAndPath(
+                            "sulfuricresonance",
+                            "block/tempered_ashesil"
+                    ),
+                    ResourceLocation.fromNamespaceAndPath(
+                            "sulfuricresonance",
+                            "block/tempered_ashesil_connected"
+                    )
+            );
     private ModSpriteShifts() {
     }
 }

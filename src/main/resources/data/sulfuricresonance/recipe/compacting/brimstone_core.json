@@ -1,0 +1,17 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "tag": "c:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:ember_catalyst"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:brimstone_core",
+      "count": 1
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
+import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
@@ -214,6 +215,60 @@ public class AllModBlocks {
                                     .mapColor(MapColor.COLOR_GRAY)
                                     .strength(0.3F)
                                     .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ConnectedGlassBlock> TEMPERED_ASHESIL =
+            BLOCKS.register(
+                    "tempered_ashesil",
+                    () -> new ConnectedGlassBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.COLOR_GRAY)
+                                    .strength(0.3F, 3_600_000.0F)
+                                    .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ConnectedGlassPaneBlock> TEMPERED_ASHESIL_PANE =
+            BLOCKS.register(
+                    "tempered_ashesil_pane",
+                    () -> new ConnectedGlassPaneBlock(
+                            Properties.ofFullCopy(
+                                            net.minecraft.world.level.block.Blocks.GLASS_PANE
+                                    )
+                                    .mapColor(MapColor.COLOR_GRAY)
+                                    .strength(0.3F, 3_600_000.0F)
+                                    .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
+public static final DeferredBlock<ThermochemicalCogwheelBlock>
+        THERMOCHEMICAL_COGWHEEL =
+        BLOCKS.register(
+                "thermochemical_cogwheel",
+                () -> new ThermochemicalCogwheelBlock(
+                        false,
+                        Properties.of()
+                                .mapColor(MapColor.DIRT)
+                                .strength(1.5F, 6.0F)
+                                .sound(SoundType.WOOD)
+                                .noOcclusion()
+                )
+        );
+
+    public static final DeferredBlock<ThermochemicalCogwheelBlock>
+            LARGE_THERMOCHEMICAL_COGWHEEL =
+            BLOCKS.register(
+                    "large_thermochemical_cogwheel",
+                    () -> new ThermochemicalCogwheelBlock(
+                            true,
+                            Properties.of()
+                                    .mapColor(MapColor.DIRT)
+                                    .strength(1.5F, 6.0F)
+                                    .sound(SoundType.WOOD)
                                     .noOcclusion()
                     )
             );

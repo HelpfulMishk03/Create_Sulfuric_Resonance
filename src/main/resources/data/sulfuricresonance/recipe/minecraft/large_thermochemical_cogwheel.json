@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    " S ",
+    " G "
+  ],
+  "key": {
+    "C": {
+      "item": "create:copper_sheet"
+    },
+    "S": {
+      "tag": "c:sulfur"
+    },
+    "G": {
+      "item": "create:large_cogwheel"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:large_thermochemical_cogwheel",
+    "count": 1
+  }
+}

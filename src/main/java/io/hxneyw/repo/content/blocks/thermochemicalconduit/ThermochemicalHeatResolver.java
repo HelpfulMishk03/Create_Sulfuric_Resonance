@@ -9,9 +9,14 @@ import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
+import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
+import io.hxneyw.repo.content.registry.AllModBlocks;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -97,6 +102,23 @@ public final class ThermochemicalHeatResolver {
             }
 
             targetToSource.add(currentPosition.immutable());
+
+            if (isRotationSpeedController(currentState)) {
+                if (doesNotHaveThermochemicalControllerCog(
+                        level,
+                        currentPosition
+                )) {
+                    return Result.NONE;
+                }
+
+                return resolveThroughSpeedController(
+                        level,
+                        currentPosition,
+                        targetToSource,
+                        visited,
+                        totalDistance
+                );
+            }
 
             BlockPos sourcePosition = currentKinetic.source;
             if (sourcePosition == null
@@ -270,10 +292,10 @@ public final class ThermochemicalHeatResolver {
             if (sourceEntity instanceof BeltBlockEntity belt) {
                 if (!isMarkedPulley(belt)
                         || lacksInheritedConnection(
-                                level,
-                                sourcePosition,
-                                currentPosition
-                        )) {
+                        level,
+                        sourcePosition,
+                        currentPosition
+                )) {
                     return null;
                 }
 
@@ -312,10 +334,10 @@ public final class ThermochemicalHeatResolver {
             if (!(sourceEntity instanceof KineticBlockEntity)
                     || !isAllowedNode(sourceState)
                     || lacksInheritedConnection(
-                            level,
-                            sourcePosition,
-                            currentPosition
-                    )) {
+                    level,
+                    sourcePosition,
+                    currentPosition
+            )) {
                 return null;
             }
 
@@ -324,6 +346,220 @@ public final class ThermochemicalHeatResolver {
         }
 
         return null;
+    }
+
+    private static Result resolveThroughSpeedController(
+            Level level,
+            BlockPos controllerPosition,
+            List<BlockPos> targetToController,
+            Set<BlockPos> alreadyVisited,
+            int baseDistance
+    ) {
+        Queue<PhysicalStep> pending = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>(alreadyVisited);
+
+        // The controller is already present in targetToController. Remove it
+        // from this local visited set so it can be used as the BFS root once.
+        visited.remove(controllerPosition);
+
+        pending.add(new PhysicalStep(
+                controllerPosition.immutable(),
+                List.of(),
+                0
+        ));
+
+        for (int stepCount = 0;
+             stepCount < MAX_INHERITED_STEPS && !pending.isEmpty();
+             stepCount++) {
+
+            PhysicalStep step = pending.remove();
+            BlockPos position = step.position();
+
+            if (!level.isLoaded(position)
+                    || !visited.add(position)) {
+                continue;
+            }
+
+            BlockState state = level.getBlockState(position);
+            if (isNotSpeedControllerBridgeNode(level, position, state)) {
+                continue;
+            }
+
+            // A Molten Rotor can terminate the physical search from any
+            // genuinely connected bridge node.
+            for (Direction direction : Direction.values()) {
+                BlockPos furnacePosition = position.relative(direction);
+
+                if (!level.isLoaded(furnacePosition)) {
+                    continue;
+                }
+
+                BlockEntity furnaceEntity =
+                        level.getBlockEntity(furnacePosition);
+
+                if (!(furnaceEntity instanceof MoltenRotorBlockEntity furnace)
+                        || lacksInheritedConnection(
+                        level,
+                        furnacePosition,
+                        position
+                )) {
+                    continue;
+                }
+
+                List<BlockPos> fullPath =
+                        new ArrayList<>(targetToController);
+                fullPath.addAll(step.pathFromController());
+
+                Result result = buildResult(
+                        level,
+                        fullPath,
+                        furnace.getCurrentHeatTier(),
+                        furnacePosition,
+                        furnace.getDisplayTemperature(),
+                        baseDistance + step.distanceFromController() + 1
+                );
+
+                if (result.heatTier()
+                        != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                    return result;
+                }
+            }
+
+            for (BlockPos neighbour :
+                    connectedSpeedControllerBridgeNeighbours(
+                            level,
+                            position
+                    )) {
+                if (visited.contains(neighbour)) {
+                    continue;
+                }
+
+                List<BlockPos> nextPath =
+                        new ArrayList<>(step.pathFromController());
+
+                // controllerPosition is already in targetToController.
+                if (!neighbour.equals(controllerPosition)) {
+                    nextPath.add(neighbour.immutable());
+                }
+
+                pending.add(new PhysicalStep(
+                        neighbour.immutable(),
+                        List.copyOf(nextPath),
+                        step.distanceFromController() + 1
+                ));
+            }
+        }
+
+        return Result.NONE;
+    }
+
+    private static boolean isNotSpeedControllerBridgeNode(
+            Level level,
+            BlockPos position,
+            BlockState state
+    ) {
+        if (isRotationSpeedController(state)) {
+            return doesNotHaveThermochemicalControllerCog(
+                    level,
+                    position
+            );
+        }
+
+        return !(state.getBlock() instanceof ThermochemicalConnection);
+    }
+
+    private static boolean doesNotHaveThermochemicalControllerCog(
+            Level level,
+            BlockPos controllerPosition
+    ) {
+        BlockPos cogPosition = controllerPosition.above();
+
+        if (!level.isLoaded(cogPosition)) {
+            return true;
+        }
+
+        BlockState cogState = level.getBlockState(cogPosition);
+        if (!cogState.is(
+                AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get()
+        )) {
+            return true;
+        }
+
+        BlockEntity controllerEntity =
+                level.getBlockEntity(controllerPosition);
+        BlockEntity cogEntity =
+                level.getBlockEntity(cogPosition);
+
+        if (!(controllerEntity instanceof KineticBlockEntity controllerKinetic)
+                || !(cogEntity instanceof KineticBlockEntity cogKinetic)) {
+            return true;
+        }
+
+        return !RotationPropagator.isConnected(
+                controllerKinetic,
+                cogKinetic
+        ) && !RotationPropagator.isConnected(
+                cogKinetic,
+                controllerKinetic
+        );
+    }
+
+    private static List<BlockPos>
+    connectedSpeedControllerBridgeNeighbours(
+            Level level,
+            BlockPos position
+    ) {
+        BlockState state = level.getBlockState(position);
+        BlockEntity blockEntity = level.getBlockEntity(position);
+
+        if (!(blockEntity instanceof KineticBlockEntity kinetic)
+                || !(state.getBlock() instanceof IRotate rotate)) {
+            return List.of();
+        }
+
+        Set<BlockPos> potentialPositions =
+                new LinkedHashSet<>();
+
+        for (Direction direction : Direction.values()) {
+            BlockPos neighbour = position.relative(direction);
+            if (level.isLoaded(neighbour)) {
+                potentialPositions.add(neighbour.immutable());
+            }
+        }
+
+        potentialPositions.addAll(
+                kinetic.addPropagationLocations(
+                        rotate,
+                        state,
+                        new ArrayList<>(potentialPositions)
+                )
+        );
+
+        List<BlockPos> neighbours = new ArrayList<>();
+
+        for (BlockPos neighbour : potentialPositions) {
+            if (neighbour.equals(position)
+                    || !level.isLoaded(neighbour)) {
+                continue;
+            }
+
+            BlockState neighbourState =
+                    level.getBlockState(neighbour);
+
+            if (isNotSpeedControllerBridgeNode(level, neighbour, neighbourState)) {
+                continue;
+            }
+
+            if (hasPhysicalConnection(
+                    level,
+                    position,
+                    neighbour
+            )) {
+                neighbours.add(neighbour.immutable());
+            }
+        }
+
+        return neighbours;
     }
 
     private static Result buildResult(
@@ -387,10 +623,13 @@ public final class ThermochemicalHeatResolver {
             return false;
         }
 
+        if (id.getPath().equals("cogwheel")
+                || id.getPath().equals("large_cogwheel")) {
+            return false;
+        }
+
         return switch (id.getPath()) {
-            case "cogwheel",
-                 "large_cogwheel",
-                 "rotation_speed_controller",
+            case "rotation_speed_controller",
                  "clutch",
                  "gearshift",
                  "adjustable_chain_gearshift" -> true;
@@ -403,6 +642,16 @@ public final class ThermochemicalHeatResolver {
     ) {
         return state.getBlock()
                 instanceof ThermochemicalConnection;
+    }
+
+    private static boolean isRotationSpeedController(
+            BlockState state
+    ) {
+        ResourceLocation id =
+                BuiltInRegistries.BLOCK.getKey(state.getBlock());
+
+        return id.getNamespace().equals("create")
+                && id.getPath().equals("rotation_speed_controller");
     }
 
     private static boolean requiresImmediateConduit(
@@ -460,6 +709,39 @@ public final class ThermochemicalHeatResolver {
 
         BlockState firstState = level.getBlockState(firstPosition);
         BlockState secondState = level.getBlockState(secondPosition);
+
+        if (firstState.getBlock() instanceof ThermochemicalCogwheelBlock
+                && secondState.getBlock() instanceof ThermochemicalCogwheelBlock) {
+            // RotationPropagator already proved these two cogs are genuinely
+            // meshed. This intentionally supports Create's non-face-adjacent
+            // small/large diagonal cog connection.
+            return true;
+        }
+
+        if (isRotationSpeedController(firstState)
+                || isRotationSpeedController(secondState)) {
+            BlockPos controllerPosition =
+                    isRotationSpeedController(firstState)
+                            ? firstPosition
+                            : secondPosition;
+
+            if (doesNotHaveThermochemicalControllerCog(
+                    level,
+                    controllerPosition
+            )) {
+                return false;
+            }
+
+            if (isAllowedNode(firstState)
+                    && isAllowedNode(secondState)) {
+                // The Rotation Speed Controller has special Create kinetic
+                // propagation rules. Once its dedicated controller cog is the
+                // CSR Large Thermochemical Cogwheel, Create's confirmed kinetic
+                // edge is also allowed to carry thermochemical heat.
+                return true;
+            }
+        }
+
         boolean thermochemicalEdge = firstState.getBlock()
                 instanceof ThermochemicalConnection
                 || secondState.getBlock()
@@ -576,6 +858,13 @@ public final class ThermochemicalHeatResolver {
             return null;
         }
         return Direction.fromDelta(x, y, z);
+    }
+
+    private record PhysicalStep(
+            BlockPos position,
+            List<BlockPos> pathFromController,
+            int distanceFromController
+    ) {
     }
 
     public record InheritedBeltSource(

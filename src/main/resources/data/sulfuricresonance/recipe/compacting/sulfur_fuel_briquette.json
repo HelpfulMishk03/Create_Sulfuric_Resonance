@@ -1,0 +1,20 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:sulfurous_fuel_compound"
+    },
+    {
+      "item": "sulfuricresonance:sulfurous_fuel_compound"
+    },
+    {
+      "item": "minecraft:charcoal"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:sulfur_fuel_briquette",
+      "count": 2
+    }
+  ]
+}

@@ -24,7 +24,7 @@ public final class AnimatedCeramicCrucibleMixer
 
         PoseStack matrixStack = graphics.pose();
         matrixStack.pushPose();
-        matrixStack.translate(xOffset, yOffset, 210.0F);
+        matrixStack.translate(xOffset, yOffset, 200.0F);
         matrixStack.mulPose(Axis.XP.rotationDegrees(-15.5F));
         matrixStack.mulPose(Axis.YP.rotationDegrees(22.5F));
 
@@ -33,7 +33,7 @@ public final class AnimatedCeramicCrucibleMixer
                                 .defaultBlockState()
                 )
                 .atLocal(0.0, 1.65, 0.0)
-                .scale(23.08F)
+                .scale(23.0F)
                 .render(graphics);
 
         matrixStack.popPose();
