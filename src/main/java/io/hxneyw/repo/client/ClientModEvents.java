@@ -69,6 +69,9 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel THERMOCHEMICAL_COGWHEEL_SHAFT =
             partial("block/thermochemical_cogwheel_shaft");
 
+    public static final PartialModel RESONANCE_CHAMBER_SHAFT =
+            partial("block/sulfuric_resonance_chamber_shaft");
+
     private static PartialModel partial(String path) {
         return PartialModel.of(
                 ResourceLocation.fromNamespaceAndPath(
@@ -220,6 +223,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     private static void registerStandalone(
             RegisterAdditional event
     ) {
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/sulfuric_resonance_chamber_shaft"
+                        )
+                )
+        );
+
         event.register(
                 ModelResourceLocation.standalone(
                         ResourceLocation.fromNamespaceAndPath(

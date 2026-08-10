@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CTC",
+    "SFP",
+    "AMA"
+  ],
+  "key": {
+    "C": {
+      "item": "sulfuricresonance:thermochemical_casing"
+    },
+    "T": {
+      "item": "sulfuricresonance:tempered_ashesil"
+    },
+    "S": {
+      "item": "sulfuricresonance:thermochemical_shaft"
+    },
+    "F": {
+      "item": "sulfuricresonance:flameborne_core"
+    },
+    "P": {
+      "item": "create:mechanical_pump"
+    },
+    "A": {
+      "item": "sulfuricresonance:acid_resistant_ceramic"
+    },
+    "M": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:sulfuric_resonance_chamber",
+    "count": 1
+  }
+}

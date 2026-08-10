@@ -10,6 +10,7 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
+import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
@@ -363,6 +364,20 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                         case KINDLED, SEETHING -> 4;
                                         default -> 0;
                                     })
+                    )
+            );
+
+    public static final DeferredBlock<SulfuricResonanceChamberBlock>
+            SULFURIC_RESONANCE_CHAMBER =
+            BLOCKS.register(
+                    "sulfuric_resonance_chamber",
+                    () -> new SulfuricResonanceChamberBlock(
+                            BlockBehaviour.Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(5.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
                     )
             );
 

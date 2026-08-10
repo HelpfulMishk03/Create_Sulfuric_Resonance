@@ -5,6 +5,7 @@ import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
+import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
@@ -35,6 +36,18 @@ public class AllBlockEntities {
                    AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
            ).build(null)
    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<SulfuricResonanceChamberBlockEntity>
+            > SULFURIC_RESONANCE_CHAMBER =
+            BLOCK_ENTITIES.register(
+                    "sulfuric_resonance_chamber",
+                    () -> Builder.of(
+                            SulfuricResonanceChamberBlockEntity::new,
+                            AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
+                    ).build(null)
+            );
 
     public static final DeferredHolder<
             BlockEntityType<?>,
@@ -181,6 +194,18 @@ public class AllBlockEntities {
               ASH_CERAMIC_CRUCIBLE.get(),
               (blockEntity, side) -> blockEntity.getItemCapability()
       );
+
+       event.registerBlockEntity(
+               Capabilities.ItemHandler.BLOCK,
+               SULFURIC_RESONANCE_CHAMBER.get(),
+               (blockEntity, side) -> blockEntity.getItemCapability()
+       );
+
+       event.registerBlockEntity(
+               FluidHandler.BLOCK,
+               SULFURIC_RESONANCE_CHAMBER.get(),
+               SulfuricResonanceChamberBlockEntity::getFluidCapability
+       );
 
       event.registerBlockEntity(
               FluidHandler.BLOCK,

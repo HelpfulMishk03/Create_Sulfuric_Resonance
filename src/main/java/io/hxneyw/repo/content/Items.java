@@ -74,6 +74,24 @@ public class Items {
                            new Item.Properties()
                    )
            );
+   public static final DeferredItem<BlockItem>
+           SULFURIC_RESONANCE_CHAMBER_ITEM =
+           ITEMS.register(
+                   "sulfuric_resonance_chamber",
+                   () -> new BlockItem(
+                           AllModBlocks
+                                   .SULFURIC_RESONANCE_CHAMBER
+                                   .get(),
+                           new Item.Properties()
+                   )
+           );
+   public static final DeferredItem<Item> RESONANT_COPPER =
+           ITEMS.register(
+                   "resonant_copper",
+                   () -> new Item(
+                           new Item.Properties().stacksTo(64)
+                   )
+           );
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));
    public static final DeferredItem<Item> WET_ASH_CERAMIC = ITEMS.register("wet_ash_ceramic", () -> new Item(new Properties().stacksTo(64)));
 

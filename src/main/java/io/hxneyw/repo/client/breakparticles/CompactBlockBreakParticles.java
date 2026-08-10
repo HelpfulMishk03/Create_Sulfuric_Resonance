@@ -60,7 +60,8 @@ public final class CompactBlockBreakParticles {
                 AllModBlocks.THERMOCHEMICAL_COGWHEEL.get(),
                 AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(),
                 AllModBlocks.SULFUR_BURNER.get(),
-                AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
+                AllModBlocks.ASH_CERAMIC_CRUCIBLE.get(),
+                AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
         );
     }
 

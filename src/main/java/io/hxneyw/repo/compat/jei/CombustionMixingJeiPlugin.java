@@ -10,6 +10,8 @@ import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
+import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
+import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.Collections;
 import java.util.List;
@@ -115,7 +117,8 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         registration.addRecipeCategories(
                 new CombustionMixingCategory(categoryInfo),
                 new CombustionBeltCategory(guiHelper),
-                new MoltenRotorFuelCategory(guiHelper)
+                new MoltenRotorFuelCategory(guiHelper),
+        new SulfuricResonanceChamberCategory(guiHelper)
         );
     }
 
@@ -126,6 +129,11 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         registration.addRecipes(
                 CombustionMixingCategory.RECIPE_TYPE,
                 getAllMixingRecipes()
+        );
+
+        registration.addRecipes(
+                SulfuricResonanceChamberCategory.RECIPE_TYPE,
+                getAllSulfuricResonanceChamberRecipes()
         );
 
         registration.addRecipes(
@@ -145,6 +153,11 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
     ) {
         ItemStack crucible = new ItemStack(
                 AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
+        );
+
+        registration.addRecipeCatalyst(
+                new ItemStack(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()),
+                SulfuricResonanceChamberCategory.RECIPE_TYPE
         );
 
         ItemStack moltenRotor = new ItemStack(
@@ -199,6 +212,23 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 moltenRotor,
                 MoltenRotorFuelCategory.RECIPE_TYPE
         );
+    }
+
+    private static List<SulfuricResonanceChamberRecipe>
+    getAllSulfuricResonanceChamberRecipes() {
+        if (Minecraft.getInstance().level == null) {
+            return Collections.emptyList();
+        }
+
+        return Minecraft.getInstance()
+                .level
+                .getRecipeManager()
+                .getAllRecipesFor(
+                        SulfuricResonanceChamberRecipeRegistry.TYPE.get()
+                )
+                .stream()
+                .map(RecipeHolder::value)
+                .toList();
     }
 
     @SuppressWarnings("unchecked")

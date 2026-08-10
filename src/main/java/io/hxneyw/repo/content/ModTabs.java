@@ -25,6 +25,9 @@ public class ModTabs {
 // Core machines
                   output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
                   output.accept(Items.SULFUR_BURNER_ITEM.get());
+                  output.accept(
+                          Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get()
+                  );
                   output.accept(Items.ASH_CERAMIC_CRUCIBLE_ITEM.get());
                   output.accept(Items.PERFORATED_SPRITZER.get());
 
@@ -104,6 +107,7 @@ public class ModTabs {
 
 // Machine construction materials
                   output.accept(Items.ACID_ETCHED_COPPER_SHEET.get());
+                  output.accept(Items.RESONANT_COPPER.get());
                   output.accept(Items.THERMOCHEMICAL_CASING.get());
 
 // Impeller chain
