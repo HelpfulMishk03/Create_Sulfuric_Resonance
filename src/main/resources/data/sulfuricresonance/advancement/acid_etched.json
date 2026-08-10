@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:acid_etched_copper_sheet"
     },
     "title": {
-      "text": "Acid Etched"
+      "translate": "advancements.sulfuricresonance.acid_etched.title"
     },
     "description": {
-      "text": "Use the spout and some Sulfuric Acid to etch a precision Copper Sheet."
+      "translate": "advancements.sulfuricresonance.acid_etched.description"
     },
     "frame": "task",
     "show_toast": true,

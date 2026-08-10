@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:ash_ceramic_crucible"
     },
     "title": {
-      "text": "Occupational Hazard"
+      "translate": "advancements.sulfuricresonance.occupational_hazard.title"
     },
     "description": {
-      "text": "Stand inside a Ceramic Crucible heated to combustion."
+      "translate": "advancements.sulfuricresonance.occupational_hazard.description"
     },
     "frame": "challenge",
     "show_toast": true,

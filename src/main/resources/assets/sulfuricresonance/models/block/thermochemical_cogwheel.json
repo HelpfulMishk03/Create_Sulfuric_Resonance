@@ -1,0 +1,9 @@
+{
+  "parent": "create:block/cogwheel",
+  "textures": {
+    "0": "sulfuricresonance:block/thermochemicalcogwheel_axis",
+    "3": "sulfuricresonance:block/thermal_axis_top",
+    "1_2": "sulfuricresonance:block/thermochemicalcogwheel",
+    "particle": "sulfuricresonance:block/thermochemicalcogwheel"
+  }
+}

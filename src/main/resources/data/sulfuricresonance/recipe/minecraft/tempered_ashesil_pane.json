@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "TTT",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "sulfuricresonance:tempered_ashesil"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:tempered_ashesil_pane",
+    "count": 16
+  }
+}

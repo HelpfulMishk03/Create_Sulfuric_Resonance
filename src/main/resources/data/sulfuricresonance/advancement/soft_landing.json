@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:rubber_padding"
     },
     "title": {
-      "text": "Soft Landing"
+      "translate": "advancements.sulfuricresonance.soft_landing.title"
     },
     "description": {
-      "text": "Place Rubber Padding to cushion even the hardest falls."
+      "translate": "advancements.sulfuricresonance.soft_landing.description"
     },
     "frame": "task",
     "show_toast": true,

@@ -1,6 +1,6 @@
 package io.hxneyw.repo.client;
 
-import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
+import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
 import com.simibubi.create.content.processing.basin.BasinRenderer;
 import com.simibubi.create.foundation.block.connected.GlassPaneCTBehaviour;
 import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
@@ -9,6 +9,9 @@ import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
+import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerRenderer;
+import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelRenderer;
+import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelVisual;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.particles.AcidDripParticle;
@@ -57,6 +60,15 @@ public class ClientModEvents {
     public static final PartialModel THERMOCHEMICAL_GEARBOX_SHAFT =
             partial("block/thermochemical_gearbox_shaft");
 
+public static final PartialModel THERMOCHEMICAL_COGWHEEL =
+        partial("block/thermochemical_cogwheel");
+
+    public static final PartialModel LARGE_THERMOCHEMICAL_COGWHEEL_SHAFTLESS =
+            partial("block/large_thermochemical_cogwheel_shaftless");
+
+    public static final PartialModel THERMOCHEMICAL_COGWHEEL_SHAFT =
+            partial("block/thermochemical_cogwheel_shaft");
+
     private static PartialModel partial(String path) {
         return PartialModel.of(
                 ResourceLocation.fromNamespaceAndPath(
@@ -85,16 +97,24 @@ public class ClientModEvents {
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             SimpleBlockEntityVisualizer
-                    .builder(
-                            AllBlockEntities.THERMOCHEMICAL_SHAFT.get()
-                    )
-                    .factory(
-                            SingleAxisRotatingVisual.of(
-                                    THERMOCHEMICAL_SHAFT
-                            )
-                    )
+                    .builder(AllBlockEntities.THERMOCHEMICAL_COGWHEEL.get())
+                    .factory(ThermochemicalCogwheelVisual::create)
                     .skipVanillaRender(blockEntity -> true)
                     .apply();
+
+            // Small cogwheel model wrapper
+            CreateRegistrate.blockModel(
+                    () -> BracketedKineticBlockModel::new
+            ).accept(
+                    AllModBlocks.THERMOCHEMICAL_COGWHEEL.get()
+            );
+
+            // Large cogwheel model wrapper
+            CreateRegistrate.blockModel(
+                    () -> BracketedKineticBlockModel::new
+            ).accept(
+                    AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get()
+            );
 
             ItemBlockRenderTypes.setRenderLayer(
                     AllModFluids.SULFURIC_ACID.get(),
@@ -132,6 +152,17 @@ public class ClientModEvents {
                             ModSpriteShifts.ASHESIL
                     )
             ).accept(AllModBlocks.ASHESIL_PANE.get());
+            CreateRegistrate.connectedTextures(
+                    () -> new SimpleCTBehaviour(
+                            ModSpriteShifts.TEMPERED_ASHESIL
+                    )
+            ).accept(AllModBlocks.TEMPERED_ASHESIL.get());
+
+            CreateRegistrate.connectedTextures(
+                    () -> new GlassPaneCTBehaviour(
+                            ModSpriteShifts.TEMPERED_ASHESIL
+                    )
+            ).accept(AllModBlocks.TEMPERED_ASHESIL_PANE.get());
         });
     }
 
@@ -145,6 +176,11 @@ public class ClientModEvents {
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.SULFUR_BURNER.get(),
+                SulfurBurnerRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_CONDUIT.get(),
                 ThermochemicalConduitRenderer::new
         );
@@ -153,6 +189,13 @@ public class ClientModEvents {
                 AllBlockEntities.THERMOCHEMICAL_SHAFT.get(),
                 ThermochemicalShaftRenderer::new
         );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_COGWHEEL.get(),
+                ThermochemicalCogwheelRenderer::new
+        );
+
+
 
         event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_GEARBOX.get(),

@@ -4,7 +4,9 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
@@ -33,6 +35,19 @@ public class AllBlockEntities {
                    AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
            ).build(null)
    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermochemicalCogwheelBlockEntity>
+            > THERMOCHEMICAL_COGWHEEL =
+            BLOCK_ENTITIES.register(
+                    "thermochemical_cogwheel",
+                    () -> Builder.of(
+                            ThermochemicalCogwheelBlockEntity::new,
+                            AllModBlocks.THERMOCHEMICAL_COGWHEEL.get(),
+                            AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get()
+                    ).build(null)
+            );
 
    public static final DeferredHolder<
            BlockEntityType<?>,
@@ -119,6 +134,20 @@ public class AllBlockEntities {
                    ).build(null)
            );
 
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<SulfurBurnerBlockEntity>
+            > SULFUR_BURNER =
+            BLOCK_ENTITIES.register(
+                    "sulfur_burner",
+                    () -> Builder.of(
+                            SulfurBurnerBlockEntity::new,
+                            AllModBlocks
+                                    .SULFUR_BURNER
+                                    .get()
+                    ).build(null)
+            );
+
    public static void register(IEventBus eventBus) {
       BLOCK_ENTITIES.register(eventBus);
       eventBus.addListener(AllBlockEntities::registerCapabilities);
@@ -140,7 +169,13 @@ public class AllBlockEntities {
 
 
       });
-
+       event.registerBlockEntity(
+               Capabilities.ItemHandler.BLOCK,
+               SULFUR_BURNER.get(),
+               (blockEntity, side) ->
+                       blockEntity
+                               .getAutomationFuelHandler()
+       );
       event.registerBlockEntity(
               Capabilities.ItemHandler.BLOCK,
               ASH_CERAMIC_CRUCIBLE.get(),

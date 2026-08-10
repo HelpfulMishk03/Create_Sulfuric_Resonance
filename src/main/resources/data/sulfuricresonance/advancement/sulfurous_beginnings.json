@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:sulfur"
     },
     "title": {
-      "text": "Sulfurous Beginnings"
+      "translate": "advancements.sulfuricresonance.sulfurous_beginnings.title"
     },
     "description": {
-      "text": "Obtain Sulfur for the first time."
+      "translate": "advancements.sulfuricresonance.sulfurous_beginnings.description"
     },
     "frame": "goal",
     "show_toast": true,

@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:flameborne_core"
     },
     "title": {
-      "text": "You're on Fire"
+      "translate": "advancements.sulfuricresonance.youre_on_fire.title"
     },
     "description": {
-      "text": "Obtain a Flameborne Core —the heart of greater heat still to come."
+      "translate": "advancements.sulfuricresonance.youre_on_fire.description"
     },
     "frame": "goal",
     "show_toast": true,

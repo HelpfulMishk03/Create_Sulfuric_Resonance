@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:embersol"
     },
     "title": {
-      "text": "Embersol Discovery"
+      "translate": "advancements.sulfuricresonance.embersol_discovery.title"
     },
     "description": {
-      "text": "Obtain Embersol, a substance flowing with the strange heat and essence of the Nether."
+      "translate": "advancements.sulfuricresonance.embersol_discovery.description"
     },
     "frame": "goal",
     "show_toast": true,

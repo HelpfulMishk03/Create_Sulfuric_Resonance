@@ -1,0 +1,40 @@
+{
+  "parent": "sulfuricresonance:sulfurous_beginnings",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:sulfur_burner"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.sulfurous_heat.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.sulfurous_heat.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "place_burner": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "sulfuricresonance:sulfur_burner"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place_burner"
+    ]
+  ]
+}

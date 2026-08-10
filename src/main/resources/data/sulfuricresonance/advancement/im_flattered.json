@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:spent_ash"
     },
     "title": {
-      "text": "I'm Flattered.."
+      "translate": "advancements.sulfuricresonance.im_flattered.title"
     },
     "description": {
-      "text": "Obtain Spent Ash, a seemingly useless byproduct —or so it appears."
+      "translate": "advancements.sulfuricresonance.im_flattered.description"
     },
     "frame": "task",
     "show_toast": true,

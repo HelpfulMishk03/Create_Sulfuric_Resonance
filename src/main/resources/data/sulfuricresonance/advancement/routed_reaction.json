@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:thermochemical_conduit"
     },
     "title": {
-      "text": "Routed Reaction"
+      "translate": "advancements.sulfuricresonance.routed_reaction.title"
     },
     "description": {
-      "text": "Route furnace heat through a thermochemical connection."
+      "translate": "advancements.sulfuricresonance.routed_reaction.description"
     },
     "frame": "goal",
     "show_toast": true,

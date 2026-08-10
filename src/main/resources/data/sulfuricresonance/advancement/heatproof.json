@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:ash_ceramic"
     },
     "title": {
-      "text": "Heatproof"
+      "translate": "advancements.sulfuricresonance.heatproof.title"
     },
     "description": {
-      "text": "Fire Wet Ash Ceramic into heat-resistant Ash Ceramic."
+      "translate": "advancements.sulfuricresonance.heatproof.description"
     },
     "frame": "task",
     "show_toast": true,

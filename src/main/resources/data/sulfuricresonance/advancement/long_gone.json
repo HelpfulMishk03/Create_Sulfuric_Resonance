@@ -5,10 +5,10 @@
       "id": "minecraft:emerald"
     },
     "title": {
-      "text": "Long Gone"
+      "translate": "advancements.sulfuricresonance.long_gone.title"
     },
     "description": {
-      "text": "Have a villager stand on a Thermal Relay Switch, modelled after the old blacksmith house."
+      "translate": "advancements.sulfuricresonance.long_gone.description"
     },
     "frame": "challenge",
     "show_toast": true,

@@ -1,0 +1,14 @@
+{
+  "type": "sulfuricresonance:combustion_belt",
+  "ingredient": {
+    "item": "sulfuricresonance:ashesil_pane"
+  },
+  "result": {
+    "id": "sulfuricresonance:tempered_ashesil_pane",
+    "count": 1
+  },
+  "minimum_heat": "superheated",
+  "required_segments": 10,
+  "base_processing_ticks": 100,
+  "processing_ticks_per_item": 3
+}

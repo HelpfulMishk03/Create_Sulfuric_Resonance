@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "sulfuricresonance:block/thermochemical_cogwheel",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "sulfuricresonance:block/thermochemical_cogwheel"
+    },
+    "axis=z": {
+      "model": "sulfuricresonance:block/thermochemical_cogwheel",
+      "x": 90
+    }
+  }
+}

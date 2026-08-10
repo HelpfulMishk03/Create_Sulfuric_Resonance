@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:combustion_belt_connector"
     },
     "title": {
-      "text": "Rolling Fire"
+      "translate": "advancements.sulfuricresonance.rolling_fire.title"
     },
     "description": {
-      "text": "Process your first item on a Combustion Belt."
+      "translate": "advancements.sulfuricresonance.rolling_fire.description"
     },
     "frame": "goal",
     "show_toast": true,

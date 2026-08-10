@@ -5,10 +5,10 @@
       "id": "sulfuricresonance:molten_rotor_furnace"
     },
     "title": {
-      "text": "Woah.. How Do I Use This Thing?"
+      "translate": "advancements.sulfuricresonance.woah_how_do_i_use_this.title"
     },
     "description": {
-      "text": "Craft the Molten Rotor Furnace, an advanced furnace capable of converting heat into rotational force. Press U over it to view all compatible recipes."
+      "translate": "advancements.sulfuricresonance.woah_how_do_i_use_this.description"
     },
     "frame": "challenge",
     "show_toast": true,

@@ -1,0 +1,8 @@
+{
+  "parent": "create:block/connected_glass_pane/noside",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "pane": "sulfuricresonance:block/tempered_ashesil",
+    "edge": "sulfuricresonance:block/tempered_ashesil_pane_top"
+  }
+}
