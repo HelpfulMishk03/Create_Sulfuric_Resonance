@@ -18,6 +18,8 @@
   "item.sulfuricresonance.impeller_blade": "Pá de Impulsor",
   "item.sulfuricresonance.incomplete_thermochemical_casing": "Revestimento Termoquímico Incompleto",
   "item.sulfuricresonance.infernal_coke": "Coque Infernal",
+  "block.sulfuricresonance.thermochemical_link_drive": "Transmissão de Elo Termoquímica",
+  "tooltip.sulfuricresonance.thermochemical_link_drive": "Transporta rotação e calor termoquímico por uma conexão física de elos.",
   "item.sulfuricresonance.infernal_impeller": "Impulsor Infernal",
   "item.sulfuricresonance.latex_clump": "Aglomerado de Látex",
   "block.sulfuricresonance.sulfur_burner": "Queimador de Enxofre",

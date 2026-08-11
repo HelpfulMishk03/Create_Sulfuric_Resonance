@@ -1,0 +1,10 @@
+{
+  "parent": "create:block/encased_chain_drive/item",
+  "textures": {
+    "1": "sulfuricresonance:block/thermochemical_link_drive_gearbox",
+    "side": "sulfuricresonance:block/thermochemical_link_drive",
+    "particle": "sulfuricresonance:block/thermochemical_link_drive",
+    "1_0": "sulfuricresonance:block/thermochemical_link_drive_axis",
+    "1_1": "sulfuricresonance:block/thermochemical_link_drive_axis_top"
+  }
+}

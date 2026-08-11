@@ -54,79 +54,30 @@ public class Items {
    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD_FILLED = ITEMS.register("obsidian_fiber_mold_filled", () -> new Item(new Properties().stacksTo(16)));
    @SuppressWarnings("unused")
 
-   public static final DeferredItem<CogwheelBlockItem>
-           LARGE_THERMOCHEMICAL_COGWHEEL_ITEM =
-           ITEMS.register(
-                   "large_thermochemical_cogwheel",
-                   () -> new CogwheelBlockItem(
-                           AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(),
-                           new Properties()
-                   )
-           );
-   public static final DeferredItem<BlockItem>
-           SULFUR_BURNER_ITEM =
-           ITEMS.register(
-                   "sulfur_burner",
-                   () -> new BlockItem(
-                           AllModBlocks
-                                   .SULFUR_BURNER
-                                   .get(),
-                           new Item.Properties()
-                   )
-           );
-   public static final DeferredItem<BlockItem>
-           SULFURIC_RESONANCE_CHAMBER_ITEM =
-           ITEMS.register(
-                   "sulfuric_resonance_chamber",
-                   () -> new BlockItem(
-                           AllModBlocks
-                                   .SULFURIC_RESONANCE_CHAMBER
-                                   .get(),
-                           new Item.Properties()
-                   )
-           );
-   public static final DeferredItem<Item> RESONANT_COPPER =
-           ITEMS.register(
-                   "resonant_copper",
-                   () -> new Item(
-                           new Item.Properties().stacksTo(64)
-                   )
-           );
+   public static final DeferredItem<CogwheelBlockItem> LARGE_THERMOCHEMICAL_COGWHEEL_ITEM = ITEMS.register("large_thermochemical_cogwheel", () -> new CogwheelBlockItem(AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(), new Properties()));
+   public static final DeferredItem<BlockItem> SULFUR_BURNER_ITEM = ITEMS.register("sulfur_burner", () -> new BlockItem(AllModBlocks.SULFUR_BURNER.get(), new Item.Properties()));
+   public static final DeferredItem<BlockItem> SULFURIC_RESONANCE_CHAMBER_ITEM = ITEMS.register("sulfuric_resonance_chamber", () -> new BlockItem(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get(), new Item.Properties()));
+   public static final DeferredItem<Item> RESONANT_COPPER = ITEMS.register("resonant_copper", () -> new Item(new Item.Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));
    public static final DeferredItem<Item> WET_ASH_CERAMIC = ITEMS.register("wet_ash_ceramic", () -> new Item(new Properties().stacksTo(64)));
-
    public static final DeferredItem<Item> UNFIRED_ASH_BRICK = ITEMS.register("unfired_ash_brick", () -> new Item(new Properties().stacksTo(64)));
-
    public static final DeferredItem<Item> ACID_RESISTANT_CERAMIC = ITEMS.register("acid_resistant_ceramic", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> ASHESIL_PANE_ITEM = ITEMS.register("ashesil_pane", () -> new BlockItem(AllModBlocks.ASHESIL_PANE.get(), new Properties()));
-
    public static final DeferredItem<LivingEmberLampItem> LIVING_EMBER_LAMP_ITEM = ITEMS.register("living_ember_lamp", () -> new LivingEmberLampItem(AllModBlocks.LIVING_EMBER_LAMP.get(), new Properties()));
-
    public static final DeferredItem<Item> OBSIDIAN_FIBER = ITEMS.register("obsidian_fiber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> OBSIDIAN_CLOTH = ITEMS.register("obsidian_cloth", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> UNFINISHED_FILAMENT = ITEMS.register("unfinished_filament", () -> new Item(new Properties().stacksTo(64)));
-
    public static final DeferredItem<Item> CINDER_FILAMENT = ITEMS.register("cinder_filament", () -> new Item(new Properties().stacksTo(64)));
-
    public static final DeferredItem<Item> ACID_ETCHED_COPPER_SHEET = ITEMS.register("acid_etched_copper_sheet", () -> new Item(new Properties().stacksTo(64)));
-
    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_THERMOCHEMICAL_CASING = ITEMS.register("incomplete_thermochemical_casing", () -> new SequencedAssemblyItem(new Properties()));
-
    public static final DeferredItem<Item> THERMOCHEMICAL_CASING = ITEMS.register("thermochemical_casing", () -> new Item(new Properties().stacksTo(64)));
-
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<ThermalRelaySwitchItem> THERMAL_RELAY_SWITCH_ITEM = ITEMS.register("thermal_relay_switch", () -> new ThermalRelaySwitchItem(AllModBlocks.THERMAL_RELAY_SWITCH.get(), new Properties()));
-
    public static final DeferredItem<CombustionBeltConnectorItem> COMBUSTION_BELT_CONNECTOR = ITEMS.register("combustion_belt_connector", () -> new CombustionBeltConnectorItem(new Properties().stacksTo(64)));
-
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_CONDUIT_ITEM = ITEMS.register("thermochemical_conduit", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CONDUIT.get(), new Properties()));
-
-
-
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_SHAFT_ITEM = ITEMS.register("thermochemical_shaft", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_SHAFT.get(), new Properties()));
-
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_GEARBOX_ITEM = ITEMS.register("thermochemical_gearbox", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_GEARBOX.get(), new Properties()));
-
+   public static final DeferredItem<BlockItem> THERMOCHEMICAL_LINK_DRIVE_ITEM = ITEMS.register("thermochemical_link_drive", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get(), new Properties()));
    public static final DeferredItem<Item> UNREFINED_RUBBER = ITEMS.register("unrefined_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> VULCANIZED_RUBBER = ITEMS.register("vulcanized_rubber", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> MOLDED_RUBBER_GASKET = ITEMS.register("molded_rubber_gasket", () -> new Item(new Properties().stacksTo(64)));

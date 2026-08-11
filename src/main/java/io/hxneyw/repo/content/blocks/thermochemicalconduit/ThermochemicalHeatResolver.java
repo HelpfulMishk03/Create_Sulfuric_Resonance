@@ -5,11 +5,13 @@ import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
+import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
+import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -712,9 +714,26 @@ public final class ThermochemicalHeatResolver {
 
         if (firstState.getBlock() instanceof ThermochemicalCogwheelBlock
                 && secondState.getBlock() instanceof ThermochemicalCogwheelBlock) {
-            // RotationPropagator already proved these two cogs are genuinely
-            // meshed. This intentionally supports Create's non-face-adjacent
-            // small/large diagonal cog connection.
+            return true;
+        }
+
+        Direction direction = directionBetween(
+                firstPosition,
+                secondPosition
+        );
+        if (direction == null) {
+            return false;
+        }
+
+        if (firstState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock
+                && secondState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock
+                && ChainDriveBlock.areBlocksConnected(
+                firstState,
+                secondState,
+                direction
+        )) {
             return true;
         }
 
@@ -749,14 +768,6 @@ public final class ThermochemicalHeatResolver {
 
         if (!thermochemicalEdge) {
             return true;
-        }
-
-        Direction direction = directionBetween(
-                firstPosition,
-                secondPosition
-        );
-        if (direction == null) {
-            return false;
         }
 
         if (firstState.getBlock()

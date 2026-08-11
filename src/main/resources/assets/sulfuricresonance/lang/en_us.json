@@ -14,6 +14,8 @@
   "item.sulfuricresonance.corrupt_blaze_cake": "Corrupt Blaze Cake",
   "item.sulfuricresonance.ember_catalyst": "Ember Catalyst",
   "item.sulfuricresonance.embersol": "Embersol",
+  "block.sulfuricresonance.thermochemical_link_drive": "Thermochemical Link Drive",
+  "tooltip.sulfuricresonance.thermochemical_link_drive": "Carries rotation and thermochemical heat across a physical chain connection.",
   "item.sulfuricresonance.flameborne_core": "Flameborne Core",
   "item.sulfuricresonance.impeller_blade": "Impeller Blade",
   "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",

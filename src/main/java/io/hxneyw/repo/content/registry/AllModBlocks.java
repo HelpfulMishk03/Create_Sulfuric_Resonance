@@ -15,6 +15,7 @@ import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
@@ -58,6 +59,20 @@ public class AllModBlocks {
 
 
     );
+
+    public static final DeferredBlock<ThermochemicalLinkDriveBlock>
+            THERMOCHEMICAL_LINK_DRIVE =
+            BLOCKS.register(
+                    "thermochemical_link_drive",
+                    () -> new ThermochemicalLinkDriveBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
 
     public static final DeferredBlock<Block> RUBBER_PADDING = BLOCKS.register(
             "rubber_padding",

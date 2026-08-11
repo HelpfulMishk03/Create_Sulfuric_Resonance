@@ -19,6 +19,7 @@
     "sulfuricresonance:thermochemical_cogwheel",
     "sulfuricresonance:large_thermochemical_cogwheel",
     "sulfuricresonance:sulfur_burner",
-    "sulfuricresonance:sulfuric_resonance_chamber"
+    "sulfuricresonance:sulfuric_resonance_chamber",
+    "sulfuricresonance:thermochemical_link_drive"
   ]
 }
