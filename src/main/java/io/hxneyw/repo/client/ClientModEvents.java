@@ -58,6 +58,10 @@ public class ClientModEvents {
     public static final PartialModel THERMOCHEMICAL_GEARBOX_SHAFT =
             partial("block/thermochemical_gearbox_shaft");
 
+    public static final PartialModel
+            THERMOCHEMICAL_LINK_DRIVE_SHAFT =
+            partial("block/thermochemical_link_drive_shaft");
+
 public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         partial("block/thermochemical_cogwheel");
 
@@ -210,6 +214,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_GEARBOX.get(),
                 ThermochemicalGearboxRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_LINK_DRIVE.get(),
+                ThermochemicalLinkDriveRenderer::new
         );
 
         event.registerBlockEntityRenderer(

@@ -10,6 +10,7 @@ import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import net.minecraft.core.Direction;
@@ -48,7 +49,17 @@ public class AllBlockEntities {
                             AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
                     ).build(null)
             );
-
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermochemicalLinkDriveBlockEntity>
+            > THERMOCHEMICAL_LINK_DRIVE =
+            BLOCK_ENTITIES.register(
+                    "thermochemical_link_drive",
+                    () -> Builder.of(
+                            ThermochemicalLinkDriveBlockEntity::new,
+                            AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()
+                    ).build(null)
+            );
     public static final DeferredHolder<
             BlockEntityType<?>,
             BlockEntityType<ThermochemicalCogwheelBlockEntity>
