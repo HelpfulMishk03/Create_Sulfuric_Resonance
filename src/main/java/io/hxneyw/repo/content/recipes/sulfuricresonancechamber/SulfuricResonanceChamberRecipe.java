@@ -1,7 +1,7 @@
 package io.hxneyw.repo.content.recipes.sulfuricresonancechamber;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
-import io.hxneyw.repo.content.registry.AllModFluids;
+import java.util.Optional;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -11,13 +11,15 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings({"OptionalUsedAsFieldOrParameterType", "ClassCanBeRecord"})
 public final class SulfuricResonanceChamberRecipe
         implements Recipe<SingleRecipeInput> {
 
     private final Ingredient substrate;
+    private final Optional<Ingredient> catalyst;
+    private final Optional<Ingredient> auxiliary;
     private final ItemStack result;
     private final int acidAmount;
     private final HeatRequirement minimumHeat;
@@ -26,6 +28,8 @@ public final class SulfuricResonanceChamberRecipe
 
     public SulfuricResonanceChamberRecipe(
             Ingredient substrate,
+            Optional<Ingredient> catalyst,
+            Optional<Ingredient> auxiliary,
             ItemStack result,
             int acidAmount,
             HeatRequirement minimumHeat,
@@ -33,6 +37,8 @@ public final class SulfuricResonanceChamberRecipe
             int processingTime
     ) {
         this.substrate = substrate;
+        this.catalyst = catalyst;
+        this.auxiliary = auxiliary;
         this.result = result;
         this.acidAmount = acidAmount;
         this.minimumHeat = minimumHeat;
@@ -42,6 +48,14 @@ public final class SulfuricResonanceChamberRecipe
 
     public Ingredient substrate() {
         return substrate;
+    }
+
+    public Optional<Ingredient> catalyst() {
+        return catalyst;
+    }
+
+    public Optional<Ingredient> auxiliary() {
+        return auxiliary;
     }
 
     public ItemStack result() {
@@ -64,17 +78,48 @@ public final class SulfuricResonanceChamberRecipe
         return processingTime;
     }
 
-    public boolean matches(
-            ItemStack input,
-            FluidStack acid,
-            MoltenRotorBlockEntity.RotorHeatLevel heat,
-            float speed
+    public boolean matchesInputs(
+            ItemStack input1,
+            ItemStack input2,
+            ItemStack input3
     ) {
-        return substrate.test(input)
-                && acid.getFluid() == AllModFluids.SULFURIC_ACID.get()
-                && acid.getAmount() >= acidAmount
-                && minimumHeat.accepts(heat)
-                && speed >= minimumSpeed;
+        return substrate.test(input1)
+                && matchesOptionalSlot(catalyst, input2)
+                && matchesOptionalSlot(auxiliary, input3);
+    }
+
+    public boolean matchesPresentInputs(
+            ItemStack input1,
+            ItemStack input2,
+            ItemStack input3
+    ) {
+        return (!input1.isEmpty() || !input2.isEmpty() || !input3.isEmpty())
+                && (input1.isEmpty() || substrate.test(input1))
+                && (input2.isEmpty()
+                || catalyst.filter(value -> value.test(input2)).isPresent())
+                && (input3.isEmpty()
+                || auxiliary.filter(value -> value.test(input3)).isPresent());
+    }
+
+    public boolean acceptsInput(int slot, ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        return switch (slot) {
+            case 0 -> substrate.test(stack);
+            case 1 -> catalyst.filter(value -> value.test(stack)).isPresent();
+            case 2 -> auxiliary.filter(value -> value.test(stack)).isPresent();
+            default -> false;
+        };
+    }
+
+    private static boolean matchesOptionalSlot(
+            Optional<Ingredient> ingredient,
+            ItemStack stack
+    ) {
+        return ingredient
+                .map(value -> value.test(stack))
+                .orElseGet(stack::isEmpty);
     }
 
     @Override
@@ -104,22 +149,19 @@ public final class SulfuricResonanceChamberRecipe
     public @NotNull NonNullList<Ingredient> getIngredients() {
         NonNullList<Ingredient> ingredients = NonNullList.create();
         ingredients.add(substrate);
+        catalyst.ifPresent(ingredients::add);
+        auxiliary.ifPresent(ingredients::add);
         return ingredients;
     }
 
     @Override
-    public boolean canCraftInDimensions(
-            int width,
-            int height
-    ) {
+    public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 1;
     }
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return SulfuricResonanceChamberRecipeRegistry
-                .SERIALIZER
-                .get();
+        return SulfuricResonanceChamberRecipeRegistry.SERIALIZER.get();
     }
 
     @Override
@@ -133,16 +175,15 @@ public final class SulfuricResonanceChamberRecipe
     }
 
     public enum HeatRequirement {
+
+        HEATED("heated", 1),
         SUPERHEATED("superheated", 3),
         COMBUSTION("combustion", 4);
 
         private final String serializedName;
         private final int minimumRank;
 
-        HeatRequirement(
-                String serializedName,
-                int minimumRank
-        ) {
+        HeatRequirement(String serializedName, int minimumRank) {
             this.serializedName = serializedName;
             this.minimumRank = minimumRank;
         }
@@ -151,23 +192,18 @@ public final class SulfuricResonanceChamberRecipe
             return serializedName;
         }
 
-        public boolean accepts(
-                MoltenRotorBlockEntity.RotorHeatLevel heat
-        ) {
+        public boolean accepts(MoltenRotorBlockEntity.RotorHeatLevel heat) {
             return heat != null && heat.rank >= minimumRank;
         }
 
-        public static HeatRequirement fromSerializedName(
-                String serializedName
-        ) {
+        public static HeatRequirement fromSerializedName(String serializedName) {
             for (HeatRequirement value : values()) {
                 if (value.serializedName.equals(serializedName)) {
                     return value;
                 }
             }
             throw new IllegalArgumentException(
-                    "Unknown chamber heat requirement: "
-                            + serializedName
+                    "Unknown chamber heat requirement: " + serializedName
             );
         }
     }

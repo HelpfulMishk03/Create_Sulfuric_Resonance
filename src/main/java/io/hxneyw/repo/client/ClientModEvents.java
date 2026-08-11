@@ -72,6 +72,9 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel RESONANCE_CHAMBER_SHAFT =
             partial("block/sulfuric_resonance_chamber_shaft");
 
+    public static final PartialModel RESONANCE_CHAMBER_WINDOW =
+            partial("block/sulfuric_resonance_chamber_window");
+
     private static PartialModel partial(String path) {
         return PartialModel.of(
                 ResourceLocation.fromNamespaceAndPath(
@@ -105,14 +108,12 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                     .skipVanillaRender(blockEntity -> true)
                     .apply();
 
-            // Small cogwheel model wrapper
             CreateRegistrate.blockModel(
                     () -> BracketedKineticBlockModel::new
             ).accept(
                     AllModBlocks.THERMOCHEMICAL_COGWHEEL.get()
             );
 
-            // Large cogwheel model wrapper
             CreateRegistrate.blockModel(
                     () -> BracketedKineticBlockModel::new
             ).accept(
@@ -198,8 +199,6 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 ThermochemicalCogwheelRenderer::new
         );
 
-
-
         event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_GEARBOX.get(),
                 ThermochemicalGearboxRenderer::new
@@ -208,6 +207,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.registerBlockEntityRenderer(
                 AllBlockEntities.LIVING_EMBER_LAMP.get(),
                 LivingEmberLampRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.SULFURIC_RESONANCE_CHAMBER.get(),
+                SulfuricResonanceChamberRenderer::new
         );
     }
 
@@ -228,6 +232,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "block/sulfuric_resonance_chamber_shaft"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/sulfuric_resonance_chamber_window"
                         )
                 )
         );

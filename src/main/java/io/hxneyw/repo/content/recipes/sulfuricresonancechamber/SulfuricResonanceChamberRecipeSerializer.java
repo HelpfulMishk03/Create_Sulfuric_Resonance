@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.Optional;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -40,6 +41,18 @@ public final class SulfuricResonanceChamberRecipeSerializer
                                     .forGetter(
                                             SulfuricResonanceChamberRecipe
                                                     ::substrate
+                                    ),
+                            Ingredient.CODEC
+                                    .optionalFieldOf("catalyst")
+                                    .forGetter(
+                                            SulfuricResonanceChamberRecipe
+                                                    ::catalyst
+                                    ),
+                            Ingredient.CODEC
+                                    .optionalFieldOf("auxiliary")
+                                    .forGetter(
+                                            SulfuricResonanceChamberRecipe
+                                                    ::auxiliary
                                     ),
                             ItemStack.CODEC
                                     .fieldOf("result")
@@ -81,40 +94,73 @@ public final class SulfuricResonanceChamberRecipeSerializer
             RegistryFriendlyByteBuf,
             SulfuricResonanceChamberRecipe
             > STREAM_CODEC = new StreamCodec<>() {
-                @Override
-                public @NotNull SulfuricResonanceChamberRecipe decode(
-                        @NotNull RegistryFriendlyByteBuf buffer
-                ) {
-                    return new SulfuricResonanceChamberRecipe(
-                            Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
-                            ItemStack.STREAM_CODEC.decode(buffer),
-                            buffer.readVarInt(),
-                            SulfuricResonanceChamberRecipe
-                                    .HeatRequirement
-                                    .fromSerializedName(buffer.readUtf()),
-                            buffer.readVarInt(),
-                            buffer.readVarInt()
-                    );
-                }
 
-                @Override
-                public void encode(
-                        @NotNull RegistryFriendlyByteBuf buffer,
-                        SulfuricResonanceChamberRecipe recipe
-                ) {
+        @Override
+        public @NotNull SulfuricResonanceChamberRecipe decode(
+                @NotNull RegistryFriendlyByteBuf buffer
+        ) {
+            Ingredient substrate =
+                    Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
+
+            Optional<Ingredient> catalyst = buffer.readBoolean()
+                    ? Optional.of(
+                    Ingredient.CONTENTS_STREAM_CODEC.decode(buffer)
+            )
+                    : Optional.empty();
+
+            Optional<Ingredient> auxiliary = buffer.readBoolean()
+                    ? Optional.of(
+                    Ingredient.CONTENTS_STREAM_CODEC.decode(buffer)
+            )
+                    : Optional.empty();
+
+            return new SulfuricResonanceChamberRecipe(
+                    substrate,
+                    catalyst,
+                    auxiliary,
+                    ItemStack.STREAM_CODEC.decode(buffer),
+                    buffer.readVarInt(),
+                    SulfuricResonanceChamberRecipe
+                            .HeatRequirement
+                            .fromSerializedName(buffer.readUtf()),
+                    buffer.readVarInt(),
+                    buffer.readVarInt()
+            );
+        }
+
+        @Override
+        public void encode(
+                @NotNull RegistryFriendlyByteBuf buffer,
+                SulfuricResonanceChamberRecipe recipe
+        ) {
+            Ingredient.CONTENTS_STREAM_CODEC.encode(
+                    buffer,
+                    recipe.substrate()
+            );
+
+            buffer.writeBoolean(recipe.catalyst().isPresent());
+            recipe.catalyst().ifPresent(ingredient ->
                     Ingredient.CONTENTS_STREAM_CODEC.encode(
                             buffer,
-                            recipe.substrate()
-                    );
-                    ItemStack.STREAM_CODEC.encode(buffer, recipe.result());
-                    buffer.writeVarInt(recipe.acidAmount());
-                    buffer.writeUtf(
-                            recipe.minimumHeat().serializedName()
-                    );
-                    buffer.writeVarInt(recipe.minimumSpeed());
-                    buffer.writeVarInt(recipe.processingTime());
-                }
-            };
+                            ingredient
+                    )
+            );
+
+            buffer.writeBoolean(recipe.auxiliary().isPresent());
+            recipe.auxiliary().ifPresent(ingredient ->
+                    Ingredient.CONTENTS_STREAM_CODEC.encode(
+                            buffer,
+                            ingredient
+                    )
+            );
+
+            ItemStack.STREAM_CODEC.encode(buffer, recipe.result());
+            buffer.writeVarInt(recipe.acidAmount());
+            buffer.writeUtf(recipe.minimumHeat().serializedName());
+            buffer.writeVarInt(recipe.minimumSpeed());
+            buffer.writeVarInt(recipe.processingTime());
+        }
+    };
 
     @Override
     public @NotNull MapCodec<SulfuricResonanceChamberRecipe> codec() {

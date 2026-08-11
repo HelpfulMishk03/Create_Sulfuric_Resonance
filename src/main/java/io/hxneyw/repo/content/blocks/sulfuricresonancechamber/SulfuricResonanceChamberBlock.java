@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import org.jetbrains.annotations.NotNull;
 
 public class SulfuricResonanceChamberBlock
         extends HorizontalDirectionalBlock
@@ -37,7 +38,7 @@ public class SulfuricResonanceChamberBlock
     }
 
     @Override
-    protected MapCodec<? extends SulfuricResonanceChamberBlock>
+    protected @NotNull MapCodec<? extends SulfuricResonanceChamberBlock>
     codec() {
         return CODEC;
     }
@@ -60,8 +61,7 @@ public class SulfuricResonanceChamberBlock
             BlockState state,
             Direction face
     ) {
-        // TEMPORARY DIAGNOSTIC: allow either end of the horizontal kinetic axis.
-        return face.getAxis() == heatAndRotationSide(state).getAxis();
+        return face == heatAndRotationSide(state);
     }
 
     @Override
@@ -69,8 +69,7 @@ public class SulfuricResonanceChamberBlock
             BlockState state,
             Direction face
     ) {
-        // TEMPORARY DIAGNOSTIC: allow either end of the horizontal kinetic axis.
-        return face.getAxis() != heatAndRotationSide(state).getAxis();
+        return face != heatAndRotationSide(state);
     }
 
     @Override
