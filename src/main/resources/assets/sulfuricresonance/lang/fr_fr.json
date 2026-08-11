@@ -2,7 +2,7 @@
   "block.sulfuricresonance.thermochemical_link_drive": "Transmission à maillons thermochimique",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Transmet la rotation et la chaleur thermochimique par une connexion physique de chaîne.",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Longueur de la chaîne : %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connexions de chaîne : %s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connexions : %s/%s",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Plaque de cuivre gravée à l’acide",
   "item.sulfuricresonance.acid_resistant_ceramic": "Céramique résistante à l’acide",

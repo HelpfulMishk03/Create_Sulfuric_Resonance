@@ -1,6 +1,7 @@
 package io.hxneyw.repo.client;
 
 import com.simibubi.create.AllDataComponents;
+import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
 import io.hxneyw.repo.content.items.CombustionBeltConnectorItem;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.Items;
@@ -124,9 +125,9 @@ public final class CombustionBeltConnectorPreview {
             );
         }
 
-        if (CombustionBeltConnectorItem.isNotWithinConfiguredLength(
+        if (!selected.closerThan(
                 first,
-                selected
+                BeltConnectorItem.maxLength()
         )) {
             return;
         }

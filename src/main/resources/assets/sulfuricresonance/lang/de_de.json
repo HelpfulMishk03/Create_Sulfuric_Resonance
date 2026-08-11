@@ -2,7 +2,7 @@
   "block.sulfuricresonance.thermochemical_link_drive": "Thermochemischer Gliedantrieb",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Überträgt Rotation und thermochemische Wärme über eine physische Kettenverbindung.",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Kettenlänge: %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Kettenverbindungen: %s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Verbindungen: %s/%s",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Säuregeätztes Kupferblech",
   "item.sulfuricresonance.acid_resistant_ceramic": "Säurebeständige Keramik",

@@ -4,7 +4,6 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.BooleanValue;
 import net.neoforged.neoforge.common.ModConfigSpec.Builder;
 import net.neoforged.neoforge.common.ModConfigSpec.DoubleValue;
-import net.neoforged.neoforge.common.ModConfigSpec.IntValue;
 
 public class Config {
    private static final Builder BUILDER = new Builder();
@@ -22,31 +21,6 @@ public class Config {
    public static final BooleanValue TNT_CAN_EXPLODE = BUILDER.comment("Allow TNT to explode the Molten Rotor (disable for safe TNT usage)")
       .define("tntCanExplode", true);
    static final ModConfigSpec SPEC = BUILDER.build();
-
-   private static final Builder SERVER_BUILDER = new Builder();
-   public static final IntValue MAX_COMBUSTION_BELT_LENGTH = SERVER_BUILDER.comment(
-         "Maximum number of blocks in a Combustion Belt (minimum 5; default 20)"
-      ).defineInRange("maxCombustionBeltLength", 20, 5, Integer.MAX_VALUE);
-   public static final BooleanValue UNLIMITED_COMBUSTION_BELT_LENGTH = SERVER_BUILDER.comment(
-         "Allow Combustion Belts to extend without a configured maximum"
-      ).define("unlimitedCombustionBeltLength", false);
-   static final ModConfigSpec SERVER_SPEC = SERVER_BUILDER.build();
-
-   public static int combustionBeltLengthLimit() {
-      return UNLIMITED_COMBUSTION_BELT_LENGTH.get()
-            ? Integer.MAX_VALUE
-            : Math.max(5, MAX_COMBUSTION_BELT_LENGTH.get());
-   }
-
-   public static boolean unlimitedCombustionBeltLength() {
-      return UNLIMITED_COMBUSTION_BELT_LENGTH.get();
-   }
-
-   public static int combustionBeltTraversalLimit() {
-      return unlimitedCombustionBeltLength()
-            ? Integer.MAX_VALUE / 4
-            : combustionBeltLengthLimit();
-   }
 
    static {
       BUILDER.push("rubber_padding");

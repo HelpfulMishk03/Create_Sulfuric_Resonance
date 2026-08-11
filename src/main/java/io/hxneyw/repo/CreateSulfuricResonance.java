@@ -58,7 +58,6 @@ public class CreateSulfuricResonance {
       AllModEffects.register(modEventBus);
       NeoForge.EVENT_BUS.register(this);
       modContainer.registerConfig(Type.COMMON, Config.SPEC);
-      modContainer.registerConfig(Type.SERVER, Config.SERVER_SPEC);
    }
 
    @SubscribeEvent

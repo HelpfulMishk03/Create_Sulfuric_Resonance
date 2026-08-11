@@ -66,16 +66,18 @@ public class ThermochemicalLinkDriveBlockEntity
                 -1,
                 null
         );
-        int chainLength = level == null
-                ? 0
-                : ThermochemicalHeatResolver.countConnectedLinkDrives(
-                        level, worldPosition);
-        tooltip.add(Component.translatable(
-                "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length",
-                chainLength));
+        ThermochemicalHeatResolver.LinkDriveConnectionStats connectionStats =
+                level == null
+                        ? ThermochemicalHeatResolver.LinkDriveConnectionStats.NONE
+                        : ThermochemicalHeatResolver.getLinkDriveConnectionStats(
+                                level,
+                                worldPosition
+                        );
         tooltip.add(Component.translatable(
                 "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections",
-                chainLength * 2));
+                connectionStats.connections(),
+                connectionStats.capacity()
+        ));
         return true;
     }
 

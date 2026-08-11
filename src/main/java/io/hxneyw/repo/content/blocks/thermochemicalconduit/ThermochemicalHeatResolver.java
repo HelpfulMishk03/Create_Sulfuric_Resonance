@@ -28,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
 public final class ThermochemicalHeatResolver {
@@ -833,33 +834,108 @@ public final class ThermochemicalHeatResolver {
         return connections;
     }
 
-    public static int countConnectedLinkDrives(Level level, BlockPos start) {
+    public static LinkDriveConnectionStats getLinkDriveConnectionStats(
+            Level level,
+            BlockPos start
+    ) {
         if (!level.isLoaded(start)
                 || !(level.getBlockState(start).getBlock()
                 instanceof ThermochemicalLinkDriveBlock)) {
-            return 0;
+            return LinkDriveConnectionStats.NONE;
         }
 
-        Set<BlockPos> visited = new HashSet<>();
+        Set<BlockPos> segment = new HashSet<>();
         Queue<BlockPos> queue = new ArrayDeque<>();
         queue.add(start.immutable());
+
         while (!queue.isEmpty()) {
             BlockPos current = queue.remove();
-            if (!visited.add(current)) {
+            if (!segment.add(current)) {
                 continue;
             }
+
+            BlockState currentState = level.getBlockState(current);
             for (Direction direction : Direction.values()) {
                 BlockPos neighbour = current.relative(direction);
-                if (!level.isLoaded(neighbour)
-                        || !(level.getBlockState(neighbour).getBlock()
-                        instanceof ThermochemicalLinkDriveBlock)
-                        || !hasPhysicalConnection(level, current, neighbour)) {
+                if (!level.isLoaded(neighbour)) {
                     continue;
                 }
+
+                BlockState neighbourState = level.getBlockState(neighbour);
+                if (!(neighbourState.getBlock()
+                        instanceof ThermochemicalLinkDriveBlock)
+                        || !ChainDriveBlock.areBlocksConnected(
+                        currentState,
+                        neighbourState,
+                        direction
+                )) {
+                    continue;
+                }
+
                 queue.add(neighbour.immutable());
             }
         }
-        return visited.size();
+
+        int connections = 0;
+        for (BlockPos drivePosition : segment) {
+            BlockState driveState = level.getBlockState(drivePosition);
+            Direction.Axis axis = driveState.getValue(BlockStateProperties.AXIS);
+
+            for (Direction direction : new Direction[] {
+                    Direction.get(Direction.AxisDirection.NEGATIVE, axis),
+                    Direction.get(Direction.AxisDirection.POSITIVE, axis)
+            }) {
+                if (hasLinkDriveShaftConnection(
+                        level,
+                        drivePosition,
+                        driveState,
+                        direction
+                )) {
+                    connections++;
+                }
+            }
+        }
+
+        return new LinkDriveConnectionStats(
+                connections,
+                segment.size() * 2
+        );
+    }
+
+    private static boolean hasLinkDriveShaftConnection(
+            Level level,
+            BlockPos drivePosition,
+            BlockState driveState,
+            Direction direction
+    ) {
+        BlockPos neighbourPosition = drivePosition.relative(direction);
+        if (!level.isLoaded(neighbourPosition)) {
+            return false;
+        }
+
+        BlockState neighbourState = level.getBlockState(neighbourPosition);
+        if (neighbourState.getBlock() instanceof ChainDriveBlock
+                && !(neighbourState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock)) {
+            return false;
+        }
+
+        if (!(driveState.getBlock() instanceof IRotate driveRotate)
+                || !(neighbourState.getBlock() instanceof IRotate neighbourRotate)) {
+            return false;
+        }
+
+        return driveRotate.hasShaftTowards(
+                level,
+                drivePosition,
+                driveState,
+                direction
+        ) && neighbourRotate.hasShaftTowards(
+                level,
+                neighbourPosition,
+                neighbourState,
+                direction.getOpposite()
+        );
     }
 
     private static boolean isCombustionBeltPulley(
@@ -889,6 +965,14 @@ public final class ThermochemicalHeatResolver {
             return null;
         }
         return Direction.fromDelta(x, y, z);
+    }
+
+    public record LinkDriveConnectionStats(
+            int connections,
+            int capacity
+    ) {
+        public static final LinkDriveConnectionStats NONE =
+                new LinkDriveConnectionStats(0, 0);
     }
 
     private record PhysicalStep(

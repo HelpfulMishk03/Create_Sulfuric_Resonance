@@ -8,8 +8,7 @@
     "BasinOperatingMixin",
     "BeltBlockEntityMixin",
     "BeltBlockMixin",
-    "ChainDriveBlockMixin",
-    "BeltConnectorItemMixin"
+    "ChainDriveBlockMixin"
   ],
   "client": [
     "BeltRendererMixin",
