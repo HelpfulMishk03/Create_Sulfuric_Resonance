@@ -6,6 +6,7 @@ import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalHeatUpdater;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalHeatResolver;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.List;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
@@ -54,14 +55,6 @@ public class ThermochemicalLinkDriveBlockEntity
                 isPlayerSneaking
         );
 
-        int connections = level == null
-                ? 0
-                : ThermochemicalHeatResolver
-                .countDirectThermochemicalConnections(
-                        level,
-                        worldPosition
-                );
-
         heatData.addTooltip(
                 tooltip,
                 isPlayerSneaking,
@@ -70,10 +63,19 @@ public class ThermochemicalLinkDriveBlockEntity
                         .getValue(BlockStateProperties.AXIS)
                         .getName()
                         .toUpperCase(),
-                connections,
+                -1,
                 null
         );
-
+        int chainLength = level == null
+                ? 0
+                : ThermochemicalHeatResolver.countConnectedLinkDrives(
+                        level, worldPosition);
+        tooltip.add(Component.translatable(
+                "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length",
+                chainLength));
+        tooltip.add(Component.translatable(
+                "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections",
+                chainLength * 2));
         return true;
     }
 

@@ -8,9 +8,10 @@ import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltPart;
 import com.simibubi.create.content.kinetics.belt.BeltSlope;
 import com.simibubi.create.content.kinetics.belt.BeltSlicer;
-import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.block.ProperWaterloggedBlock;
+import io.hxneyw.repo.Config;
+import io.hxneyw.repo.mixin.CombustionBeltLengthOverride;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import java.util.LinkedList;
@@ -71,16 +72,19 @@ public class CombustionBeltConnectorItem extends Item {
                             context.isInside()
                     );
 
-            ItemInteractionResult extensionResult =
-                    BeltSlicer.useConnector(
-                            clickedState,
-                            level,
-                            clickedPosition,
-                            player,
-                            context.getHand(),
-                            hitResult,
-                            new BeltSlicer.Feedback()
-                    );
+            ItemInteractionResult extensionResult;
+            try (CombustionBeltLengthOverride.Scope ignored =
+                         CombustionBeltLengthOverride.push()) {
+                extensionResult = BeltSlicer.useConnector(
+                        clickedState,
+                        level,
+                        clickedPosition,
+                        player,
+                        context.getHand(),
+                        hitResult,
+                        new BeltSlicer.Feedback()
+                );
+            }
 
             if (!level.isClientSide()
                     && extensionResult.consumesAction()) {
@@ -122,10 +126,7 @@ public class CombustionBeltConnectorItem extends Item {
                 level,
                 firstShaft
         )
-                || !firstShaft.closerThan(
-                clickedPosition,
-                BeltConnectorItem.maxLength() * 2
-        ))) {
+                || isNotWithinConfiguredLength(firstShaft, clickedPosition))) {
             stack.remove(AllDataComponents.BELT_FIRST_SHAFT);
             firstShaft = null;
         }
@@ -154,6 +155,7 @@ public class CombustionBeltConnectorItem extends Item {
                     clickedPosition
             );
 
+            markCombustionBeltChain(level, firstShaft);
             scheduleCombustionBeltChainMarking(
                     level,
                     firstShaft
@@ -187,24 +189,21 @@ public class CombustionBeltConnectorItem extends Item {
         );
     }
 
-    private static boolean isSupportedShaftState(
+    public static boolean isSupportedShaftState(
             BlockState state
     ) {
         return state.getBlock()
                 instanceof ThermochemicalShaftBlock;
     }
 
-    private static boolean canConnect(
+    public static boolean canConnect(
             Level level,
             BlockPos first,
             BlockPos second
     ) {
         if (!level.isLoaded(first)
                 || !level.isLoaded(second)
-                || !second.closerThan(
-                first,
-                BeltConnectorItem.maxLength()
-        )) {
+                || isNotWithinConfiguredLength(first, second)) {
             return false;
         }
 
@@ -277,10 +276,8 @@ public class CombustionBeltConnectorItem extends Item {
                 Math.signum(z)
         );
 
-        int limit = 1000;
-
         for (BlockPos current = first.offset(step);
-             !current.equals(second) && limit-- > 0;
+             !current.equals(second);
              current = current.offset(step)) {
             BlockState state =
                     level.getBlockState(current);
@@ -300,7 +297,22 @@ public class CombustionBeltConnectorItem extends Item {
             }
         }
 
-        return limit > 0;
+        return true;
+    }
+
+    public static boolean isNotWithinConfiguredLength(
+            BlockPos first,
+            BlockPos second
+    ) {
+        int segments = Math.max(
+                Math.abs(second.getX() - first.getX()),
+                Math.max(
+                        Math.abs(second.getY() - first.getY()),
+                        Math.abs(second.getZ() - first.getZ())
+                )
+        );
+        return !Config.unlimitedCombustionBeltLength()
+                && segments >= Config.combustionBeltLengthLimit();
     }
 
     private static void createBelts(
@@ -489,7 +501,6 @@ public class CombustionBeltConnectorItem extends Item {
         List<BlockPos> positions =
                 new LinkedList<>();
 
-        int limit = 1000;
         BlockPos current = start;
 
         do {
@@ -514,8 +525,7 @@ public class CombustionBeltConnectorItem extends Item {
                                 : -1
                 );
             }
-        } while (!current.equals(end)
-                && limit-- > 0);
+        } while (!current.equals(end));
 
         positions.add(end);
         return positions;

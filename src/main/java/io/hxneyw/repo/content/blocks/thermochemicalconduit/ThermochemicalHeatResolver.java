@@ -360,8 +360,6 @@ public final class ThermochemicalHeatResolver {
         Queue<PhysicalStep> pending = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>(alreadyVisited);
 
-        // The controller is already present in targetToController. Remove it
-        // from this local visited set so it can be used as the BFS root once.
         visited.remove(controllerPosition);
 
         pending.add(new PhysicalStep(
@@ -387,8 +385,6 @@ public final class ThermochemicalHeatResolver {
                 continue;
             }
 
-            // A Molten Rotor can terminate the physical search from any
-            // genuinely connected bridge node.
             for (Direction direction : Direction.values()) {
                 BlockPos furnacePosition = position.relative(direction);
 
@@ -439,7 +435,6 @@ public final class ThermochemicalHeatResolver {
                 List<BlockPos> nextPath =
                         new ArrayList<>(step.pathFromController());
 
-                // controllerPosition is already in targetToController.
                 if (!neighbour.equals(controllerPosition)) {
                     nextPath.add(neighbour.immutable());
                 }
@@ -753,10 +748,6 @@ public final class ThermochemicalHeatResolver {
 
             if (isAllowedNode(firstState)
                     && isAllowedNode(secondState)) {
-                // The Rotation Speed Controller has special Create kinetic
-                // propagation rules. Once its dedicated controller cog is the
-                // CSR Large Thermochemical Cogwheel, Create's confirmed kinetic
-                // edge is also allowed to carry thermochemical heat.
                 return true;
             }
         }
@@ -840,6 +831,35 @@ public final class ThermochemicalHeatResolver {
             }
         }
         return connections;
+    }
+
+    public static int countConnectedLinkDrives(Level level, BlockPos start) {
+        if (!level.isLoaded(start)
+                || !(level.getBlockState(start).getBlock()
+                instanceof ThermochemicalLinkDriveBlock)) {
+            return 0;
+        }
+
+        Set<BlockPos> visited = new HashSet<>();
+        Queue<BlockPos> queue = new ArrayDeque<>();
+        queue.add(start.immutable());
+        while (!queue.isEmpty()) {
+            BlockPos current = queue.remove();
+            if (!visited.add(current)) {
+                continue;
+            }
+            for (Direction direction : Direction.values()) {
+                BlockPos neighbour = current.relative(direction);
+                if (!level.isLoaded(neighbour)
+                        || !(level.getBlockState(neighbour).getBlock()
+                        instanceof ThermochemicalLinkDriveBlock)
+                        || !hasPhysicalConnection(level, current, neighbour)) {
+                    continue;
+                }
+                queue.add(neighbour.immutable());
+            }
+        }
+        return visited.size();
     }
 
     private static boolean isCombustionBeltPulley(

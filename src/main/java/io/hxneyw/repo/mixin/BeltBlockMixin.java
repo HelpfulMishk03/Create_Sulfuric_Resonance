@@ -8,7 +8,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltPart;
-import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
+import io.hxneyw.repo.Config;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
@@ -470,8 +470,13 @@ public abstract class BeltBlockMixin {
         BlockState currentState = initialState;
         BlockPos currentPosition = initialPosition;
 
+        int traversalLimit = Config.combustionBeltTraversalLimit();
+        int maximumSteps = traversalLimit > Integer.MAX_VALUE / 2
+                ? Integer.MAX_VALUE
+                : traversalLimit * 2;
+
         for (int step = 0;
-             step < BeltConnectorItem.maxLength() * 2;
+             step < maximumSteps;
              step++) {
             BlockPos nextPosition =
                     BeltBlock.nextSegmentPosition(

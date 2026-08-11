@@ -1,9 +1,7 @@
 package io.hxneyw.repo.client;
 
 import com.simibubi.create.AllDataComponents;
-import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
-import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
-import com.simibubi.create.infrastructure.config.AllConfigs;
+import io.hxneyw.repo.content.items.CombustionBeltConnectorItem;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.Items;
 import net.minecraft.client.Minecraft;
@@ -118,7 +116,7 @@ public final class CombustionBeltConnectorPreview {
 
         BlockPos selected = blockHit.getBlockPos();
 
-        if (!ShaftBlock.isShaft(
+        if (!CombustionBeltConnectorItem.isSupportedShaftState(
                 level.getBlockState(selected)
         )) {
             selected = selected.relative(
@@ -126,22 +124,15 @@ public final class CombustionBeltConnectorPreview {
             );
         }
 
-        if (!selected.closerThan(
+        if (CombustionBeltConnectorItem.isNotWithinConfiguredLength(
                 first,
-                AllConfigs.server()
-                        .kinetics
-                        .maxBeltLength
-                        .get()
+                selected
         )) {
             return;
         }
 
         boolean canConnect =
-                BeltConnectorItem.validateAxis(
-                        level,
-                        selected
-                )
-                        && BeltConnectorItem.canConnect(
+                CombustionBeltConnectorItem.canConnect(
                         level,
                         first,
                         selected

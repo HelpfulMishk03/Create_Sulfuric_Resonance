@@ -1,4 +1,8 @@
 {
+  "block.sulfuricresonance.thermochemical_link_drive": "Thermochemical Link Drive",
+  "tooltip.sulfuricresonance.thermochemical_link_drive": "Carries rotation and thermochemical heat across a physical chain connection.",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Chain length: %s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Chain connections: %s",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Acid-Etched Copper Sheet",
   "item.sulfuricresonance.acid_resistant_ceramic": "Acid-Resistant Ceramic",

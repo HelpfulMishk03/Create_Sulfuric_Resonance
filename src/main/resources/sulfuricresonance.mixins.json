@@ -7,7 +7,9 @@
     "BasinRecipeMixin",
     "BasinOperatingMixin",
     "BeltBlockEntityMixin",
-    "BeltBlockMixin"
+    "BeltBlockMixin",
+    "ChainDriveBlockMixin",
+    "BeltConnectorItemMixin"
   ],
   "client": [
     "BeltRendererMixin",
