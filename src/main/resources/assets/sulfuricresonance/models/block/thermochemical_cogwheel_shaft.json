@@ -1,5 +1,4 @@
 {
-  "credit": "Based on Create cogwheel_shaft geometry",
   "textures": {
     "0": "sulfuricresonance:block/thermal_axis_top",
     "1": "sulfuricresonance:block/thermochemicalcogwheel_axis",
