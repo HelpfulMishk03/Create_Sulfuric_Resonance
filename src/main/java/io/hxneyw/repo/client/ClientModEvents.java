@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
+import io.hxneyw.repo.client.gui.SulfuricResonanceChamberScreen;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerRenderer;
@@ -16,11 +17,7 @@ import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.particles.AcidDripParticle;
 import io.hxneyw.repo.content.particles.CombustionPurpleFlameParticle;
-import io.hxneyw.repo.content.registry.AllBlockEntities;
-import io.hxneyw.repo.content.registry.AllModBlocks;
-import io.hxneyw.repo.content.registry.AllModFluids;
-import io.hxneyw.repo.content.registry.ModParticles;
-import io.hxneyw.repo.content.registry.ModSpriteShifts;
+import io.hxneyw.repo.content.registry.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -34,6 +31,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 
 @EventBusSubscriber(
@@ -96,6 +94,16 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.registerSpriteSet(
                 ModParticles.ACID_DRIP.get(),
                 AcidDripParticle.Provider::new
+        );
+    }
+
+    @SubscribeEvent
+    public static void registerMenuScreens(
+            RegisterMenuScreensEvent event
+    ) {
+        event.register(
+                AllModMenus.SULFURIC_RESONANCE_CHAMBER.get(),
+                SulfuricResonanceChamberScreen::new
         );
     }
 
