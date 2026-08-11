@@ -6,6 +6,20 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## 0.2.8-beta-hotfix1
+
+### Added
+
+* Added a sulfur-fired starter recipe for Acid-Resistant Ceramic in a regular Superheated Basin.
+
+### Fixed
+
+* Fixed an unintended progression lock between Sulfuric Acid, Acid-Resistant Ceramic, and the Ash Ceramic Crucible.
+
+### Balance
+
+* The existing Sulfuric Acid recipe remains the more efficient post-Crucible method for producing Acid-Resistant Ceramic.
+
 
 ### 0.2.8-beta — Sulfurous Capabilities
 
