@@ -142,6 +142,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.temperatureController.getDisplayTemperature();
    }
 
+   public float getExactTemperature() {
+      return this.temperatureController.getExactTemperature();
+   }
+
    public int getDisplayFuelTime() {
       return this.fuelController.getDisplayFuelTime();
    }

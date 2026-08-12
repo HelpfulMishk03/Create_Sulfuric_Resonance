@@ -3,8 +3,8 @@
   "category": "redstone",
   "pattern": [
     " T ",
-    " P ",
-    " E "
+    " E ",
+    " P "
   ],
   "key": {
     "T": {

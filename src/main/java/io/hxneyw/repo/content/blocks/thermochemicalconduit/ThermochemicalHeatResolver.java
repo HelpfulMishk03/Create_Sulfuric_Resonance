@@ -853,52 +853,119 @@ public final class ThermochemicalHeatResolver {
 
         while (!queue.isEmpty()) {
             BlockPos current = queue.remove();
+
             if (!segment.add(current)) {
                 continue;
             }
 
-            BlockState currentState = level.getBlockState(current);
+            BlockState currentState =
+                    level.getBlockState(current);
+
             for (Direction direction : Direction.values()) {
-                BlockPos neighbour = current.relative(direction);
-                if (!level.isLoaded(neighbour)) {
+                BlockPos neighbour =
+                        current.relative(direction);
+
+                if (!level.isLoaded(neighbour)
+                        || segment.contains(neighbour)) {
                     continue;
                 }
 
-                BlockState neighbourState = level.getBlockState(neighbour);
-                if (!areLinkDrivesSegmentConnected(
+                BlockState neighbourState =
+                        level.getBlockState(neighbour);
+
+                if (areLinkDrivesKineticallyConnected(
                         currentState,
-                        neighbourState
+                        neighbourState,
+                        direction
                 )) {
-                    continue;
+                    queue.add(neighbour.immutable());
                 }
-
-                queue.add(neighbour.immutable());
             }
         }
 
         int connections = 0;
-        for (BlockPos drivePosition : segment) {
-            BlockState driveState = level.getBlockState(drivePosition);
-            Direction.Axis axis = driveState.getValue(BlockStateProperties.AXIS);
 
-            for (Direction direction : new Direction[] {
-                    Direction.get(Direction.AxisDirection.NEGATIVE, axis),
-                    Direction.get(Direction.AxisDirection.POSITIVE, axis)
-            }) {
-                if (hasLinkDriveShaftConnection(
-                        level,
-                        drivePosition,
-                        driveState,
-                        direction
-                )) {
-                    connections++;
-                }
+        for (BlockPos drivePosition : segment) {
+            BlockState driveState =
+                    level.getBlockState(drivePosition);
+
+            Direction.Axis axis =
+                    driveState.getValue(
+                            BlockStateProperties.AXIS
+                    );
+
+            Direction negative =
+                    Direction.get(
+                            Direction.AxisDirection.NEGATIVE,
+                            axis
+                    );
+
+            Direction positive =
+                    Direction.get(
+                            Direction.AxisDirection.POSITIVE,
+                            axis
+                    );
+
+            if (hasLinkDriveShaftConnection(
+                    level,
+                    drivePosition,
+                    driveState,
+                    negative
+            )) {
+                connections++;
+            }
+
+            if (hasLinkDriveShaftConnection(
+                    level,
+                    drivePosition,
+                    driveState,
+                    positive
+            )) {
+                connections++;
             }
         }
 
         return new LinkDriveConnectionStats(
                 connections,
                 segment.size() * 2
+        );
+    }
+
+    private static boolean areLinkDrivesKineticallyConnected(
+            BlockState firstState,
+            BlockState secondState,
+            Direction direction
+    ) {
+        if (!(firstState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock)
+                || !(secondState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock)) {
+            return false;
+        }
+
+        Direction.Axis firstAxis =
+                firstState.getValue(
+                        BlockStateProperties.AXIS
+                );
+
+        Direction.Axis secondAxis =
+                secondState.getValue(
+                        BlockStateProperties.AXIS
+                );
+
+        if (direction.getAxis() == firstAxis
+                && direction.getAxis() == secondAxis) {
+            return true;
+        }
+
+        return ChainDriveBlock.areBlocksConnected(
+                firstState,
+                secondState,
+                direction
+        ) || ChainDriveBlock.areBlocksConnected(
+                secondState,
+                firstState,
+                direction.getOpposite()
         );
     }
 

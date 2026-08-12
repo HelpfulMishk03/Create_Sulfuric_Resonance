@@ -8,7 +8,8 @@
     "BasinOperatingMixin",
     "BeltBlockEntityMixin",
     "BeltBlockMixin",
-    "ChainDriveBlockMixin"
+    "ChainDriveBlockMixin",
+    "RotationPropagatorMixin"
   ],
   "client": [
     "BeltRendererMixin",

@@ -107,24 +107,37 @@ public class ThermalGaugeBlock
 
         if (existingState.is(this)
                 && level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge) {
-            if (!level.isClientSide) {
-                PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
-                        pos,
-                        existingState,
-                        location
-                );
-                ItemStack stack = context.getItemInHand();
-                UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
-                ThermalRelaySwitchItem.FurnaceLink link =
-                        ThermalRelaySwitchItem.getLinkedFurnace(stack);
+            PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
+                    pos,
+                    existingState,
+                    location
+            );
+            ItemStack stack = context.getItemInHand();
+            UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
+            ThermalRelaySwitchItem.FurnaceLink link =
+                    ThermalRelaySwitchItem.getLinkedFurnace(stack);
+
+            if (level.isClientSide) {
+                if (!gauge.hasGauge(slot)) {
+                    gauge.addGauge(
+                            slot,
+                            networkId,
+                            link
+                    );
+                }
+            } else {
                 Player player = context.getPlayer();
 
                 if (gauge.addGauge(slot, networkId, link)
                         && player != null
                         && !player.isCreative()) {
                     stack.shrink(1);
+
                     if (stack.isEmpty()) {
-                        player.setItemInHand(context.getHand(), ItemStack.EMPTY);
+                        player.setItemInHand(
+                                context.getHand(),
+                                ItemStack.EMPTY
+                        );
                     }
                 }
             }
@@ -236,17 +249,35 @@ public class ThermalGaugeBlock
     ) {
         super.setPlacedBy(level, pos, state, placer, stack);
 
-        if (level.isClientSide) {
-            return;
-        }
+        Vec3 placementClick =
+                ThermalGaugeItem.getPlacementClickLocation();
 
-        PanelSlot slot = getPlacementSlot(pos, state, placer);
-        UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
+        PanelSlot slot = placementClick != null
+                ? FactoryPanelBlock.getTargetedSlot(
+                        pos,
+                        state,
+                        placementClick
+                )
+                : getPlacementSlot(
+                        pos,
+                        state,
+                        placer
+                );
+
+        UUID networkId =
+                ThermalRelaySwitchItem.getNetworkId(stack);
+
         ThermalRelaySwitchItem.FurnaceLink link =
                 ThermalRelaySwitchItem.getLinkedFurnace(stack);
 
-        if (level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge) {
-            gauge.addGauge(slot, networkId, link);
+        if (level.getBlockEntity(pos)
+                instanceof ThermalGaugeBlockEntity gauge
+                && !gauge.hasGauge(slot)) {
+            gauge.addGauge(
+                    slot,
+                    networkId,
+                    link
+            );
         }
     }
 

@@ -165,5 +165,6 @@
         }
       }
     }
-  ]
+  ],
+  "render_type": "minecraft:translucent"
 }

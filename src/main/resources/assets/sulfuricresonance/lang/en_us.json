@@ -473,5 +473,6 @@
   "block.sulfuricresonance.thermal_gauge": "Thermal Gauge",
   "message.sulfuricresonance.thermal_gauge.network_removed": "Thermal Gauge network removed",
   "message.sulfuricresonance.thermal_gauge.reading": "Temperature: %s °C",
-  "message.sulfuricresonance.thermal_gauge.no_network": "No furnace network connected"
+  "message.sulfuricresonance.thermal_gauge.no_network": "No furnace network connected",
+  "message.sulfuricresonance.thermal_network.started": "New Thermal Network Started"
 }

@@ -472,5 +472,6 @@
   "block.sulfuricresonance.thermal_gauge": "Thermische Anzeige",
   "message.sulfuricresonance.thermal_gauge.network_removed": "Netzwerk der thermischen Anzeige entfernt",
   "message.sulfuricresonance.thermal_gauge.reading": "Temperatur: %s °C",
-  "message.sulfuricresonance.thermal_gauge.no_network": "Kein Ofennetzwerk verbunden"
+  "message.sulfuricresonance.thermal_gauge.no_network": "Kein Ofennetzwerk verbunden",
+  "message.sulfuricresonance.thermal_network.started": "Neues thermisches Netzwerk gestartet"
 }

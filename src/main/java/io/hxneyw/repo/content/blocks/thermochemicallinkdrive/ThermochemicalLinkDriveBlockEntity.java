@@ -8,7 +8,6 @@ import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.List;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -46,35 +45,6 @@ public class ThermochemicalLinkDriveBlockEntity
         }
     }
 
-    @Override
-    public float propagateRotationTo(
-            KineticBlockEntity target,
-            BlockState stateFrom,
-            BlockState stateTo,
-            BlockPos diff,
-            boolean connectedViaAxes,
-            boolean connectedViaCogs
-    ) {
-        if (Math.abs(diff.getX())
-                + Math.abs(diff.getY())
-                + Math.abs(diff.getZ()) != 1) {
-            return 0;
-        }
-
-        Direction direction = Direction.fromDelta(
-                diff.getX(),
-                diff.getY(),
-                diff.getZ()
-        );
-        if (direction == null) {
-            return 0;
-        }
-
-        return ThermochemicalHeatResolver.areLinkDrivesSegmentConnected(
-                stateFrom,
-                stateTo
-        ) ? 1 : 0;
-    }
 
     @Override
     public boolean addToGoggleTooltip(

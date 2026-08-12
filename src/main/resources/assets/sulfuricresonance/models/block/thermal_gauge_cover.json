@@ -1,0 +1,55 @@
+{
+  "format_version": "1.9.0",
+  "texture_size": [
+    8,
+    8
+  ],
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "0": "sulfuricresonance:block/thermal_gauge",
+    "particle": "sulfuricresonance:block/thermal_gauge"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        2.01,
+        6
+      ],
+      "to": [
+        10,
+        2.01,
+        10
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          5,
+          4,
+          5
+        ]
+      },
+      "faces": {
+        "up": {
+          "uv": [
+            6,
+            6,
+            4,
+            4
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            8,
+            0,
+            6,
+            2
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

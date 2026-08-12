@@ -4,12 +4,10 @@ import com.simibubi.create.AllItems;
 import io.hxneyw.repo.Config;
 import io.hxneyw.repo.compat.fuel.FuelCompatibility;
 import io.hxneyw.repo.compat.fuel.ResolvedFuel;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -148,80 +146,6 @@ final class MoltenRotorInteractions {
       return ItemInteractionResult.SUCCESS;
    }
 
-   static InteractionResult useWithoutItem(
-           Level level,
-           BlockPos pos,
-           Player player
-   ) {
-      MoltenRotorBlockEntity furnace = getBlockEntity(level, pos);
-
-
-      if (furnace == null || !furnace.shouldShowStatus()) {
-         return InteractionResult.PASS;
-      }
-
-      if (level.isClientSide) {
-         return InteractionResult.SUCCESS;
-      }
-
-      int temp = furnace.getDisplayTemperature();
-      int fuel = furnace.getDisplayFuelTime();
-      int cooldown = furnace.getDisplayCooldownTime();
-      float rpm = furnace.getGeneratedSpeed();
-      float stressUnits = furnace.getTotalStressOutput();
-      String tierName = furnace.getHeatTierName();
-
-      ChatFormatting tierColor = switch (furnace.getCurrentHeatTier()) {
-         case NONE -> ChatFormatting.GRAY;
-         case SMOULDERING, FADING -> ChatFormatting.YELLOW;
-         case KINDLED -> ChatFormatting.GOLD;
-         case SEETHING -> ChatFormatting.RED;
-         case RADIANT -> ChatFormatting.DARK_PURPLE;
-      };
-
-      player.sendSystemMessage(
-              Component.literal(tierName + " (" + temp + "°C)")
-                      .withStyle(tierColor)
-      );
-
-      if (fuel > 0) {
-         int fuelSeconds = fuel / 20;
-         player.sendSystemMessage(
-                 Component.literal(
-                         String.format(
-                                 "Fuel: %ds | RPM: %d | SU: %d",
-                                 fuelSeconds,
-                                 (int) rpm,
-                                 (int) stressUnits
-                         )
-                 ).withStyle(ChatFormatting.GRAY)
-         );
-      } else if (cooldown > 0) {
-         int cooldownSeconds = cooldown / 20;
-         player.sendSystemMessage(
-                 Component.literal(
-                         String.format(
-                                 "Cooling: %ds | RPM: %d | SU: %d",
-                                 cooldownSeconds,
-                                 (int) rpm,
-                                 (int) stressUnits
-                         )
-                 ).withStyle(ChatFormatting.AQUA)
-         );
-      } else if (rpm > 0.0F) {
-         player.sendSystemMessage(
-                 Component.literal(
-                         String.format(
-                                 "RPM: %d | SU: %d",
-                                 (int) rpm,
-                                 (int) stressUnits
-                         )
-                 ).withStyle(ChatFormatting.GRAY)
-         );
-      }
-
-      return InteractionResult.SUCCESS;
-   }
 
    private static void playInsertionSound(Level level, BlockPos pos) {
       level.playSound(

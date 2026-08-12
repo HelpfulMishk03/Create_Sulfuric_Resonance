@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.blocks.thermochemicalgearbox;
 
 import com.simibubi.create.content.kinetics.gearbox.GearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalHeatData;
+import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalHeatTickHelper;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalHeatResolver;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.List;
@@ -32,26 +33,11 @@ public class ThermochemicalGearboxBlockEntity
     public void tick() {
         super.tick();
 
-        if (level == null || level.isClientSide) {
-            return;
-        }
-
-        ThermochemicalHeatResolver.Result result =
-                ThermochemicalHeatResolver.resolve(this);
-
-        if (!heatData.update(
-                result.heatTier(),
-                result.sourcePos(),
-                result.pathLength(),
-                result.spanLimit(),
-                result.remainingAllowance(),
-                result.temperature()
-        )) {
-            return;
-        }
-
-        setChanged();
-        sendData();
+        ThermochemicalHeatTickHelper.tick(
+                this,
+                heatData,
+                this::sendData
+        );
     }
 
     public float getVisualSpeedMultiplier(

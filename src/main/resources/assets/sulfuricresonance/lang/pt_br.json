@@ -473,5 +473,6 @@
   "block.sulfuricresonance.thermal_gauge": "Medidor térmico",
   "message.sulfuricresonance.thermal_gauge.network_removed": "Rede do medidor térmico removida",
   "message.sulfuricresonance.thermal_gauge.reading": "Temperatura: %s °C",
-  "message.sulfuricresonance.thermal_gauge.no_network": "Nenhuma rede de fornalha conectada"
+  "message.sulfuricresonance.thermal_gauge.no_network": "Nenhuma rede de fornalha conectada",
+  "message.sulfuricresonance.thermal_network.started": "Nova rede térmica iniciada"
 }

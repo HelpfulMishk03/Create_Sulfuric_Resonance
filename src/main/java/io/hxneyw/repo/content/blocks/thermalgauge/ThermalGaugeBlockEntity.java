@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.WeakHashMap;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
@@ -43,6 +44,9 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     private static final Set<ThermalGaugeBlockEntity> CLIENT_GAUGES =
             Collections.newSetFromMap(new WeakHashMap<>());
 
+    private static Function<ThermalGaugeBlockEntity, PanelSlot> targetedSlotResolver =
+            gauge -> null;
+
     public static final int MIN_TEMPERATURE = 20;
     public static final int MAX_TEMPERATURE = 1599;
 
@@ -59,13 +63,19 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     private static final String TEMPERATURE_TAG = "DisplayTemperature";
     private static final String CONNECTED_TAG = "NetworkConnected";
     private static final String HEAT_TIER_TAG = "HeatTier";
-    private static final int UPDATE_INTERVAL = 5;
+    private static final int UPDATE_INTERVAL = 1;
 
     private final EnumMap<PanelSlot, GaugeData> gauges = new EnumMap<>(PanelSlot.class);
     private int updateTicker;
 
     public ThermalGaugeBlockEntity(BlockPos pos, BlockState state) {
         super(AllBlockEntities.THERMAL_GAUGE.get(), pos, state);
+    }
+
+    public static void setTargetedSlotResolver(
+            Function<ThermalGaugeBlockEntity, PanelSlot> resolver
+    ) {
+        targetedSlotResolver = resolver;
     }
 
     public static void serverTick(
@@ -170,14 +180,6 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
         return data != null && data.networkConnected;
     }
 
-    public boolean doesNotMatchLink(@NotNull ThermalRelaySwitchItem.FurnaceLink link) {
-        for (GaugeData data : gauges.values()) {
-            if (link.equals(data.linkedFurnace)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public ItemStack createItemStack(PanelSlot slot) {
         ItemStack stack = new ItemStack(getBlockState().getBlock().asItem());
@@ -197,33 +199,42 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     }
 
     public VoxelShape getShape() {
+        VoxelShape shape = Shapes.empty();
+
+        for (PanelSlot slot : gauges.keySet()) {
+            shape = Shapes.or(shape, getSlotShape(slot));
+        }
+
+        return shape;
+    }
+
+    public VoxelShape getSlotShape(PanelSlot slot) {
+        if (!gauges.containsKey(slot)) {
+            return Shapes.empty();
+        }
+
         float xRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getXRot(getBlockState()) + 90.0F;
         float yRot = Mth.RAD_TO_DEG * FactoryPanelBlock.getYRot(getBlockState());
         Direction connectedDirection = FactoryPanelBlock.connectedDirection(getBlockState());
         Vec3 inflateAxes = VecHelper.axisAlingedPlaneOf(connectedDirection);
-        VoxelShape shape = Shapes.empty();
+        Vec3 center = new Vec3(
+                0.25D + slot.xOffset * 0.5D,
+                1.0D / 16.0D,
+                0.25D + slot.yOffset * 0.5D
+        );
+        center = VecHelper.rotateCentered(center, 180.0D, Direction.Axis.Y);
+        center = VecHelper.rotateCentered(center, xRot, Direction.Axis.X);
+        center = VecHelper.rotateCentered(center, yRot, Direction.Axis.Y);
 
-        for (PanelSlot slot : gauges.keySet()) {
-            Vec3 center = new Vec3(
-                    0.25D + slot.xOffset * 0.5D,
-                    1.0D / 16.0D,
-                    0.25D + slot.yOffset * 0.5D
-            );
-            center = VecHelper.rotateCentered(center, 180.0D, Direction.Axis.Y);
-            center = VecHelper.rotateCentered(center, xRot, Direction.Axis.X);
-            center = VecHelper.rotateCentered(center, yRot, Direction.Axis.Y);
+        AABB box = new AABB(center, center)
+                .inflate(1.0D / 16.0D)
+                .inflate(
+                        inflateAxes.x * 3.0D / 16.0D,
+                        inflateAxes.y * 3.0D / 16.0D,
+                        inflateAxes.z * 3.0D / 16.0D
+                );
 
-            AABB box = new AABB(center, center)
-                    .inflate(1.0D / 16.0D)
-                    .inflate(
-                            inflateAxes.x * 3.0D / 16.0D,
-                            inflateAxes.y * 3.0D / 16.0D,
-                            inflateAxes.z * 3.0D / 16.0D
-                    );
-            shape = Shapes.or(shape, Shapes.create(box));
-        }
-
-        return shape;
+        return Shapes.create(box);
     }
 
     public static List<ThermalGaugeBlockEntity> getLoadedClientGauges() {
@@ -324,79 +335,69 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
             List<Component> tooltip,
             boolean isPlayerSneaking
     ) {
+        PanelSlot targetedSlot = targetedSlotResolver.apply(this);
+
+        if (targetedSlot == null) {
+            if (gauges.size() != 1) {
+                return false;
+            }
+
+            targetedSlot = gauges.keySet().iterator().next();
+        }
+
+        GaugeData data = gauges.get(targetedSlot);
+
+        if (data == null) {
+            return false;
+        }
+
         tooltip.add(Component.literal(""));
         tooltip.add(
                 Component.literal("Thermochemical Gauge")
                         .withStyle(ChatFormatting.GOLD)
         );
 
-        if (gauges.isEmpty()) {
+        if (!data.networkConnected) {
             tooltip.add(
-                    Component.literal("No gauge data")
-                            .withStyle(ChatFormatting.DARK_GRAY)
-            );
-            return true;
-        }
-
-        if (gauges.size() == 1) {
-            Map.Entry<PanelSlot, GaugeData> entry = gauges.entrySet().iterator().next();
-            GaugeData data = entry.getValue();
-
-            if (!data.networkConnected) {
-                tooltip.add(
-                        Component.literal("Heat: No Network")
-                                .withStyle(ChatFormatting.GRAY)
-                );
-                return true;
-            }
-
-            tooltip.add(
-                    Component.literal("Heat: " + data.heatTier.displayName)
-                            .withStyle(colorFor(data.heatTier))
-            );
-            tooltip.add(
-                    Component.literal("Temperature: " + data.displayTemperature + "°C")
+                    Component.literal("Heat: No Network")
                             .withStyle(ChatFormatting.GRAY)
             );
             return true;
         }
 
-        for (Map.Entry<PanelSlot, GaugeData> entry : gauges.entrySet()) {
-            GaugeData data = entry.getValue();
-            String value = data.networkConnected
-                    ? data.heatTier.displayName + " (" + data.displayTemperature + "°C)"
-                    : "No Network";
-
-            tooltip.add(
-                    Component.literal(slotName(entry.getKey()) + ": " + value)
-                            .withStyle(
-                                    data.networkConnected
-                                            ? colorFor(data.heatTier)
-                                            : ChatFormatting.GRAY
-                            )
-            );
-        }
+        tooltip.add(
+                Component.literal("Heat: " + data.heatTier.displayName)
+                        .withStyle(colorFor(data.heatTier))
+        );
+        tooltip.add(
+                Component.literal("Temperature: " + data.displayTemperature + "°C")
+                        .withStyle(ChatFormatting.GRAY)
+        );
 
         return true;
     }
 
-    private static ChatFormatting colorFor(MoltenRotorBlockEntity.RotorHeatLevel heatTier) {
-        return switch (heatTier) {
-            case NONE -> ChatFormatting.GRAY;
-            case SMOULDERING, FADING -> ChatFormatting.YELLOW;
-            case KINDLED -> ChatFormatting.RED;
-            case SEETHING -> ChatFormatting.DARK_RED;
-            case RADIANT -> ChatFormatting.DARK_PURPLE;
-        };
-    }
+    private static ChatFormatting colorFor(
+            MoltenRotorBlockEntity.RotorHeatLevel heatTier
+    ) {
+        if (heatTier == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT) {
+            return ChatFormatting.DARK_PURPLE;
+        }
 
-    private static String slotName(PanelSlot slot) {
-        return switch (slot) {
-            case TOP_LEFT -> "Top Left";
-            case TOP_RIGHT -> "Top Right";
-            case BOTTOM_LEFT -> "Bottom Left";
-            case BOTTOM_RIGHT -> "Bottom Right";
-        };
+        if (heatTier == MoltenRotorBlockEntity.RotorHeatLevel.SEETHING) {
+            return ChatFormatting.DARK_RED;
+        }
+
+        if (heatTier == MoltenRotorBlockEntity.RotorHeatLevel.KINDLED) {
+            return ChatFormatting.RED;
+        }
+
+        if (heatTier == MoltenRotorBlockEntity.RotorHeatLevel.SMOULDERING
+                || heatTier == MoltenRotorBlockEntity.RotorHeatLevel.FADING) {
+            return ChatFormatting.YELLOW;
+        }
+
+        return ChatFormatting.GRAY;
     }
 
     @Override
@@ -450,27 +451,10 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
                     continue;
                 }
 
-                ThermalRelaySwitchItem.FurnaceLink link = readLink(gaugeTag);
-                UUID networkId = gaugeTag.hasUUID(NETWORK_TAG)
-                        ? gaugeTag.getUUID(NETWORK_TAG)
-                        : link != null
-                        ? link.furnaceIdentity()
-                        : null;
-                GaugeData data = new GaugeData(networkId, link);
-                data.displayTemperature = gaugeTag.contains(TEMPERATURE_TAG, Tag.TAG_INT)
-                        ? Math.clamp(
-                                gaugeTag.getInt(TEMPERATURE_TAG),
-                                MIN_TEMPERATURE,
-                                MAX_TEMPERATURE
-                        )
-                        : MIN_TEMPERATURE;
-                data.networkConnected = gaugeTag.getBoolean(CONNECTED_TAG);
-                data.heatTier = gaugeTag.contains(HEAT_TIER_TAG, Tag.TAG_STRING)
-                        ? MoltenRotorBlockEntity.RotorHeatLevel.fromSerializedId(
-                                gaugeTag.getString(HEAT_TIER_TAG)
-                        )
-                        : MoltenRotorBlockEntity.RotorHeatLevel.NONE;
-                gauges.put(slot, data);
+                gauges.put(
+                        slot,
+                        readGaugeData(gaugeTag)
+                );
             }
 
             return;
@@ -479,28 +463,51 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
         if (tag.contains(TEMPERATURE_TAG, Tag.TAG_INT)
                 || tag.contains(LINKED_FURNACES_TAG, Tag.TAG_LIST)
                 || tag.contains(LEGACY_POSITION_TAG, Tag.TAG_LONG)) {
-            ThermalRelaySwitchItem.FurnaceLink link = readLink(tag);
-            UUID networkId = tag.hasUUID(NETWORK_TAG)
-                    ? tag.getUUID(NETWORK_TAG)
-                    : link != null
-                    ? link.furnaceIdentity()
-                    : null;
-            GaugeData data = new GaugeData(networkId, link);
-            data.displayTemperature = tag.contains(TEMPERATURE_TAG, Tag.TAG_INT)
-                    ? Math.clamp(
-                            tag.getInt(TEMPERATURE_TAG),
-                            MIN_TEMPERATURE,
-                            MAX_TEMPERATURE
-                    )
-                    : MIN_TEMPERATURE;
-            data.networkConnected = tag.getBoolean(CONNECTED_TAG);
-            data.heatTier = tag.contains(HEAT_TIER_TAG, Tag.TAG_STRING)
-                    ? MoltenRotorBlockEntity.RotorHeatLevel.fromSerializedId(
-                            tag.getString(HEAT_TIER_TAG)
-                    )
-                    : MoltenRotorBlockEntity.RotorHeatLevel.NONE;
-            gauges.put(PanelSlot.BOTTOM_LEFT, data);
+            gauges.put(
+                    PanelSlot.BOTTOM_LEFT,
+                    readGaugeData(tag)
+            );
         }
+    }
+
+    private static GaugeData readGaugeData(
+            CompoundTag tag
+    ) {
+        ThermalRelaySwitchItem.FurnaceLink link =
+                readLink(tag);
+
+        UUID networkId = tag.hasUUID(NETWORK_TAG)
+                ? tag.getUUID(NETWORK_TAG)
+                : link != null
+                ? link.furnaceIdentity()
+                : null;
+
+        GaugeData data = new GaugeData(
+                networkId,
+                link
+        );
+
+        data.displayTemperature =
+                tag.contains(TEMPERATURE_TAG, Tag.TAG_INT)
+                        ? Math.clamp(
+                                tag.getInt(TEMPERATURE_TAG),
+                                MIN_TEMPERATURE,
+                                MAX_TEMPERATURE
+                        )
+                        : MIN_TEMPERATURE;
+
+        data.networkConnected =
+                tag.getBoolean(CONNECTED_TAG);
+
+        data.heatTier =
+                tag.contains(HEAT_TIER_TAG, Tag.TAG_STRING)
+                        ? MoltenRotorBlockEntity.RotorHeatLevel
+                        .fromSerializedId(
+                                tag.getString(HEAT_TIER_TAG)
+                        )
+                        : MoltenRotorBlockEntity.RotorHeatLevel.NONE;
+
+        return data;
     }
 
     @Nullable

@@ -473,5 +473,6 @@
   "block.sulfuricresonance.thermal_gauge": "Jauge thermique",
   "message.sulfuricresonance.thermal_gauge.network_removed": "Réseau de la jauge thermique supprimé",
   "message.sulfuricresonance.thermal_gauge.reading": "Température : %s °C",
-  "message.sulfuricresonance.thermal_gauge.no_network": "Aucun réseau de four connecté"
+  "message.sulfuricresonance.thermal_gauge.no_network": "Aucun réseau de four connecté",
+  "message.sulfuricresonance.thermal_network.started": "Nouveau réseau thermique démarré"
 }

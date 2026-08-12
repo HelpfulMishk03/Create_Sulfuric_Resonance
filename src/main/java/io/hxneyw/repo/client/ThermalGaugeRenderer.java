@@ -13,19 +13,23 @@ import net.createmod.catnip.render.CachedBuffers;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ThermalGaugeRenderer
-        extends SafeBlockEntityRenderer<ThermalGaugeBlockEntity> {
+public class ThermalGaugeRenderer extends SafeBlockEntityRenderer<ThermalGaugeBlockEntity> {
 
-    private static final Map<ThermalGaugeBlockEntity, EnumMap<PanelSlot, Float>>
-            PREVIOUS_ANGLES = new WeakHashMap<>();
+    private static final Map<ThermalGaugeBlockEntity, EnumMap<PanelSlot, Float>> PREVIOUS_ANGLES =
+            new WeakHashMap<>();
 
     private static final double PIVOT_X = 6.6D / 16.0D;
     private static final double PIVOT_Y = 1.56D / 16.0D;
     private static final double PIVOT_Z = 6.65D / 16.0D;
+
+    private static final double RENDER_DROP = 0.0D / 16.0D;
+    private static final double NEEDLE_LIFT = 0.05D / 16.0D;
+
+    private static final float COLD_ANGLE = 0.0F;
+    private static final float MAX_ANGLE = -90.0F;
 
     public ThermalGaugeRenderer(
             @SuppressWarnings("unused") BlockEntityRendererProvider.Context context
@@ -43,10 +47,14 @@ public class ThermalGaugeRenderer
     ) {
         BlockState state = gauge.getBlockState();
 
+        poseStack.pushPose();
+        applyMountTransform(poseStack, state);
+
         for (PanelSlot slot : gauge.getActiveSlots()) {
             poseStack.pushPose();
-            applyMountTransform(poseStack, state);
+
             applySlotTranslation(poseStack, slot);
+            poseStack.translate(0.0D, RENDER_DROP, 0.0D);
 
             CachedBuffers.partial(ClientModEvents.THERMAL_GAUGE_BASE, state)
                     .light(light)
@@ -56,6 +64,8 @@ public class ThermalGaugeRenderer
                             buffer.getBuffer(RenderType.translucent())
                     );
 
+            poseStack.pushPose();
+            poseStack.translate(0.0D, NEEDLE_LIFT, 0.0D);
             poseStack.translate(PIVOT_X, PIVOT_Y, PIVOT_Z);
             poseStack.mulPose(
                     Axis.YP.rotationDegrees(
@@ -69,32 +79,48 @@ public class ThermalGaugeRenderer
                     .overlay(overlay)
                     .renderInto(
                             poseStack,
-                            buffer.getBuffer(RenderType.cutoutMipped())
+                            buffer.getBuffer(RenderType.translucent())
                     );
 
             poseStack.popPose();
+            poseStack.popPose();
         }
+
+        poseStack.popPose();
     }
 
     private static float calculateNeedleAngle(
             ThermalGaugeBlockEntity gauge,
             PanelSlot slot
     ) {
-        float range = ThermalGaugeBlockEntity.MAX_TEMPERATURE
-                - ThermalGaugeBlockEntity.MIN_TEMPERATURE;
+        float range =
+                ThermalGaugeBlockEntity.MAX_TEMPERATURE
+                        - ThermalGaugeBlockEntity.MIN_TEMPERATURE;
+
         float normalized = Mth.clamp(
                 (gauge.getDisplayTemperature(slot)
-                        - ThermalGaugeBlockEntity.MIN_TEMPERATURE) / range,
+                        - ThermalGaugeBlockEntity.MIN_TEMPERATURE)
+                        / range,
                 0.0F,
                 1.0F
         );
-        float target = Mth.lerp(normalized, 45.0F, -45.0F);
-        EnumMap<PanelSlot, Float> angles = PREVIOUS_ANGLES.computeIfAbsent(
-                gauge,
-                ignored -> new EnumMap<>(PanelSlot.class)
+
+        float target = Mth.lerp(
+                normalized,
+                COLD_ANGLE,
+                MAX_ANGLE
         );
+
+        EnumMap<PanelSlot, Float> angles =
+                PREVIOUS_ANGLES.computeIfAbsent(
+                        gauge,
+                        ignored -> new EnumMap<>(PanelSlot.class)
+                );
+
         float previous = angles.getOrDefault(slot, target);
-        float current = Mth.lerp(0.18F, previous, target);
+        float current = Math.abs(target - previous) < 0.01F
+                ? target
+                : Mth.lerp(0.12F, previous, target);
         angles.put(slot, current);
         return current;
     }
@@ -112,8 +138,11 @@ public class ThermalGaugeRenderer
             PoseStack poseStack,
             BlockState state
     ) {
-        float xRotation = FactoryPanelBlock.getXRot(state) + Mth.HALF_PI;
-        float yRotation = FactoryPanelBlock.getYRot(state);
+        float xRotation =
+                FactoryPanelBlock.getXRot(state)
+                        + Mth.HALF_PI;
+        float yRotation =
+                FactoryPanelBlock.getYRot(state);
 
         poseStack.translate(0.5D, 0.5D, 0.5D);
         poseStack.mulPose(Axis.YP.rotation(yRotation));

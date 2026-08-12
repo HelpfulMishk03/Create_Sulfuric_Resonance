@@ -25,6 +25,7 @@ public final class ThermalRelayScenes {
     private ThermalRelayScenes() {
     }
 
+    @SuppressWarnings("DuplicatedCode")
     public static void thermalRelaySwitch(
             @NotNull SceneBuilder scene,
             @NotNull SceneBuildingUtil util
@@ -98,9 +99,9 @@ public final class ThermalRelayScenes {
         Vec3 clutchCenter =
                 util.vector().centerOf(clutchPos);
 
-        /*
-         * Prepare demonstration blocks before revealing them.
-         */
+        
+
+
         scene.world().setBlocks(
                 primaryFurnace,
                 furnaceState(),
@@ -132,9 +133,9 @@ public final class ThermalRelayScenes {
                 false
         );
 
-        /*
-         * INTRODUCTION
-         */
+        
+
+
         scene.world().showSection(
                 primaryFurnace,
                 Direction.DOWN
@@ -153,9 +154,9 @@ public final class ThermalRelayScenes {
                 .pointAt(primaryFurnaceTop);
         scene.idle(240);
 
-        /*
-         * LINKING THE ITEM
-         */
+        
+
+
         scene.overlay().showControls(
                         primaryFurnaceTop,
                         Pointing.DOWN,

@@ -78,6 +78,25 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         return List.copyOf(CLIENT_LAMPS);
     }
 
+    @Nullable
+    public LivingEmberLampItem.FurnaceLink getFurnaceLink() {
+        BlockPos linkedPos = this.linkedFurnacePos;
+        String linkedDimension = this.linkedFurnaceDimension;
+        UUID linkedIdentity = this.linkedFurnaceIdentity;
+
+        if (linkedPos == null
+                || linkedDimension == null
+                || linkedIdentity == null) {
+            return null;
+        }
+
+        return new LivingEmberLampItem.FurnaceLink(
+                linkedPos,
+                linkedDimension,
+                linkedIdentity
+        );
+    }
+
     public boolean doesNotMatchLink(
             @NotNull LivingEmberLampItem.FurnaceLink link
     ) {

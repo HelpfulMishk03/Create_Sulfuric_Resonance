@@ -9,6 +9,7 @@ import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRender
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.client.ClientModEvents;
 import io.hxneyw.repo.content.Items;
+import net.createmod.catnip.animation.AnimationTickHolder;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -86,13 +87,11 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
    }
 
    static void rotateToFacing(PoseStack ms, Direction facing) {
-      switch (facing) {
-         case SOUTH -> ms.mulPose(Axis.YP.rotationDegrees(180.0F));
-         case EAST -> ms.mulPose(Axis.YP.rotationDegrees(-90.0F));
-         case WEST -> ms.mulPose(Axis.YP.rotationDegrees(90.0F));
-         default -> {
-         }
-      }
+      ms.mulPose(
+              Axis.YP.rotationDegrees(
+                      180.0F - facing.toYRot()
+              )
+      );
    }
 
    private void renderHeatGaugeNeedle(
@@ -123,32 +122,52 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
    }
 
    private float calculateSmoothNeedleAngle(MoltenRotorBlockEntity furnace) {
-      float currentTemp = furnace.getDisplayTemperature();
-      float tempPercent = Mth.clamp((currentTemp - 20.0F) / 1579.0F, 0.0F, 1.0F);
+      float currentTemp = Mth.clamp(
+              furnace.getExactTemperature(),
+              20.0F,
+              1599.0F
+      );
+      float tempPercent = Mth.clamp(
+              (currentTemp - 20.0F) / 1579.0F,
+              0.0F,
+              1.0F
+      );
+      float targetAngle = tempPercent * 90.0F;
+      float previousAngle = previousAngles.getOrDefault(
+              furnace,
+              targetAngle
+      );
+      float currentAngle = Math.abs(targetAngle - previousAngle) < 0.01F
+              ? targetAngle
+              : Mth.lerp(
+                      0.15F,
+                      previousAngle,
+                      targetAngle
+              );
 
-      float baseTargetAngle = tempPercent * 90.0F;
-      float prevAngle = previousAngles.getOrDefault(furnace, baseTargetAngle);
-      float smoothingFactor = 0.15F;
-      float interpolatedAngle = Mth.lerp(smoothingFactor, prevAngle, baseTargetAngle);
+      previousAngles.put(furnace, currentAngle);
 
-      previousAngles.put(furnace, interpolatedAngle);
-
-
-      if (tempPercent > 0.95F) {
-         float time =
-                 (float)(
-                         this.getClientRenderTime(furnace)
-                                 / 20.0D
+      if (currentTemp >= 1599.0F
+              && furnace.getLevel() != null) {
+         float renderTime =
+                 AnimationTickHolder.getRenderTime(
+                         furnace.getLevel()
                  );
-         float shakeIntensity = (tempPercent - 0.95F) / 0.05F;
-         float rapidShake = Mth.sin(time * 30.0F) * 2.0F * shakeIntensity;
-         float microShake = Mth.sin(time * 50.0F) * 0.5F * shakeIntensity;
 
-         interpolatedAngle += rapidShake + microShake;
-         interpolatedAngle = Mth.clamp(interpolatedAngle, 87.0F, 93.0F);
+         float rapidShake =
+                 Mth.sin(renderTime * 0.75F) * 1.15F;
+
+         float microShake =
+                 Mth.sin(renderTime * 1.35F) * 0.35F;
+
+         return Mth.clamp(
+                 90.0F + rapidShake + microShake,
+                 88.5F,
+                 91.5F
+         );
       }
 
-      return interpolatedAngle;
+      return currentAngle;
    }
 
    private void renderModel(PoseStack ms, MultiBufferSource buffer, BakedModel model, int light, int overlay) {
@@ -309,10 +328,10 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
            Direction facing
    ) {
 
-      return switch (facing) {
-         case SOUTH, WEST -> -worldAxisAngleRadians;
-         default -> worldAxisAngleRadians;
-      };
+      return facing == Direction.SOUTH
+              || facing == Direction.WEST
+              ? -worldAxisAngleRadians
+              : worldAxisAngleRadians;
    }
 
    private void renderImpellerFromItem(

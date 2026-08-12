@@ -59,19 +59,33 @@ public class LivingEmberLampItem extends BlockItem {
                 );
             }
 
+            FurnaceLink newLink =
+                    new FurnaceLink(
+                            clickedPos.immutable(),
+                            level.dimension()
+                                    .location()
+                                    .toString(),
+                            furnace.getFurnaceIdentity()
+                    );
+
+            boolean startsNewNetwork =
+                    getLink(stack)
+                            .map(existing ->
+                                    !existing.equals(newLink)
+                            )
+                            .orElse(true);
+
             if (!level.isClientSide) {
                 setLink(
                         stack,
-                        new FurnaceLink(
-                                clickedPos.immutable(),
-                                level.dimension()
-                                        .location()
-                                        .toString(),
-                                furnace.getFurnaceIdentity()
-                        )
+                        newLink
                 );
 
                 markInventoryChanged(player);
+
+                if (startsNewNetwork) {
+                    ThermalNetworkMessages.showStarted(player);
+                }
             }
 
             return InteractionResult.sidedSuccess(
