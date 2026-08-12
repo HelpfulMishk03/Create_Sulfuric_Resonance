@@ -7,7 +7,7 @@
     "id": "sulfuricresonance:ash_brick",
     "count": 1
   },
-  "minimum_heat": "heated",
+  "minimum_heat": "superheated",
   "required_segments": 6,
   "base_processing_ticks": 100,
   "processing_ticks_per_item": 4

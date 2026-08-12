@@ -6,7 +6,6 @@ import io.hxneyw.repo.compat.automation.ModCapabilities;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
-import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import io.hxneyw.repo.content.registry.*;
@@ -20,8 +19,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
@@ -47,9 +44,6 @@ public class CreateSulfuricResonance {
       AllModSounds.SOUNDS.register(modEventBus);
 
       AllModFluids.register(modEventBus);
-      if (FMLEnvironment.dist.isClient()) {
-         modEventBus.addListener(AllModFluids::registerFluidExtensions);
-      }
       modEventBus.addListener(
               CinderSandpaperComponents::modifyDefaultComponents
       );
@@ -67,13 +61,6 @@ public class CreateSulfuricResonance {
       value = {Dist.CLIENT}
    )
    public static class ClientModEvents {
-      @SubscribeEvent
-      public static void onRegisterRenderers(RegisterRenderers event) {
-         event.registerBlockEntityRenderer(
-                 AllBlockEntities.PERFORATED_SPRITZER.get(),
-                 PerforatedSpritzerRenderer::new
-         );
-      }
 
       @SubscribeEvent
       public static void onClientSetup(FMLClientSetupEvent event) {

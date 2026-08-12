@@ -6,6 +6,62 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## 0.2.8-beta-hotfix3 — Stability & Progression Hotfix
+
+### Fixed
+
+* Fixed Perforated Spritzer spraying behavior.
+
+  * The Spritzer now begins spraying when its 3500 mB tank is full.
+  * Once activated, it continues spraying until its available fluid is depleted instead of stopping after the first 25 mB.
+* Fixed manual bucket interaction with the Perforated Spritzer.
+
+  * Sulfuric Acid Buckets can fill the Spritzer.
+  * Empty buckets can retrieve Sulfuric Acid.
+  * Manual bucket interaction is independent of automated pipe connection rules.
+* Fixed affected recipe outputs using incorrect item-count syntax.
+* Fixed Ember Catalyst washing output quantities.
+* Fixed Ashesil Mixing output quantity.
+* Corrected Netherwood and Gunpowder crushing result definitions.
+* Fixed the Hotfix 1 Acid-Resistant Ceramic starter recipe using obsolete fluid ingredient syntax.
+* Corrected two reversed Combustion Belt heat requirements:
+
+  * Wet Ash Ceramic → Ash Ceramic now requires **Heated**.
+  * Unfired Ash Brick → Ash Brick now requires **Superheated**.
+* Fixed Sulfuric Acid reaction cooldown data incorrectly conflicting between dimensions.
+* Fixed Rubber Padding bounce multipliers not being applied consistently to subsequent item bounces.
+* Fixed Rubber Padding and Molten Rotor configuration hierarchy and behavior.
+* Added missing pickaxe mining tags for:
+
+  * Ashesil Pane
+  * Tempered Ashesil
+  * Tempered Ashesil Pane
+* Removed duplicate Perforated Spritzer renderer registration.
+* Improved dedicated-server compatibility by isolating client-only fluid rendering functionality from common initialization.
+* Updated the minimum supported JEI version to **19.42.0.387**.
+* Updated release metadata for Hotfix 3.
+
+This hotfix focuses on stabilizing the existing 0.2.8 release line and correcting progression, configuration, recipe, fluid, and survival gameplay issues discovered during a wider release audit.
+
+No 0.2.9 Resonance content is included in this build.
+
+---
+
+## 0.2.8-beta-hotfix2 — Survival Data Hotfix
+
+### Fixed
+
+* Fixed the Living Ember Lamp not dropping when mined in Survival.
+* Fixed the Thermal Relay Switch not dropping when mined in Survival.
+* Fixed the Ash Ceramic Crucible not dropping correctly when mined.
+* Fixed missing loot tables for Tempered Ashesil.
+* Fixed missing loot behavior for Tempered Ashesil Panes.
+* Added the missing pickaxe mining tags for the Living Ember Lamp, Thermal Relay Switch, and Ash Ceramic Crucible.
+* Added Tempered Ashesil and Tempered Ashesil Panes to their appropriate common glass tags.
+
+This hotfix primarily addresses missing block loot and mining data that could cause placed blocks to be lost when broken in Survival.
+
+
 ## 0.2.8-beta-hotfix1
 
 ### Added

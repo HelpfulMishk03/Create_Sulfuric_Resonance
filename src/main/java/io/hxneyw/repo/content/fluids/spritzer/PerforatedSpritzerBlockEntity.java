@@ -43,7 +43,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    private static final int SYNC_RATE = 8;
    protected int syncCooldown;
    protected boolean queuedSync;
-   private static final int SPRAY_START_THRESHOLD = 2800;
+   private static final int SPRAY_START_THRESHOLD = 3500;
    private static final int FLUID_PER_SPRAY = 25;
    private static final int SPRAY_INTERVAL = 10;
    private int sprayTimer = 0;
@@ -215,7 +215,8 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          boolean wasSpraying = this.spraying;
          int currentAmount = this.tankInventory.getFluidAmount();
          boolean shouldSpray =
-                 currentAmount >= SPRAY_START_THRESHOLD
+                 (this.spraying || currentAmount >= SPRAY_START_THRESHOLD)
+                         && currentAmount >= FLUID_PER_SPRAY
                          && this.canSprayFluid();
          if (shouldSpray) {
             this.spraying = true;
