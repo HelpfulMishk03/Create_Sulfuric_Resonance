@@ -5,6 +5,7 @@
     8,
     8
   ],
+  "render_type": "minecraft:translucent",
   "textures": {
     "0": "sulfuricresonance:block/thermal_gauge",
     "1": "sulfuricresonance:block/thermal_gauge_colours",
@@ -14,12 +15,12 @@
     {
       "from": [
         4,
-        0,
+        0.05,
         4
       ],
       "to": [
         12,
-        0,
+        0.05,
         12
       ],
       "rotation": {

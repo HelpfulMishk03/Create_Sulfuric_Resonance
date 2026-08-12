@@ -2,21 +2,27 @@ package io.hxneyw.repo.content.blocks.thermalgauge;
 
 import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock;
+import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelSlot;
 import io.hxneyw.repo.content.blocks.WrenchInteractionHelper;
 import io.hxneyw.repo.content.items.LivingEmberLampItem;
+import io.hxneyw.repo.content.items.ThermalGaugeItem;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -29,7 +35,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -70,7 +79,7 @@ public class ThermalGaugeBlock
 
     @Override
     protected void createBlockStateDefinition(
-            StateDefinition.Builder<Block, BlockState> builder
+            @NotNull StateDefinition.Builder<Block, BlockState> builder
     ) {
         super.createBlockStateDefinition(builder.add(FACE, FACING));
     }
@@ -80,15 +89,74 @@ public class ThermalGaugeBlock
             @NotNull BlockPlaceContext context
     ) {
         BlockState state = super.getStateForPlacement(context);
+        if (state == null) {
+            return null;
+        }
 
-        if (state != null && state.getValue(FACE) == AttachFace.FLOOR) {
+        if (state.getValue(FACE) == AttachFace.FLOOR) {
             state = state.setValue(
                     FACING,
                     state.getValue(FACING).getOpposite()
             );
         }
 
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState existingState = level.getBlockState(pos);
+        Vec3 location = context.getClickLocation();
+
+        if (existingState.is(this)
+                && level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge) {
+            if (!level.isClientSide) {
+                PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
+                        pos,
+                        existingState,
+                        location
+                );
+                ItemStack stack = context.getItemInHand();
+                UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
+                ThermalRelaySwitchItem.FurnaceLink link =
+                        ThermalRelaySwitchItem.getLinkedFurnace(stack);
+                Player player = context.getPlayer();
+
+                if (gauge.addGauge(slot, networkId, link)
+                        && player != null
+                        && !player.isCreative()) {
+                    stack.shrink(1);
+                    if (stack.isEmpty()) {
+                        player.setItemInHand(context.getHand(), ItemStack.EMPTY);
+                    }
+                }
+            }
+
+            return existingState;
+        }
+
         return state;
+    }
+
+    @Override
+    public boolean canBeReplaced(
+            @NotNull BlockState state,
+            @NotNull BlockPlaceContext context
+    ) {
+        if (!(context.getItemInHand().getItem() instanceof ThermalGaugeItem)) {
+            return false;
+        }
+
+        BlockPos pos = context.getClickedPos();
+        PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
+                pos,
+                state,
+                context.getClickLocation()
+        );
+
+        if (!(context.getLevel().getBlockEntity(pos)
+                instanceof ThermalGaugeBlockEntity gauge)) {
+            return false;
+        }
+
+        return !gauge.hasGauge(slot);
     }
 
     @Override
@@ -111,6 +179,11 @@ public class ThermalGaugeBlock
             @NotNull BlockPos pos,
             @NotNull CollisionContext context
     ) {
+        if (level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge
+                && gauge.activeGaugeCount() > 0) {
+            return gauge.getShape();
+        }
+
         AttachFace face = state.getValue(FACE);
 
         if (face == AttachFace.FLOOR) {
@@ -167,19 +240,13 @@ public class ThermalGaugeBlock
             return;
         }
 
+        PanelSlot slot = getPlacementSlot(pos, state, placer);
         UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
         ThermalRelaySwitchItem.FurnaceLink link =
                 ThermalRelaySwitchItem.getLinkedFurnace(stack);
 
-        if (link == null) {
-            return;
-        }
-
         if (level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge) {
-            gauge.setConnection(
-                    networkId != null ? networkId : link.furnaceIdentity(),
-                    link
-            );
+            gauge.addGauge(slot, networkId, link);
         }
     }
 
@@ -210,9 +277,40 @@ public class ThermalGaugeBlock
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
+        PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
+                pos,
+                state,
+                hit.getLocation()
+        );
+
+        if (stack.getItem() instanceof ThermalGaugeItem) {
+            if (!level.isClientSide && !gauge.hasGauge(slot)) {
+                UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
+                ThermalRelaySwitchItem.FurnaceLink link =
+                        ThermalRelaySwitchItem.getLinkedFurnace(stack);
+
+                if (gauge.addGauge(slot, networkId, link)) {
+                    level.playSound(
+                            null,
+                            pos,
+                            soundType.getPlaceSound(),
+                            SoundSource.BLOCKS,
+                            (soundType.getVolume() + 1.0F) / 2.0F,
+                            soundType.getPitch() * 0.8F
+                    );
+
+                    if (!player.isCreative()) {
+                        stack.shrink(1);
+                    }
+                }
+            }
+
+            return ItemInteractionResult.SUCCESS;
+        }
+
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
-                gauge.clearConnection();
+            if (!level.isClientSide && gauge.hasGauge(slot)) {
+                gauge.clearConnection(slot);
                 player.displayClientMessage(
                         Component.translatable(
                                 "message.sulfuricresonance.thermal_gauge.network_removed"
@@ -224,8 +322,8 @@ public class ThermalGaugeBlock
             return ItemInteractionResult.SUCCESS;
         }
 
-        UUID networkId = gauge.getNetworkId();
-        ThermalRelaySwitchItem.FurnaceLink link = gauge.getFurnaceLink();
+        UUID networkId = gauge.getNetworkId(slot);
+        ThermalRelaySwitchItem.FurnaceLink link = gauge.getFurnaceLink(slot);
 
         if (stack.getItem() instanceof ThermalRelaySwitchItem) {
             if (!level.isClientSide && link != null) {
@@ -271,9 +369,19 @@ public class ThermalGaugeBlock
             return InteractionResult.PASS;
         }
 
+        PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
+                pos,
+                state,
+                hit.getLocation()
+        );
+
+        if (!gauge.hasGauge(slot)) {
+            return InteractionResult.PASS;
+        }
+
         if (player.isShiftKeyDown()) {
             if (!level.isClientSide) {
-                gauge.clearConnection();
+                gauge.clearConnection(slot);
                 player.displayClientMessage(
                         Component.translatable(
                                 "message.sulfuricresonance.thermal_gauge.network_removed"
@@ -286,10 +394,10 @@ public class ThermalGaugeBlock
         }
 
         if (!level.isClientSide) {
-            Component message = gauge.isNetworkConnected()
+            Component message = gauge.isNetworkConnected(slot)
                     ? Component.translatable(
                             "message.sulfuricresonance.thermal_gauge.reading",
-                            gauge.getDisplayTemperature()
+                            gauge.getDisplayTemperature(slot)
                     )
                     : Component.translatable(
                             "message.sulfuricresonance.thermal_gauge.no_network"
@@ -298,6 +406,73 @@ public class ThermalGaugeBlock
         }
 
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    @Override
+    public boolean onDestroyedByPlayer(
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            boolean willHarvest,
+            @NotNull FluidState fluid
+    ) {
+        if (level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge
+                && gauge.activeGaugeCount() > 1) {
+            PanelSlot slot = getTargetedSlotFromPlayer(pos, state, player);
+
+            if (gauge.hasGauge(slot)) {
+                ItemStack drop = gauge.createItemStack(slot);
+
+                if (gauge.removeGauge(slot)) {
+                    if (!player.isCreative()) {
+                        popResource(level, pos, drop);
+                    }
+                    return false;
+                }
+            }
+        }
+
+        return super.onDestroyedByPlayer(
+                state,
+                level,
+                pos,
+                player,
+                willHarvest,
+                fluid
+        );
+    }
+
+    @Override
+    public @NotNull InteractionResult onSneakWrenched(
+            @NotNull BlockState state,
+            @NotNull UseOnContext context
+    ) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Player player = context.getPlayer();
+
+        if (player != null
+                && level.getBlockEntity(pos) instanceof ThermalGaugeBlockEntity gauge
+                && gauge.activeGaugeCount() > 1) {
+            PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
+                    pos,
+                    state,
+                    context.getClickLocation()
+            );
+
+            if (!level.isClientSide && gauge.hasGauge(slot)) {
+                ItemStack drop = gauge.createItemStack(slot);
+
+                if (gauge.removeGauge(slot) && !player.isCreative()) {
+                    player.getInventory().placeItemBackInInventory(drop);
+                }
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
+        return IWrenchable.super.onSneakWrenched(state, context);
     }
 
     @Override
@@ -316,5 +491,34 @@ public class ThermalGaugeBlock
                         tickerState,
                         (ThermalGaugeBlockEntity) blockEntity
                 );
+    }
+
+    private static PanelSlot getPlacementSlot(
+            BlockPos pos,
+            BlockState state,
+            @Nullable LivingEntity placer
+    ) {
+        if (placer == null) {
+            return PanelSlot.BOTTOM_LEFT;
+        }
+
+        double range = placer.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) + 1.0D;
+        HitResult hitResult = placer.pick(range, 1.0F, false);
+        Vec3 location = hitResult.getLocation();
+        return FactoryPanelBlock.getTargetedSlot(pos, state, location);
+    }
+
+    private static PanelSlot getTargetedSlotFromPlayer(
+            BlockPos pos,
+            BlockState state,
+            Player player
+    ) {
+        double range = player.getAttributeValue(Attributes.BLOCK_INTERACTION_RANGE) + 1.0D;
+        HitResult hitResult = player.pick(range, 1.0F, false);
+        return FactoryPanelBlock.getTargetedSlot(
+                pos,
+                state,
+                hitResult.getLocation()
+        );
     }
 }
