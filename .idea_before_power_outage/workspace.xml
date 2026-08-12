@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a684588c-0b08-4722-bccc-c8b099d53b7c" name="Changes" comment="0.0.2.4-beta release&#10;&#10;Finalize the first stable beta build with the restored and expanded mod&#10;systems working together.&#10;&#10;- finish Molten Rotor heat, fuel, rendering, automation, persistence,&#10;  and kinetic output&#10;- add the Molten Rotor operating Ponder scene&#10;- complete both Perforated Spritzer Ponder scenes&#10;- add US English, British English, and Spanish translations&#10;- balance Pyroclast Bomb throwing and Potato Cannon velocity&#10;- restore Potato Cannon projectile data and packaging&#10;- fix generated resource and refmap handling&#10;- finish Combustion Mixing and JEI integration fixes&#10;- update furnace interactions, particles, sounds, and fuel rendering&#10;- update project metadata, README, and changelog for 0.0.2.4-beta&#10;&#10;All currently implemented features are working without known&#10;release-blocking issues.">
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/client/ClientModEvents.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/client/ClientModEvents.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlockEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlockEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/recipes/sulfuricresonancechamber/SulfuricResonanceChamberRecipe.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/recipes/sulfuricresonancechamber/SulfuricResonanceChamberRecipe.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/recipes/sulfuricresonancechamber/SulfuricResonanceChamberRecipeSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/recipes/sulfuricresonancechamber/SulfuricResonanceChamberRecipeSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/registry/AllModMenus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/hxneyw/repo/content/registry/AllModMenus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/de_de.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/de_de.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/en_gb.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/en_gb.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/en_us.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/en_us.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/es_es.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/es_es.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/fr_fr.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/fr_fr.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/pt_br.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/lang/pt_br.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/models/block/sulfuric_resonance_chamber.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/models/block/sulfuric_resonance_chamber.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/models/block/sulfuric_resonance_chamber_shaft.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/models/block/sulfuric_resonance_chamber_shaft.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/models/item/sulfuric_resonance_chamber.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/models/item/sulfuric_resonance_chamber.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/textures/block/resonancecomponenets.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/assets/sulfuricresonance/textures/block/resonancecomponenets.png" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="sulfuricresonance" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;HelpfulMishk03&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance.git&quot;,
+    &quot;accountId&quot;: &quot;bca362b6-354d-4d83-a3f3-31a5daa1a966&quot;
+  }
+}</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.0000013510097436" />
+      <entry key="MS500" value="1.181640992367568" />
+      <entry key="S2" value="5.98545139629738" />
+      <entry key="S5" value="14.835758014653539" />
+      <entry key="S10" value="21.442378971260723" />
+      <entry key="S30" value="27.90547693445828" />
+      <entry key="S60" value="29.87001817439025" />
+      <entry key="M2" value="30.91341319904994" />
+      <entry key="M5" value="31.560071174046282" />
+      <entry key="M10" value="31.79785651913593" />
+      <entry key="M15" value="32.09516958649152" />
+      <entry key="M30" value="35.34958409802965" />
+      <entry key="H1" value="45.43360682745799" />
+      <entry key="H2" value="60.040630608390224" />
+      <entry key="H4" value="75.63371522453278" />
+      <entry key="D1" value="161.41508667333704" />
+      <entry key="W1" value="1384.4270730015485" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="1.4440454107371448E-226" />
+      <entry key="M5" value="4.611395169090852E-91" />
+      <entry key="M10" value="6.790725417133894E-46" />
+      <entry key="M15" value="7.725811601712032E-31" />
+      <entry key="M30" value="8.789659607579823E-16" />
+      <entry key="H1" value="2.964736012315911E-8" />
+      <entry key="H2" value="1.7219284081301204E-4" />
+      <entry key="H4" value="0.013284101868345732" />
+      <entry key="D1" value="1.7503336870180561" />
+      <entry key="W1" value="25.198049517851143" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="0.9794216124902475" />
+      <entry key="MS500" value="1.176437508201356" />
+      <entry key="S2" value="5.975753453994034" />
+      <entry key="S5" value="14.825540516297046" />
+      <entry key="S10" value="21.434927422411267" />
+      <entry key="S30" value="27.9022348898295" />
+      <entry key="S60" value="29.86828240680883" />
+      <entry key="M2" value="30.91251488584258" />
+      <entry key="M5" value="31.5597043108096" />
+      <entry key="M10" value="31.797671688805462" />
+      <entry key="M15" value="32.09504479495492" />
+      <entry key="M30" value="35.349507758456305" />
+      <entry key="H1" value="45.43353971961532" />
+      <entry key="H2" value="60.04074544797497" />
+      <entry key="H4" value="75.64695068825073" />
+      <entry key="D1" value="163.16528368655892" />
+      <entry key="W1" value="1409.6249629105391" />
+    </decayedShown>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3GxXkl9GacVQVO7xlcu7Z0zIsTU" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build sulfuricresonance-0.0.1.9-beta-(J.L.D).executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "dev/0.2.9-beta",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/slith/Downloads/sulfuricresonance-0.0.1.9-beta-(J.L.D)/src/main/resources/assets/sulfuricresonance/models/block",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "to.speed.mode.migration.done": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\resources\assets\sulfuricresonance\models\block" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\resources\assets\sulfuricresonance\textures\block" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\resources\assets\sulfuricresonance\lang" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\java\io\hxneyw\repo\client" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\java\io\hxneyw\repo\content\blocks\sulfuricresonancechamber" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\java\io\hxneyw\repo\client\gui" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\java\io\hxneyw\repo\content\blocks" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\resources\data\sulfuricresonance\recipe\sulfuric_resonance_chamber" />
+      <recent name="C:\Users\slith\Downloads\sulfuricresonance-0.0.1.9-beta-(J.L.D)\src\main\java\io\hxneyw\repo\content\recipes\sulfuricresonancechamber" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="io.hxneyw.repo.content" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Client">
+    <configuration name="Client" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.neoforged.devlaunch.Main" />
+      <module name="sulfuricresonance.main" />
+      <option name="PROGRAM_PARAMETERS" value="@C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\moddev\\clientRunProgramArgs.txt" />
+      <option name="VM_PARAMETERS" value="@C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\moddev\\clientRunVmArgs.txt -Dfml.modFolders=sulfuricresonance%%C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\classes\\java\\main;sulfuricresonance%%C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\resources\\main" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/client-0.0.2.5-beta-dev" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Data" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.neoforged.devlaunch.Main" />
+      <module name="sulfuricresonance.main" />
+      <option name="PROGRAM_PARAMETERS" value="@C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\moddev\\dataRunProgramArgs.txt" />
+      <option name="VM_PARAMETERS" value="@C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\moddev\\dataRunVmArgs.txt -Dfml.modFolders=sulfuricresonance%%C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\classes\\java\\main;sulfuricresonance%%C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\resources\\main" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/data" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="net.neoforged.devlaunch.Main" />
+      <module name="sulfuricresonance.main" />
+      <option name="PROGRAM_PARAMETERS" value="@C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\moddev\\serverRunProgramArgs.txt" />
+      <option name="VM_PARAMETERS" value="@C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\moddev\\serverRunVmArgs.txt -Dfml.modFolders=sulfuricresonance%%C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\classes\\java\\main;sulfuricresonance%%C:\\Users\\slith\\Downloads\\sulfuricresonance-0.0.1.9-beta-(J.L.D)\\build\\resources\\main" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/runs/server" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-63390994e64e-intellij.indexing.shared.core-IU-262.8665.337" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a684588c-0b08-4722-bccc-c8b099d53b7c" name="Changes" comment="" />
+      <created>1784914338489</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1784914338489</updated>
+    </task>
+    <task id="LOCAL-00001" summary="ReadMe changes">
+      <option name="closed" value="true" />
+      <created>1784994602956</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1784994602956</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Licensing">
+      <option name="closed" value="true" />
+      <created>1784999760334</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1784999760334</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Furnace Finalizing, Automation Integrating&#10;Versioning Updates">
+      <option name="closed" value="true" />
+      <created>1785188884748</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1785188884748</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Fuel handling, New item Addition, recipe..">
+      <option name="closed" value="true" />
+      <created>1785197413778</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1785197413778</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Prepare 0.0.2.3-betaA public beta metadata&#10;&#10;- Update README for current beta features and supported versions&#10;- Add CHANGELOG with restored development history and 0.0.2.3-betaA changes&#10;- Strengthen license and ownership wording&#10;- Add Hxney / Ł creator identity clarification&#10;- Clean up .gitignore for build, IDE, run, and extracted dependency files&#10;- Prepare project files for Modrinth and CurseForge beta release">
+      <option name="closed" value="true" />
+      <created>1785265226733</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1785265226733</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Prepare 0.0.2.3-betaA public beta metadata&#10;&#10;- Update README for current beta features and supported versions&#10;- Add CHANGELOG with restored development history and 0.0.2.3-betaA changes&#10;- Strengthen license and ownership wording&#10;- Add Hxney / Ł creator identity clarification&#10;- Clean up .gitignore for build, IDE, run, and extracted dependency files&#10;- Prepare project files for Modrinth and CurseForge beta release">
+      <option name="closed" value="true" />
+      <created>1785265449914</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1785265449914</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Prepare 0.0.2.3-betaA public beta metadata&#10;&#10;- Preparation">
+      <option name="closed" value="true" />
+      <created>1785289285387</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1785289285387</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Prepare 0.0.2.4-beta for release.&#10;&#10;-added es_es&#10;&#10;-patched multiple various compatibilities and visuals.&#10;&#10;-adjusted pyroclasts throw velocity&#10;&#10;- Preparation">
+      <option name="closed" value="true" />
+      <created>1785359573318</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1785359573318</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Prepare 0.0.2.4-beta for release.&#10;&#10;-Rotor furnace ponder scene testing&#10;&#10;- Preparation">
+      <option name="closed" value="true" />
+      <created>1785363340660</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1785363340660</updated>
+    </task>
+    <task id="LOCAL-00010" summary="0.0.2.4-beta release&#10;&#10;Finalize the first stable beta build with the restored and expanded mod&#10;systems working together.&#10;&#10;- finish Molten Rotor heat, fuel, rendering, automation, persistence,&#10;  and kinetic output&#10;- add the Molten Rotor operating Ponder scene&#10;- complete both Perforated Spritzer Ponder scenes&#10;- add US English, British English, and Spanish translations&#10;- balance Pyroclast Bomb throwing and Potato Cannon velocity&#10;- restore Potato Cannon projectile data and packaging&#10;- fix generated resource and refmap handling&#10;- finish Combustion Mixing and JEI integration fixes&#10;- update furnace interactions, particles, sounds, and fuel rendering&#10;- update project metadata, README, and changelog for 0.0.2.4-beta&#10;&#10;All currently implemented features are working without known&#10;release-blocking issues.">
+      <option name="closed" value="true" />
+      <created>1785365575946</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1785365575946</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ReadMe changes" />
+    <MESSAGE value="Licensing" />
+    <MESSAGE value="Furnace Finalizing, Automation Integrating&#10;Versioning Updates" />
+    <MESSAGE value="Fuel handling, New item Addition, recipe.." />
+    <MESSAGE value="Prepare 0.0.2.3-betaA public beta metadata&#10;&#10;- Update README for current beta features and supported versions&#10;- Add CHANGELOG with restored development history and 0.0.2.3-betaA changes&#10;- Strengthen license and ownership wording&#10;- Add Hxney / Ł creator identity clarification&#10;- Clean up .gitignore for build, IDE, run, and extracted dependency files&#10;- Prepare project files for Modrinth and CurseForge beta release" />
+    <MESSAGE value="Prepare 0.0.2.3-betaA public beta metadata&#10;&#10;- Preparation" />
+    <MESSAGE value="Prepare 0.0.2.4-beta for release.&#10;&#10;-added es_es&#10;&#10;-patched multiple various compatibilities and visuals.&#10;&#10;-adjusted pyroclasts throw velocity&#10;&#10;- Preparation" />
+    <MESSAGE value="Prepare 0.0.2.4-beta for release.&#10;&#10;-Rotor furnace ponder scene testing&#10;&#10;- Preparation" />
+    <MESSAGE value="0.0.2.4-beta release&#10;&#10;Finalize the first stable beta build with the restored and expanded mod&#10;systems working together.&#10;&#10;- finish Molten Rotor heat, fuel, rendering, automation, persistence,&#10;  and kinetic output&#10;- add the Molten Rotor operating Ponder scene&#10;- complete both Perforated Spritzer Ponder scenes&#10;- add US English, British English, and Spanish translations&#10;- balance Pyroclast Bomb throwing and Potato Cannon velocity&#10;- restore Potato Cannon projectile data and packaging&#10;- fix generated resource and refmap handling&#10;- finish Combustion Mixing and JEI integration fixes&#10;- update furnace interactions, particles, sounds, and fuel rendering&#10;- update project metadata, README, and changelog for 0.0.2.4-beta&#10;&#10;All currently implemented features are working without known&#10;release-blocking issues." />
+    <option name="LAST_COMMIT_MESSAGE" value="0.0.2.4-beta release&#10;&#10;Finalize the first stable beta build with the restored and expanded mod&#10;systems working together.&#10;&#10;- finish Molten Rotor heat, fuel, rendering, automation, persistence,&#10;  and kinetic output&#10;- add the Molten Rotor operating Ponder scene&#10;- complete both Perforated Spritzer Ponder scenes&#10;- add US English, British English, and Spanish translations&#10;- balance Pyroclast Bomb throwing and Potato Cannon velocity&#10;- restore Potato Cannon projectile data and packaging&#10;- fix generated resource and refmap handling&#10;- finish Combustion Mixing and JEI integration fixes&#10;- update furnace interactions, particles, sounds, and fuel rendering&#10;- update project metadata, README, and changelog for 0.0.2.4-beta&#10;&#10;All currently implemented features are working without known&#10;release-blocking issues." />
+  </component>
+</project>

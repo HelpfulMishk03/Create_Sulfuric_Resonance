@@ -11,7 +11,7 @@ license = "All Rights Reserved; see LICENSE.md"
 
 [[mods]]
 modId = "sulfuricresonance"
-version = "0.2.8-beta-hotfix1"
+version = "0.2.8-beta-hotfix2"
 displayName = "Create: Sulfuric Resonance"
 
 # This file must be located directly inside:
