@@ -1,8 +1,11 @@
 package io.hxneyw.repo.client;
 
 import io.hxneyw.repo.CreateSulfuricResonance;
+import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.items.LivingEmberLampItem;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import java.util.UUID;
 import net.createmod.catnip.animation.AnimationTickHolder;
@@ -92,6 +95,53 @@ public final class ThermalRelaySwitchClientHandler {
             );
         }
 
+        for (ThermalGaugeBlockEntity gauge :
+                ThermalGaugeBlockEntity
+                        .getLoadedClientGauges()) {
+            if (gauge.getLevel() != level
+                    || gauge.doesNotMatchLink(link)) {
+                continue;
+            }
+
+            renderConnectedDevice(
+                    level,
+                    player,
+                    gauge.getBlockPos(),
+                    new GaugeOutlineKey(
+                            link,
+                            gauge.getBlockPos().immutable()
+                    ),
+                    color
+            );
+        }
+
+        LivingEmberLampItem.FurnaceLink lampLink =
+                new LivingEmberLampItem.FurnaceLink(
+                        link.position(),
+                        link.dimension(),
+                        link.furnaceIdentity()
+                );
+
+        for (LivingEmberLampBlockEntity lamp :
+                LivingEmberLampBlockEntity
+                        .getLoadedClientLamps()) {
+            if (lamp.getLevel() != level
+                    || lamp.doesNotMatchLink(lampLink)) {
+                continue;
+            }
+
+            renderConnectedDevice(
+                    level,
+                    player,
+                    lamp.getBlockPos(),
+                    new LampOutlineKey(
+                            link,
+                            lamp.getBlockPos().immutable()
+                    ),
+                    color
+            );
+        }
+
         renderEndpoint(
                 level,
                 player,
@@ -169,6 +219,43 @@ public final class ThermalRelaySwitchClientHandler {
                 .colored(color);
     }
 
+    private static void renderConnectedDevice(
+            ClientLevel level,
+            LocalPlayer player,
+            BlockPos pos,
+            Object key,
+            int color
+    ) {
+        if (!level.isLoaded(pos)
+                || player.distanceToSqr(
+                Vec3.atCenterOf(pos)
+        ) > MAX_DISTANCE_SQUARED) {
+            return;
+        }
+
+        VoxelShape shape =
+                level.getBlockState(pos)
+                        .getShape(level, pos);
+
+        if (shape.isEmpty()) {
+            return;
+        }
+
+        AABB box = shape.bounds()
+                .inflate(-1.0D / 128.0D)
+                .move(pos);
+
+        Outliner.getInstance()
+                .showAABB(
+                        key,
+                        box,
+                        2
+                )
+                .lineWidth(1.0F / 32.0F)
+                .disableLineNormals()
+                .colored(color);
+    }
+
     private static void renderEndpoint(
             ClientLevel level,
             LocalPlayer player,
@@ -228,6 +315,18 @@ public final class ThermalRelaySwitchClientHandler {
                 .lineWidth(1.0F / 32.0F)
                 .disableLineNormals()
                 .colored(color);
+    }
+
+    private record GaugeOutlineKey(
+            ThermalRelaySwitchItem.FurnaceLink furnace,
+            BlockPos gaugePosition
+    ) {
+    }
+
+    private record LampOutlineKey(
+            ThermalRelaySwitchItem.FurnaceLink furnace,
+            BlockPos lampPosition
+    ) {
     }
 
     private record RelayOutlineKey(

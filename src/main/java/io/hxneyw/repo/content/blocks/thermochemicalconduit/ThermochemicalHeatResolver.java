@@ -721,14 +721,9 @@ public final class ThermochemicalHeatResolver {
             return false;
         }
 
-        if (firstState.getBlock()
-                instanceof ThermochemicalLinkDriveBlock
-                && secondState.getBlock()
-                instanceof ThermochemicalLinkDriveBlock
-                && ChainDriveBlock.areBlocksConnected(
+        if (areLinkDrivesSegmentConnected(
                 firstState,
-                secondState,
-                direction
+                secondState
         )) {
             return true;
         }
@@ -834,6 +829,14 @@ public final class ThermochemicalHeatResolver {
         return connections;
     }
 
+    public static boolean areLinkDrivesSegmentConnected(
+            BlockState firstState,
+            BlockState secondState
+    ) {
+        return firstState.getBlock() instanceof ThermochemicalLinkDriveBlock
+                && secondState.getBlock() instanceof ThermochemicalLinkDriveBlock;
+    }
+
     public static LinkDriveConnectionStats getLinkDriveConnectionStats(
             Level level,
             BlockPos start
@@ -862,12 +865,9 @@ public final class ThermochemicalHeatResolver {
                 }
 
                 BlockState neighbourState = level.getBlockState(neighbour);
-                if (!(neighbourState.getBlock()
-                        instanceof ThermochemicalLinkDriveBlock)
-                        || !ChainDriveBlock.areBlocksConnected(
+                if (!areLinkDrivesSegmentConnected(
                         currentState,
-                        neighbourState,
-                        direction
+                        neighbourState
                 )) {
                     continue;
                 }
@@ -914,9 +914,10 @@ public final class ThermochemicalHeatResolver {
         }
 
         BlockState neighbourState = level.getBlockState(neighbourPosition);
-        if (neighbourState.getBlock() instanceof ChainDriveBlock
-                && !(neighbourState.getBlock()
-                instanceof ThermochemicalLinkDriveBlock)) {
+        if (neighbourState.getBlock() instanceof ThermochemicalLinkDriveBlock) {
+            return false;
+        }
+        if (neighbourState.getBlock() instanceof ChainDriveBlock) {
             return false;
         }
 

@@ -19,7 +19,7 @@
   "item.sulfuricresonance.incomplete_thermochemical_casing": "Revestimento Termoquímico Incompleto",
   "item.sulfuricresonance.infernal_coke": "Coque Infernal",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Comprimento da corrente: %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Conexões: %s/%s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Conexões: %s/2",
   "block.sulfuricresonance.thermochemical_link_drive": "Transmissão de Elo Termoquímica",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Transporta rotação e calor termoquímico por uma conexão física de elos.",
   "item.sulfuricresonance.infernal_impeller": "Impulsor Infernal",
@@ -469,5 +469,9 @@
   "gui.sulfuricresonance.chamber.status.insufficient_speed": "Rotação insuficiente",
   "gui.sulfuricresonance.chamber.status.output_blocked": "Saída bloqueada",
   "gui.sulfuricresonance.chamber.status.ready": "Pronta",
-  "gui.sulfuricresonance.chamber.status.processing": "Processando"
+  "gui.sulfuricresonance.chamber.status.processing": "Processando",
+  "block.sulfuricresonance.thermal_gauge": "Medidor térmico",
+  "message.sulfuricresonance.thermal_gauge.network_removed": "Rede do medidor térmico removida",
+  "message.sulfuricresonance.thermal_gauge.reading": "Temperatura: %s °C",
+  "message.sulfuricresonance.thermal_gauge.no_network": "Nenhuma rede de fornalha conectada"
 }

@@ -3,7 +3,10 @@ package io.hxneyw.repo.client;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.items.LivingEmberLampItem;
+import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import java.util.Optional;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.outliner.Outliner;
@@ -90,6 +93,57 @@ public final class LivingEmberLampClientHandler {
                     player,
                     lamp.getBlockPos(),
                     link,
+                    color
+            );
+        }
+
+        ThermalRelaySwitchItem.FurnaceLink sharedLink =
+                new ThermalRelaySwitchItem.FurnaceLink(
+                        link.position(),
+                        link.dimension(),
+                        link.furnaceIdentity()
+                );
+
+        for (ThermalRelaySwitchBlockEntity relay :
+                ThermalRelaySwitchBlockEntity
+                        .getLoadedClientRelays()) {
+            BlockPos relayPos = relay.getBlockPos();
+
+            if (relay.getLevel() != level
+                    || !sharedLink.equals(relay.getFurnaceLink())
+                    || isHidden(level, player, relayPos)) {
+                continue;
+            }
+
+            renderShape(
+                    level,
+                    relayPos,
+                    new RelayOutlineKey(
+                            link,
+                            relayPos.immutable()
+                    ),
+                    color
+            );
+        }
+
+        for (ThermalGaugeBlockEntity gauge :
+                ThermalGaugeBlockEntity
+                        .getLoadedClientGauges()) {
+            BlockPos gaugePos = gauge.getBlockPos();
+
+            if (gauge.getLevel() != level
+                    || gauge.doesNotMatchLink(sharedLink)
+                    || isHidden(level, player, gaugePos)) {
+                continue;
+            }
+
+            renderShape(
+                    level,
+                    gaugePos,
+                    new GaugeOutlineKey(
+                            link,
+                            gaugePos.immutable()
+                    ),
                     color
             );
         }
@@ -214,6 +268,18 @@ public final class LivingEmberLampClientHandler {
                 .lineWidth(1.0F / 32.0F)
                 .disableLineNormals()
                 .colored(color);
+    }
+
+    private record RelayOutlineKey(
+            LivingEmberLampItem.FurnaceLink link,
+            BlockPos relayPosition
+    ) {
+    }
+
+    private record GaugeOutlineKey(
+            LivingEmberLampItem.FurnaceLink link,
+            BlockPos gaugePosition
+    ) {
     }
 
     private record FurnaceOutlineKey(

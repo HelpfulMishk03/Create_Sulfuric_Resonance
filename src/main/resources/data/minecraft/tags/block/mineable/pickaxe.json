@@ -11,6 +11,7 @@
     "sulfuricresonance:ash_brick_wall",
     "sulfuricresonance:ash_brick_pillar",
     "sulfuricresonance:ashesil",
+    "sulfuricresonance:living_ember_lamp",
     "sulfuricresonance:thermochemical_conduit",
     "sulfuricresonance:thermochemical_shaft",
     "sulfuricresonance:thermochemical_gearbox",
@@ -20,6 +21,7 @@
     "sulfuricresonance:large_thermochemical_cogwheel",
     "sulfuricresonance:sulfur_burner",
     "sulfuricresonance:sulfuric_resonance_chamber",
-    "sulfuricresonance:thermochemical_link_drive"
+    "sulfuricresonance:thermochemical_link_drive",
+    "sulfuricresonance:thermal_gauge"
   ]
 }

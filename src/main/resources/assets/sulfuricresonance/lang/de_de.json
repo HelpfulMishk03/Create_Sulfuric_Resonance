@@ -2,7 +2,7 @@
   "block.sulfuricresonance.thermochemical_link_drive": "Thermochemischer Gliedantrieb",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Überträgt Rotation und thermochemische Wärme über eine physische Kettenverbindung.",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Kettenlänge: %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Verbindungen: %s/%s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Verbindungen: %s/2",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Säuregeätztes Kupferblech",
   "item.sulfuricresonance.acid_resistant_ceramic": "Säurebeständige Keramik",
@@ -468,5 +468,9 @@
   "gui.sulfuricresonance.chamber.status.insufficient_speed": "Nicht genug Drehzahl",
   "gui.sulfuricresonance.chamber.status.output_blocked": "Ausgabe blockiert",
   "gui.sulfuricresonance.chamber.status.ready": "Bereit",
-  "gui.sulfuricresonance.chamber.status.processing": "Wird verarbeitet"
+  "gui.sulfuricresonance.chamber.status.processing": "Wird verarbeitet",
+  "block.sulfuricresonance.thermal_gauge": "Thermische Anzeige",
+  "message.sulfuricresonance.thermal_gauge.network_removed": "Netzwerk der thermischen Anzeige entfernt",
+  "message.sulfuricresonance.thermal_gauge.reading": "Temperatur: %s °C",
+  "message.sulfuricresonance.thermal_gauge.no_network": "Kein Ofennetzwerk verbunden"
 }

@@ -2,7 +2,7 @@
   "block.sulfuricresonance.thermochemical_link_drive": "Transmisión de eslabones termoquímica",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Transfiere rotación y calor termoquímico mediante una conexión física de cadena.",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Longitud de la cadena: %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Conexiones: %s/%s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Conexiones: %s/2",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Lámina de cobre grabada con ácido",
   "item.sulfuricresonance.acid_resistant_ceramic": "Cerámica resistente al ácido",
@@ -469,5 +469,9 @@
   "gui.sulfuricresonance.chamber.status.insufficient_speed": "Rotación insuficiente",
   "gui.sulfuricresonance.chamber.status.output_blocked": "Salida bloqueada",
   "gui.sulfuricresonance.chamber.status.ready": "Lista",
-  "gui.sulfuricresonance.chamber.status.processing": "Procesando"
+  "gui.sulfuricresonance.chamber.status.processing": "Procesando",
+  "block.sulfuricresonance.thermal_gauge": "Medidor térmico",
+  "message.sulfuricresonance.thermal_gauge.network_removed": "Red del medidor térmico eliminada",
+  "message.sulfuricresonance.thermal_gauge.reading": "Temperatura: %s °C",
+  "message.sulfuricresonance.thermal_gauge.no_network": "No hay una red de horno conectada"
 }

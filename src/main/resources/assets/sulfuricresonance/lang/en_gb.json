@@ -2,7 +2,7 @@
   "block.sulfuricresonance.thermochemical_link_drive": "Thermochemical Link Drive",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Carries rotation and thermochemical heat across a physical chain connection.",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Chain length: %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connections: %s/%s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connections: %s/2",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Acid-Etched Copper Sheet",
   "item.sulfuricresonance.acid_resistant_ceramic": "Acid-Resistant Ceramic",
@@ -469,5 +469,9 @@
   "gui.sulfuricresonance.chamber.status.insufficient_speed": "Insufficient rotation",
   "gui.sulfuricresonance.chamber.status.output_blocked": "Output blocked",
   "gui.sulfuricresonance.chamber.status.ready": "Ready",
-  "gui.sulfuricresonance.chamber.status.processing": "Processing"
+  "gui.sulfuricresonance.chamber.status.processing": "Processing",
+  "block.sulfuricresonance.thermal_gauge": "Thermal Gauge",
+  "message.sulfuricresonance.thermal_gauge.network_removed": "Thermal Gauge network removed",
+  "message.sulfuricresonance.thermal_gauge.reading": "Temperature: %s °C",
+  "message.sulfuricresonance.thermal_gauge.no_network": "No furnace network connected"
 }

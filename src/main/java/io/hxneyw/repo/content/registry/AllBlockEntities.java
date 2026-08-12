@@ -7,6 +7,7 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
@@ -119,6 +120,17 @@ public class AllBlockEntities {
                    AllModBlocks.THERMAL_RELAY_SWITCH.get()
            ).build(null)
    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermalGaugeBlockEntity>
+            > THERMAL_GAUGE = BLOCK_ENTITIES.register(
+            "thermal_gauge",
+            () -> Builder.of(
+                    ThermalGaugeBlockEntity::new,
+                    AllModBlocks.THERMAL_GAUGE.get()
+            ).build(null)
+    );
 
    public static final DeferredHolder<
            BlockEntityType<?>,

@@ -77,6 +77,9 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel RESONANCE_CHAMBER_WINDOW =
             partial("block/sulfuric_resonance_chamber_window");
 
+    public static final PartialModel THERMAL_GAUGE_NEEDLE =
+            partial("block/thermal_gauge_needle");
+
     private static PartialModel partial(String path) {
         return PartialModel.of(
                 ResourceLocation.fromNamespaceAndPath(
@@ -227,6 +230,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMAL_GAUGE.get(),
+                ThermalGaugeRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.SULFURIC_RESONANCE_CHAMBER.get(),
                 SulfuricResonanceChamberRenderer::new
         );
@@ -258,6 +266,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "block/sulfuric_resonance_chamber_window"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_gauge_needle"
                         )
                 )
         );

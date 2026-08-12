@@ -12,6 +12,7 @@ import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
@@ -19,7 +20,6 @@ import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkD
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -103,7 +103,7 @@ public class AllModBlocks {
     public static final DeferredBlock<Block> CARBON_DEPOSIT_BLOCK =
             BLOCKS.registerSimpleBlock(
                     "carbon_deposit_block",
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_BLACK)
                             .strength(3.0F, 6.0F)
                             .requiresCorrectToolForDrops()
@@ -113,7 +113,7 @@ public class AllModBlocks {
     public static final DeferredBlock<Block> INFERNAL_CARBON_DEPOSIT_BLOCK =
             BLOCKS.registerSimpleBlock(
                     "infernal_carbon_deposit_block",
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_BLACK)
                             .strength(4.0F, 8.0F)
                             .requiresCorrectToolForDrops()
@@ -362,12 +362,24 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                     .noOcclusion()
                     )
             );
+    public static final DeferredBlock<ThermalGaugeBlock> THERMAL_GAUGE =
+            BLOCKS.register(
+                    "thermal_gauge",
+                    () -> new ThermalGaugeBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(2.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
     public static final DeferredBlock<SulfurBurnerBlock>
             SULFUR_BURNER =
             BLOCKS.register(
                     "sulfur_burner",
                     () -> new SulfurBurnerBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(3.0F, 6.0F)
                                     .requiresCorrectToolForDrops()
@@ -387,7 +399,7 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
             BLOCKS.register(
                     "sulfuric_resonance_chamber",
                     () -> new SulfuricResonanceChamberBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(5.0F, 6.0F)
                                     .requiresCorrectToolForDrops()

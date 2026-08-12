@@ -2,7 +2,7 @@
   "block.sulfuricresonance.thermochemical_link_drive": "Transmission à maillons thermochimique",
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Transmet la rotation et la chaleur thermochimique par une connexion physique de chaîne.",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Longueur de la chaîne : %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connexions : %s/%s",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connexions : %s/2",
   "itemGroup.sulfuricresonance.sulfuric_resonance": "Create: Sulfuric Resonance",
   "item.sulfuricresonance.acid_etched_copper_sheet": "Plaque de cuivre gravée à l’acide",
   "item.sulfuricresonance.acid_resistant_ceramic": "Céramique résistante à l’acide",
@@ -469,5 +469,9 @@
   "gui.sulfuricresonance.chamber.status.insufficient_speed": "Rotation insuffisante",
   "gui.sulfuricresonance.chamber.status.output_blocked": "Sortie bloquée",
   "gui.sulfuricresonance.chamber.status.ready": "Prête",
-  "gui.sulfuricresonance.chamber.status.processing": "Traitement en cours"
+  "gui.sulfuricresonance.chamber.status.processing": "Traitement en cours",
+  "block.sulfuricresonance.thermal_gauge": "Jauge thermique",
+  "message.sulfuricresonance.thermal_gauge.network_removed": "Réseau de la jauge thermique supprimé",
+  "message.sulfuricresonance.thermal_gauge.reading": "Température : %s °C",
+  "message.sulfuricresonance.thermal_gauge.no_network": "Aucun réseau de four connecté"
 }
