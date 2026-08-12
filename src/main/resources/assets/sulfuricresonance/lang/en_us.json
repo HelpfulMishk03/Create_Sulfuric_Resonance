@@ -18,7 +18,7 @@
   "tooltip.sulfuricresonance.thermochemical_link_drive": "Carries rotation and thermochemical heat across a physical chain connection.",
   "item.sulfuricresonance.flameborne_core": "Flameborne Core",
   "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length": "Chain length: %s",
-  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connections: %s/2",
+  "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections": "Connections: %s/%s",
   "item.sulfuricresonance.impeller_blade": "Impeller Blade",
   "item.sulfuricresonance.incomplete_thermochemical_casing": "Incomplete Thermochemical Casing",
   "item.sulfuricresonance.infernal_coke": "Infernal Coke",
