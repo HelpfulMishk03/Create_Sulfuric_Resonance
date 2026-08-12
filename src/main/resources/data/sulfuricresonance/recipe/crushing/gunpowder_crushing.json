@@ -9,12 +9,12 @@
   "results": [
     {
       "id": "sulfuricresonance:sulfur",
-      "amount": 1,
+      "count": 1,
       "chance": 0.40
     },
     {
       "id": "minecraft:charcoal",
-      "amount": 1,
+      "count": 1,
       "chance": 0.60
     }
   ]

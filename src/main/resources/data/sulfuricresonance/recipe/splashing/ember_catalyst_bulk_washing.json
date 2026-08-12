@@ -8,16 +8,16 @@
   "results": [
     {
       "id": "minecraft:redstone",
-      "amount": 2
+      "count": 2
     },
     {
       "id": "minecraft:redstone",
-      "amount": 1,
+      "count": 1,
       "chance": 0.60
     },
     {
       "id": "sulfuricresonance:spent_ash",
-      "amount": 2
+      "count": 2
     }
   ]
 }
