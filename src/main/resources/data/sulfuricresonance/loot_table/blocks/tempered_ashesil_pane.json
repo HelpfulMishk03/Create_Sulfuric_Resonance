@@ -4,6 +4,12 @@
     {
       "rolls": 1,
       "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "sulfuricresonance:tempered_ashesil_pane"
+        }
+      ],
       "conditions": [
         {
           "condition": "minecraft:match_tool",
@@ -20,14 +26,8 @@
             }
           }
         }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "sulfuricresonance:ashesil"
-        }
       ]
     }
   ],
-  "random_sequence": "sulfuricresonance:blocks/ashesil"
+  "random_sequence": "sulfuricresonance:blocks/tempered_ashesil_pane"
 }

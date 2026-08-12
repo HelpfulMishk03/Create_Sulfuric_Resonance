@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "sulfuricresonance:ashesil_pane"
+    "sulfuricresonance:ashesil_pane",
+    "sulfuricresonance:tempered_ashesil_pane"
   ]
 }

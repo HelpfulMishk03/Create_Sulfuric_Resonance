@@ -24,10 +24,10 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "sulfuricresonance:ashesil"
+          "name": "sulfuricresonance:tempered_ashesil"
         }
       ]
     }
   ],
-  "random_sequence": "sulfuricresonance:blocks/ashesil"
+  "random_sequence": "sulfuricresonance:blocks/tempered_ashesil"
 }
