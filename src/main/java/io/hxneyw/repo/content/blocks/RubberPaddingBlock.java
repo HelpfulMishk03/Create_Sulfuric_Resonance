@@ -179,7 +179,8 @@ public class RubberPaddingBlock extends Block {
                );
                this.spawnItemParticles(level, item);
             } else {
-               newY = BASE_ITEM_FIRST_BOUNCE * Math.pow(ITEM_SUBSEQUENT_MULTIPLIER, bounceCount);
+               double configMultiplier = Config.ITEM_BOUNCE_MULTIPLIER.get();
+               newY = BASE_ITEM_FIRST_BOUNCE * configMultiplier * Math.pow(ITEM_SUBSEQUENT_MULTIPLIER, bounceCount);
                itemData.putInt(NBT_BOUNCE_COUNT, bounceCount + 1);
                itemData.putLong(NBT_LAST_BOUNCE_TIME, currentTime);
                itemData.putDouble(NBT_LAST_Y_POS, currentYPos);

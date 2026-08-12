@@ -55,11 +55,11 @@ public class SulfuricResonanceChamberScreen
     private static final int HOTBAR_Y = 221;
 
     private static final int RECIPE_CENTER = 225;
-    private static final int RECIPE_INPUT_1_X = 164;
-    private static final int RECIPE_INPUT_2_X = 186;
-    private static final int RECIPE_INPUT_3_X = 208;
-    private static final int RECIPE_OUTPUT_X = 254;
-    private static final int RECIPE_ITEM_Y = 51;
+    private static final int RECIPE_INPUT_RIGHT_X = RECIPE_CENTER - 33;
+    private static final int RECIPE_INPUT_SPACING = 18;
+    private static final int RECIPE_OUTPUT_X = RECIPE_CENTER + 17;
+    private static final int RECIPE_NAME_Y = 45;
+    private static final int RECIPE_ITEM_Y = 58;
 
     private final List<RecipeHolder<SulfuricResonanceChamberRecipe>> recipes =
             new ArrayList<>();
@@ -508,36 +508,46 @@ public class SulfuricResonanceChamberScreen
                 font,
                 resultName,
                 x + RECIPE_CENTER,
-                y + 40,
+                y + RECIPE_NAME_Y,
                 TEXT
         );
+
+        int ingredientCount = 1
+                + (recipe.catalyst().isPresent() ? 1 : 0)
+                + (recipe.auxiliary().isPresent() ? 1 : 0);
+        int firstIngredientX = recipeFirstIngredientX(ingredientCount);
+        int ingredientIndex = 0;
 
         renderIngredient(
                 graphics,
                 recipe.substrate(),
-                x + RECIPE_INPUT_1_X,
+                x + firstIngredientX,
                 y + RECIPE_ITEM_Y
         );
-        recipe.catalyst().ifPresent(ingredient ->
-                renderIngredient(
-                        graphics,
-                        ingredient,
-                        x + RECIPE_INPUT_2_X,
-                        y + RECIPE_ITEM_Y
-                )
-        );
-        recipe.auxiliary().ifPresent(ingredient ->
-                renderIngredient(
-                        graphics,
-                        ingredient,
-                        x + RECIPE_INPUT_3_X,
-                        y + RECIPE_ITEM_Y
-                )
-        );
+        ingredientIndex++;
 
-        int arrowX = x
-                + ((RECIPE_INPUT_3_X + 16 + RECIPE_OUTPUT_X) / 2)
-                - (font.width("→") / 2);
+        if (recipe.catalyst().isPresent()) {
+            renderIngredient(
+                    graphics,
+                    recipe.catalyst().get(),
+                    x + firstIngredientX
+                            + ingredientIndex * RECIPE_INPUT_SPACING,
+                    y + RECIPE_ITEM_Y
+            );
+            ingredientIndex++;
+        }
+
+        if (recipe.auxiliary().isPresent()) {
+            renderIngredient(
+                    graphics,
+                    recipe.auxiliary().get(),
+                    x + firstIngredientX
+                            + ingredientIndex * RECIPE_INPUT_SPACING,
+                    y + RECIPE_ITEM_Y
+            );
+        }
+
+        int arrowX = x + RECIPE_CENTER - (font.width("→") / 2);
         int arrowY = y + RECIPE_ITEM_Y + 4;
 
         graphics.drawString(
@@ -572,7 +582,7 @@ public class SulfuricResonanceChamberScreen
                 font,
                 requirements,
                 x + RECIPE_LEFT + 8,
-                y + 74,
+                y + 81,
                 126,
                 MUTED
         );
@@ -674,40 +684,59 @@ public class SulfuricResonanceChamberScreen
             int x,
             int y
     ) {
+        int ingredientCount = 1
+                + (recipe.catalyst().isPresent() ? 1 : 0)
+                + (recipe.auxiliary().isPresent() ? 1 : 0);
+        int firstIngredientX = recipeFirstIngredientX(ingredientCount);
+        int ingredientIndex = 0;
+
         if (inside(
                 mouseX,
                 mouseY,
-                x + RECIPE_INPUT_1_X,
+                x + firstIngredientX,
                 y + RECIPE_ITEM_Y,
                 16,
                 16
         )) {
             return displayStack(recipe.substrate());
         }
+        ingredientIndex++;
 
-        if (inside(
-                mouseX,
-                mouseY,
-                x + RECIPE_INPUT_2_X,
-                y + RECIPE_ITEM_Y,
-                16,
-                16
-        ) && recipe.catalyst().isPresent()) {
-            return displayStack(recipe.catalyst().get());
+        if (recipe.catalyst().isPresent()) {
+            if (inside(
+                    mouseX,
+                    mouseY,
+                    x + firstIngredientX
+                            + ingredientIndex * RECIPE_INPUT_SPACING,
+                    y + RECIPE_ITEM_Y,
+                    16,
+                    16
+            )) {
+                return displayStack(recipe.catalyst().get());
+            }
+            ingredientIndex++;
         }
 
-        if (inside(
-                mouseX,
-                mouseY,
-                x + RECIPE_INPUT_3_X,
-                y + RECIPE_ITEM_Y,
-                16,
-                16
-        ) && recipe.auxiliary().isPresent()) {
+        if (recipe.auxiliary().isPresent()
+                && inside(
+                        mouseX,
+                        mouseY,
+                        x + firstIngredientX
+                                + ingredientIndex * RECIPE_INPUT_SPACING,
+                        y + RECIPE_ITEM_Y,
+                        16,
+                        16
+                )) {
             return displayStack(recipe.auxiliary().get());
         }
 
         return ItemStack.EMPTY;
+    }
+
+    private int recipeFirstIngredientX(int ingredientCount) {
+        int count = Math.clamp(ingredientCount, 1, 3);
+        return RECIPE_INPUT_RIGHT_X
+                - (count - 1) * RECIPE_INPUT_SPACING;
     }
 
     private ItemStack displayStack(Ingredient ingredient) {
@@ -777,7 +806,7 @@ public class SulfuricResonanceChamberScreen
                  MISSING_ACID,
                  INSUFFICIENT_HEAT,
                  INSUFFICIENT_SPEED -> WARN;
-            case OUTPUT_BLOCKED -> BAD;
+            case OUTPUT_BLOCKED, NO_VALID_RECIPE -> BAD;
         };
     }
 

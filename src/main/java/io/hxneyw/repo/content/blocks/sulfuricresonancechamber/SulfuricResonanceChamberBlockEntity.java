@@ -331,6 +331,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             return;
         }
 
+        MoltenRotorBlockEntity.RotorHeatLevel previousHeatTier = heatTier;
+        int previousTemperature = temperature;
         updateHeat();
 
         boolean previousReady = ready;
@@ -344,9 +346,13 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             processingTime = 0;
             ready = false;
             processing = false;
-            status = hasAnyInput()
-                    ? ChamberStatus.MISSING_INGREDIENTS
-                    : ChamberStatus.IDLE;
+            if (!hasAnyInput()) {
+                status = ChamberStatus.IDLE;
+            } else if (hasPotentialInputRecipe()) {
+                status = ChamberStatus.MISSING_INGREDIENTS;
+            } else {
+                status = ChamberStatus.NO_VALID_RECIPE;
+            }
             resetInterruptedProgress();
         } else {
             SulfuricResonanceChamberRecipe recipe = inputHolder.value();
@@ -379,7 +385,9 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
 
         if (previousReady != ready
                 || previousProcessing != processing
-                || previousStatus != status) {
+                || previousStatus != status
+                || previousHeatTier != heatTier
+                || previousTemperature != temperature) {
             setChanged();
             sendData();
         }
@@ -581,6 +589,23 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return !inventory.get(INPUT_1).isEmpty()
                 || !inventory.get(INPUT_2).isEmpty()
                 || !inventory.get(INPUT_3).isEmpty();
+    }
+
+    private boolean hasPotentialInputRecipe() {
+        if (level == null) {
+            return false;
+        }
+
+        return level.getRecipeManager()
+                .getAllRecipesFor(
+                        SulfuricResonanceChamberRecipeRegistry.TYPE.get()
+                )
+                .stream()
+                .anyMatch(holder -> holder.value().matchesPresentInputs(
+                        inventory.get(INPUT_1),
+                        inventory.get(INPUT_2),
+                        inventory.get(INPUT_3)
+                ));
     }
 
     private boolean canInsertIntoInput(int slot, ItemStack stack) {
@@ -799,7 +824,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         INSUFFICIENT_SPEED("gui.sulfuricresonance.chamber.status.insufficient_speed"),
         OUTPUT_BLOCKED("gui.sulfuricresonance.chamber.status.output_blocked"),
         READY("gui.sulfuricresonance.chamber.status.ready"),
-        PROCESSING("gui.sulfuricresonance.chamber.status.processing");
+        PROCESSING("gui.sulfuricresonance.chamber.status.processing"),
+        NO_VALID_RECIPE("gui.sulfuricresonance.chamber.status.no_valid_recipe");
 
         private final String translationKey;
 

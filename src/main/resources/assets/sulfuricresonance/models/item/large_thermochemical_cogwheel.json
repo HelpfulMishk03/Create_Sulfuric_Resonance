@@ -1,3 +1,22 @@
 {
-  "parent": "sulfuricresonance:block/large_thermochemical_cogwheel"
+  "parent": "sulfuricresonance:block/large_thermochemical_cogwheel",
+  "display": {
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
 }

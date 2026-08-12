@@ -95,7 +95,7 @@ side = "BOTH"
 [[dependencies."sulfuricresonance"]]
 modId = "jei"
 type = "optional"
-versionRange = "[19.39.0.387,)"
+versionRange = "[19.42.0.387,)"
 ordering = "AFTER"
 side = "CLIENT"
 

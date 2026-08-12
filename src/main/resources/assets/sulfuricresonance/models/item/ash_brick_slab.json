@@ -1,3 +1,22 @@
 {
-  "parent": "sulfuricresonance:block/ash_brick_slab"
+  "parent": "sulfuricresonance:block/ash_brick_slab",
+  "display": {
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
 }

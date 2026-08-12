@@ -1,3 +1,22 @@
 {
-  "parent": "sulfuricresonance:block/carbon_deposit_block"
+  "parent": "sulfuricresonance:block/carbon_deposit_block",
+  "display": {
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
 }

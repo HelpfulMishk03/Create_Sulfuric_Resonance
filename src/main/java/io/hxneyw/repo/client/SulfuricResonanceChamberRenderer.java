@@ -109,10 +109,13 @@ public class SulfuricResonanceChamberRenderer
                 SulfuricResonanceChamberBlock.heatAndRotationSide(state);
         Direction.Axis shaftAxis = shaftSide.getAxis();
 
+        // Sample the chamber's own kinetic phase. The previous code sampled
+        // a neighbouring block position even though the rotating partial is
+        // part of this block entity.
         float angleRadians =
                 KineticBlockEntityRenderer.getAngleForBe(
                         chamber,
-                        chamber.getBlockPos().relative(shaftSide),
+                        chamber.getBlockPos(),
                         shaftAxis
                 );
 
@@ -279,12 +282,13 @@ public class SulfuricResonanceChamberRenderer
 
         poseStack.pushPose();
         poseStack.translate(0.5D, y, 0.5D);
-        poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
         poseStack.scale(scale, scale, scale);
 
         itemRenderer.render(
                 stack,
-                ItemDisplayContext.FIXED,
+                ItemDisplayContext.NONE,
                 false,
                 poseStack,
                 buffer,

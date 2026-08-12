@@ -3,6 +3,7 @@ package io.hxneyw.repo.content.blocks;
 import io.hxneyw.repo.content.registry.AllModEffects;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,8 +23,9 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 public class SulfuricAcidBlock extends LiquidBlock {
-   private static final Map<BlockPos, Long> LAST_REACTION_TIME = new HashMap<>();
+   private static final Map<ServerLevel, ReactionCache> REACTION_CACHES = new WeakHashMap<>();
    private static final int REACTION_COOLDOWN_TICKS = 10;
+   private static final int CACHE_RETENTION_TICKS = 200;
 
    public SulfuricAcidBlock(FlowingFluid fluid, Properties properties) {
       super(fluid, properties);
@@ -32,16 +34,18 @@ public class SulfuricAcidBlock extends LiquidBlock {
    public void neighborChanged(@NotNull BlockState state, Level level, @NotNull BlockPos pos, @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving) {
       if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
          long currentTime = level.getGameTime();
-         long lastReaction = LAST_REACTION_TIME.getOrDefault(pos, 0L);
-         if (currentTime - lastReaction < REACTION_COOLDOWN_TICKS) {
+         ReactionCache cache = REACTION_CACHES.computeIfAbsent(serverLevel, ignored -> new ReactionCache());
+         cache.cleanIfNeeded(currentTime);
+
+         Long lastReaction = cache.reactionTimes.get(pos);
+         if (lastReaction != null
+                 && currentTime >= lastReaction
+                 && currentTime - lastReaction < REACTION_COOLDOWN_TICKS) {
             super.neighborChanged(state, level, pos, block, fromPos, isMoving);
             return;
          }
 
-         LAST_REACTION_TIME.put(pos, currentTime);
-         if (currentTime % 200L == 0L) {
-            LAST_REACTION_TIME.entrySet().removeIf(entry -> currentTime - entry.getValue() > 200L);
-         }
+         cache.reactionTimes.put(pos.immutable(), currentTime);
 
          for (Direction direction : Direction.values()) {
             BlockPos neighborPos = pos.relative(direction);
@@ -83,5 +87,24 @@ public class SulfuricAcidBlock extends LiquidBlock {
       }
 
       super.entityInside(state, level, pos, entity);
+   }
+
+   private static final class ReactionCache {
+      private final Map<BlockPos, Long> reactionTimes = new HashMap<>();
+      private long lastCleanupTime = Long.MIN_VALUE;
+
+      private void cleanIfNeeded(long currentTime) {
+         if (lastCleanupTime != Long.MIN_VALUE
+                 && currentTime >= lastCleanupTime
+                 && currentTime - lastCleanupTime < CACHE_RETENTION_TICKS) {
+            return;
+         }
+
+         reactionTimes.entrySet().removeIf(entry ->
+                 currentTime < entry.getValue()
+                         || currentTime - entry.getValue() > CACHE_RETENTION_TICKS
+         );
+         lastCleanupTime = currentTime;
+      }
    }
 }

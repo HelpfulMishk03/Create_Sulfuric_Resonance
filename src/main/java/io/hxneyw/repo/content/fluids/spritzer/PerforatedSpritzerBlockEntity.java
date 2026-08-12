@@ -43,7 +43,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    private static final int SYNC_RATE = 8;
    protected int syncCooldown;
    protected boolean queuedSync;
-   private static final int SPRAY_START_THRESHOLD = 2800;
+   private static final int SPRAY_START_THRESHOLD = 3500;
    private static final int FLUID_PER_SPRAY = 25;
    private static final int SPRAY_INTERVAL = 10;
    private int sprayTimer = 0;
@@ -215,7 +215,8 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          boolean wasSpraying = this.spraying;
          int currentAmount = this.tankInventory.getFluidAmount();
          boolean shouldSpray =
-                 currentAmount >= SPRAY_START_THRESHOLD
+                 (this.spraying || currentAmount >= SPRAY_START_THRESHOLD)
+                         && currentAmount >= FLUID_PER_SPRAY
                          && this.canSprayFluid();
          if (shouldSpray) {
             this.spraying = true;
@@ -308,41 +309,33 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    private void spawnSprayParticles(ServerLevel serverLevel) {
       FluidStack fluid = this.tankInventory.getFluid();
       if (!fluid.isEmpty()) {
-         double[][] holePositions = new double[][]{
-            {0.25, 0.25},
-            {0.4375, 0.25},
-            {0.625, 0.25},
-            {0.8125, 0.25},
-            {0.25, 0.375},
-            {0.4375, 0.375},
-            {0.625, 0.375},
-            {0.8125, 0.375},
-            {0.25, 0.5},
-            {0.4375, 0.5},
-            {0.625, 0.5},
-            {0.8125, 0.5},
-            {0.25, 0.625},
-            {0.4375, 0.625},
-            {0.625, 0.625},
-            {0.8125, 0.625},
-            {0.25, 0.75},
-            {0.4375, 0.75},
-            {0.625, 0.75},
-            {0.8125, 0.75}
+         // These are the exact X/Z centres of the 5x5 `shower_interface`
+         // perforations in perforated_spritzer.json.
+         double[] holeCenters = new double[]{
+            3.5D / 16.0D,
+            5.5D / 16.0D,
+            8.0D / 16.0D,
+            10.5D / 16.0D,
+            12.5D / 16.0D
          };
 
-         for (double[] hole : holePositions) {
-            double x = this.worldPosition.getX() + hole[0];
-            double y = this.worldPosition.getY() + 0.05;
-            double z = this.worldPosition.getZ() + hole[1];
-            if (fluid.getFluid() == Fluids.WATER) {
-               serverLevel.sendParticles(ParticleTypes.FALLING_WATER, x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
-            } else if (fluid.getFluid() == AllModFluids.SULFURIC_ACID.get()) {
-               serverLevel.sendParticles(ModParticles.ACID_DRIP.get(), x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
-            } else if (fluid.getFluid() == Fluids.LAVA || fluid.getFluid() == Fluids.FLOWING_LAVA) {
-               serverLevel.sendParticles(ParticleTypes.FALLING_LAVA, x, y, z, 1, 0.0, -0.05, 0.0, 0.0);
-               if (serverLevel.random.nextFloat() < 0.3F) {
-                  serverLevel.sendParticles(ParticleTypes.DRIPPING_LAVA, x, y, z, 1, 0.0, -0.05, 0.0, 0.0);
+         // Start immediately below the underside perforation plane instead
+         // of almost a full model pixel below it.
+         double y = this.worldPosition.getY() + 1.5D / 16.0D;
+
+         for (double xOffset : holeCenters) {
+            for (double zOffset : holeCenters) {
+               double x = this.worldPosition.getX() + xOffset;
+               double z = this.worldPosition.getZ() + zOffset;
+               if (fluid.getFluid() == Fluids.WATER) {
+                  serverLevel.sendParticles(ParticleTypes.FALLING_WATER, x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
+               } else if (fluid.getFluid() == AllModFluids.SULFURIC_ACID.get()) {
+                  serverLevel.sendParticles(ModParticles.ACID_DRIP.get(), x, y, z, 1, 0.0, -0.1, 0.0, 0.0);
+               } else if (fluid.getFluid() == Fluids.LAVA || fluid.getFluid() == Fluids.FLOWING_LAVA) {
+                  serverLevel.sendParticles(ParticleTypes.FALLING_LAVA, x, y, z, 1, 0.0, -0.05, 0.0, 0.0);
+                  if (serverLevel.random.nextFloat() < 0.3F) {
+                     serverLevel.sendParticles(ParticleTypes.DRIPPING_LAVA, x, y, z, 1, 0.0, -0.05, 0.0, 0.0);
+                  }
                }
             }
          }

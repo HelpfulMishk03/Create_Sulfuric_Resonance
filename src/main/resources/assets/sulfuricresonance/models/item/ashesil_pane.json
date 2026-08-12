@@ -3,5 +3,24 @@
   "render_type": "minecraft:translucent",
   "textures": {
     "layer0": "sulfuricresonance:block/ashesil"
+  },
+  "display": {
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    }
   }
 }

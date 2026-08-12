@@ -1,3 +1,22 @@
 {
-  "parent": "sulfuricresonance:block/tempered_ashesil"
+  "parent": "sulfuricresonance:block/tempered_ashesil",
+  "display": {
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
 }

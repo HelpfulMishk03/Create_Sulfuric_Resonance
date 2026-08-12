@@ -1,3 +1,22 @@
 {
-  "parent": "sulfuricresonance:block/thermochemical_link_drive_item"
+  "parent": "sulfuricresonance:block/thermochemical_link_drive_item",
+  "display": {
+    "ground": {
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  }
 }

@@ -192,7 +192,7 @@ public class AllBlockEntities {
 
    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
       event.registerBlockEntity(FluidHandler.BLOCK, PERFORATED_SPRITZER.get(), (blockEntity, side) -> {
-         if (side != Direction.UP) {
+         if (side != null && side != Direction.UP) {
             return null;
          } else {
             if (blockEntity.fluidCapability == null) {

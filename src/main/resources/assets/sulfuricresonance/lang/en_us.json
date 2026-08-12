@@ -463,6 +463,7 @@
   "tooltip.sulfuricresonance.sulfuric_resonance_chamber.heat_detailed": "Heat: %s (%s°C)",
   "tooltip.sulfuricresonance.sulfuric_resonance_chamber.progress": "Progress: %s%%",
   "gui.sulfuricresonance.chamber.status.idle": "Idle",
+  "gui.sulfuricresonance.chamber.status.no_valid_recipe": "No valid recipe",
   "gui.sulfuricresonance.chamber.status.missing_ingredients": "Missing ingredients",
   "gui.sulfuricresonance.chamber.status.missing_acid": "Insufficient sulfuric acid",
   "gui.sulfuricresonance.chamber.status.insufficient_heat": "Insufficient heat",

@@ -462,6 +462,7 @@
   "tooltip.sulfuricresonance.sulfuric_resonance_chamber.heat_detailed": "Hitze: %s (%s°C)",
   "tooltip.sulfuricresonance.sulfuric_resonance_chamber.progress": "Fortschritt: %s%%",
   "gui.sulfuricresonance.chamber.status.idle": "Leerlauf",
+  "gui.sulfuricresonance.chamber.status.no_valid_recipe": "Kein gültiges Rezept",
   "gui.sulfuricresonance.chamber.status.missing_ingredients": "Zutaten fehlen",
   "gui.sulfuricresonance.chamber.status.missing_acid": "Nicht genug Schwefelsäure",
   "gui.sulfuricresonance.chamber.status.insufficient_heat": "Nicht genug Hitze",
