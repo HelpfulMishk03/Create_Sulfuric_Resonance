@@ -3,8 +3,11 @@
   "substrate": {
     "item": "minecraft:copper_ingot"
   },
+  "catalyst": {
+    "item": "sulfuricresonance:activated_sulfur_catalyst"
+  },
   "result": {
-    "id": "sulfuricresonance:resonant_copper",
+    "id": "sulfuricresonance:resonant_copper_ingot",
     "count": 1
   },
   "acid_amount": 250,

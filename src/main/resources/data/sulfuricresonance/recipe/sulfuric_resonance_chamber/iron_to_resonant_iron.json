@@ -1,0 +1,17 @@
+{
+  "type": "sulfuricresonance:sulfuric_resonance_chamber",
+  "substrate": {
+    "item": "minecraft:iron_ingot"
+  },
+  "catalyst": {
+    "item": "sulfuricresonance:activated_sulfur_catalyst"
+  },
+  "result": {
+    "id": "sulfuricresonance:resonant_iron_ingot",
+    "count": 1
+  },
+  "acid_amount": 250,
+  "minimum_heat": "superheated",
+  "minimum_speed": 32,
+  "processing_time": 350
+}

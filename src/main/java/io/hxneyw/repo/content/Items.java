@@ -43,6 +43,7 @@ public class Items {
    public static final DeferredItem<Item> NETHERWOOD_DUST = ITEMS.register("netherwood_dust", () -> new NetherwoodDustItem(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> SPENT_ASH = ITEMS.register("spent_ash", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> EMBER_CATALYST = ITEMS.register("ember_catalyst", () -> new EmberCatalystItem(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> ACTIVATED_SULFUR_CATALYST = ITEMS.register("activated_sulfur_catalyst", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> EMBERSOL = ITEMS.register("embersol", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> BLAZE_SHARD = ITEMS.register("blaze_shard", () -> new Item(new Properties().stacksTo(64).fireResistant()));
    public static final DeferredItem<Item> PYROCLASTIC_POWDER = ITEMS.register("pyroclastic_powder", () -> new Item(new Properties().stacksTo(64).fireResistant()));
@@ -57,7 +58,6 @@ public class Items {
    public static final DeferredItem<CogwheelBlockItem> LARGE_THERMOCHEMICAL_COGWHEEL_ITEM = ITEMS.register("large_thermochemical_cogwheel", () -> new CogwheelBlockItem(AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFUR_BURNER_ITEM = ITEMS.register("sulfur_burner", () -> new BlockItem(AllModBlocks.SULFUR_BURNER.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFURIC_RESONANCE_CHAMBER_ITEM = ITEMS.register("sulfuric_resonance_chamber", () -> new BlockItem(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get(), new Properties()));
-   public static final DeferredItem<Item> RESONANT_COPPER = ITEMS.register("resonant_copper", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));
    public static final DeferredItem<Item> WET_ASH_CERAMIC = ITEMS.register("wet_ash_ceramic", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> UNFIRED_ASH_BRICK = ITEMS.register("unfired_ash_brick", () -> new Item(new Properties().stacksTo(64)));
@@ -69,6 +69,12 @@ public class Items {
    public static final DeferredItem<Item> UNFINISHED_FILAMENT = ITEMS.register("unfinished_filament", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> CINDER_FILAMENT = ITEMS.register("cinder_filament", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> ACID_ETCHED_COPPER_SHEET = ITEMS.register("acid_etched_copper_sheet", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> RESONANT_COPPER_INGOT = ITEMS.register("resonant_copper_ingot", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> RESONANT_IRON_INGOT = ITEMS.register("resonant_iron_ingot", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> RESONANT_GOLD_INGOT = ITEMS.register("resonant_gold_ingot", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> RESONANT_COPPER_SHEET = ITEMS.register("resonant_copper_sheet", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> RESONANT_IRON_SHEET = ITEMS.register("resonant_iron_sheet", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> RESONANT_GOLD_SHEET = ITEMS.register("resonant_gold_sheet", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_THERMOCHEMICAL_CASING = ITEMS.register("incomplete_thermochemical_casing", () -> new SequencedAssemblyItem(new Properties()));
    public static final DeferredItem<Item> THERMOCHEMICAL_CASING = ITEMS.register("thermochemical_casing", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));

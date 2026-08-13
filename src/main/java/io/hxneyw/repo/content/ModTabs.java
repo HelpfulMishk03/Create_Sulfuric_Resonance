@@ -49,6 +49,7 @@ public class ModTabs {
                   output.accept(Items.SULFURIC_ACID_BUCKET.get());
 
                   output.accept(Items.EMBER_CATALYST.get());
+                  output.accept(Items.ACTIVATED_SULFUR_CATALYST.get());
                   output.accept(Items.BRIMSTONE_CORE.get());
                   output.accept(Items.SULFUROUS_FUEL_COMPOUND.get());
                   output.accept(Items.SULFUR_FUEL_BRIQUETTE.get());
@@ -84,7 +85,12 @@ public class ModTabs {
                   output.accept(Items.CINDER_FILAMENT.get());
 
                   output.accept(Items.ACID_ETCHED_COPPER_SHEET.get());
-                  output.accept(Items.RESONANT_COPPER.get());
+                  output.accept(Items.RESONANT_COPPER_INGOT.get());
+                  output.accept(Items.RESONANT_IRON_INGOT.get());
+                  output.accept(Items.RESONANT_GOLD_INGOT.get());
+                  output.accept(Items.RESONANT_COPPER_SHEET.get());
+                  output.accept(Items.RESONANT_IRON_SHEET.get());
+                  output.accept(Items.RESONANT_GOLD_SHEET.get());
                   output.accept(Items.THERMOCHEMICAL_CASING.get());
 
                   output.accept(Items.IMPELLER_BLADE.get());

@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "sulfuricresonance:item/resonant_copper"
+    "layer0": "sulfuricresonance:item/resonant_iron_ingot"
   },
   "display": {
     "ground": {
