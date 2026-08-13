@@ -1,5 +1,9 @@
 {
-  "parent": "sulfuricresonance:block/ashesil",
+  "parent": "minecraft:block/cube_all",
+  "render_type": "minecraft:translucent",
+  "textures": {
+    "all": "sulfuricresonance:block/ashesil"
+  },
   "display": {
     "ground": {
       "rotation": [
@@ -9,13 +13,13 @@
       ],
       "translation": [
         0,
-        3,
+        2,
         0
       ],
       "scale": [
-        1,
-        1,
-        1
+        0.25,
+        0.25,
+        0.25
       ]
     }
   }

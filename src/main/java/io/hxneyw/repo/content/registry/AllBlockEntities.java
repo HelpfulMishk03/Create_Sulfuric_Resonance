@@ -234,7 +234,7 @@ public class AllBlockEntities {
        event.registerBlockEntity(
                Capabilities.ItemHandler.BLOCK,
                SULFURIC_RESONANCE_CHAMBER.get(),
-               (blockEntity, side) -> blockEntity.getItemCapability()
+               SulfuricResonanceChamberBlockEntity::getItemCapability
        );
 
        event.registerBlockEntity(

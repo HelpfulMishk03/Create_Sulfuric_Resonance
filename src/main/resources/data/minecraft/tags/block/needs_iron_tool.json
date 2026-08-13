@@ -2,7 +2,6 @@
   "replace": false,
   "values": [
     "sulfuricresonance:molten_rotor_furnace",
-    "sulfuricresonance:thermochemical_conduit",
     "sulfuricresonance:sulfur_burner",
     "sulfuricresonance:sulfuric_resonance_chamber"
   ]

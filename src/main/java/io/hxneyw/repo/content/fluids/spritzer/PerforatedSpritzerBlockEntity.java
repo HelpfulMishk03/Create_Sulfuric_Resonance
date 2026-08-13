@@ -309,8 +309,8 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
    private void spawnSprayParticles(ServerLevel serverLevel) {
       FluidStack fluid = this.tankInventory.getFluid();
       if (!fluid.isEmpty()) {
-         // These are the exact X/Z centres of the 5x5 `shower_interface`
-         // perforations in perforated_spritzer.json.
+         
+         
          double[] holeCenters = new double[]{
             3.5D / 16.0D,
             5.5D / 16.0D,
@@ -319,8 +319,8 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
             12.5D / 16.0D
          };
 
-         // Start immediately below the underside perforation plane instead
-         // of almost a full model pixel below it.
+         
+         
          double y = this.worldPosition.getY() + 1.5D / 16.0D;
 
          for (double xOffset : holeCenters) {

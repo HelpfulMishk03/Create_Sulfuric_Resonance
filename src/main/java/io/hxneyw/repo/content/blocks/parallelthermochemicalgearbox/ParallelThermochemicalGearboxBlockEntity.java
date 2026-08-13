@@ -12,14 +12,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 
-/**
- * Parallel variant of the thermochemical gearbox.
- *
- * Extending DirectionalShaftHalvesBlockEntity instead of GearboxBlockEntity is
- * intentional: Create only applies its gearbox sign changes to actual
- * GearboxBlockEntity instances. This leaves every connected shaft face at a
- * 1:1 kinetic modifier while retaining normal source/network bookkeeping.
- */
+
+
+
+
+
+
+
+
 public class ParallelThermochemicalGearboxBlockEntity
         extends DirectionalShaftHalvesBlockEntity {
 

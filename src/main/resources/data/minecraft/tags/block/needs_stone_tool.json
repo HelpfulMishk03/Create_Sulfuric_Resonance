@@ -2,10 +2,10 @@
   "replace": false,
   "values": [
     "sulfuricresonance:sulfur_block",
-    "sulfuricresonance:rubber_padding",
     "sulfuricresonance:perforated_spritzer",
     "sulfuricresonance:living_ember_lamp",
     "sulfuricresonance:carbon_deposit_block",
+    "sulfuricresonance:thermochemical_conduit",
     "sulfuricresonance:infernal_carbon_deposit_block",
     "sulfuricresonance:living_ember_lamp"
   ]

@@ -13,10 +13,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Six-way thermochemical junction that keeps kinetic propagation at 1:1
- * without applying Create's GearboxBlockEntity direction-reversal rules.
- */
+
+
+
+
 public class ParallelThermochemicalGearboxBlock
         extends KineticBlock
         implements IBE<ParallelThermochemicalGearboxBlockEntity>,
@@ -44,11 +44,11 @@ public class ParallelThermochemicalGearboxBlock
         return false;
     }
 
-    /**
-     * The block exposes shafts on every face. The nominal axis only matters to
-     * generic Create APIs that require one axis value; direct shaft connection
-     * checks are governed by hasShaftTowards().
-     */
+    
+
+
+
+
     @Override
     public Axis getRotationAxis(BlockState state) {
         return Axis.Y;

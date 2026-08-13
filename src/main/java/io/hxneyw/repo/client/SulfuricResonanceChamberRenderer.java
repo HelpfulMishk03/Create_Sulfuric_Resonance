@@ -188,9 +188,9 @@ public class SulfuricResonanceChamberRenderer
                 SulfuricResonanceChamberBlock.heatAndRotationSide(state);
         Direction.Axis shaftAxis = shaftSide.getAxis();
 
-        // Sample the chamber's own kinetic phase. The previous code sampled
-        // a neighbouring block position even though the rotating partial is
-        // part of this block entity.
+        
+        
+        
         float angleRadians =
                 KineticBlockEntityRenderer.getAngleForBe(
                         chamber,
@@ -345,17 +345,17 @@ public class SulfuricResonanceChamberRenderer
         Direction facing = chamber.getBlockState()
                 .getValue(SulfuricResonanceChamberBlock.FACING);
 
-        /*
-         * The ItemRenderer/FIXED path is valid in the Sulfur Burner, but the
-         * same item-sheet render path is disappearing behind the Chamber's
-         * custom translucent/partial-model passes.  The v11 atlas quad proved
-         * that the client stack and platform coordinates are correct.
-         *
-         * Render the ACTUAL baked item model here instead: generated-item
-         * models already contain their front, back and extruded edge quads.
-         * Sending those quads through the block cutout buffer keeps the full
-         * 3D item geometry while avoiding the item-sheet render-type conflict.
-         */
+        
+
+
+
+
+
+
+
+
+
+
         poseStack.pushPose();
 
         poseStack.translate(
@@ -376,8 +376,8 @@ public class SulfuricResonanceChamberRenderer
                 ITEM_SCALE
         );
 
-        // Baked item quads use model-space coordinates in the 0..1 cube.
-        // Center that cube on the platform exactly as ItemRenderer does.
+        
+        
         poseStack.translate(-0.5D, -0.5D, -0.5D);
 
         renderItemBakedModelCutout(

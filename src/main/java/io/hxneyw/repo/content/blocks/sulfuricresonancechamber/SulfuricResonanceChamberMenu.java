@@ -73,19 +73,19 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
                 SulfuricResonanceChamberBlockEntity.MENU_DATA_COUNT
         );
 
-        addSlot(new Slot(
+        addSlot(createInputSlot(
                 chamberInventory,
                 SulfuricResonanceChamberBlockEntity.INPUT_1,
                 22,
                 50
         ));
-        addSlot(new Slot(
+        addSlot(createInputSlot(
                 chamberInventory,
                 SulfuricResonanceChamberBlockEntity.INPUT_2,
                 46,
                 50
         ));
-        addSlot(new Slot(
+        addSlot(createInputSlot(
                 chamberInventory,
                 SulfuricResonanceChamberBlockEntity.INPUT_3,
                 70,
@@ -124,6 +124,23 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         }
 
         addDataSlots(data);
+    }
+
+    private Slot createInputSlot(
+            Container chamberInventory,
+            int slot,
+            int x,
+            int y
+    ) {
+        return new Slot(chamberInventory, slot, x, y) {
+            @Override
+            public boolean mayPlace(@NotNull ItemStack stack) {
+                if (data.get(3) != 0 || data.get(0) > 0) {
+                    return false;
+                }
+                return super.mayPlace(stack);
+            }
+        };
     }
 
     @Override

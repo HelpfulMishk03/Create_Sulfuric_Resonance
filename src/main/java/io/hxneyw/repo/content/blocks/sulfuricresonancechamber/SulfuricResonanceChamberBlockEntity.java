@@ -10,10 +10,12 @@ import io.hxneyw.repo.content.registry.AllModFluids;
 import io.hxneyw.repo.content.registry.ModParticles;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -72,7 +74,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 @NotNull ItemStack stack,
                 boolean simulate
         ) {
-            if (slot < INPUT_1
+            if (isInputLocked()
+                    || slot < INPUT_1
                     || slot > INPUT_3
                     || stack.isEmpty()
                     || !isItemValid(slot, stack)) {
@@ -139,7 +142,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
 
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-            if (slot < INPUT_1 || slot > INPUT_3 || stack.isEmpty()) {
+            if (isInputLocked()
+                    || slot < INPUT_1
+                    || slot > INPUT_3
+                    || stack.isEmpty()) {
                 return false;
             }
             return canInsertIntoInput(slot, stack);
@@ -174,6 +180,11 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         if (slot < 0 || slot >= SLOT_COUNT || amount <= 0) {
             return ItemStack.EMPTY;
         }
+
+        if (isInputSlot(slot) && isInputLocked()) {
+            abortProcessingForInputChange();
+        }
+
         ItemStack removed = ContainerHelper.removeItem(inventory, slot, amount);
         if (!removed.isEmpty()) {
             onContentsChanged();
@@ -186,6 +197,11 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         if (slot < 0 || slot >= SLOT_COUNT) {
             return ItemStack.EMPTY;
         }
+
+        if (isInputSlot(slot) && isInputLocked()) {
+            abortProcessingForInputChange();
+        }
+
         ItemStack removed = ContainerHelper.takeItem(inventory, slot);
         if (!removed.isEmpty()) {
             setChanged();
@@ -198,12 +214,42 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         if (slot < 0 || slot >= SLOT_COUNT) {
             return;
         }
+
+        if (isInputSlot(slot) && isInputLocked()) {
+            ItemStack current = inventory.get(slot);
+
+            // While a reaction is sealed, the GUI may remove material but may
+            // never replace it, swap it, or increase the amount in the slot.
+            boolean sameItem = !current.isEmpty()
+                    && !stack.isEmpty()
+                    && ItemStack.isSameItemSameComponents(current, stack);
+            boolean removal = stack.isEmpty()
+                    || sameItem && stack.getCount() < current.getCount();
+            boolean unchanged = sameItem
+                    && stack.getCount() == current.getCount();
+
+            if (!removal && !unchanged) {
+                return;
+            }
+
+            if (removal) {
+                abortProcessingForInputChange();
+            }
+        }
+
         ItemStack stored = stack.copy();
         if (stored.getCount() > 64) {
             stored.setCount(64);
         }
         inventory.set(slot, stored);
         onContentsChanged();
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, @NotNull ItemStack stack) {
+        return isInputSlot(slot)
+                && !isInputLocked()
+                && canInsertIntoInput(slot, stack);
     }
 
     @Override
@@ -283,6 +329,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private int processingTime;
     private boolean ready;
     private boolean processing;
+    private @Nullable ResourceLocation activeRecipeId;
     private ChamberStatus status = ChamberStatus.IDLE;
 
     private static final float RING_DEGREES_PER_TICK = 3.0F;
@@ -354,12 +401,19 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         ChamberStatus previousStatus = status;
 
         RecipeHolder<SulfuricResonanceChamberRecipe> inputHolder =
-                findInputRecipe();
+                getLockedOrInputRecipe();
+
+        if (processing && inputHolder == null) {
+            // A sealed recipe disappeared or its item batch was altered. Never
+            // silently switch to another recipe in the middle of a reaction.
+            clearProcessingState();
+        }
 
         if (inputHolder == null) {
             processingTime = 0;
             ready = false;
             processing = false;
+            activeRecipeId = null;
             if (!hasAnyInput()) {
                 status = ChamberStatus.IDLE;
             } else if (hasPotentialInputRecipe()) {
@@ -375,25 +429,29 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             ready = status == ChamberStatus.READY;
 
             if (ready) {
-                processing = true;
+                if (!processing) {
+                    processing = true;
+                    activeRecipeId = inputHolder.id();
+                }
+
                 status = ChamberStatus.PROCESSING;
                 processingTicks++;
 
                 if (processingTicks >= recipe.processingTime()) {
                     if (completeRecipe(recipe)) {
-                        processingTicks = 0;
-                        processing = false;
-                        ready = false;
+                        clearProcessingState();
+                        status = ChamberStatus.IDLE;
                     } else {
-
-                        processing = false;
-                        ready = false;
-                        processingTicks = 0;
+                        clearProcessingState();
                     }
                 }
             } else {
-                processing = false;
-                resetInterruptedProgress();
+                if (processing) {
+                    clearProcessingState();
+                } else {
+                    resetInterruptedProgress();
+                    activeRecipeId = null;
+                }
             }
         }
 
@@ -470,6 +528,53 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                         inventory.get(INPUT_2),
                         inventory.get(INPUT_3)
                 ))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private @Nullable RecipeHolder<SulfuricResonanceChamberRecipe>
+    getLockedOrInputRecipe() {
+        if (!processing) {
+            return findInputRecipe();
+        }
+
+        RecipeHolder<SulfuricResonanceChamberRecipe> locked =
+                findActiveRecipe();
+        if (locked != null
+                && locked.value().matchesInputs(
+                inventory.get(INPUT_1),
+                inventory.get(INPUT_2),
+                inventory.get(INPUT_3)
+        )) {
+            return locked;
+        }
+
+        // Compatibility for worlds saved before active recipe locking existed:
+        // recover the recipe once, then keep it fixed for the rest of the run.
+        if (activeRecipeId == null) {
+            RecipeHolder<SulfuricResonanceChamberRecipe> recovered =
+                    findInputRecipe();
+            if (recovered != null) {
+                activeRecipeId = recovered.id();
+                return recovered;
+            }
+        }
+
+        return null;
+    }
+
+    private @Nullable RecipeHolder<SulfuricResonanceChamberRecipe>
+    findActiveRecipe() {
+        if (level == null || activeRecipeId == null) {
+            return null;
+        }
+
+        return level.getRecipeManager()
+                .getAllRecipesFor(
+                        SulfuricResonanceChamberRecipeRegistry.TYPE.get()
+                )
+                .stream()
+                .filter(holder -> holder.id().equals(activeRecipeId))
                 .findFirst()
                 .orElse(null);
     }
@@ -622,9 +727,37 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 ));
     }
 
-    private boolean canInsertIntoInput(int slot, ItemStack stack) {
+    public boolean canInsertIntoInput(int slot, ItemStack stack) {
+        if (isInputLocked()
+                || !isInputSlot(slot)
+                || stack.isEmpty()) {
+            return false;
+        }
+
         if (level == null) {
-            return slot >= INPUT_1 && slot <= INPUT_3;
+            return true;
+        }
+
+        ItemStack current = inventory.get(slot);
+        if (!current.isEmpty()
+                && !ItemStack.isSameItemSameComponents(current, stack)) {
+            return false;
+        }
+
+        ItemStack test1 = inventory.get(INPUT_1).copy();
+        ItemStack test2 = inventory.get(INPUT_2).copy();
+        ItemStack test3 = inventory.get(INPUT_3).copy();
+        ItemStack candidate = current.isEmpty()
+                ? stack.copyWithCount(1)
+                : current.copy();
+
+        switch (slot) {
+            case INPUT_1 -> test1 = candidate;
+            case INPUT_2 -> test2 = candidate;
+            case INPUT_3 -> test3 = candidate;
+            default -> {
+                return false;
+            }
         }
 
         List<RecipeHolder<SulfuricResonanceChamberRecipe>> recipes =
@@ -634,11 +767,45 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                         );
 
         if (recipes.isEmpty()) {
-            return true;
+            return false;
         }
 
+        ItemStack finalTest1 = test1;
+        ItemStack finalTest2 = test2;
+        ItemStack finalTest3 = test3;
         return recipes.stream()
-                .anyMatch(holder -> holder.value().acceptsInput(slot, stack));
+                .anyMatch(holder -> holder.value().matchesPresentInputs(
+                        finalTest1,
+                        finalTest2,
+                        finalTest3
+                ));
+    }
+
+    private static boolean isInputSlot(int slot) {
+        return slot >= INPUT_1 && slot <= INPUT_3;
+    }
+
+    public boolean isInputLocked() {
+        return processing || processingTicks > 0;
+    }
+
+    private void abortProcessingForInputChange() {
+        if (!isInputLocked()) {
+            return;
+        }
+
+        clearProcessingState();
+        status = ChamberStatus.MISSING_INGREDIENTS;
+        onContentsChanged();
+    }
+
+    private void clearProcessingState() {
+        processingTicks = 0;
+        processingTime = 0;
+        processing = false;
+        ready = false;
+        activeRecipeId = null;
+        setChanged();
     }
 
     private void onContentsChanged() {
@@ -652,12 +819,25 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return itemCapability;
     }
 
+    public @Nullable IItemHandler getItemCapability(
+            @Nullable Direction side
+    ) {
+        if (side == null) {
+            return itemCapability;
+        }
+
+        return SulfuricResonanceChamberBlock.isItemAutomationSide(
+                getBlockState(),
+                side
+        ) ? itemCapability : null;
+    }
+
     public ContainerData getMenuData() {
         return menuData;
     }
 
     public @Nullable IFluidHandler getFluidCapability(
-            @Nullable net.minecraft.core.Direction side
+            @Nullable Direction side
     ) {
         if (side == null) {
             return fluidCapability;
@@ -690,7 +870,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 "block.sulfuricresonance.sulfuric_resonance_chamber"
         ));
 
-        RecipeHolder<SulfuricResonanceChamberRecipe> recipe = findInputRecipe();
+        RecipeHolder<SulfuricResonanceChamberRecipe> recipe =
+                getLockedOrInputRecipe();
         if (recipe != null) {
             tooltip.add(Component.translatable(
                     "tooltip.sulfuricresonance.sulfuric_resonance_chamber.recipe",
@@ -754,6 +935,11 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         tag.putBoolean("Ready", ready);
         tag.putBoolean("Processing", processing);
         tag.putInt("ChamberStatus", status.ordinal());
+        if (activeRecipeId != null) {
+            tag.putString("ActiveRecipe", activeRecipeId.toString());
+        } else {
+            tag.remove("ActiveRecipe");
+        }
 
     }
 
@@ -789,6 +975,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         ready = tag.getBoolean("Ready");
         processing = tag.getBoolean("Processing");
         status = ChamberStatus.fromOrdinal(tag.getInt("ChamberStatus"));
+        String activeRecipe = tag.getString("ActiveRecipe");
+        activeRecipeId = activeRecipe.isBlank()
+                ? null
+                : ResourceLocation.tryParse(activeRecipe);
 
     }
 

@@ -144,10 +144,10 @@ public final class CombustionBeltConnectorPreview {
 
         Vec3 actualDifference = end.subtract(start);
 
-        /*
-         * Remove movement along the shaft axis. Belts travel
-         * perpendicular to the shafts.
-         */
+        
+
+
+
         end = end.subtract(
                 shaftAxis.choose(
                         actualDifference.x,

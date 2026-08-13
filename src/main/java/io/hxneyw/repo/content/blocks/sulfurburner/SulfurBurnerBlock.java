@@ -39,15 +39,15 @@ public class SulfurBurnerBlock
     public static final MapCodec<SulfurBurnerBlock> CODEC =
             simpleCodec(SulfurBurnerBlock::new);
 
-    /*
-     * Critical:
-     * use Create's exact heat property.
-     */
+    
+
+
+
     public static final EnumProperty<HeatLevel> HEAT_LEVEL =
             BlazeBurnerBlock.HEAT_LEVEL;
 
     public SulfurBurnerBlock(
-            BlockBehaviour.Properties properties
+            Properties properties
     ) {
         super(properties);
 

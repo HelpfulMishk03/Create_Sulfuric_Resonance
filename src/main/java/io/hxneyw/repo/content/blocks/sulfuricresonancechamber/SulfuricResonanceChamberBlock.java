@@ -159,6 +159,17 @@ public class SulfuricResonanceChamberBlock
         return state.getValue(FACING).getCounterClockWise();
     }
 
+    public static Direction itemBackSide(BlockState state) {
+        return state.getValue(FACING).getOpposite();
+    }
+
+    public static boolean isItemAutomationSide(
+            BlockState state,
+            @Nullable Direction side
+    ) {
+        return side == Direction.UP || side == itemBackSide(state);
+    }
+
     @Override
     protected void createBlockStateDefinition(
             StateDefinition.Builder<

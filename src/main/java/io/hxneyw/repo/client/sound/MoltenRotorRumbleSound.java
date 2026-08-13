@@ -83,7 +83,7 @@ public final class MoltenRotorRumbleSound
         float targetVolume = targetVolume(tier);
         float targetPitch = targetPitch(tier);
 
-        // Start gently and shut down slightly faster than the fade-in.
+        
         float volumeSmoothing = targetVolume > this.volume ? 0.06F : 0.12F;
         this.volume = Mth.lerp(volumeSmoothing, this.volume, targetVolume);
         this.pitch = Mth.lerp(0.05F, this.pitch, targetPitch);

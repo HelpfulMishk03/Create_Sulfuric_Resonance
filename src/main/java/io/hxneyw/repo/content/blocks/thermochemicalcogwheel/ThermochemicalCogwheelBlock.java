@@ -24,9 +24,9 @@ public class ThermochemicalCogwheelBlock extends CogWheelBlock
             BlockState state,
             Direction face
     ) {
-        // The resolver verifies the real Create kinetic connection.
-        // Returning false here allows both axle connections and cog-to-cog
-        // tooth meshing to participate in the thermochemical route.
+        
+        
+        
         return false;
     }
 
