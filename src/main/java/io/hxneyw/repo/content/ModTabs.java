@@ -31,6 +31,7 @@ public class ModTabs {
                   output.accept(Items.THERMOCHEMICAL_COGWHEEL_ITEM.get());
                   output.accept(Items.LARGE_THERMOCHEMICAL_COGWHEEL_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_GEARBOX_ITEM.get());
+                  output.accept(Items.PARALLEL_THERMOCHEMICAL_GEARBOX_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_LINK_DRIVE_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_CONDUIT_ITEM.get());
                   output.accept(Items.COMBUSTION_BELT_CONNECTOR.get());

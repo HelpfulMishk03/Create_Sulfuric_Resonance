@@ -16,6 +16,7 @@ import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlock;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
@@ -325,6 +326,20 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
             BLOCKS.register(
                     "thermochemical_gearbox",
                     () -> new ThermochemicalGearboxBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ParallelThermochemicalGearboxBlock>
+            PARALLEL_THERMOCHEMICAL_GEARBOX =
+            BLOCKS.register(
+                    "parallel_thermochemical_gearbox",
+                    () -> new ParallelThermochemicalGearboxBlock(
                             Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(3.5F, 6.0F)

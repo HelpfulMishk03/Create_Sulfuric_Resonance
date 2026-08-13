@@ -46,8 +46,6 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private final NonNullList<ItemStack> inventory =
             NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
-    private final NonNullList<ItemStack> renderedInventory =
-            NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
 
     private final SmartFluidTank sulfuricAcid = new SmartFluidTank(
             ACID_CAPACITY,
@@ -287,6 +285,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private boolean processing;
     private ChamberStatus status = ChamberStatus.IDLE;
 
+    private static final float RING_DEGREES_PER_TICK = 3.0F;
+    private float clientPreviousRingAngle;
+    private float clientRingAngle;
+
     private final ContainerData menuData = new ContainerData() {
         @Override
         public int get(int index) {
@@ -327,7 +329,19 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     public void tick() {
         super.tick();
 
-        if (level == null || level.isClientSide) {
+        if (level == null) {
+            return;
+        }
+
+        if (level.isClientSide) {
+            clientPreviousRingAngle = clientRingAngle;
+            if (processing) {
+                clientRingAngle += RING_DEGREES_PER_TICK;
+                if (clientRingAngle >= 360.0F) {
+                    clientRingAngle -= 360.0F;
+                    clientPreviousRingAngle -= 360.0F;
+                }
+            }
             return;
         }
 
@@ -658,14 +672,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return sulfuricAcid.getFluid().copy();
     }
 
-    public ItemStack getRenderedStack(int slot) {
-        if (slot < 0 || slot >= SLOT_COUNT) {
-            return ItemStack.EMPTY;
-        }
-        if (level != null && level.isClientSide) {
-            return renderedInventory.get(slot);
-        }
-        return inventory.get(slot);
+
+    public float getClientRingAngle(float partialTick) {
+        return clientPreviousRingAngle
+                + (clientRingAngle - clientPreviousRingAngle) * partialTick;
     }
 
     @Override
@@ -745,12 +755,6 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         tag.putBoolean("Processing", processing);
         tag.putInt("ChamberStatus", status.ordinal());
 
-        if (clientPacket) {
-            writeRenderedStack(tag, "RenderInput1", inventory.get(INPUT_1), provider);
-            writeRenderedStack(tag, "RenderInput2", inventory.get(INPUT_2), provider);
-            writeRenderedStack(tag, "RenderInput3", inventory.get(INPUT_3), provider);
-            writeRenderedStack(tag, "RenderOutput", inventory.get(OUTPUT), provider);
-        }
     }
 
     @Override
@@ -786,35 +790,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         processing = tag.getBoolean("Processing");
         status = ChamberStatus.fromOrdinal(tag.getInt("ChamberStatus"));
 
-        if (clientPacket) {
-            renderedInventory.set(INPUT_1, readRenderedStack(tag, "RenderInput1", provider));
-            renderedInventory.set(INPUT_2, readRenderedStack(tag, "RenderInput2", provider));
-            renderedInventory.set(INPUT_3, readRenderedStack(tag, "RenderInput3", provider));
-            renderedInventory.set(OUTPUT, readRenderedStack(tag, "RenderOutput", provider));
-        }
     }
 
-    private static void writeRenderedStack(
-            CompoundTag tag,
-            String key,
-            ItemStack stack,
-            Provider provider
-    ) {
-        if (!stack.isEmpty()) {
-            tag.put(key, stack.save(provider));
-        }
-    }
-
-    private static ItemStack readRenderedStack(
-            CompoundTag tag,
-            String key,
-            Provider provider
-    ) {
-        if (!tag.contains(key, net.minecraft.nbt.Tag.TAG_COMPOUND)) {
-            return ItemStack.EMPTY;
-        }
-        return ItemStack.parseOptional(provider, tag.getCompound(key));
-    }
 
     public enum ChamberStatus {
         IDLE("gui.sulfuricresonance.chamber.status.idle"),

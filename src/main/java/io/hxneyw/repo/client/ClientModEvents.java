@@ -77,6 +77,12 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel RESONANCE_CHAMBER_WINDOW =
             partial("block/sulfuric_resonance_chamber_window");
 
+    public static final PartialModel RESONANCE_CHAMBER_RING_TOP =
+            partial("block/sulfuric_resonance_chamber_ring_top");
+
+    public static final PartialModel RESONANCE_CHAMBER_RING_BOTTOM =
+            partial("block/sulfuric_resonance_chamber_ring_bottom");
+
     public static final PartialModel THERMAL_GAUGE_BASE =
             partial("block/thermal_gauge_base");
 
@@ -220,6 +226,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_GEARBOX.get(),
                 ThermochemicalGearboxRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.PARALLEL_THERMOCHEMICAL_GEARBOX.get(),
+                ParallelThermochemicalGearboxRenderer::new
         );
 
         event.registerBlockEntityRenderer(

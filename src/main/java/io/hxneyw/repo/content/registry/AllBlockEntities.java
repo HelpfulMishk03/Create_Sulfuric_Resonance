@@ -11,6 +11,7 @@ import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
@@ -167,6 +168,18 @@ public class AllBlockEntities {
                    () -> Builder.of(
                            ThermochemicalGearboxBlockEntity::new,
                            AllModBlocks.THERMOCHEMICAL_GEARBOX.get()
+                   ).build(null)
+           );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ParallelThermochemicalGearboxBlockEntity>
+           > PARALLEL_THERMOCHEMICAL_GEARBOX =
+           BLOCK_ENTITIES.register(
+                   "parallel_thermochemical_gearbox",
+                   () -> Builder.of(
+                           ParallelThermochemicalGearboxBlockEntity::new,
+                           AllModBlocks.PARALLEL_THERMOCHEMICAL_GEARBOX.get()
                    ).build(null)
            );
 

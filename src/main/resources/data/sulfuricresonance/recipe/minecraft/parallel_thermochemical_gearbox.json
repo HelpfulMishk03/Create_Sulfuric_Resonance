@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "C",
+    "T"
+  ],
+  "key": {
+    "C": {
+      "item": "sulfuricresonance:thermochemical_cogwheel"
+    },
+    "T": {
+      "item": "sulfuricresonance:thermochemical_gearbox"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:parallel_thermochemical_gearbox",
+    "count": 1
+  }
+}

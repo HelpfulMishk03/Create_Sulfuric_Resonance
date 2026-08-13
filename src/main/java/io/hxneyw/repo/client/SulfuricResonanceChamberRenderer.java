@@ -8,6 +8,7 @@ import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceC
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -19,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -36,6 +36,10 @@ public class SulfuricResonanceChamberRenderer
     private static final float FLUID_MAX_Y = 4.85F / 16.0F;
     private static final float FLUID_MIN_XZ = 3.15F / 16.0F;
     private static final float FLUID_MAX_XZ = 12.85F / 16.0F;
+    private static final double ITEM_PLATFORM_Y = 5.3D / 16.0D;
+    private static final double ITEM_VERTICAL_OFFSET = 0.018D;
+    private static final float ITEM_SCALE = 0.32F;
+    private static final double ITEM_STACK_SPACING = 0.030D;
 
     private final ItemRenderer itemRenderer;
 
@@ -62,11 +66,19 @@ public class SulfuricResonanceChamberRenderer
                 packedOverlay
         );
 
+        renderRings(
+                chamber,
+                partialTick,
+                poseStack,
+                buffer,
+                packedLight,
+                packedOverlay
+        );
+
         renderStoredItems(
                 chamber,
                 poseStack,
                 buffer,
-                packedLight,
                 packedOverlay
         );
 
@@ -85,6 +97,73 @@ public class SulfuricResonanceChamberRenderer
                 packedLight,
                 packedOverlay
         );
+    }
+
+    private void renderRings(
+            SulfuricResonanceChamberBlockEntity chamber,
+            float partialTick,
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            int light,
+            int overlay
+    ) {
+        float angle = chamber.getClientRingAngle(partialTick);
+
+        renderRing(
+                ClientModEvents.RESONANCE_CHAMBER_RING_TOP.get(),
+                chamber,
+                -angle,
+                poseStack,
+                buffer,
+                light,
+                overlay
+        );
+
+        renderRing(
+                ClientModEvents.RESONANCE_CHAMBER_RING_BOTTOM.get(),
+                chamber,
+                angle,
+                poseStack,
+                buffer,
+                light,
+                overlay
+        );
+    }
+
+    private void renderRing(
+            BakedModel model,
+            SulfuricResonanceChamberBlockEntity chamber,
+            float angleDegrees,
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            int light,
+            int overlay
+    ) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (model == null
+                || model == minecraft.getModelManager().getMissingModel()) {
+            return;
+        }
+
+        Direction facing = chamber.getBlockState()
+                .getValue(SulfuricResonanceChamberBlock.FACING);
+
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 0.5D, 0.5D);
+        rotateToFacing(poseStack, facing);
+        poseStack.mulPose(Axis.YP.rotationDegrees(angleDegrees));
+        poseStack.translate(-0.5D, -0.5D, -0.5D);
+
+        renderBakedModel(
+                poseStack,
+                buffer,
+                model,
+                RenderType.solid(),
+                light,
+                overlay
+        );
+
+        poseStack.popPose();
     }
 
     private void renderRotatingShaft(
@@ -193,82 +272,64 @@ public class SulfuricResonanceChamberRenderer
             SulfuricResonanceChamberBlockEntity chamber,
             PoseStack poseStack,
             MultiBufferSource buffer,
-            int light,
             int overlay
     ) {
-        ItemStack output = chamber.getRenderedStack(
+        ItemStack output = chamber.getItem(
                 SulfuricResonanceChamberBlockEntity.OUTPUT
         );
 
         if (!output.isEmpty()) {
-            renderItem(
+            renderPlatformItem(
                     chamber,
                     output,
                     poseStack,
                     buffer,
-                    light,
                     overlay,
-                    0.365D,
-                    0.34F
+                    0.0D
             );
             return;
         }
 
-        renderItem(
+        renderPlatformItem(
                 chamber,
-                chamber.getRenderedStack(
-                        SulfuricResonanceChamberBlockEntity.INPUT_1
-                ),
+                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_1),
                 poseStack,
                 buffer,
-                light,
                 overlay,
-                0.345D,
-                0.25F
+                0.0D
         );
 
-        renderItem(
+        renderPlatformItem(
                 chamber,
-                chamber.getRenderedStack(
-                        SulfuricResonanceChamberBlockEntity.INPUT_2
-                ),
+                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_2),
                 poseStack,
                 buffer,
-                light,
                 overlay,
-                0.382D,
-                0.24F
+                ITEM_STACK_SPACING
         );
 
-        renderItem(
+        renderPlatformItem(
                 chamber,
-                chamber.getRenderedStack(
-                        SulfuricResonanceChamberBlockEntity.INPUT_3
-                ),
+                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_3),
                 poseStack,
                 buffer,
-                light,
                 overlay,
-                0.419D,
-                0.23F
+                ITEM_STACK_SPACING * 2.0D
         );
     }
 
-    private void renderItem(
+    private void renderPlatformItem(
             SulfuricResonanceChamberBlockEntity chamber,
             ItemStack stack,
             PoseStack poseStack,
             MultiBufferSource buffer,
-            int light,
             int overlay,
-            double y,
-            float scale
+            double additionalHeight
     ) {
-        if (stack.isEmpty()) {
+        if (stack.isEmpty() || chamber.getLevel() == null) {
             return;
         }
 
-        Minecraft minecraft = Minecraft.getInstance();
         BakedModel model = itemRenderer.getModel(
                 stack,
                 chamber.getLevel(),
@@ -276,28 +337,117 @@ public class SulfuricResonanceChamberRenderer
                 0
         );
 
+        Minecraft minecraft = Minecraft.getInstance();
         if (model == minecraft.getModelManager().getMissingModel()) {
             return;
         }
 
+        Direction facing = chamber.getBlockState()
+                .getValue(SulfuricResonanceChamberBlock.FACING);
+
+        /*
+         * The ItemRenderer/FIXED path is valid in the Sulfur Burner, but the
+         * same item-sheet render path is disappearing behind the Chamber's
+         * custom translucent/partial-model passes.  The v11 atlas quad proved
+         * that the client stack and platform coordinates are correct.
+         *
+         * Render the ACTUAL baked item model here instead: generated-item
+         * models already contain their front, back and extruded edge quads.
+         * Sending those quads through the block cutout buffer keeps the full
+         * 3D item geometry while avoiding the item-sheet render-type conflict.
+         */
         poseStack.pushPose();
-        poseStack.translate(0.5D, y, 0.5D);
 
-        poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
-        poseStack.scale(scale, scale, scale);
+        poseStack.translate(
+                0.5D,
+                ITEM_PLATFORM_Y + ITEM_VERTICAL_OFFSET + additionalHeight,
+                0.5D
+        );
 
-        itemRenderer.render(
-                stack,
-                ItemDisplayContext.NONE,
-                false,
+        poseStack.mulPose(
+                Axis.YP.rotationDegrees(rotationForItem(facing))
+        );
+        poseStack.mulPose(
+                Axis.XP.rotationDegrees(90.0F)
+        );
+        poseStack.scale(
+                ITEM_SCALE,
+                ITEM_SCALE,
+                ITEM_SCALE
+        );
+
+        // Baked item quads use model-space coordinates in the 0..1 cube.
+        // Center that cube on the platform exactly as ItemRenderer does.
+        poseStack.translate(-0.5D, -0.5D, -0.5D);
+
+        renderItemBakedModelCutout(
                 poseStack,
                 buffer,
-                light,
-                overlay,
-                model
+                model,
+                overlay
         );
 
         poseStack.popPose();
+    }
+
+    private static void renderItemBakedModelCutout(
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            BakedModel model,
+            int overlay
+    ) {
+        VertexConsumer consumer = buffer.getBuffer(RenderType.cutout());
+        RandomSource random = RandomSource.create(42L);
+
+        for (BakedQuad quad : model.getQuads(
+                null,
+                null,
+                random,
+                ModelData.EMPTY,
+                null
+        )) {
+            consumer.putBulkData(
+                    poseStack.last(),
+                    quad,
+                    1.0F,
+                    1.0F,
+                    1.0F,
+                    1.0F,
+                    LightTexture.FULL_BRIGHT,
+                    overlay
+            );
+        }
+
+        for (Direction direction : Direction.values()) {
+            random.setSeed(42L);
+            for (BakedQuad quad : model.getQuads(
+                    null,
+                    direction,
+                    random,
+                    ModelData.EMPTY,
+                    null
+            )) {
+                consumer.putBulkData(
+                        poseStack.last(),
+                        quad,
+                        1.0F,
+                        1.0F,
+                        1.0F,
+                        1.0F,
+                        LightTexture.FULL_BRIGHT,
+                        overlay
+                );
+            }
+        }
+    }
+
+    private static float rotationForItem(Direction facing) {
+        return switch (facing) {
+            case EAST -> 90.0F;
+            case SOUTH -> 180.0F;
+            case WEST -> 270.0F;
+            default -> 0.0F;
+        };
     }
 
     private void renderAcid(
