@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 11;
+    private static final int REGISTERED_SCENES = 14;
 
     @NotNull
     @Override
@@ -141,6 +141,42 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     sulfurBurnerId,
                     "sulfur_burner/operation",
                     SulfurScenes::burner,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation resonantHeatInjectorId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.RESONANT_HEAT_INJECTOR.get()
+                    );
+
+            helper.addStoryBoard(
+                    resonantHeatInjectorId,
+                    "resonant_heat_injector/operation",
+                    ResonantHeatInjectorScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermochemicalLinkDriveId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalLinkDriveId,
+                    "thermochemical_link_drive/operation",
+                    ThermochemicalLinkDriveScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermalGaugeId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMAL_GAUGE.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermalGaugeId,
+                    "thermal_gauge/operation",
+                    ThermalGaugeScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
             );
 

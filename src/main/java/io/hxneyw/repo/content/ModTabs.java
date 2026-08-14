@@ -24,6 +24,7 @@ public class ModTabs {
                   output.accept(
                           Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get()
                   );
+                  output.accept(Items.RESONANT_HEAT_INJECTOR_ITEM.get());
                   output.accept(Items.ASH_CERAMIC_CRUCIBLE_ITEM.get());
                   output.accept(Items.PERFORATED_SPRITZER.get());
 

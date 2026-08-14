@@ -9,6 +9,8 @@ import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllModFluids;
 import io.hxneyw.repo.content.registry.ModParticles;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -44,6 +46,41 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     public static final int SLOT_COUNT = 4;
 
     public static final int MENU_DATA_COUNT = 10;
+
+    private static final Map<ResourceLocation, ReactionLevel> REACTION_LEVELS =
+            new ConcurrentHashMap<>();
+
+    static {
+        setReactionLevel(
+                ResourceLocation.fromNamespaceAndPath(
+                        "sulfuricresonance",
+                        "sulfuric_resonance_chamber/thermal_matrix"
+                ),
+                ReactionLevel.RESONANCE
+        );
+    }
+
+    public static void setReactionLevel(
+            ResourceLocation recipeId,
+            ReactionLevel level
+    ) {
+        if (recipeId == null || level == null) {
+            return;
+        }
+        REACTION_LEVELS.put(recipeId, level);
+    }
+
+    public static ReactionLevel getReactionLevel(
+            @Nullable ResourceLocation recipeId
+    ) {
+        if (recipeId == null) {
+            return ReactionLevel.NORMAL;
+        }
+        return REACTION_LEVELS.getOrDefault(
+                recipeId,
+                ReactionLevel.NORMAL
+        );
+    }
 
     private final NonNullList<ItemStack> inventory =
             NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
@@ -335,6 +372,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private static final float RING_DEGREES_PER_TICK = 3.0F;
     private float clientPreviousRingAngle;
     private float clientRingAngle;
+    private float clientVisualProcessingTicks;
 
     private final ContainerData menuData = new ContainerData() {
         @Override
@@ -388,6 +426,17 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                     clientRingAngle -= 360.0F;
                     clientPreviousRingAngle -= 360.0F;
                 }
+
+                clientVisualProcessingTicks = Math.max(
+                        clientVisualProcessingTicks,
+                        processingTicks
+                );
+                clientVisualProcessingTicks = Math.min(
+                        processingTime,
+                        clientVisualProcessingTicks + 1.0F
+                );
+            } else {
+                clientVisualProcessingTicks = 0.0F;
             }
             return;
         }
@@ -857,6 +906,21 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 + (clientRingAngle - clientPreviousRingAngle) * partialTick;
     }
 
+    public float getClientReactionProgress(float partialTick) {
+        if (!processing || processingTime <= 0) {
+            return 0.0F;
+        }
+
+        float visualTicks = level != null && level.isClientSide
+                ? clientVisualProcessingTicks + partialTick
+                : processingTicks;
+        return Math.clamp(visualTicks / processingTime, 0.0F, 1.0F);
+    }
+
+    public ReactionLevel getActiveReactionLevel() {
+        return getReactionLevel(activeRecipeId);
+    }
+
     @Override
     public boolean addToGoggleTooltip(
             List<Component> tooltip,
@@ -985,8 +1049,17 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 ? null
                 : ResourceLocation.tryParse(activeRecipe);
 
+        if (clientPacket) {
+            clientVisualProcessingTicks = processing
+                    ? processingTicks
+                    : 0.0F;
+        }
     }
 
+    public enum ReactionLevel {
+        NORMAL,
+        RESONANCE
+    }
 
     public enum ChamberStatus {
         IDLE("gui.sulfuricresonance.chamber.status.idle"),

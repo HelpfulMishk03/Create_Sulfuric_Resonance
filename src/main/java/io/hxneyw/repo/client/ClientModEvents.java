@@ -74,6 +74,9 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel RESONANCE_CHAMBER_SHAFT =
             partial("block/sulfuric_resonance_chamber_shaft");
 
+    public static final PartialModel RESONANT_HEAT_INJECTOR_SHAFT =
+            partial("block/resonant_heat_injector_shaft");
+
     public static final PartialModel RESONANCE_CHAMBER_WINDOW =
             partial("block/sulfuric_resonance_chamber_window");
 
@@ -151,6 +154,26 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
 
             ItemBlockRenderTypes.setRenderLayer(
                     AllModFluids.SULFURIC_ACID_FLOWING.get(),
+                    RenderType.translucent()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.ASHESIL.get(),
+                    RenderType.translucent()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.ASHESIL_PANE.get(),
+                    RenderType.translucent()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.TEMPERED_ASHESIL.get(),
+                    RenderType.translucent()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.TEMPERED_ASHESIL_PANE.get(),
                     RenderType.translucent()
             );
 
@@ -252,6 +275,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 AllBlockEntities.SULFURIC_RESONANCE_CHAMBER.get(),
                 SulfuricResonanceChamberRenderer::new
         );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.RESONANT_HEAT_INJECTOR.get(),
+                ResonantHeatInjectorRenderer::new
+        );
     }
 
     @SubscribeEvent
@@ -271,6 +299,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "block/sulfuric_resonance_chamber_shaft"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/resonant_heat_injector_shaft"
                         )
                 )
         );

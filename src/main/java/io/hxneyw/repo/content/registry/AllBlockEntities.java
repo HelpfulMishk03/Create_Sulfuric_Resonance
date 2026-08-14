@@ -4,6 +4,7 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
@@ -39,6 +40,18 @@ public class AllBlockEntities {
                    AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
            ).build(null)
    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ResonantHeatInjectorBlockEntity>
+            > RESONANT_HEAT_INJECTOR =
+            BLOCK_ENTITIES.register(
+                    "resonant_heat_injector",
+                    () -> Builder.of(
+                            ResonantHeatInjectorBlockEntity::new,
+                            AllModBlocks.RESONANT_HEAT_INJECTOR.get()
+                    ).build(null)
+            );
 
     public static final DeferredHolder<
             BlockEntityType<?>,

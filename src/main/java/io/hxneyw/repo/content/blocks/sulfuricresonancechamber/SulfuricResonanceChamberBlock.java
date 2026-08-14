@@ -3,6 +3,8 @@ package io.hxneyw.repo.content.blocks.sulfuricresonancechamber;
 import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.foundation.block.IBE;
+import io.hxneyw.repo.compat.fuel.FuelCompatibility;
+import io.hxneyw.repo.content.blocks.WrenchInteractionHelper;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -10,10 +12,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -101,12 +106,61 @@ public class SulfuricResonanceChamberBlock
     }
 
     @Override
+    protected @NotNull ItemInteractionResult useItemOn(
+            @NotNull ItemStack stack,
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull InteractionHand hand,
+            @NotNull BlockHitResult hit
+    ) {
+        ItemInteractionResult wrenchResult = WrenchInteractionHelper.handle(
+                this,
+                stack,
+                state,
+                player,
+                hand,
+                hit
+        );
+
+        if (wrenchResult != null) {
+            return wrenchResult;
+        }
+
+        if (hand != InteractionHand.MAIN_HAND) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+
+        if (stack.isEmpty()) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+
+        if (FuelCompatibility.resolve(stack) == null) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+
+        openChamberMenu(state, level, pos, player);
+        return ItemInteractionResult.SUCCESS;
+    }
+
+    @Override
     protected @NotNull InteractionResult useWithoutItem(
             @NotNull BlockState state,
             @NotNull Level level,
             @NotNull BlockPos pos,
             @NotNull Player player,
             @NotNull BlockHitResult hit
+    ) {
+        openChamberMenu(state, level, pos, player);
+        return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    private void openChamberMenu(
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player
     ) {
         if (!level.isClientSide
                 && player instanceof ServerPlayer serverPlayer) {
@@ -115,8 +169,6 @@ public class SulfuricResonanceChamberBlock
                 serverPlayer.openMenu(provider);
             }
         }
-
-        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override

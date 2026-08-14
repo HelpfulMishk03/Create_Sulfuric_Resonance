@@ -23,7 +23,7 @@ public class SulfuricResonanceChamberScreen
 
     private static final int WIDTH = 304;
     private static final int HEIGHT = 244;
-    private static final int AUTO_ROLL_TICKS = 140;
+    private static final int AUTO_ROLL_TICKS = 150;
 
     private static final int BG = 0xFF191A1C;
     private static final int PANEL = 0xFF25272A;
@@ -123,12 +123,7 @@ public class SulfuricResonanceChamberScreen
             return;
         }
 
-        if (hasAnyMachineInput()) {
-            autoRollTimer = 0;
-            return;
-        }
-
-        if (++autoRollTimer == AUTO_ROLL_TICKS) {
+        if (++autoRollTimer >= AUTO_ROLL_TICKS) {
             autoRollTimer = 0;
             changeRecipe(1);
         }
@@ -201,23 +196,7 @@ public class SulfuricResonanceChamberScreen
             }
         }
 
-        for (int i = 0; i < recipes.size(); i++) {
-            if (recipes.get(i).value().matchesPresentInputs(
-                    input1,
-                    input2,
-                    input3
-            )) {
-                return i;
-            }
-        }
-
         return -1;
-    }
-
-    private boolean hasAnyMachineInput() {
-        return !menu.getMachineStack(0).isEmpty()
-                || !menu.getMachineStack(1).isEmpty()
-                || !menu.getMachineStack(2).isEmpty();
     }
 
     @Override

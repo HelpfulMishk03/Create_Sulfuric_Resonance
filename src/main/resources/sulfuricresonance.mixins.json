@@ -5,6 +5,7 @@
   "refmap": "sulfuricresonance.refmap.json",
   "mixins": [
     "BasinRecipeMixin",
+    "BasinHeatSourceMixin",
     "BasinOperatingMixin",
     "BeltBlockEntityMixin",
     "BeltBlockMixin",

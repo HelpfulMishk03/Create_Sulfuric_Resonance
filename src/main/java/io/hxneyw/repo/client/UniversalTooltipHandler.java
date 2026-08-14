@@ -179,6 +179,15 @@ public class UniversalTooltipHandler {
                          "tooltip.sulfuricresonance.ash_ceramic_crucible"
                  ).withStyle(ChatFormatting.GRAY)
          );
+
+         case "resonant_heat_injector" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.resonant_heat_injector.item.1"
+            ).withStyle(ChatFormatting.GOLD));
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.resonant_heat_injector.item.2"
+            ).withStyle(ChatFormatting.GRAY));
+         }
       }
 
 

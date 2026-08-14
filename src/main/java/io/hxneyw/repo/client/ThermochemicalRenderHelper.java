@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
-import net.createmod.catnip.animation.AnimationTickHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -84,111 +83,6 @@ final class ThermochemicalRenderHelper {
                 );
             }
         }
-
-        poseStack.translate(
-                -0.5D,
-                -0.5D,
-                -0.5D
-        );
-
-        renderModel(
-                poseStack,
-                buffer,
-                model,
-                light,
-                overlay
-        );
-
-        poseStack.popPose();
-    }
-
-    static void renderVerticalHalfTowardFace(
-            KineticBlockEntity blockEntity,
-            Direction face,
-            float faceSpeedMultiplier,
-            PoseStack poseStack,
-            MultiBufferSource buffer,
-            int light,
-            int overlay
-    ) {
-        BakedModel model = ClientModEvents.THERMOCHEMICAL_GEARBOX_SHAFT.get();
-        Minecraft minecraft = Minecraft.getInstance();
-
-        if (model == null
-                || model
-                == minecraft.getModelManager().getMissingModel()) {
-            return;
-        }
-
-        float renderTime =
-                AnimationTickHolder.getRenderTime(
-                        blockEntity.getLevel()
-                );
-
-        float offset =
-                KineticBlockEntityRenderer
-                        .getRotationOffsetForPosition(
-                                blockEntity,
-                                blockEntity.getBlockPos(),
-                                face.getAxis()
-                        );
-
-        float positiveAxisAngle = (
-                renderTime
-                        * blockEntity.getSpeed()
-                        * faceSpeedMultiplier
-                        * 3.0F / 10.0F
-                        + offset
-        ) % 360.0F;
-
-        float localAngle =
-                face.getAxisDirection()
-                        == Direction.AxisDirection.NEGATIVE
-                        ? -positiveAxisAngle
-                        : positiveAxisAngle;
-
-        poseStack.pushPose();
-        poseStack.translate(
-                0.5D,
-                0.5D,
-                0.5D
-        );
-
-        switch (face) {
-            case UP -> {
-            }
-            case DOWN -> poseStack.mulPose(
-                    Axis.XP.rotationDegrees(
-                            180.0F
-                    )
-            );
-            case NORTH -> poseStack.mulPose(
-                    Axis.XP.rotationDegrees(
-                            -90.0F
-                    )
-            );
-            case SOUTH -> poseStack.mulPose(
-                    Axis.XP.rotationDegrees(
-                            90.0F
-                    )
-            );
-            case EAST -> poseStack.mulPose(
-                    Axis.ZP.rotationDegrees(
-                            -90.0F
-                    )
-            );
-            case WEST -> poseStack.mulPose(
-                    Axis.ZP.rotationDegrees(
-                            90.0F
-                    )
-            );
-        }
-
-        poseStack.mulPose(
-                Axis.YP.rotationDegrees(
-                        localAngle
-                )
-        );
 
         poseStack.translate(
                 -0.5D,

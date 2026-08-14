@@ -744,19 +744,6 @@
 			}
 		},
 		{
-			"from": [2, 12, 2],
-			"to": [3, 13, 3],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8.025, 8, 8]},
-			"faces": {
-				"north": {"uv": [11.75, 12.25, 12, 12.5], "texture": "#missing"},
-				"east": {"uv": [12.25, 11.75, 12.5, 12], "texture": "#missing"},
-				"south": {"uv": [12, 12.25, 12.25, 12.5], "texture": "#missing"},
-				"west": {"uv": [12.25, 11.5, 12.5, 11.75], "texture": "#missing"},
-				"up": {"uv": [12.5, 12.25, 12.25, 12], "rotation": 270, "texture": "#missing"},
-				"down": {"uv": [12.5, 12.25, 12.25, 12.5], "rotation": 90, "texture": "#missing"}
-			}
-		},
-		{
 			"name": "LeftInnerWall",
 			"from": [15, 3, 3],
 			"to": [15.1, 13, 14],

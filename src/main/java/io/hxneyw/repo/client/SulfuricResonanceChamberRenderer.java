@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
+import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity.ReactionLevel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.LightTexture;
@@ -43,6 +44,29 @@ public class SulfuricResonanceChamberRenderer
 
     private final ItemRenderer itemRenderer;
 
+    public static RingGlowProfile getRingGlowProfile(
+            ReactionLevel reactionLevel
+    ) {
+        return switch (reactionLevel) {
+            case NORMAL -> new RingGlowProfile(
+                    0.00F,
+                    0.14F,
+                    8,
+                    15,
+                    0.34F,
+                    0.14F
+            );
+            case RESONANCE -> new RingGlowProfile(
+                    0.00F,
+                    0.04F,
+                    10,
+                    15,
+                    0.52F,
+                    0.22F
+            );
+        };
+    }
+
     public SulfuricResonanceChamberRenderer(
             BlockEntityRendererProvider.Context context
     ) {
@@ -63,6 +87,14 @@ public class SulfuricResonanceChamberRenderer
                 poseStack,
                 buffer,
                 packedLight,
+                packedOverlay
+        );
+
+        renderReactionHaze(
+                chamber,
+                partialTick,
+                poseStack,
+                buffer,
                 packedOverlay
         );
 
@@ -99,6 +131,114 @@ public class SulfuricResonanceChamberRenderer
         );
     }
 
+    private void renderReactionHaze(
+            SulfuricResonanceChamberBlockEntity chamber,
+            float partialTick,
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            int overlay
+    ) {
+        float progress = chamber.getClientReactionProgress(partialTick);
+        if (progress <= 0.0F || chamber.getLevel() == null) {
+            return;
+        }
+
+        ReactionLevel reactionLevel = chamber.getActiveReactionLevel();
+        RingGlowProfile profile = getRingGlowProfile(reactionLevel);
+        float smoothProgress = progress * progress * (3.0F - 2.0F * progress);
+        float time = chamber.getLevel().getGameTime() + partialTick;
+        float pulse = 0.86F + 0.14F * (float) Math.sin(time * 0.11F);
+        float alpha = profile.hazeAlpha()
+                * (0.42F + smoothProgress * 0.58F)
+                * pulse;
+
+        TextureAtlasSprite sprite = Minecraft.getInstance()
+                .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "minecraft",
+                                "block/white_concrete"
+                        )
+                );
+
+        int red = reactionLevel == ReactionLevel.RESONANCE ? 218 : 244;
+        int green = reactionLevel == ReactionLevel.RESONANCE ? 160 : 202;
+        int blue = reactionLevel == ReactionLevel.RESONANCE ? 225 : 126;
+        int alphaByte = Math.clamp(Math.round(alpha * 255.0F), 0, 255);
+        int color = alphaByte << 24
+                | red << 16
+                | green << 8
+                | blue;
+
+        VertexConsumer consumer = buffer.getBuffer(RenderType.translucent());
+        PoseStack.Pose pose = poseStack.last();
+        float x0 = 3.25F / 16.0F;
+        float x1 = 12.75F / 16.0F;
+        float z0 = 3.25F / 16.0F;
+        float z1 = 12.75F / 16.0F;
+        float drift = (float) Math.sin(time * 0.075F) * 0.018F;
+        float y0 = 6.25F / 16.0F + drift;
+        float y1 = 8.45F / 16.0F - drift * 0.45F;
+        float y2 = 10.55F / 16.0F + drift * 0.65F;
+        int hazeLight = LightTexture.FULL_BRIGHT;
+
+        renderHazeLayer(
+                consumer,
+                pose,
+                x0, x1, z0, z1, y0,
+                sprite, color, hazeLight, overlay
+        );
+        renderHazeLayer(
+                consumer,
+                pose,
+                x0, x1, z0, z1, y1,
+                sprite, color, hazeLight, overlay
+        );
+        renderHazeLayer(
+                consumer,
+                pose,
+                x0, x1, z0, z1, y2,
+                sprite, color, hazeLight, overlay
+        );
+    }
+
+    private static void renderHazeLayer(
+            VertexConsumer consumer,
+            PoseStack.Pose pose,
+            float x0,
+            float x1,
+            float z0,
+            float z1,
+            float y,
+            TextureAtlasSprite sprite,
+            int color,
+            int light,
+            int overlay
+    ) {
+        quad(
+                consumer, pose,
+                x0, y, z0,
+                x0, y, z1,
+                x1, y, z1,
+                x1, y, z0,
+                sprite.getU0(), sprite.getV0(),
+                sprite.getU1(), sprite.getV1(),
+                color, light, overlay,
+                0.0F, 1.0F, 0.0F
+        );
+        quad(
+                consumer, pose,
+                x1, y - 0.001F, z0,
+                x1, y - 0.001F, z1,
+                x0, y - 0.001F, z1,
+                x0, y - 0.001F, z0,
+                sprite.getU0(), sprite.getV0(),
+                sprite.getU1(), sprite.getV1(),
+                color, light, overlay,
+                0.0F, -1.0F, 0.0F
+        );
+    }
+
     private void renderRings(
             SulfuricResonanceChamberBlockEntity chamber,
             float partialTick,
@@ -108,6 +248,8 @@ public class SulfuricResonanceChamberRenderer
             int overlay
     ) {
         float angle = chamber.getClientRingAngle(partialTick);
+        float progress = chamber.getClientReactionProgress(partialTick);
+        ReactionLevel reactionLevel = chamber.getActiveReactionLevel();
 
         renderRing(
                 ClientModEvents.RESONANCE_CHAMBER_RING_TOP.get(),
@@ -115,8 +257,19 @@ public class SulfuricResonanceChamberRenderer
                 -angle,
                 poseStack,
                 buffer,
-                light,
-                overlay
+                getRingGlowLight(
+                        light,
+                        progress,
+                        true,
+                        reactionLevel
+                ),
+                overlay,
+                getRingGlowStrength(
+                        progress,
+                        true,
+                        reactionLevel
+                ),
+                reactionLevel
         );
 
         renderRing(
@@ -125,9 +278,81 @@ public class SulfuricResonanceChamberRenderer
                 angle,
                 poseStack,
                 buffer,
-                light,
-                overlay
+                getRingGlowLight(
+                        light,
+                        progress,
+                        false,
+                        reactionLevel
+                ),
+                overlay,
+                getRingGlowStrength(
+                        progress,
+                        false,
+                        reactionLevel
+                ),
+                reactionLevel
         );
+    }
+
+    private static int getRingGlowLight(
+            int packedLight,
+            float progress,
+            boolean topRing,
+            ReactionLevel reactionLevel
+    ) {
+        RingGlowProfile profile = getRingGlowProfile(reactionLevel);
+        float start = topRing
+                ? profile.topStart()
+                : profile.bottomStart();
+        float ramp = Math.clamp(
+                (progress - start) / Math.max(0.001F, 1.0F - start),
+                0.0F,
+                1.0F
+        );
+        ramp = ramp * ramp * (3.0F - 2.0F * ramp);
+
+        int blockLight = packedLight >> 4 & 15;
+        int skyLight = packedLight >> 20 & 15;
+
+        if (progress <= start) {
+            return packedLight;
+        }
+
+        int minimumLight = Math.max(
+                blockLight,
+                profile.minimumActiveBlockLight()
+        );
+        int targetLight = Math.max(
+                minimumLight,
+                profile.maximumBlockLight()
+        );
+        int boostedBlockLight = Math.round(
+                minimumLight + (targetLight - minimumLight) * ramp
+        );
+        return LightTexture.pack(boostedBlockLight, skyLight);
+    }
+
+    private static float getRingGlowStrength(
+            float progress,
+            boolean topRing,
+            ReactionLevel reactionLevel
+    ) {
+        RingGlowProfile profile = getRingGlowProfile(reactionLevel);
+        float start = topRing
+                ? profile.topStart()
+                : profile.bottomStart();
+
+        if (progress <= start) {
+            return 0.0F;
+        }
+
+        float ramp = Math.clamp(
+                (progress - start) / Math.max(0.001F, 1.0F - start),
+                0.0F,
+                1.0F
+        );
+        ramp = ramp * ramp * (3.0F - 2.0F * ramp);
+        return 0.28F + ramp * 0.72F;
     }
 
     private void renderRing(
@@ -137,7 +362,9 @@ public class SulfuricResonanceChamberRenderer
             PoseStack poseStack,
             MultiBufferSource buffer,
             int light,
-            int overlay
+            int overlay,
+            float glowStrength,
+            ReactionLevel reactionLevel
     ) {
         Minecraft minecraft = Minecraft.getInstance();
         if (model == null
@@ -162,6 +389,29 @@ public class SulfuricResonanceChamberRenderer
                 light,
                 overlay
         );
+
+        if (glowStrength > 0.0F) {
+            RingGlowProfile profile = getRingGlowProfile(reactionLevel);
+            float red = 1.0F;
+            float green = reactionLevel == ReactionLevel.RESONANCE
+                    ? 0.42F
+                    : 0.58F;
+            float blue = reactionLevel == ReactionLevel.RESONANCE
+                    ? 0.82F
+                    : 0.16F;
+
+            renderTintedBakedModel(
+                    poseStack,
+                    buffer,
+                    model,
+                    red,
+                    green,
+                    blue,
+                    profile.glowAlpha() * glowStrength,
+                    LightTexture.FULL_BRIGHT,
+                    overlay
+            );
+        }
 
         poseStack.popPose();
     }
@@ -681,6 +931,62 @@ public class SulfuricResonanceChamberRenderer
         }
     }
 
+    private static void renderTintedBakedModel(
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            BakedModel model,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            int light,
+            int overlay
+    ) {
+        VertexConsumer consumer = buffer.getBuffer(RenderType.translucent());
+        RandomSource random = RandomSource.create(42L);
+
+        for (BakedQuad quad : model.getQuads(
+                null,
+                null,
+                random,
+                ModelData.EMPTY,
+                null
+        )) {
+            consumer.putBulkData(
+                    poseStack.last(),
+                    quad,
+                    red,
+                    green,
+                    blue,
+                    alpha,
+                    light,
+                    overlay
+            );
+        }
+
+        for (Direction direction : Direction.values()) {
+            random.setSeed(42L);
+            for (BakedQuad quad : model.getQuads(
+                    null,
+                    direction,
+                    random,
+                    ModelData.EMPTY,
+                    null
+            )) {
+                consumer.putBulkData(
+                        poseStack.last(),
+                        quad,
+                        red,
+                        green,
+                        blue,
+                        alpha,
+                        light,
+                        overlay
+                );
+            }
+        }
+    }
+
     private static float toLocalShaftAngle(
             float worldAxisAngleRadians,
             Direction facing
@@ -712,4 +1018,15 @@ public class SulfuricResonanceChamberRenderer
             }
         }
     }
+
+    public record RingGlowProfile(
+            float bottomStart,
+            float topStart,
+            int minimumActiveBlockLight,
+            int maximumBlockLight,
+            float glowAlpha,
+            float hazeAlpha
+    ) {
+    }
+
 }

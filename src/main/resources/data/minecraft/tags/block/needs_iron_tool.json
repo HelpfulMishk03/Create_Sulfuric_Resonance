@@ -3,6 +3,7 @@
   "values": [
     "sulfuricresonance:molten_rotor_furnace",
     "sulfuricresonance:sulfur_burner",
-    "sulfuricresonance:sulfuric_resonance_chamber"
+    "sulfuricresonance:sulfuric_resonance_chamber",
+    "sulfuricresonance:resonant_heat_injector"
   ]
 }

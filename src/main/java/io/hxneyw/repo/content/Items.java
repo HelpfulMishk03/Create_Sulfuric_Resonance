@@ -58,6 +58,7 @@ public class Items {
    public static final DeferredItem<CogwheelBlockItem> LARGE_THERMOCHEMICAL_COGWHEEL_ITEM = ITEMS.register("large_thermochemical_cogwheel", () -> new CogwheelBlockItem(AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFUR_BURNER_ITEM = ITEMS.register("sulfur_burner", () -> new BlockItem(AllModBlocks.SULFUR_BURNER.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFURIC_RESONANCE_CHAMBER_ITEM = ITEMS.register("sulfuric_resonance_chamber", () -> new BlockItem(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get(), new Properties()));
+   public static final DeferredItem<BlockItem> RESONANT_HEAT_INJECTOR_ITEM = ITEMS.register("resonant_heat_injector", () -> new BlockItem(AllModBlocks.RESONANT_HEAT_INJECTOR.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));
    public static final DeferredItem<Item> WET_ASH_CERAMIC = ITEMS.register("wet_ash_ceramic", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> UNFIRED_ASH_BRICK = ITEMS.register("unfired_ash_brick", () -> new Item(new Properties().stacksTo(64)));

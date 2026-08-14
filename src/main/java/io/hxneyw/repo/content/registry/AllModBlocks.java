@@ -17,6 +17,7 @@ import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwhe
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlock;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
@@ -406,6 +407,20 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                         case KINDLED, SEETHING -> 4;
                                         default -> 0;
                                     })
+                    )
+            );
+
+    public static final DeferredBlock<ResonantHeatInjectorBlock>
+            RESONANT_HEAT_INJECTOR =
+            BLOCKS.register(
+                    "resonant_heat_injector",
+                    () -> new ResonantHeatInjectorBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(4.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
                     )
             );
 

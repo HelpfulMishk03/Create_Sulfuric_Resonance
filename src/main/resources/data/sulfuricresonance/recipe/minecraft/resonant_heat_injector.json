@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ICI",
+    "STI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "C": {
+      "item": "sulfuricresonance:resonant_copper_sheet"
+    },
+    "S": {
+      "item": "sulfuricresonance:thermochemical_shaft"
+    },
+    "T": {
+      "item": "sulfuricresonance:thermal_matrix"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:resonant_heat_injector",
+    "count": 1
+  }
+}
