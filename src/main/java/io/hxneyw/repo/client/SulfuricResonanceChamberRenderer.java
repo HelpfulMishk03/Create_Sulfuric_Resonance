@@ -301,7 +301,7 @@ public class SulfuricResonanceChamberRenderer
 
         renderPlatformItem(
                 chamber,
-                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_2),
+                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_3),
                 poseStack,
                 buffer,
                 overlay,
@@ -310,7 +310,7 @@ public class SulfuricResonanceChamberRenderer
 
         renderPlatformItem(
                 chamber,
-                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_3),
+                chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_2),
                 poseStack,
                 buffer,
                 overlay,

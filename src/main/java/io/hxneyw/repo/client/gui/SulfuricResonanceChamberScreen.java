@@ -23,7 +23,7 @@ public class SulfuricResonanceChamberScreen
 
     private static final int WIDTH = 304;
     private static final int HEIGHT = 244;
-    private static final int AUTO_ROLL_TICKS = 80;
+    private static final int AUTO_ROLL_TICKS = 140;
 
     private static final int BG = 0xFF191A1C;
     private static final int PANEL = 0xFF25272A;

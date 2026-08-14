@@ -91,6 +91,8 @@ public class ModTabs {
                   output.accept(Items.RESONANT_COPPER_SHEET.get());
                   output.accept(Items.RESONANT_IRON_SHEET.get());
                   output.accept(Items.RESONANT_GOLD_SHEET.get());
+                  output.accept(Items.UNFINISHED_THERMAL_MATRIX.get());
+                  output.accept(Items.THERMAL_MATRIX.get());
                   output.accept(Items.THERMOCHEMICAL_CASING.get());
 
                   output.accept(Items.IMPELLER_BLADE.get());

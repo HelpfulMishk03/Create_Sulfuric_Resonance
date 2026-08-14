@@ -75,6 +75,9 @@ public class Items {
    public static final DeferredItem<Item> RESONANT_COPPER_SHEET = ITEMS.register("resonant_copper_sheet", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> RESONANT_IRON_SHEET = ITEMS.register("resonant_iron_sheet", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> RESONANT_GOLD_SHEET = ITEMS.register("resonant_gold_sheet", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> UNFINISHED_THERMAL_MATRIX = ITEMS.register("unfinished_thermal_matrix", () -> new Item(new Properties().stacksTo(64)));
+
+   public static final DeferredItem<Item> THERMAL_MATRIX = ITEMS.register("thermal_matrix", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_THERMOCHEMICAL_CASING = ITEMS.register("incomplete_thermochemical_casing", () -> new SequencedAssemblyItem(new Properties()));
    public static final DeferredItem<Item> THERMOCHEMICAL_CASING = ITEMS.register("thermochemical_casing", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));

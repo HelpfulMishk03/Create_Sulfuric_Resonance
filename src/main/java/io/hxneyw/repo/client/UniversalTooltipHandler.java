@@ -67,6 +67,26 @@ public class UniversalTooltipHandler {
             ).withStyle(ChatFormatting.GRAY));
          }
 
+         case "unfinished_thermal_matrix" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.unfinished_thermal_matrix.1"
+            ).withStyle(ChatFormatting.GRAY));
+
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.unfinished_thermal_matrix.2"
+            ).withStyle(ChatFormatting.GOLD));
+         }
+
+         case "thermal_matrix" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.thermal_matrix.1"
+            ).withStyle(ChatFormatting.GOLD));
+
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.thermal_matrix.2"
+            ).withStyle(ChatFormatting.GRAY));
+         }
+
          case "sulfur_block" -> {
             lines.add(Component.translatable(
                     "tooltip.sulfuricresonance.sulfur_block.storage"

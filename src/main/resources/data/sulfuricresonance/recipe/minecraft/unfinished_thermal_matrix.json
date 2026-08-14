@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " O ",
+    " C ",
+    " A "
+  ],
+  "key": {
+    "O": {
+      "item": "sulfuricresonance:obsidian_cloth"
+    },
+    "C": {
+      "item": "sulfuricresonance:cinder_filament"
+    },
+    "A": {
+      "item": "sulfuricresonance:acid_etched_copper_sheet"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:unfinished_thermal_matrix",
+    "count": 1
+  }
+}

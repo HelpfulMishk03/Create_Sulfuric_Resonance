@@ -218,8 +218,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         if (isInputSlot(slot) && isInputLocked()) {
             ItemStack current = inventory.get(slot);
 
-            // While a reaction is sealed, the GUI may remove material but may
-            // never replace it, swap it, or increase the amount in the slot.
+            
+            
             boolean sameItem = !current.isEmpty()
                     && !stack.isEmpty()
                     && ItemStack.isSameItemSameComponents(current, stack);
@@ -399,13 +399,14 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         boolean previousReady = ready;
         boolean previousProcessing = processing;
         ChamberStatus previousStatus = status;
+        int previousProgressPercent = getProgressPercent();
 
         RecipeHolder<SulfuricResonanceChamberRecipe> inputHolder =
                 getLockedOrInputRecipe();
 
         if (processing && inputHolder == null) {
-            // A sealed recipe disappeared or its item batch was altered. Never
-            // silently switch to another recipe in the middle of a reaction.
+            
+            
             clearProcessingState();
         }
 
@@ -455,11 +456,13 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             }
         }
 
+        int currentProgressPercent = getProgressPercent();
         if (previousReady != ready
                 || previousProcessing != processing
                 || previousStatus != status
                 || previousHeatTier != heatTier
-                || previousTemperature != temperature) {
+                || previousTemperature != temperature
+                || previousProgressPercent != currentProgressPercent) {
             setChanged();
             sendData();
         }
@@ -549,8 +552,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             return locked;
         }
 
-        // Compatibility for worlds saved before active recipe locking existed:
-        // recover the recipe once, then keep it fixed for the rest of the run.
+        
+        
         if (activeRecipeId == null) {
             RecipeHolder<SulfuricResonanceChamberRecipe> recovered =
                     findInputRecipe();
@@ -815,10 +818,6 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         }
     }
 
-    public IItemHandler getItemCapability() {
-        return itemCapability;
-    }
-
     public @Nullable IItemHandler getItemCapability(
             @Nullable Direction side
     ) {
@@ -902,17 +901,23 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         ));
 
         if (processing && processingTime > 0) {
-            int percent = Math.min(
-                    100,
-                    Math.round(processingTicks * 100.0F / processingTime)
-            );
             tooltip.add(Component.translatable(
                     "tooltip.sulfuricresonance.sulfuric_resonance_chamber.progress",
-                    percent
+                    getProgressPercent()
             ));
         }
 
         return true;
+    }
+
+    private int getProgressPercent() {
+        if (!processing || processingTime <= 0) {
+            return 0;
+        }
+        return Math.min(
+                100,
+                Math.round(processingTicks * 100.0F / processingTime)
+        );
     }
 
     @Override

@@ -34,6 +34,13 @@ public final class SulfuricResonanceChamberCategory
 
     private static final int WIDTH = 204;
     private static final int HEIGHT = 144;
+    private static final int FLOW_CENTER_X = 120;
+    private static final int FLOW_CENTER_Y = 57;
+    private static final int LEFT_ARROW_X = 76;
+    private static final int RIGHT_ARROW_X = 140;
+    private static final int ARROW_Y = FLOW_CENTER_Y - 8;
+    private static final int CHAMBER_X = FLOW_CENTER_X + 10;
+    private static final int CHAMBER_Y = FLOW_CENTER_Y - 21;
     private static final int ACID_CAPACITY = 1500;
     private static final int LABEL_COLOR = 0x666666;
     private static final int VALUE_COLOR = 0x303030;
@@ -86,7 +93,7 @@ public final class SulfuricResonanceChamberCategory
 
     @Override
     public void setRecipe(
-            IRecipeLayoutBuilder builder,
+            @NotNull IRecipeLayoutBuilder builder,
             SulfuricResonanceChamberRecipe recipe,
             @NotNull IFocusGroup focuses
     ) {
@@ -94,7 +101,7 @@ public final class SulfuricResonanceChamberCategory
                 builder,
                 recipe.substrate().getItems(),
                 12,
-                38,
+                37,
                 "jei.sulfuricresonance.sulfuric_resonance_chamber.substrate"
         );
 
@@ -102,19 +109,19 @@ public final class SulfuricResonanceChamberCategory
                 builder,
                 ingredient.getItems(),
                 34,
-                38,
+                37,
                 "jei.sulfuricresonance.sulfuric_resonance_chamber.catalyst"
         ));
 
         recipe.auxiliary().ifPresent(ingredient -> addItemInput(
                 builder,
                 ingredient.getItems(),
-                56,
-                38,
+                34,
+                59,
                 "jei.sulfuricresonance.sulfuric_resonance_chamber.auxiliary"
         ));
 
-        builder.addSlot(RecipeIngredientRole.INPUT, 34, 64)
+        builder.addSlot(RecipeIngredientRole.INPUT, 12, 59)
                 .setBackground(slot, -1, -1)
                 .addFluidStack(AllModFluids.SULFURIC_ACID.get(), recipe.acidAmount())
                 .addRichTooltipCallback((slotView, tooltip) -> {
@@ -173,16 +180,12 @@ public final class SulfuricResonanceChamberCategory
         drawCenteredClamped(
                 graphics,
                 font,
-                recipe.result().getHoverName().getString(),
-                WIDTH / 2,
-                7,
-                WIDTH - 20,
-                VALUE_COLOR
+                recipe.result().getHoverName().getString()
         );
 
-        arrow.draw(graphics, 76, 49);
-        chamber.draw(graphics, 119, 57);
-        arrow.draw(graphics, 143, 49);
+        arrow.draw(graphics, LEFT_ARROW_X, ARROW_Y);
+        chamber.draw(graphics, CHAMBER_X, CHAMBER_Y);
+        arrow.draw(graphics, RIGHT_ARROW_X, ARROW_Y);
 
         drawConditionCell(
                 graphics,
@@ -276,22 +279,18 @@ public final class SulfuricResonanceChamberCategory
     private static void drawCenteredClamped(
             GuiGraphics graphics,
             Font font,
-            String text,
-            int centerX,
-            int y,
-            int maxWidth,
-            int color
+            String text
     ) {
-        if (font.width(text) > maxWidth) {
+        if (font.width(text) > 184) {
             int dots = font.width("...");
-            text = font.plainSubstrByWidth(text, Math.max(0, maxWidth - dots)) + "...";
+            text = font.plainSubstrByWidth(text, Math.max(0, 184 - dots)) + "...";
         }
         graphics.drawString(
                 font,
                 text,
-                centerX - font.width(text) / 2,
-                y,
-                color,
+                102 - font.width(text) / 2,
+                7,
+                SulfuricResonanceChamberCategory.VALUE_COLOR,
                 false
         );
     }
