@@ -1,17 +1,20 @@
 package io.hxneyw.repo.compat.emi;
 
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
 import io.hxneyw.repo.CreateSulfuricResonance;
+import io.hxneyw.repo.compat.emi.animations.EmiAnimatedMoltenRotor;
 import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplay;
 import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplayText;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -19,16 +22,20 @@ import org.jetbrains.annotations.Nullable;
 
 public final class MoltenRotorFuelEmiRecipe implements EmiRecipe {
 
-    private static final int WIDTH = 160;
-    private static final int HEIGHT = 112;
+    private static final int WIDTH = 190;
+    private static final int HEIGHT = 151;
     private static final int LABEL_COLOR = 0x555555;
     private static final int VALUE_COLOR = 0x303030;
     private static final int NOTE_COLOR = 0x7A4B24;
+    private static final int DIVIDER_COLOR = 0xFFB8B8B8;
+    private static final int PANEL_COLOR = 0x12000000;
 
     private final ResourceLocation id;
     private final MoltenRotorFuelDisplay display;
     private final EmiIngredient fuel;
     private final EmiStack furnace;
+    private final EmiAnimatedMoltenRotor furnaceAnimation =
+            new EmiAnimatedMoltenRotor();
 
     public MoltenRotorFuelEmiRecipe(
             MoltenRotorFuelDisplay display,
@@ -93,40 +100,79 @@ public final class MoltenRotorFuelEmiRecipe implements EmiRecipe {
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
-        widgets.addSlot(this.fuel, 4, 4)
-                .appendTooltip(MoltenRotorFuelDisplayText.behaviorNote(this.display));
+        widgets.addDrawable(
+                0,
+                0,
+                WIDTH,
+                HEIGHT,
+                (graphics, mouseX, mouseY, delta) -> drawScreen(graphics)
+        );
 
-        widgets.addSlot(this.furnace, WIDTH - 22, 4)
+        widgets.addSlot(this.fuel, 12, 25)
+                .appendTooltip(
+                        MoltenRotorFuelDisplayText.behaviorNote(this.display)
+                );
+
+        widgets.addSlot(this.furnace, 162, 25)
                 .catalyst(true);
-
-        MoltenRotorFuelDisplayText.MetricRows rows = MoltenRotorFuelDisplayText.createRows(this.display);
-
-        drawMetricRow(widgets, 29, rows.first());
-        drawMetricRow(widgets, 43, rows.second());
-        drawMetricRow(widgets, 57, rows.third());
-        drawMetricRow(widgets, 71, rows.fourth());
-        drawNote(widgets, MoltenRotorFuelDisplayText.behaviorNote(this.display));
     }
 
+    private void drawScreen(GuiGraphics graphics) {
+        this.furnaceAnimation
+                .withHeat(displayHeat(this.display))
+                .draw(graphics, 80, 17);
+
+        graphics.fill(
+                6,
+                59,
+                WIDTH - 6,
+                HEIGHT - 3,
+                PANEL_COLOR
+        );
+        graphics.fill(
+                6,
+                59,
+                WIDTH - 6,
+                60,
+                DIVIDER_COLOR
+        );
+
+        Font font = Minecraft.getInstance().font;
+        MoltenRotorFuelDisplayText.MetricRows rows =
+                MoltenRotorFuelDisplayText.createRows(this.display);
+
+        drawMetricRow(graphics, font, 66, rows.first());
+        drawMetricRow(graphics, font, 81, rows.second());
+        drawMetricRow(graphics, font, 96, rows.third());
+        drawMetricRow(graphics, font, 111, rows.fourth());
+        drawNote(
+                graphics,
+                font,
+                MoltenRotorFuelDisplayText.behaviorNote(this.display)
+        );
+    }
 
     private static void drawMetricRow(
-            WidgetHolder widgets,
+            GuiGraphics graphics,
+            Font font,
             int y,
             MoltenRotorFuelDisplayText.Metric metric
     ) {
-        Font font = Minecraft.getInstance().font;
-
-        widgets.addText(
+        graphics.drawString(
+                font,
                 metric.label(),
-                4,
+                11,
                 y,
                 LABEL_COLOR,
                 false
         );
 
-        widgets.addText(
+        int valueX = WIDTH - 11 - font.width(metric.value());
+
+        graphics.drawString(
+                font,
                 metric.value(),
-                Math.max(76, WIDTH - 4 - font.width(metric.value())),
+                Math.max(82, valueX),
                 y,
                 VALUE_COLOR,
                 false
@@ -134,28 +180,41 @@ public final class MoltenRotorFuelEmiRecipe implements EmiRecipe {
     }
 
     private static void drawNote(
-            WidgetHolder widgets,
+            GuiGraphics graphics,
+            Font font,
             Component note
     ) {
-        Font font = Minecraft.getInstance().font;
-        List<FormattedCharSequence> lines =
-                font.split(note, WIDTH - 8);
+        List<FormattedCharSequence> lines = font.split(note, WIDTH - 16);
 
-        for (int index = 0;
-             index < Math.min(2, lines.size());
-             index++) {
+        for (int index = 0; index < Math.min(2, lines.size()); index++) {
             FormattedCharSequence line = lines.get(index);
-            int x = Math.max(4, (WIDTH - font.width(line)) / 2);
+            int noteX = Math.max(8, (WIDTH - font.width(line)) / 2);
 
-            widgets.addText(
+            graphics.drawString(
+                    font,
                     line,
-                    x,
-                    89 + index * 9,
+                    noteX,
+                    128 + index * 9,
                     NOTE_COLOR,
                     false
             );
         }
     }
 
+    private static HeatLevel displayHeat(MoltenRotorFuelDisplay display) {
+        float maximumTemperature = display.specialBehavior()
+                == MoltenRotorFuelDisplay.SpecialBehavior.STICK_BOOST
+                ? 550.0F
+                : display.maximumTemperature();
 
+        if (maximumTemperature >= 800.0F) {
+            return HeatLevel.SEETHING;
+        }
+
+        if (maximumTemperature >= 300.0F) {
+            return HeatLevel.KINDLED;
+        }
+
+        return HeatLevel.NONE;
+    }
 }

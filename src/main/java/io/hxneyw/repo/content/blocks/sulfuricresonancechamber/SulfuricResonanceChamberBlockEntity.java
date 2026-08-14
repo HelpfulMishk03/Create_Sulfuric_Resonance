@@ -369,10 +369,33 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private @Nullable ResourceLocation activeRecipeId;
     private ChamberStatus status = ChamberStatus.IDLE;
 
-    private static final float RING_DEGREES_PER_TICK = 3.0F;
-    private float clientPreviousRingAngle;
-    private float clientRingAngle;
-    private float clientVisualProcessingTicks;
+    private static final float NORMAL_RING_PEAK_DEGREES_PER_TICK = 5.5F;
+    private static final float RESONANCE_RING_PEAK_DEGREES_PER_TICK = 8.0F;
+    private static final float NORMAL_RING_STARTUP_MULTIPLIER = 0.20F;
+    private static final float RESONANCE_RING_STARTUP_MULTIPLIER = 0.30F;
+    private static final float NORMAL_RING_PEAK_SPEED_BOOST = 0.10F;
+    private static final float RESONANCE_RING_PEAK_SPEED_BOOST = 0.18F;
+    private static final float RING_ENGAGEMENT_SPAN = 0.14F;
+    private static final float VISUAL_WAKE_PER_TICK = 1.0F / 24.0F;
+    private static final float NORMAL_VISUAL_COOLDOWN_PER_TICK = 1.0F / 42.0F;
+    private static final float RESONANCE_VISUAL_COOLDOWN_PER_TICK = 1.0F / 56.0F;
+    private static final float NORMAL_REACTION_COOLDOWN_PER_TICK = 0.025F;
+    private static final float RESONANCE_REACTION_COOLDOWN_PER_TICK = 0.018F;
+    private static final float INNER_RING_START = 0.02F;
+    private static final float OUTER_RING_START = 0.30F;
+    private static final int COMPLETION_PEAK_TICKS = 7;
+    private float clientPreviousInnerRingAngle;
+    private float clientInnerRingAngle;
+    private float clientPreviousOuterRingAngle;
+    private float clientOuterRingAngle;
+    private float clientPreviousReactionProgress;
+    private float clientReactionProgress;
+    private float clientPreviousVisualActivation;
+    private float clientVisualActivation;
+    private float clientPreviousCompletionPulse;
+    private float clientCompletionPulse;
+    private int clientCompletionPeakTicks;
+    private ReactionLevel clientVisualReactionLevel = ReactionLevel.NORMAL;
 
     private final ContainerData menuData = new ContainerData() {
         @Override
@@ -419,24 +442,113 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         }
 
         if (level.isClientSide) {
-            clientPreviousRingAngle = clientRingAngle;
+            clientPreviousInnerRingAngle = clientInnerRingAngle;
+            clientPreviousOuterRingAngle = clientOuterRingAngle;
+            clientPreviousReactionProgress = clientReactionProgress;
+            clientPreviousVisualActivation = clientVisualActivation;
+            clientPreviousCompletionPulse = clientCompletionPulse;
+
             if (processing) {
-                clientRingAngle += RING_DEGREES_PER_TICK;
-                if (clientRingAngle >= 360.0F) {
-                    clientRingAngle -= 360.0F;
-                    clientPreviousRingAngle -= 360.0F;
+                clientVisualReactionLevel = getReactionLevel(activeRecipeId);
+                clientVisualActivation = Math.min(
+                        1.0F,
+                        clientVisualActivation + VISUAL_WAKE_PER_TICK
+                );
+
+                if (processingTime > 0) {
+                    float targetProgress = Math.clamp(
+                            (processingTicks + 1.0F) / processingTime,
+                            0.0F,
+                            1.0F
+                    );
+                    float predictedProgress = Math.min(
+                            1.0F,
+                            clientReactionProgress + 1.0F / processingTime
+                    );
+                    clientReactionProgress = Math.max(
+                            predictedProgress,
+                            targetProgress
+                    );
                 }
 
-                clientVisualProcessingTicks = Math.max(
-                        clientVisualProcessingTicks,
-                        processingTicks
-                );
-                clientVisualProcessingTicks = Math.min(
-                        processingTime,
-                        clientVisualProcessingTicks + 1.0F
-                );
+                if (processingTicks <= 1) {
+                    clientCompletionPeakTicks = 0;
+                    clientCompletionPulse = 0.0F;
+                } else if (clientCompletionPeakTicks <= 0
+                        && clientCompletionPulse > 0.0F) {
+                    clientCompletionPulse = Math.max(
+                            0.0F,
+                            clientCompletionPulse - 0.18F
+                    );
+                }
             } else {
-                clientVisualProcessingTicks = 0.0F;
+                if (clientCompletionPeakTicks > 0) {
+                    clientVisualActivation = Math.max(
+                            clientVisualActivation,
+                            1.0F
+                    );
+                    clientCompletionPulse =
+                            clientCompletionPeakTicks
+                                    / (float) COMPLETION_PEAK_TICKS;
+                    clientCompletionPeakTicks--;
+                } else {
+                    float visualCooldown =
+                            clientVisualReactionLevel == ReactionLevel.RESONANCE
+                                    ? RESONANCE_VISUAL_COOLDOWN_PER_TICK
+                                    : NORMAL_VISUAL_COOLDOWN_PER_TICK;
+                    clientVisualActivation = Math.max(
+                            0.0F,
+                            clientVisualActivation - visualCooldown
+                    );
+                    clientCompletionPulse = Math.max(
+                            0.0F,
+                            clientCompletionPulse - 0.18F
+                    );
+                }
+
+                if (clientReactionProgress > 0.0F) {
+                    float reactionCooldown =
+                            clientVisualReactionLevel == ReactionLevel.RESONANCE
+                                    ? RESONANCE_REACTION_COOLDOWN_PER_TICK
+                                    : NORMAL_REACTION_COOLDOWN_PER_TICK;
+                    clientReactionProgress = Math.max(
+                            0.0F,
+                            clientReactionProgress - reactionCooldown
+                    );
+                }
+            }
+
+            float innerSpeed = getRingSpeed(
+                    clientVisualActivation,
+                    INNER_RING_START,
+                    clientReactionProgress,
+                    clientCompletionPulse,
+                    clientVisualReactionLevel
+            );
+            float outerSpeed = getRingSpeed(
+                    clientVisualActivation,
+                    OUTER_RING_START,
+                    clientReactionProgress,
+                    clientCompletionPulse,
+                    clientVisualReactionLevel
+            );
+
+            clientInnerRingAngle += innerSpeed;
+            if (clientInnerRingAngle >= 360.0F) {
+                clientInnerRingAngle -= 360.0F;
+                clientPreviousInnerRingAngle -= 360.0F;
+            }
+
+            clientOuterRingAngle += outerSpeed;
+            if (clientOuterRingAngle >= 360.0F) {
+                clientOuterRingAngle -= 360.0F;
+                clientPreviousOuterRingAngle -= 360.0F;
+            }
+
+            if (clientVisualActivation <= 0.0F
+                    && clientReactionProgress <= 0.0F
+                    && clientCompletionPulse <= 0.0F) {
+                clientVisualReactionLevel = ReactionLevel.NORMAL;
             }
             return;
         }
@@ -515,6 +627,53 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             setChanged();
             sendData();
         }
+    }
+
+    private static float getRingSpeed(
+            float activation,
+            float start,
+            float reactionProgress,
+            float completionPulse,
+            ReactionLevel reactionLevel
+    ) {
+        if (activation <= start) {
+            return 0.0F;
+        }
+
+        float engagement = Math.clamp(
+                (activation - start) / RING_ENGAGEMENT_SPAN,
+                0.0F,
+                1.0F
+        );
+        engagement = engagement * engagement * (3.0F - 2.0F * engagement);
+
+        float progress = Math.clamp(reactionProgress, 0.0F, 1.0F);
+        float progressCurve;
+        float startupMultiplier;
+        float peakDegreesPerTick;
+        float peakBoost;
+
+        if (reactionLevel == ReactionLevel.RESONANCE) {
+            progressCurve = (float) Math.pow(progress, 0.70D);
+            startupMultiplier = RESONANCE_RING_STARTUP_MULTIPLIER;
+            peakDegreesPerTick = RESONANCE_RING_PEAK_DEGREES_PER_TICK;
+            peakBoost = RESONANCE_RING_PEAK_SPEED_BOOST;
+        } else {
+            progressCurve = progress * progress * (3.0F - 2.0F * progress);
+            startupMultiplier = NORMAL_RING_STARTUP_MULTIPLIER;
+            peakDegreesPerTick = NORMAL_RING_PEAK_DEGREES_PER_TICK;
+            peakBoost = NORMAL_RING_PEAK_SPEED_BOOST;
+        }
+
+        float processingSpeed = startupMultiplier
+                + (1.0F - startupMultiplier) * progressCurve;
+        float completionBoost = 1.0F
+                + peakBoost * Math.clamp(completionPulse, 0.0F, 1.0F);
+
+        return engagement
+                * processingSpeed
+                * peakDegreesPerTick
+                * completionBoost;
     }
 
     private void updateHeat() {
@@ -901,24 +1060,92 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     }
 
 
-    public float getClientRingAngle(float partialTick) {
-        return clientPreviousRingAngle
-                + (clientRingAngle - clientPreviousRingAngle) * partialTick;
+    public float getClientInnerRingAngle(float partialTick) {
+        return clientPreviousInnerRingAngle
+                + (clientInnerRingAngle - clientPreviousInnerRingAngle)
+                * partialTick;
+    }
+
+    public float getClientOuterRingAngle(float partialTick) {
+        return clientPreviousOuterRingAngle
+                + (clientOuterRingAngle - clientPreviousOuterRingAngle)
+                * partialTick;
     }
 
     public float getClientReactionProgress(float partialTick) {
+        if (level != null && level.isClientSide) {
+            return Math.clamp(
+                    clientPreviousReactionProgress
+                            + (clientReactionProgress - clientPreviousReactionProgress)
+                            * partialTick,
+                    0.0F,
+                    1.0F
+            );
+        }
+
         if (!processing || processingTime <= 0) {
             return 0.0F;
         }
+        return Math.clamp(
+                processingTicks / (float) processingTime,
+                0.0F,
+                1.0F
+        );
+    }
 
-        float visualTicks = level != null && level.isClientSide
-                ? clientVisualProcessingTicks + partialTick
-                : processingTicks;
-        return Math.clamp(visualTicks / processingTime, 0.0F, 1.0F);
+    public float getClientVisualActivation(float partialTick) {
+        if (level != null && level.isClientSide) {
+            return Math.clamp(
+                    clientPreviousVisualActivation
+                            + (clientVisualActivation - clientPreviousVisualActivation)
+                            * partialTick,
+                    0.0F,
+                    1.0F
+            );
+        }
+        return processing ? 1.0F : 0.0F;
+    }
+
+    public float getClientCompletionPulse(float partialTick) {
+        if (level != null && level.isClientSide) {
+            return Math.clamp(
+                    clientPreviousCompletionPulse
+                            + (clientCompletionPulse - clientPreviousCompletionPulse)
+                            * partialTick,
+                    0.0F,
+                    1.0F
+            );
+        }
+        return 0.0F;
+    }
+
+    public float getClientHeatVisualStrength() {
+        if (heatTier == null) {
+            return 0.0F;
+        }
+
+        return switch (heatTier) {
+            case NONE -> 0.0F;
+            case SMOULDERING, FADING -> 0.28F;
+            case KINDLED -> 0.38F;
+            case SEETHING -> 0.52F;
+            case RADIANT -> 0.68F;
+        };
     }
 
     public ReactionLevel getActiveReactionLevel() {
         return getReactionLevel(activeRecipeId);
+    }
+
+    public ReactionLevel getClientVisualReactionLevel() {
+        if (level != null
+                && level.isClientSide
+                && (clientVisualActivation > 0.0F
+                || clientReactionProgress > 0.0F
+                || clientCompletionPulse > 0.0F)) {
+            return clientVisualReactionLevel;
+        }
+        return getActiveReactionLevel();
     }
 
     @Override
@@ -1020,6 +1247,11 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     ) {
         super.read(tag, provider, clientPacket);
 
+        boolean wasClientProcessing = clientPacket && processing;
+        ItemStack previousClientOutput = clientPacket
+                ? inventory.get(OUTPUT).copy()
+                : ItemStack.EMPTY;
+
         for (int i = 0; i < SLOT_COUNT; i++) {
             inventory.set(i, ItemStack.EMPTY);
         }
@@ -1050,9 +1282,52 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 : ResourceLocation.tryParse(activeRecipe);
 
         if (clientPacket) {
-            clientVisualProcessingTicks = processing
-                    ? processingTicks
-                    : 0.0F;
+            ItemStack syncedOutput = inventory.get(OUTPUT);
+            boolean outputIncreased = wasClientProcessing
+                    && !syncedOutput.isEmpty()
+                    && (previousClientOutput.isEmpty()
+                    || ItemStack.isSameItemSameComponents(
+                    previousClientOutput,
+                    syncedOutput
+            ) && syncedOutput.getCount() > previousClientOutput.getCount());
+
+            if (outputIncreased) {
+                clientCompletionPeakTicks = COMPLETION_PEAK_TICKS;
+                clientCompletionPulse = 1.0F;
+                clientPreviousCompletionPulse = 1.0F;
+                clientVisualActivation = 1.0F;
+                clientPreviousVisualActivation = 1.0F;
+            }
+
+            if (processing && processingTime > 0) {
+                float syncedProgress = Math.clamp(
+                        processingTicks / (float) processingTime,
+                        0.0F,
+                        1.0F
+                );
+                float syncedActivation = Math.clamp(
+                        processingTicks * VISUAL_WAKE_PER_TICK,
+                        0.0F,
+                        1.0F
+                );
+                clientReactionProgress = Math.max(
+                        clientReactionProgress,
+                        syncedProgress
+                );
+                clientPreviousReactionProgress = Math.max(
+                        clientPreviousReactionProgress,
+                        Math.min(clientReactionProgress, syncedProgress)
+                );
+                clientVisualActivation = Math.max(
+                        clientVisualActivation,
+                        syncedActivation
+                );
+                clientPreviousVisualActivation = Math.max(
+                        clientPreviousVisualActivation,
+                        Math.min(clientVisualActivation, syncedActivation)
+                );
+                clientVisualReactionLevel = getReactionLevel(activeRecipeId);
+            }
         }
     }
 

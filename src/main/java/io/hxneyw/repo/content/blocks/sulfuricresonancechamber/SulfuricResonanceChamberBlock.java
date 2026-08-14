@@ -3,7 +3,6 @@ package io.hxneyw.repo.content.blocks.sulfuricresonancechamber;
 import com.mojang.serialization.MapCodec;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.foundation.block.IBE;
-import io.hxneyw.repo.compat.fuel.FuelCompatibility;
 import io.hxneyw.repo.content.blocks.WrenchInteractionHelper;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
@@ -18,6 +17,8 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -136,7 +137,8 @@ public class SulfuricResonanceChamberBlock
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
-        if (FuelCompatibility.resolve(stack) == null) {
+        if (stack.getItem() instanceof BlockItem
+                || stack.getItem() instanceof BucketItem) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 
@@ -198,16 +200,12 @@ public class SulfuricResonanceChamberBlock
     public static Direction heatAndRotationSide(
             BlockState state
     ) {
-        // The north-facing model's visible shaft is on local east, which is
-        // the player's left when looking at the front of the machine.
         return state.getValue(FACING).getClockWise();
     }
 
     public static Direction fluidSide(
             BlockState state
     ) {
-        // The acid port is the player's right-hand side when looking at the
-        // front of the machine. For a north-facing block that is west.
         return state.getValue(FACING).getCounterClockWise();
     }
 

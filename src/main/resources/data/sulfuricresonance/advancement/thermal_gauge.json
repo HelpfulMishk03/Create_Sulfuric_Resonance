@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:routed_reaction",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:thermal_gauge"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.thermal_gauge.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.thermal_gauge.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_thermal_gauge": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:thermal_gauge"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

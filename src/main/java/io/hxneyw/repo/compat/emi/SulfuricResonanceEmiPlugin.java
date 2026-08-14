@@ -13,6 +13,7 @@ import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplay;
 import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplayRegistry;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.List;
@@ -37,6 +38,9 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
 
     public static final EmiStack MECHANICAL_MIXER =
             EmiStack.of(AllBlocks.MECHANICAL_MIXER.get());
+
+    public static final EmiStack SULFURIC_RESONANCE_CHAMBER =
+            EmiStack.of(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get());
 
     public static final EmiRecipeCategory MOLTEN_ROTOR_FUELS =
             new EmiRecipeCategory(
@@ -65,6 +69,15 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                     MECHANICAL_MIXER
             );
 
+    public static final EmiRecipeCategory SULFURIC_RESONANCE_CHAMBER_PROCESSING =
+            new EmiRecipeCategory(
+                    ResourceLocation.fromNamespaceAndPath(
+                            CreateSulfuricResonance.MODID,
+                            "sulfuric_resonance_chamber"
+                    ),
+                    SULFURIC_RESONANCE_CHAMBER
+            );
+
     @Override
     public void register(EmiRegistry registry) {
         registerCategories(registry);
@@ -77,6 +90,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         registry.addCategory(MOLTEN_ROTOR_FUELS);
         registry.addCategory(COMBUSTION_BELT_PROCESSING);
         registry.addCategory(COMBUSTION_MIXING);
+        registry.addCategory(SULFURIC_RESONANCE_CHAMBER_PROCESSING);
     }
 
     private static void registerWorkstations(EmiRegistry registry) {
@@ -103,6 +117,11 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                 COMBUSTION_MIXING,
                 MOLTEN_ROTOR
         );
+
+        registry.addWorkstation(
+                SULFURIC_RESONANCE_CHAMBER_PROCESSING,
+                SULFURIC_RESONANCE_CHAMBER
+        );
     }
 
     private static void registerMoltenRotorFuels(
@@ -126,6 +145,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
     ) {
         int beltRecipes = 0;
         int mixingRecipes = 0;
+        int chamberRecipes = 0;
 
         for (RecipeHolder<?> holder
                 : registry.getRecipeManager().getRecipes()) {
@@ -141,6 +161,19 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                         )
                 );
                 beltRecipes++;
+                continue;
+            }
+
+            if (recipe instanceof SulfuricResonanceChamberRecipe chamberRecipe) {
+                registry.addRecipe(
+                        new SulfuricResonanceChamberEmiRecipe(
+                                new RecipeHolder<>(
+                                        holder.id(),
+                                        chamberRecipe
+                                )
+                        )
+                );
+                chamberRecipes++;
                 continue;
             }
 
@@ -160,9 +193,10 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         }
 
         LOGGER.info(
-                "CSR EMI registered {} Combustion Belt recipes and {} Combustion Mixing recipes",
+                "CSR EMI registered {} Combustion Belt recipes, {} Combustion Mixing recipes, and {} Sulfuric Resonance Chamber recipes",
                 beltRecipes,
-                mixingRecipes
+                mixingRecipes,
+                chamberRecipes
         );
     }
 

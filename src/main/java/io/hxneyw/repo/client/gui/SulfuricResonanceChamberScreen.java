@@ -120,9 +120,11 @@ public class SulfuricResonanceChamberScreen
         if (contextualRecipe != -1) {
             selectedRecipe = contextualRecipe;
             autoRollTimer = 0;
+            updateButtonState();
             return;
         }
 
+        updateButtonState();
         if (++autoRollTimer >= AUTO_ROLL_TICKS) {
             autoRollTimer = 0;
             changeRecipe(1);
@@ -154,19 +156,20 @@ public class SulfuricResonanceChamberScreen
 
     private void updateButtonState() {
         boolean multiple = recipes.size() > 1;
+        boolean locked = findContextualRecipe() != -1;
 
         if (previousButton != null) {
-            previousButton.active = multiple;
+            previousButton.active = multiple && !locked;
             previousButton.visible = !recipes.isEmpty();
         }
         if (nextButton != null) {
-            nextButton.active = multiple;
+            nextButton.active = multiple && !locked;
             nextButton.visible = !recipes.isEmpty();
         }
     }
 
     private void changeRecipe(int direction) {
-        if (recipes.isEmpty()) {
+        if (recipes.isEmpty() || findContextualRecipe() != -1) {
             return;
         }
 

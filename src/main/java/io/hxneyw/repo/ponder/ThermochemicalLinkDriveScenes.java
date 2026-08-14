@@ -4,14 +4,12 @@ import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.ponder.api.PonderPalette;
-import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.RotatedPillarBlock;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class ThermochemicalLinkDriveScenes {
@@ -97,9 +95,7 @@ public final class ThermochemicalLinkDriveScenes {
                 outputShaftPos,
                 conduitPos
         );
-        Selection upstream = firstDriveSelection.add(input);
         Selection downstream = lastDriveSelection.add(output);
-        Selection fullRoute = drives.add(input).add(output);
 
         scene.showBasePlate();
         scene.idle(10);
@@ -182,38 +178,34 @@ public final class ThermochemicalLinkDriveScenes {
                 .placeNearTarget();
         scene.idle(125);
 
-        scene.world().destroyBlock(middleDrivePos);
-        scene.world().setKineticSpeed(upstream, SPEED);
-        scene.world().setKineticSpeed(downstream, 0.0F);
-        scene.idle(25);
-
-        scene.overlay().showText(125)
-                .text("Breaking any Link Drive in the segment interrupts the physical chain and downstream thermochemical transmission immediately")
+        scene.overlay().showOutline(
+                PonderPalette.RED,
+                "link_drive_continuity_point",
+                middleDriveSelection,
+                125
+        );
+        scene.overlay().showOutline(
+                PonderPalette.RED,
+                "link_drive_downstream_route",
+                downstream,
+                125
+        );
+        scene.overlay().showText(120)
+                .text("Treat the segment as one continuous physical route: any missing or misaligned Link Drive cuts off every downstream connection")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(middleDrivePos))
                 .placeNearTarget();
-        scene.idle(90);
+        scene.idle(130);
 
-        scene.overlay().showControls(
-                        util.vector().topOf(middleDrivePos),
-                        Pointing.DOWN,
-                        50
-                )
-                .rightClick()
-                .withItem(new ItemStack(
-                        AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()
-                ));
-        scene.idle(60);
-
-        scene.world().setBlock(
-                middleDrivePos,
-                middleDrive,
-                false
+        scene.overlay().showOutline(
+                PonderPalette.GREEN,
+                "link_drive_complete_route",
+                drives.add(input).add(output),
+                100
         );
-        scene.world().setKineticSpeed(fullRoute, SPEED);
         scene.effects().indicateSuccess(middleDrivePos);
-        scene.idle(40);
+        scene.idle(110);
         scene.markAsFinished();
     }
 

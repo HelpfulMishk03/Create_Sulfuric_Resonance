@@ -39,8 +39,8 @@ public final class SulfuricResonanceChamberCategory
     private static final int LEFT_ARROW_X = 76;
     private static final int RIGHT_ARROW_X = 140;
     private static final int ARROW_Y = FLOW_CENTER_Y - 8;
-    private static final int CHAMBER_X = FLOW_CENTER_X + 10;
-    private static final int CHAMBER_Y = FLOW_CENTER_Y - 21;
+    private static final int CHAMBER_X = FLOW_CENTER_X + 11;
+    private static final int CHAMBER_Y = FLOW_CENTER_Y - 18;
     private static final int ACID_CAPACITY = 1500;
     private static final int LABEL_COLOR = 0x666666;
     private static final int VALUE_COLOR = 0x303030;

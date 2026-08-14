@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.blocks.sulfuricresonancechamber;
 
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import io.hxneyw.repo.content.registry.AllModMenus;
+import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,6 +23,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
 
     private final ContainerData data;
     private final ContainerLevelAccess access;
+    private final Inventory playerInventory;
 
     public SulfuricResonanceChamberMenu(
             int containerId,
@@ -67,6 +69,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         super(AllModMenus.SULFURIC_RESONANCE_CHAMBER.get(), containerId);
         this.data = data;
         this.access = access;
+        this.playerInventory = playerInventory;
 
         checkContainerDataCount(
                 data,
@@ -179,8 +182,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
         } else {
-            
-            if (!moveItemStackTo(rawStack, 0, 3, false)) {
+            if (!smartMoveToMachine(rawStack)) {
                 int playerInventoryEnd = PLAYER_SLOT_START + 27;
                 if (slotIndex < playerInventoryEnd) {
                     if (!moveItemStackTo(
@@ -214,6 +216,83 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
 
         slot.onTake(player, rawStack);
         return original;
+    }
+
+    private boolean smartMoveToMachine(ItemStack stack) {
+        if (stack.isEmpty() || data.get(3) != 0 || data.get(0) > 0) {
+            return false;
+        }
+
+        for (int pass = 0; pass < 2; pass++) {
+            for (int machineSlot = 0; machineSlot < 3; machineSlot++) {
+                Slot target = slots.get(machineSlot);
+                boolean stacking = target.hasItem()
+                        && ItemStack.isSameItemSameComponents(
+                        target.getItem(),
+                        stack
+                );
+
+                if (pass == 0 && !stacking) {
+                    continue;
+                }
+                if (pass == 1 && target.hasItem()) {
+                    continue;
+                }
+                if (!isValidRecipePlacement(machineSlot, stack)) {
+                    continue;
+                }
+                if (moveItemStackTo(
+                        stack,
+                        machineSlot,
+                        machineSlot + 1,
+                        false
+                )) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isValidRecipePlacement(int slot, ItemStack stack) {
+        ItemStack input1 = getMachineStack(0).copy();
+        ItemStack input2 = getMachineStack(1).copy();
+        ItemStack input3 = getMachineStack(2).copy();
+        ItemStack current = getMachineStack(slot);
+
+        if (!current.isEmpty()
+                && !ItemStack.isSameItemSameComponents(current, stack)) {
+            return false;
+        }
+
+        ItemStack candidate = current.isEmpty()
+                ? stack.copyWithCount(1)
+                : current.copy();
+
+        switch (slot) {
+            case 0 -> input1 = candidate;
+            case 1 -> input2 = candidate;
+            case 2 -> input3 = candidate;
+            default -> {
+                return false;
+            }
+        }
+
+        ItemStack finalInput1 = input1;
+        ItemStack finalInput2 = input2;
+        ItemStack finalInput3 = input3;
+        return playerInventory.player.level()
+                .getRecipeManager()
+                .getAllRecipesFor(
+                        SulfuricResonanceChamberRecipeRegistry.TYPE.get()
+                )
+                .stream()
+                .anyMatch(holder -> holder.value().matchesPresentInputs(
+                        finalInput1,
+                        finalInput2,
+                        finalInput3
+                ));
     }
 
     public ItemStack getMachineStack(int slot) {

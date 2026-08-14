@@ -6,6 +6,127 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+### 0.2.9-beta — Resonance
+
+0.2.9 gives CSR's thermochemical infrastructure an advanced purpose by combining heat, rotation, sulfuric acid, specialized reagents, and automation into a new resonance-processing stage.
+
+#### Added
+
+* Sulfuric Resonance Chamber with a dedicated multi-input processing system.
+* Custom Chamber recipes supporting:
+
+  * Substrate
+  * Optional Catalyst
+  * Optional Auxiliary
+  * Sulfuric Acid
+  * Minimum heat
+  * Minimum RPM
+  * Processing time
+  * Dedicated output
+* Resonant Copper Ingot.
+* Resonant Iron Ingot.
+* Resonant Gold Ingot.
+* Resonant Copper Sheet.
+* Resonant Iron Sheet.
+* Resonant Gold Sheet.
+* Activated Sulfur Catalyst with a custom animated texture.
+* Unfinished Thermal Matrix and Thermal Matrix progression.
+* Resonant Heat Injector.
+* Thermochemical Link Drive.
+* Parallel Thermochemical Gearbox.
+* Thermal Gauge with wrench interaction and linked-network information.
+* Active Sulfuric Resonance Chamber rendering with progressive ring illumination, reaction-dependent ring acceleration, startup sequencing, completion peak, and smooth cooldown.
+* Dedicated Sulfuric Resonance Chamber GUI with integrated recipe browsing.
+* Full Sulfuric Resonance Chamber JEI category.
+* Full Sulfuric Resonance Chamber EMI category.
+* Animated EMI displays for:
+
+  * Molten Rotor Fuels
+  * Combustion Mixing
+  * Combustion Belt
+  * Sulfuric Resonance Chamber
+* Sulfuric Resonance Chamber Ponder scene.
+* Resonant Heat Injector Ponder scene.
+* Thermal Gauge Ponder scene.
+* Thermochemical Link Drive Ponder scene.
+* Thermochemical Cogwheel Ponder scene.
+* Large Thermochemical Cogwheel Ponder scene.
+* Parallel Thermochemical Gearbox Ponder scene.
+* Ash Ceramic Crucible Ponder scene.
+* **Thermochemical Telemetry** advancement.
+* **Material in Tune** advancement for producing a Resonant Metal.
+
+#### Changed
+
+* Molten Rotor Furnace automation now accepts funnels only from the top and back.
+* Thermal Relay Switch, Living Ember Lamp, and Thermal Gauge now share the same linked thermochemical network system.
+* Linked network information can be viewed while holding a connected network item or by hovering with a wrench.
+* Thermochemical Conduit mining requirement reduced from an iron-tier pickaxe to a stone-tier pickaxe.
+* Thermochemical Gearbox texture substantially updated.
+* Parallel Thermochemical Gearbox provides its intended phase-reversed output behavior.
+* Sulfuric Resonance Chamber automatically routes valid ingredients into their appropriate substrate, catalyst, and auxiliary slots.
+* Chamber input automation now preserves recipe validity and rejects incompatible batch changes.
+* Chamber inputs lock during active processing while still allowing manual removal to abort a reaction.
+* Chamber recipe selection remains locked to the active batch during processing.
+* Chamber GUI can be opened while holding ordinary non-placeable items instead of requiring an empty hand.
+* Living Ember Lamp advancement description updated to distinguish remote network-state indication from Thermal Gauge telemetry.
+* JEI and EMI recipe layouts received a complete presentation and alignment pass.
+
+#### Fixed
+
+* Fixed Thermochemical Gearbox rotation propagation.
+* Fixed Parallel Thermochemical Gearbox rotation presentation.
+* Fixed Thermochemical Gearbox shaft alignment and rendering.
+* Fixed Thermochemical Conduit item model so its shaft is correctly baked into the inventory model.
+* Fixed Sulfuric Resonance Chamber GUI access after Mechanical Arm insertion.
+* Fixed Chamber recipe-viewer switching and contextual recipe locking.
+* Fixed Chamber automated insertion and extraction rules.
+* Fixed Chamber funnel-side restrictions.
+* Fixed Chamber Mechanical Arm deposit and take behavior.
+* Fixed Chamber item-slot validation and smart routing.
+* Fixed Chamber processing state persistence and recipe locking.
+* Fixed Chamber ring visuals snapping immediately back to idle after processing.
+* Fixed Chamber ring startup, acceleration, peak-speed, and cooldown behavior.
+* Fixed Chamber NORMAL and RESONANCE visual-speed distinction.
+* Fixed Chamber rendering issues that could obscure internal machinery.
+* Fixed Ashesil and Tempered Ashesil inventory transparency.
+* Fixed missing and incorrect Ponder structures and scene rendering.
+* Fixed Parallel Thermochemical Gearbox Ponder rotation directions.
+* Fixed Thermochemical Cogwheel models not appearing in Ponder scenes.
+* Fixed Ash Ceramic Crucible content not appearing correctly in its Ponder scene.
+* Fixed untranslated shared EMI tags.
+* Fixed JEI and EMI rendering, alignment, and recipe-display issues.
+* Updated all advancement translations.
+* Updated all supported language files and restored exact localization-key parity.
+
+#### Compatibility
+
+* Minecraft **1.21.1**
+* NeoForge **21.1.247+**
+* Create **6.0.7+**
+* JEI **19.42.0.387**
+* EMI **1.1.24+1.21.1**
+* Java **21**
+
+#### Localization
+
+Complete localization coverage is maintained for:
+
+* English (US)
+* English (UK)
+* Spanish
+* French
+* German
+* Portuguese (Brazil)
+
+#### Summary
+
+Resonance completes the next major stage of CSR's thermochemical progression:
+
+**Generate heat → transmit it → combine heat, rotation, acid, and reagents → resonate advanced materials → apply thermochemical heat directly to processing machinery.**
+
+0.2.9 also completes a broad presentation and compatibility pass across JEI, EMI, Ponder, advancements, automation, localization, models, and Chamber rendering.
+
 
 ### 0.2.8-beta — Sulfurous Capabilities
 

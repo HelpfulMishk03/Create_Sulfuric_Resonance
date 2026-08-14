@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockEntityRenderer;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
-import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import io.hxneyw.repo.client.ClientModEvents;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
@@ -34,12 +33,6 @@ public class ThermochemicalCogwheelRenderer
             int light,
             int overlay
     ) {
-        if (VisualizationManager.supportsVisualization(
-                blockEntity.getLevel()
-        )) {
-            return;
-        }
-
         if (!ICogWheel.isLargeCog(
                 blockEntity.getBlockState()
         )) {
