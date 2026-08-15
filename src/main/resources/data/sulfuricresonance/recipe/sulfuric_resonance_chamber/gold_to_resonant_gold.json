@@ -11,5 +11,5 @@
   "acid_amount": 250,
   "minimum_heat": "heated",
   "minimum_speed": 32,
-  "processing_time": 350
+  "processing_time": 240
 }

@@ -1,0 +1,111 @@
+name: "Feature Request"
+description: "Suggest an idea, improvement, or quality-of-life change for Create: Sulfuric Resonance."
+title: "[Suggestion] "
+labels:
+  - "enhancement"
+assignees: []
+
+body:
+  - type: "markdown"
+    attributes:
+      value: |
+        Have an idea for Create: Sulfuric Resonance?
+
+        Suggestions are welcome, especially ideas that fit CSR's thermochemical, sulfur chemistry, progression, and Create-style automation systems.
+
+  - type: "checkboxes"
+    id: "existing"
+    attributes:
+      label: "Existing Suggestion Check"
+      description: "Please check existing issues before submitting a new suggestion."
+      options:
+        - label: "I have searched the existing issues and did not find this suggestion already posted."
+          required: true
+
+  - type: "dropdown"
+    id: "category"
+    attributes:
+      label: "Suggestion Category"
+      description: "What kind of idea are you suggesting?"
+      options:
+        - "New machine or block"
+        - "Existing machine improvement"
+        - "Automation / logistics"
+        - "Recipe or progression"
+        - "Thermochemical network"
+        - "Sulfur chemistry"
+        - "Visual / animation"
+        - "Ponder / documentation"
+        - "Compatibility"
+        - "Quality of life"
+        - "Other"
+    validations:
+      required: true
+
+  - type: "textarea"
+    id: "suggestion"
+    attributes:
+      label: "Describe Your Idea"
+      description: "Explain what you would like to see added, changed, or improved."
+      placeholder: |
+        Describe the feature or change you would like to see.
+
+        Include as much detail as you think is useful.
+    validations:
+      required: true
+
+  - type: "textarea"
+    id: "purpose"
+    attributes:
+      label: "What Would This Add or Improve?"
+      description: "Explain why this idea would be useful or what problem it would solve."
+      placeholder: |
+        Example:
+        This would allow thermochemical networks to...
+    validations:
+      required: false
+
+  - type: "textarea"
+    id: "implementation"
+    attributes:
+      label: "How Do You Imagine It Working?"
+      description: "Optional. Describe mechanics, recipes, interactions, automation behavior, or Create integration."
+      placeholder: |
+        Example:
+        The block could receive...
+        It could interact with...
+        The recipe could require...
+    validations:
+      required: false
+
+  - type: "dropdown"
+    id: "scope"
+    attributes:
+      label: "How Large Is This Suggestion?"
+      description: "Give a rough idea of the scope you imagine."
+      options:
+        - "Small quality-of-life change"
+        - "Minor feature"
+        - "New recipe or material"
+        - "New block or machine"
+        - "New system or mechanic"
+        - "Not sure"
+    validations:
+      required: false
+
+  - type: "textarea"
+    id: "references"
+    attributes:
+      label: "References or Examples"
+      description: |
+        Add screenshots, concept art, diagrams, videos, or examples from other mods if they help explain the idea.
+    validations:
+      required: false
+
+  - type: "textarea"
+    id: "additional"
+    attributes:
+      label: "Additional Information"
+      description: "Add anything else that may help explain the suggestion."
+    validations:
+      required: false

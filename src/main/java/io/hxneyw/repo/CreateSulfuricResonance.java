@@ -30,7 +30,6 @@ public class CreateSulfuricResonance {
    public static final Logger LOGGER = LogUtils.getLogger();
 
    public CreateSulfuricResonance(IEventBus modEventBus, ModContainer modContainer) {
-      LOGGER.info("========== CREATE SULFURIC RESONANCE CONSTRUCTOR CALLED ==========");
       Items.register(modEventBus);
       ModTabs.register(modEventBus);
       ModEntities.register(modEventBus);

@@ -417,6 +417,7 @@
   "sulfuricresonance.ponder.thermochemical_shaft.operation.text_10": "Breaking any required physical connection immediately interrupts thermochemical transmission",
   "sulfuricresonance.ponder.thermochemical_shaft.operation.text_11": "Reach a Thermochemical Conduit before the source-side transmission allowance is exhausted",
   "block.sulfuricresonance.sulfur_burner": "Sulphur Burner",
+  "jade.sulfuricresonance.combustion_belt": "Combustion Belt",
   "heat.sulfuricresonance.idle": "Idle",
   "heat.sulfuricresonance.heated": "Heated",
   "heat.sulfuricresonance.superheated": "Superheated",

@@ -16,5 +16,5 @@
   "acid_amount": 500,
   "minimum_heat": "superheated",
   "minimum_speed": 128,
-  "processing_time": 600
+  "processing_time": 400
 }
