@@ -31,7 +31,7 @@ public final class OccupationalHazardHandler {
             return;
         }
 
-        // Check twice per second.
+        
         if (player.tickCount % 10 != 0) {
             return;
         }

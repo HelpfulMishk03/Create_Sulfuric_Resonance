@@ -626,8 +626,8 @@ public final class ThermochemicalGearboxScenes {
 
     private static float speedForFace(Direction face) {
         return switch (face) {
-            case WEST, SOUTH, UP -> -SPEED;
-            case EAST, NORTH, DOWN -> SPEED;
+            case WEST, NORTH, UP -> -SPEED;
+            case EAST, SOUTH, DOWN -> SPEED;
         };
     }
 

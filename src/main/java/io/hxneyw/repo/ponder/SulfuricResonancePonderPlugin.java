@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 11;
+    private static final int REGISTERED_SCENES = 19;
 
     @NotNull
     @Override
@@ -144,6 +144,42 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     AllPonderTags.REACTIVE_HEAT
             );
 
+            ResourceLocation resonantHeatInjectorId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.RESONANT_HEAT_INJECTOR.get()
+                    );
+
+            helper.addStoryBoard(
+                    resonantHeatInjectorId,
+                    "resonant_heat_injector/operation",
+                    ResonantHeatInjectorScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermochemicalLinkDriveId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalLinkDriveId,
+                    "thermochemical_link_drive/operation",
+                    ThermochemicalLinkDriveScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermalGaugeId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMAL_GAUGE.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermalGaugeId,
+                    "thermal_gauge/operation",
+                    ThermalGaugeScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
             ResourceLocation livingEmberLampId =
                     BuiltInRegistries.BLOCK.getKey(
                             AllModBlocks.LIVING_EMBER_LAMP.get()
@@ -153,6 +189,66 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     livingEmberLampId,
                     "living_ember_lamp/operation",
                     LivingEmberLampScenes::operation
+            );
+
+            ResourceLocation sulfuricResonanceChamberId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
+                    );
+
+            helper.addStoryBoard(
+                    sulfuricResonanceChamberId,
+                    "sulfuric_resonance_chamber/operation",
+                    SulfuricResonanceChamberScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermochemicalCogwheelId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_COGWHEEL.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalCogwheelId,
+                    "thermochemical_cogwheel/operation",
+                    ThermochemicalCogwheelScenes::smallCogwheel,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation largeThermochemicalCogwheelId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get()
+                    );
+
+            helper.addStoryBoard(
+                    largeThermochemicalCogwheelId,
+                    "large_thermochemical_cogwheel/operation",
+                    ThermochemicalCogwheelScenes::largeCogwheel,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation parallelThermochemicalGearboxId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.PARALLEL_THERMOCHEMICAL_GEARBOX.get()
+                    );
+
+            helper.addStoryBoard(
+                    parallelThermochemicalGearboxId,
+                    "parallel_thermochemical_gearbox/operation",
+                    ParallelThermochemicalGearboxScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation ashCeramicCrucibleId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()
+                    );
+
+            helper.addStoryBoard(
+                    ashCeramicCrucibleId,
+                    "ash_ceramic_crucible/operation",
+                    AshCeramicCrucibleScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             CreateSulfuricResonance.LOGGER.info(

@@ -92,6 +92,10 @@ public final class MoltenRotorTemperatureController {
         return (int) this.currentTemperature;
     }
 
+    public float getExactTemperature() {
+        return this.currentTemperature;
+    }
+
     public MoltenRotorBlockEntity.RotorHeatLevel getHeatTier() {
         return this.currentHeatTier;
     }

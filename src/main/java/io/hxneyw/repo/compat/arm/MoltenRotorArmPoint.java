@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-/** Deposit-only Mechanical Arm target for the Molten Rotor fuel chamber. */
+
 public final class MoltenRotorArmPoint extends ArmInteractionPoint {
    public MoltenRotorArmPoint(
            ArmInteractionPointType type,

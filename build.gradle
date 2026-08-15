@@ -40,6 +40,10 @@ repositories {
         repository.url = uri('https://maven.blamejared.com')
     }
 
+    repositories {
+        maven { url = "https://api.modrinth.com/maven" }
+    }
+
     maven { MavenArtifactRepository repository ->
         repository.url = uri('https://repo.spongepowered.org/repository/maven-public/')
     }
@@ -107,7 +111,7 @@ dependencies {
     implementation(createSlimDependency)
 
     implementation("net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}")
-
+    implementation "maven.modrinth:jade:15.10.0+neoforge"
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${minecraft_version}:${flywheel_version}")
     runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
 

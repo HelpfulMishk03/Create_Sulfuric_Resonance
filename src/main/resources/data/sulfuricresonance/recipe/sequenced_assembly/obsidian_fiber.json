@@ -3,18 +3,15 @@
   "ingredient": {
     "item": "sulfuricresonance:obsidian_fiber_mold"
   },
-  "results": [
-    {
-      "id": "sulfuricresonance:obsidian_fiber",
-      "count": 2
-    }
-  ],
+  "transitional_item": {
+    "id": "sulfuricresonance:obsidian_fiber_mold_filled"
+  },
   "sequence": [
     {
       "type": "create:filling",
       "ingredients": [
         {
-          "item": "sulfuricresonance:obsidian_fiber_mold_filled"
+          "item": "sulfuricresonance:obsidian_fiber_mold"
         },
         {
           "type": "neoforge:single",
@@ -42,7 +39,11 @@
       ]
     }
   ],
-  "transitional_item": {
-    "id": "sulfuricresonance:obsidian_fiber_mold_filled"
-  }
+  "results": [
+    {
+      "id": "sulfuricresonance:obsidian_fiber",
+      "count": 2
+    }
+  ],
+  "loops": 1
 }

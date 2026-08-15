@@ -71,16 +71,15 @@ public class CombustionBeltConnectorItem extends Item {
                             context.isInside()
                     );
 
-            ItemInteractionResult extensionResult =
-                    BeltSlicer.useConnector(
-                            clickedState,
-                            level,
-                            clickedPosition,
-                            player,
-                            context.getHand(),
-                            hitResult,
-                            new BeltSlicer.Feedback()
-                    );
+            ItemInteractionResult extensionResult = BeltSlicer.useConnector(
+                    clickedState,
+                    level,
+                    clickedPosition,
+                    player,
+                    context.getHand(),
+                    hitResult,
+                    new BeltSlicer.Feedback()
+            );
 
             if (!level.isClientSide()
                     && extensionResult.consumesAction()) {
@@ -154,6 +153,7 @@ public class CombustionBeltConnectorItem extends Item {
                     clickedPosition
             );
 
+            markCombustionBeltChain(level, firstShaft);
             scheduleCombustionBeltChainMarking(
                     level,
                     firstShaft
@@ -187,14 +187,14 @@ public class CombustionBeltConnectorItem extends Item {
         );
     }
 
-    private static boolean isSupportedShaftState(
+    public static boolean isSupportedShaftState(
             BlockState state
     ) {
         return state.getBlock()
                 instanceof ThermochemicalShaftBlock;
     }
 
-    private static boolean canConnect(
+    public static boolean canConnect(
             Level level,
             BlockPos first,
             BlockPos second
@@ -277,10 +277,8 @@ public class CombustionBeltConnectorItem extends Item {
                 Math.signum(z)
         );
 
-        int limit = 1000;
-
         for (BlockPos current = first.offset(step);
-             !current.equals(second) && limit-- > 0;
+             !current.equals(second);
              current = current.offset(step)) {
             BlockState state =
                     level.getBlockState(current);
@@ -300,7 +298,7 @@ public class CombustionBeltConnectorItem extends Item {
             }
         }
 
-        return limit > 0;
+        return true;
     }
 
     private static void createBelts(
@@ -489,7 +487,6 @@ public class CombustionBeltConnectorItem extends Item {
         List<BlockPos> positions =
                 new LinkedList<>();
 
-        int limit = 1000;
         BlockPos current = start;
 
         do {
@@ -514,8 +511,7 @@ public class CombustionBeltConnectorItem extends Item {
                                 : -1
                 );
             }
-        } while (!current.equals(end)
-                && limit-- > 0);
+        } while (!current.equals(end));
 
         positions.add(end);
         return positions;

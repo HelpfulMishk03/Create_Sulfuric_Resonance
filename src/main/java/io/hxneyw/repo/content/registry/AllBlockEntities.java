@@ -4,11 +4,16 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
+import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import net.minecraft.core.Direction;
@@ -36,6 +41,40 @@ public class AllBlockEntities {
            ).build(null)
    );
 
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ResonantHeatInjectorBlockEntity>
+            > RESONANT_HEAT_INJECTOR =
+            BLOCK_ENTITIES.register(
+                    "resonant_heat_injector",
+                    () -> Builder.of(
+                            ResonantHeatInjectorBlockEntity::new,
+                            AllModBlocks.RESONANT_HEAT_INJECTOR.get()
+                    ).build(null)
+            );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<SulfuricResonanceChamberBlockEntity>
+            > SULFURIC_RESONANCE_CHAMBER =
+            BLOCK_ENTITIES.register(
+                    "sulfuric_resonance_chamber",
+                    () -> Builder.of(
+                            SulfuricResonanceChamberBlockEntity::new,
+                            AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
+                    ).build(null)
+            );
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermochemicalLinkDriveBlockEntity>
+            > THERMOCHEMICAL_LINK_DRIVE =
+            BLOCK_ENTITIES.register(
+                    "thermochemical_link_drive",
+                    () -> Builder.of(
+                            ThermochemicalLinkDriveBlockEntity::new,
+                            AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()
+                    ).build(null)
+            );
     public static final DeferredHolder<
             BlockEntityType<?>,
             BlockEntityType<ThermochemicalCogwheelBlockEntity>
@@ -96,6 +135,17 @@ public class AllBlockEntities {
            ).build(null)
    );
 
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermalGaugeBlockEntity>
+            > THERMAL_GAUGE = BLOCK_ENTITIES.register(
+            "thermal_gauge",
+            () -> Builder.of(
+                    ThermalGaugeBlockEntity::new,
+                    AllModBlocks.THERMAL_GAUGE.get()
+            ).build(null)
+    );
+
    public static final DeferredHolder<
            BlockEntityType<?>,
            BlockEntityType<ThermochemicalConduitBlockEntity>
@@ -131,6 +181,18 @@ public class AllBlockEntities {
                    () -> Builder.of(
                            ThermochemicalGearboxBlockEntity::new,
                            AllModBlocks.THERMOCHEMICAL_GEARBOX.get()
+                   ).build(null)
+           );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ParallelThermochemicalGearboxBlockEntity>
+           > PARALLEL_THERMOCHEMICAL_GEARBOX =
+           BLOCK_ENTITIES.register(
+                   "parallel_thermochemical_gearbox",
+                   () -> Builder.of(
+                           ParallelThermochemicalGearboxBlockEntity::new,
+                           AllModBlocks.PARALLEL_THERMOCHEMICAL_GEARBOX.get()
                    ).build(null)
            );
 
@@ -181,6 +243,18 @@ public class AllBlockEntities {
               ASH_CERAMIC_CRUCIBLE.get(),
               (blockEntity, side) -> blockEntity.getItemCapability()
       );
+
+       event.registerBlockEntity(
+               Capabilities.ItemHandler.BLOCK,
+               SULFURIC_RESONANCE_CHAMBER.get(),
+               SulfuricResonanceChamberBlockEntity::getItemCapability
+       );
+
+       event.registerBlockEntity(
+               FluidHandler.BLOCK,
+               SULFURIC_RESONANCE_CHAMBER.get(),
+               SulfuricResonanceChamberBlockEntity::getFluidCapability
+       );
 
       event.registerBlockEntity(
               FluidHandler.BLOCK,

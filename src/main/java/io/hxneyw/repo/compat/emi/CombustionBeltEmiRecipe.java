@@ -5,22 +5,26 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import io.hxneyw.repo.compat.CombustionBeltDisplayText;
+import io.hxneyw.repo.compat.emi.animations.EmiAnimatedCombustionBelt;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 public final class CombustionBeltEmiRecipe implements EmiRecipe {
 
     private static final int WIDTH = 190;
-    private static final int HEIGHT = 112;
+    private static final int HEIGHT = 124;
+    private static final int SCENE_X = 94;
+    private static final int SCENE_Y = 17;
     private static final int LABEL_COLOR = 0x555555;
     private static final int VALUE_COLOR = 0x303030;
     private static final int DIVIDER_COLOR = 0xFFB8B8B8;
@@ -32,6 +36,8 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
     private final EmiStack output;
     private final EmiStack furnace;
     private final EmiStack belt;
+    private final EmiAnimatedCombustionBelt beltAnimation =
+            new EmiAnimatedCombustionBelt();
 
     public CombustionBeltEmiRecipe(
             RecipeHolder<CombustionBeltRecipe> holder
@@ -40,10 +46,8 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
         this.recipe = holder.value();
         this.input = EmiIngredient.of(this.recipe.ingredient());
         this.output = EmiStack.of(this.recipe.result().copy());
-        this.furnace =
-                SulfuricResonanceEmiPlugin.MOLTEN_ROTOR.copy();
-        this.belt =
-                SulfuricResonanceEmiPlugin.COMBUSTION_BELT.copy();
+        this.furnace = SulfuricResonanceEmiPlugin.MOLTEN_ROTOR.copy();
+        this.belt = SulfuricResonanceEmiPlugin.COMBUSTION_BELT.copy();
     }
 
     @Override
@@ -90,91 +94,66 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
                 WIDTH,
                 HEIGHT,
                 (graphics, mouseX, mouseY, delta) ->
-                        drawBackground(graphics, this.recipe)
+                        drawScreen(graphics)
         );
 
-        widgets.addSlot(this.input, 10, 18);
-
-        widgets.addSlot(this.belt, 72, 18)
-                .catalyst(true);
-
-        widgets.addSlot(this.furnace, 100, 18)
-                .catalyst(true);
-
-        widgets.addSlot(this.output, 162, 18)
+        widgets.addSlot(this.input, 10, 24);
+        widgets.addSlot(this.output, 162, 24)
                 .recipeContext(this);
     }
 
-    private static void drawBackground(
-            GuiGraphics graphics,
-            CombustionBeltRecipe recipe
-    ) {
-        Font font = Minecraft.getInstance().font;
-
-        graphics.drawString(
-                font,
-                Component.literal("→"),
-                42,
-                23,
-                VALUE_COLOR,
-                false
-        );
-
-        graphics.drawString(
-                font,
-                Component.literal("+"),
-                93,
-                23,
-                VALUE_COLOR,
-                false
-        );
-
-        graphics.drawString(
-                font,
-                Component.literal("→"),
-                136,
-                23,
-                VALUE_COLOR,
-                false
-        );
+    private void drawScreen(GuiGraphics graphics) {
+        this.beltAnimation
+                .withDisplayedSegments(this.recipe.requiredSegments())
+                .draw(
+                        graphics,
+                        SCENE_X,
+                        SCENE_Y,
+                        displayedIngredient(this.recipe)
+                );
 
         graphics.fill(
                 6,
-                51,
+                59,
                 WIDTH - 6,
                 HEIGHT - 5,
                 PANEL_COLOR
         );
-
         graphics.fill(
                 6,
-                51,
+                59,
                 WIDTH - 6,
-                52,
+                60,
                 DIVIDER_COLOR
         );
 
+        Font font = Minecraft.getInstance().font;
+
         drawRequirementRow(
                 graphics,
                 font,
-                60,
+                67,
                 Component.translatable(
                         "jei.sulfuricresonance.combustion_belt.label.heat"
                 ),
-                heatComponent(recipe.minimumHeat()),
-                heatColor(recipe.minimumHeat())
+                CombustionBeltDisplayText.heatComponent(
+                        this.recipe.minimumHeat()
+                ),
+                CombustionBeltDisplayText.heatColor(
+                        this.recipe.minimumHeat()
+                )
         );
 
         drawRequirementRow(
                 graphics,
                 font,
-                75,
+                82,
                 Component.translatable(
                         "jei.sulfuricresonance.combustion_belt.label.belt"
                 ),
                 Component.translatable(
                         "jei.sulfuricresonance.combustion_belt.value.segments",
-                        recipe.requiredSegments()
+                        this.recipe.requiredSegments()
                 ),
                 VALUE_COLOR
         );
@@ -185,7 +164,7 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
                 Component.translatable(
                         "jei.sulfuricresonance.combustion_belt.label.time"
                 ),
-                processingTimeValue(recipe)
+                CombustionBeltDisplayText.processingTimeValue(this.recipe)
         );
     }
 
@@ -199,7 +178,7 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
                 font,
                 label,
                 12,
-                90,
+                97,
                 LABEL_COLOR,
                 false
         );
@@ -208,7 +187,7 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
                 font,
                 value,
                 WIDTH - 12 - font.width(value),
-                99,
+                109,
                 VALUE_COLOR,
                 false
         );
@@ -243,67 +222,22 @@ public final class CombustionBeltEmiRecipe implements EmiRecipe {
         );
     }
 
-    private static Component processingTimeValue(
+    private static ItemStack displayedIngredient(
             CombustionBeltRecipe recipe
     ) {
-        int baseTicks = recipe.baseProcessingTicks();
-        int ticksPerItem = recipe.processingTicksPerItem();
+        ItemStack[] items = recipe.ingredient().getItems();
 
-        if (ticksPerItem <= 0) {
-            return Component.translatable(
-                    "jei.sulfuricresonance.combustion_belt.value.time.fixed",
-                    formatSeconds(baseTicks)
-            );
+        if (items.length == 0) {
+            return ItemStack.EMPTY;
         }
 
-        if (baseTicks <= 0) {
-            return Component.translatable(
-                    "jei.sulfuricresonance.combustion_belt.value.time.per_item",
-                    formatSeconds(ticksPerItem)
-            );
-        }
-
-        return Component.translatable(
-                "jei.sulfuricresonance.combustion_belt.value.time.combined",
-                formatSeconds(baseTicks),
-                formatSeconds(ticksPerItem)
+        int index = (int) (
+                Util.getMillis() / 1000L
+                        % items.length
         );
-    }
 
-    private static String formatSeconds(int ticks) {
-        return BigDecimal.valueOf(Math.max(0, ticks))
-                .divide(
-                        BigDecimal.valueOf(20L),
-                        2,
-                        RoundingMode.HALF_UP
-                )
-                .stripTrailingZeros()
-                .toPlainString();
-    }
-
-    private static Component heatComponent(
-            CombustionBeltRecipe.HeatRequirement requirement
-    ) {
-        return switch (requirement) {
-            case HEATED -> Component.translatable(
-                    "jei.sulfuricresonance.combustion_belt.heat.heated"
-            );
-            case SUPERHEATED -> Component.translatable(
-                    "jei.sulfuricresonance.combustion_belt.heat.superheated"
-            );
-            case COMBUSTION -> Component.translatable(
-                    "jei.sulfuricresonance.combustion_belt.heat.combustion"
-            );
-        };
-    }
-
-    private static int heatColor(
-            CombustionBeltRecipe.HeatRequirement requirement
-    ) {
-        return switch (requirement) {
-            case HEATED -> 0xD8872E;
-            case SUPERHEATED -> 0xE94B22;
-            case COMBUSTION -> 0x9A31D0;
-        };
+        ItemStack displayed = items[index].copy();
+        displayed.setCount(1);
+        return displayed;
     }
 }

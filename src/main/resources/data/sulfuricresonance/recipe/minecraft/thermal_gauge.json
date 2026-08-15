@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " T ",
+    " E ",
+    " P "
+  ],
+  "key": {
+    "T": {
+      "item": "sulfuricresonance:tempered_ashesil_pane"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:thermal_gauge",
+    "count": 1
+  }
+}

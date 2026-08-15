@@ -1,0 +1,25 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:sulfur"
+    },
+    {
+      "item": "sulfuricresonance:ember_catalyst"
+    },
+    {
+      "type": "neoforge:single",
+      "fluid": "minecraft:water",
+      "amount": 100
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:activated_sulfur_catalyst",
+      "count": 1
+    }
+  ]
+}

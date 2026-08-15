@@ -3,13 +3,12 @@ package io.hxneyw.repo.mixin;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
-import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlockEntity;
 import io.hxneyw.repo.content.recipes.CombustionMixingRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -55,17 +54,19 @@ public abstract class BasinRecipeMixin {
       Level level = basin.getLevel();
       if (level == null) {
          return false;
-      } else {
-         BlockPos heaterPos = basin.getBlockPos().below();
-         BlockState heaterState = level.getBlockState(heaterPos);
-         if (!(heaterState.getBlock() instanceof MoltenRotorBlock)) {
-            return false;
-         } else {
-            return level.getBlockEntity(heaterPos)
-                    instanceof MoltenRotorBlockEntity rotor
-                    && rotor.getCurrentHeatTier()
-                    == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
-         }
       }
+
+      BlockPos heaterPos = basin.getBlockPos().below();
+      if (level.getBlockEntity(heaterPos) instanceof MoltenRotorBlockEntity rotor) {
+         return rotor.getCurrentHeatTier()
+                 == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
+      }
+
+      if (level.getBlockEntity(heaterPos) instanceof ResonantHeatInjectorBlockEntity injector) {
+         return injector.getSuppliedHeatTier()
+                 == MoltenRotorBlockEntity.RotorHeatLevel.RADIANT;
+      }
+
+      return false;
    }
 }

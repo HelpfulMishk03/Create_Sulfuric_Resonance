@@ -67,6 +67,26 @@ public class UniversalTooltipHandler {
             ).withStyle(ChatFormatting.GRAY));
          }
 
+         case "unfinished_thermal_matrix" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.unfinished_thermal_matrix.1"
+            ).withStyle(ChatFormatting.GRAY));
+
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.unfinished_thermal_matrix.2"
+            ).withStyle(ChatFormatting.GOLD));
+         }
+
+         case "thermal_matrix" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.thermal_matrix.1"
+            ).withStyle(ChatFormatting.GOLD));
+
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.thermal_matrix.2"
+            ).withStyle(ChatFormatting.GRAY));
+         }
+
          case "sulfur_block" -> {
             lines.add(Component.translatable(
                     "tooltip.sulfuricresonance.sulfur_block.storage"
@@ -159,6 +179,15 @@ public class UniversalTooltipHandler {
                          "tooltip.sulfuricresonance.ash_ceramic_crucible"
                  ).withStyle(ChatFormatting.GRAY)
          );
+
+         case "resonant_heat_injector" -> {
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.resonant_heat_injector.item.1"
+            ).withStyle(ChatFormatting.GOLD));
+            lines.add(Component.translatable(
+                    "tooltip.sulfuricresonance.resonant_heat_injector.item.2"
+            ).withStyle(ChatFormatting.GRAY));
+         }
       }
 
 

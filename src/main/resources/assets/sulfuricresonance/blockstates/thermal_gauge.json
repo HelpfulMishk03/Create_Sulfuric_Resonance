@@ -1,0 +1,9 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "sulfuricresonance:block/thermal_gauge_empty"
+      }
+    }
+  ]
+}

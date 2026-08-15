@@ -2,8 +2,7 @@ package io.hxneyw.repo.client;
 
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
-import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
-import com.simibubi.create.infrastructure.config.AllConfigs;
+import io.hxneyw.repo.content.items.CombustionBeltConnectorItem;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.Items;
 import net.minecraft.client.Minecraft;
@@ -118,7 +117,7 @@ public final class CombustionBeltConnectorPreview {
 
         BlockPos selected = blockHit.getBlockPos();
 
-        if (!ShaftBlock.isShaft(
+        if (!CombustionBeltConnectorItem.isSupportedShaftState(
                 level.getBlockState(selected)
         )) {
             selected = selected.relative(
@@ -128,20 +127,13 @@ public final class CombustionBeltConnectorPreview {
 
         if (!selected.closerThan(
                 first,
-                AllConfigs.server()
-                        .kinetics
-                        .maxBeltLength
-                        .get()
+                BeltConnectorItem.maxLength()
         )) {
             return;
         }
 
         boolean canConnect =
-                BeltConnectorItem.validateAxis(
-                        level,
-                        selected
-                )
-                        && BeltConnectorItem.canConnect(
+                CombustionBeltConnectorItem.canConnect(
                         level,
                         first,
                         selected
@@ -152,10 +144,10 @@ public final class CombustionBeltConnectorPreview {
 
         Vec3 actualDifference = end.subtract(start);
 
-        /*
-         * Remove movement along the shaft axis. Belts travel
-         * perpendicular to the shafts.
-         */
+        
+
+
+
         end = end.subtract(
                 shaftAxis.choose(
                         actualDifference.x,

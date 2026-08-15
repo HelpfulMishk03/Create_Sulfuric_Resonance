@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:routed_reaction",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:resonant_heat_injector"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.resonant_heat_injector.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.resonant_heat_injector.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_resonant_heat_injector": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:resonant_heat_injector"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

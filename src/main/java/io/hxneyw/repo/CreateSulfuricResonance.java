@@ -8,6 +8,7 @@ import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
+import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import io.hxneyw.repo.content.registry.*;
 import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -29,7 +30,6 @@ public class CreateSulfuricResonance {
    public static final Logger LOGGER = LogUtils.getLogger();
 
    public CreateSulfuricResonance(IEventBus modEventBus, ModContainer modContainer) {
-      LOGGER.info("========== CREATE SULFURIC RESONANCE CONSTRUCTOR CALLED ==========");
       Items.register(modEventBus);
       ModTabs.register(modEventBus);
       ModEntities.register(modEventBus);
@@ -37,6 +37,7 @@ public class CreateSulfuricResonance {
       AllBlockEntities.register(modEventBus);
       ModRecipeTypes.register(modEventBus);
       CombustionBeltRecipeRegistry.register(modEventBus);
+      SulfuricResonanceChamberRecipeRegistry.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);
       AllModMenus.register(modEventBus);
       ModParticles.PARTICLE_TYPES.register(modEventBus);
@@ -61,7 +62,6 @@ public class CreateSulfuricResonance {
       value = {Dist.CLIENT}
    )
    public static class ClientModEvents {
-
       @SubscribeEvent
       public static void onClientSetup(FMLClientSetupEvent event) {
          event.enqueueWork(() ->

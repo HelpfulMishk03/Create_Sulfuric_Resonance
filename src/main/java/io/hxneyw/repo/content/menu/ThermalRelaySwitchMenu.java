@@ -114,6 +114,8 @@ public class ThermalRelaySwitchMenu
                 containerId
         );
 
+        Objects.requireNonNull(playerInventory);
+
         this.relay = relay;
         this.data = data;
         this.access = access;
@@ -241,9 +243,6 @@ public class ThermalRelaySwitchMenu
         return this.data.get(DATA_CURRENT_GLOW);
     }
 
-    public int getLinkedCount() {
-        return this.data.get(DATA_LINKED_COUNT);
-    }
 
     public boolean isLowFuelWarningActive() {
         return this.data.get(

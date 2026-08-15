@@ -192,7 +192,7 @@ public class PerforatedSpritzerScenes {
               "Mob Automation with the Perforated Spritzer"
       );
 
-      /* These positions match perforated_spritzer/mob_automation.nbt. */
+      
       BlockPos chestPos = util.grid().at(0, 1, 2);
       BlockPos funnelPos = util.grid().at(1, 1, 2);
       BlockPos targetPos = util.grid().at(2, 0, 2);
@@ -232,7 +232,7 @@ public class PerforatedSpritzerScenes {
       );
       scene.idle(25);
 
-      /* text_1 */
+      
       scene.overlay()
               .showText(100)
               .text("This setup uses a Perforated Spritzer to damage mobs and collect their drops")
@@ -251,7 +251,7 @@ public class PerforatedSpritzerScenes {
       createStationaryBabyZombie(scene, util, targetPos);
       scene.idle(15);
 
-      /* text_2 */
+      
       scene.overlay()
               .showText(120)
               .text("Sulfuric Acid applies Acid Burn and repeatedly damages living entities beneath the Spritzer")
@@ -293,7 +293,7 @@ public class PerforatedSpritzerScenes {
       );
       scene.idle(15);
 
-      /* text_3 */
+      
       scene.overlay()
               .showText(90)
               .text("When the mob is defeated, its drops remain beneath the Spritzer")
@@ -311,7 +311,7 @@ public class PerforatedSpritzerScenes {
               -32.0F
       );
 
-      /* text_4 */
+      
       scene.overlay()
               .showText(110)
               .text("An Encased Fan pushes those dropped items toward the Funnel")
@@ -329,7 +329,7 @@ public class PerforatedSpritzerScenes {
       }
       scene.idle(70);
 
-      /* text_5 */
+      
       scene.overlay()
               .showText(100)
               .text("The Funnel inserts the loot into the attached Chest automatically")
@@ -358,7 +358,7 @@ public class PerforatedSpritzerScenes {
       createStationaryBabyZombie(scene, util, targetPos);
       scene.idle(15);
 
-      /* text_6 */
+      
       scene.overlay()
               .showText(110)
               .text("Supplying Lava instead ignites entities caught beneath the Spritzer")
@@ -399,7 +399,7 @@ public class PerforatedSpritzerScenes {
       fillSpritzer(scene, spritzerPos, Fluids.WATER);
       scene.idle(20);
 
-      /* text_7 */
+      
       scene.overlay()
               .showText(110)
               .text("Water has the opposite use, extinguishing burning entities below")
@@ -432,7 +432,7 @@ public class PerforatedSpritzerScenes {
       }
       scene.idle(72);
 
-      /* text_8 */
+      
       scene.overlay()
               .showText(110)
               .text("Choose the supplied fluid to damage mobs, ignite them, or extinguish fire")

@@ -1,0 +1,14 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:resonant_gold_ingot"
+    }
+  ],
+  "results": [
+    {
+      "count": 1,
+      "id": "sulfuricresonance:resonant_gold_sheet"
+    }
+  ]
+}

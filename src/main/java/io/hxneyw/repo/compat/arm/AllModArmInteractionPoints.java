@@ -3,8 +3,8 @@ package io.hxneyw.repo.compat.arm;
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
-import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
+import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -19,12 +19,16 @@ public class AllModArmInteractionPoints {
            CreateBuiltInRegistries.ARM_INTERACTION_POINT_TYPE, "sulfuricresonance"
    );
 
-   public static final DeferredHolder<ArmInteractionPointType, AllModArmInteractionPoints.MoltenRotorType> MOLTEN_ROTOR = ARM_INTERACTION_POINTS.register(
-           "molten_rotor", AllModArmInteractionPoints.MoltenRotorType::new
+   public static final DeferredHolder<ArmInteractionPointType, MoltenRotorType> MOLTEN_ROTOR = ARM_INTERACTION_POINTS.register(
+           "molten_rotor", MoltenRotorType::new
    );
 
-   public static final DeferredHolder<ArmInteractionPointType, AllModArmInteractionPoints.RubberPaddingType> RUBBER_PADDING = ARM_INTERACTION_POINTS.register(
-           "rubber_padding", AllModArmInteractionPoints.RubberPaddingType::new
+   public static final DeferredHolder<ArmInteractionPointType, RubberPaddingType> RUBBER_PADDING = ARM_INTERACTION_POINTS.register(
+           "rubber_padding", RubberPaddingType::new
+   );
+
+   public static final DeferredHolder<ArmInteractionPointType, SulfuricResonanceChamberType> SULFURIC_RESONANCE_CHAMBER = ARM_INTERACTION_POINTS.register(
+           "sulfuric_resonance_chamber", SulfuricResonanceChamberType::new
    );
 
    public static void register(IEventBus eventBus) {
@@ -38,6 +42,18 @@ public class AllModArmInteractionPoints {
 
       public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
          return new MoltenRotorArmPoint(this, level, pos, state);
+      }
+   }
+
+   public static class SulfuricResonanceChamberType extends ArmInteractionPointType {
+      @Override
+      public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
+         return state.getBlock() instanceof SulfuricResonanceChamberBlock;
+      }
+
+      @Override
+      public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
+         return new SulfuricResonanceChamberArmPoint(this, level, pos, state);
       }
    }
 

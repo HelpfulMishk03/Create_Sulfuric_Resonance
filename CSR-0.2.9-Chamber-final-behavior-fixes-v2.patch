@@ -1,0 +1,338 @@
+diff --git a/src/main/java/io/hxneyw/repo/client/SulfuricResonanceChamberRenderer.java b/src/main/java/io/hxneyw/repo/client/SulfuricResonanceChamberRenderer.java
+index 0ef4937..e5f9f38 100644
+--- a/src/main/java/io/hxneyw/repo/client/SulfuricResonanceChamberRenderer.java
++++ b/src/main/java/io/hxneyw/repo/client/SulfuricResonanceChamberRenderer.java
+@@ -157,8 +157,8 @@ public class SulfuricResonanceChamberRenderer
+ 
+         float activation = chamber.getClientVisualActivation(partialTick);
+         float time = chamber.getLevel().getGameTime() + partialTick;
+-        float portPulse = 0.84F
+-                + 0.16F * (float) Math.sin(time * 0.19F);
++        float portPulse = 0.82F
++                + 0.18F * (float) Math.sin(time * 0.19F);
+         float visibleStrength = heatStrength
+                 * (0.88F + activation * 0.12F);
+ 
+@@ -211,36 +211,6 @@ public class SulfuricResonanceChamberRenderer
+                 -1.0F, 0.0F, 0.0F
+         );
+ 
+-        float travel = (time * 0.060F) % 1.0F;
+-        float pulseCenterX = (14.35F - travel * 5.7F) / 16.0F;
+-        float pulseHalfWidth = 0.90F / 16.0F;
+-        float pulseY = 5.22F / 16.0F;
+-        float pulseZ0 = 7.10F / 16.0F;
+-        float pulseZ1 = 8.90F / 16.0F;
+-        float travelPulse = 0.86F
+-                + 0.14F * (float) Math.sin(time * 0.31F);
+-        int travelColor = rgba(
+-                255,
+-                142,
+-                54,
+-                visibleStrength
+-                        * 0.19F
+-                        * travelPulse
+-                        * (1.0F - travel * 0.22F)
+-        );
+-
+-        quad(
+-                consumer, pose,
+-                pulseCenterX - pulseHalfWidth, pulseY, pulseZ0,
+-                pulseCenterX - pulseHalfWidth, pulseY, pulseZ1,
+-                pulseCenterX + pulseHalfWidth, pulseY, pulseZ1,
+-                pulseCenterX + pulseHalfWidth, pulseY, pulseZ0,
+-                sprite.getU0(), sprite.getV0(),
+-                sprite.getU1(), sprite.getV1(),
+-                travelColor, LightTexture.FULL_BRIGHT, overlay,
+-                0.0F, 1.0F, 0.0F
+-        );
+-
+         poseStack.popPose();
+     }
+ 
+@@ -610,10 +580,10 @@ public class SulfuricResonanceChamberRenderer
+             float time = chamber.getLevel() == null
+                     ? 0.0F
+                     : chamber.getLevel().getGameTime() + partialTick;
+-            float pulse = 0.88F
+-                    + 0.12F * (float) Math.sin(time * 0.22F);
++            float pulse = 0.82F
++                    + 0.18F * (float) Math.sin(time * 0.19F - 0.85F);
+             float shaftGlow = heatStrength
+-                    * (0.15F + activation * 0.10F)
++                    * (0.26F + activation * 0.18F)
+                     * pulse;
+             renderTintedBakedModel(
+                     poseStack,
+@@ -622,7 +592,7 @@ public class SulfuricResonanceChamberRenderer
+                     1.0F,
+                     0.42F,
+                     0.08F,
+-                    Math.clamp(shaftGlow, 0.0F, 0.30F),
++                    Math.clamp(shaftGlow, 0.0F, 0.48F),
+                     LightTexture.FULL_BRIGHT,
+                     overlay
+             );
+diff --git a/src/main/java/io/hxneyw/repo/client/gui/SulfuricResonanceChamberScreen.java b/src/main/java/io/hxneyw/repo/client/gui/SulfuricResonanceChamberScreen.java
+index b5708dd..310f8d8 100644
+--- a/src/main/java/io/hxneyw/repo/client/gui/SulfuricResonanceChamberScreen.java
++++ b/src/main/java/io/hxneyw/repo/client/gui/SulfuricResonanceChamberScreen.java
+@@ -120,9 +120,11 @@ public class SulfuricResonanceChamberScreen
+         if (contextualRecipe != -1) {
+             selectedRecipe = contextualRecipe;
+             autoRollTimer = 0;
++            updateButtonState();
+             return;
+         }
+ 
++        updateButtonState();
+         if (++autoRollTimer >= AUTO_ROLL_TICKS) {
+             autoRollTimer = 0;
+             changeRecipe(1);
+@@ -154,19 +156,20 @@ public class SulfuricResonanceChamberScreen
+ 
+     private void updateButtonState() {
+         boolean multiple = recipes.size() > 1;
++        boolean locked = findContextualRecipe() != -1;
+ 
+         if (previousButton != null) {
+-            previousButton.active = multiple;
++            previousButton.active = multiple && !locked;
+             previousButton.visible = !recipes.isEmpty();
+         }
+         if (nextButton != null) {
+-            nextButton.active = multiple;
++            nextButton.active = multiple && !locked;
+             nextButton.visible = !recipes.isEmpty();
+         }
+     }
+ 
+     private void changeRecipe(int direction) {
+-        if (recipes.isEmpty()) {
++        if (recipes.isEmpty() || findContextualRecipe() != -1) {
+             return;
+         }
+ 
+diff --git a/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlockEntity.java b/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlockEntity.java
+index 94f8fc2..68672bb 100644
+--- a/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlockEntity.java
++++ b/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberBlockEntity.java
+@@ -369,9 +369,12 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
+     private @Nullable ResourceLocation activeRecipeId;
+     private ChamberStatus status = ChamberStatus.IDLE;
+ 
+-    private static final float RING_DEGREES_PER_TICK = 3.0F;
+-    private static final float RING_STARTUP_MULTIPLIER = 0.20F;
+-    private static final float RING_PEAK_SPEED_BOOST = 0.08F;
++    private static final float NORMAL_RING_PEAK_DEGREES_PER_TICK = 5.5F;
++    private static final float RESONANCE_RING_PEAK_DEGREES_PER_TICK = 8.0F;
++    private static final float NORMAL_RING_STARTUP_MULTIPLIER = 0.20F;
++    private static final float RESONANCE_RING_STARTUP_MULTIPLIER = 0.30F;
++    private static final float NORMAL_RING_PEAK_SPEED_BOOST = 0.10F;
++    private static final float RESONANCE_RING_PEAK_SPEED_BOOST = 0.18F;
+     private static final float RING_ENGAGEMENT_SPAN = 0.14F;
+     private static final float VISUAL_WAKE_PER_TICK = 1.0F / 24.0F;
+     private static final float NORMAL_VISUAL_COOLDOWN_PER_TICK = 1.0F / 42.0F;
+@@ -515,19 +518,19 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
+                 }
+             }
+ 
+-            float innerSpeed = RING_DEGREES_PER_TICK
+-                    * getRingSpeedMultiplier(
++            float innerSpeed = getRingSpeed(
+                     clientVisualActivation,
+                     INNER_RING_START,
+                     clientReactionProgress,
+-                    clientCompletionPulse
++                    clientCompletionPulse,
++                    clientVisualReactionLevel
+             );
+-            float outerSpeed = RING_DEGREES_PER_TICK
+-                    * getRingSpeedMultiplier(
++            float outerSpeed = getRingSpeed(
+                     clientVisualActivation,
+                     OUTER_RING_START,
+                     clientReactionProgress,
+-                    clientCompletionPulse
++                    clientCompletionPulse,
++                    clientVisualReactionLevel
+             );
+ 
+             clientInnerRingAngle += innerSpeed;
+@@ -626,11 +629,12 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
+         }
+     }
+ 
+-    private static float getRingSpeedMultiplier(
++    private static float getRingSpeed(
+             float activation,
+             float start,
+             float reactionProgress,
+-            float completionPulse
++            float completionPulse,
++            ReactionLevel reactionLevel
+     ) {
+         if (activation <= start) {
+             return 0.0F;
+@@ -644,15 +648,32 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
+         engagement = engagement * engagement * (3.0F - 2.0F * engagement);
+ 
+         float progress = Math.clamp(reactionProgress, 0.0F, 1.0F);
+-        progress = progress * progress * (3.0F - 2.0F * progress);
++        float progressCurve;
++        float startupMultiplier;
++        float peakDegreesPerTick;
++        float peakBoost;
++
++        if (reactionLevel == ReactionLevel.RESONANCE) {
++            progressCurve = (float) Math.pow(progress, 0.70D);
++            startupMultiplier = RESONANCE_RING_STARTUP_MULTIPLIER;
++            peakDegreesPerTick = RESONANCE_RING_PEAK_DEGREES_PER_TICK;
++            peakBoost = RESONANCE_RING_PEAK_SPEED_BOOST;
++        } else {
++            progressCurve = progress * progress * (3.0F - 2.0F * progress);
++            startupMultiplier = NORMAL_RING_STARTUP_MULTIPLIER;
++            peakDegreesPerTick = NORMAL_RING_PEAK_DEGREES_PER_TICK;
++            peakBoost = NORMAL_RING_PEAK_SPEED_BOOST;
++        }
+ 
+-        float processingSpeed = RING_STARTUP_MULTIPLIER
+-                + (1.0F - RING_STARTUP_MULTIPLIER) * progress;
+-        float peakBoost = 1.0F
+-                + RING_PEAK_SPEED_BOOST
+-                * Math.clamp(completionPulse, 0.0F, 1.0F);
++        float processingSpeed = startupMultiplier
++                + (1.0F - startupMultiplier) * progressCurve;
++        float completionBoost = 1.0F
++                + peakBoost * Math.clamp(completionPulse, 0.0F, 1.0F);
+ 
+-        return engagement * processingSpeed * peakBoost;
++        return engagement
++                * processingSpeed
++                * peakDegreesPerTick
++                * completionBoost;
+     }
+ 
+     private void updateHeat() {
+diff --git a/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberMenu.java b/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberMenu.java
+index 46e2fa3..9ab171d 100644
+--- a/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberMenu.java
++++ b/src/main/java/io/hxneyw/repo/content/blocks/sulfuricresonancechamber/SulfuricResonanceChamberMenu.java
+@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.blocks.sulfuricresonancechamber;
+ 
+ import io.hxneyw.repo.content.registry.AllModBlocks;
+ import io.hxneyw.repo.content.registry.AllModMenus;
++import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
+ import net.minecraft.world.entity.player.Inventory;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.inventory.AbstractContainerMenu;
+@@ -22,6 +23,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
+ 
+     private final ContainerData data;
+     private final ContainerLevelAccess access;
++    private final Inventory playerInventory;
+ 
+     public SulfuricResonanceChamberMenu(
+             int containerId,
+@@ -67,6 +69,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
+         super(AllModMenus.SULFURIC_RESONANCE_CHAMBER.get(), containerId);
+         this.data = data;
+         this.access = access;
++        this.playerInventory = playerInventory;
+ 
+         checkContainerDataCount(
+                 data,
+@@ -179,8 +182,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
+                 return ItemStack.EMPTY;
+             }
+         } else {
+-            
+-            if (!moveItemStackTo(rawStack, 0, 3, false)) {
++            if (!smartMoveToMachine(rawStack)) {
+                 int playerInventoryEnd = PLAYER_SLOT_START + 27;
+                 if (slotIndex < playerInventoryEnd) {
+                     if (!moveItemStackTo(
+@@ -216,6 +218,83 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
+         return original;
+     }
+ 
++    private boolean smartMoveToMachine(ItemStack stack) {
++        if (stack.isEmpty() || data.get(3) != 0 || data.get(0) > 0) {
++            return false;
++        }
++
++        for (int pass = 0; pass < 2; pass++) {
++            for (int machineSlot = 0; machineSlot < 3; machineSlot++) {
++                Slot target = slots.get(machineSlot);
++                boolean stacking = target.hasItem()
++                        && ItemStack.isSameItemSameComponents(
++                        target.getItem(),
++                        stack
++                );
++
++                if (pass == 0 && !stacking) {
++                    continue;
++                }
++                if (pass == 1 && target.hasItem()) {
++                    continue;
++                }
++                if (!isValidRecipePlacement(machineSlot, stack)) {
++                    continue;
++                }
++                if (moveItemStackTo(
++                        stack,
++                        machineSlot,
++                        machineSlot + 1,
++                        false
++                )) {
++                    return true;
++                }
++            }
++        }
++
++        return false;
++    }
++
++    private boolean isValidRecipePlacement(int slot, ItemStack stack) {
++        ItemStack input1 = getMachineStack(0).copy();
++        ItemStack input2 = getMachineStack(1).copy();
++        ItemStack input3 = getMachineStack(2).copy();
++        ItemStack current = getMachineStack(slot);
++
++        if (!current.isEmpty()
++                && !ItemStack.isSameItemSameComponents(current, stack)) {
++            return false;
++        }
++
++        ItemStack candidate = current.isEmpty()
++                ? stack.copyWithCount(1)
++                : current.copy();
++
++        switch (slot) {
++            case 0 -> input1 = candidate;
++            case 1 -> input2 = candidate;
++            case 2 -> input3 = candidate;
++            default -> {
++                return false;
++            }
++        }
++
++        ItemStack finalInput1 = input1;
++        ItemStack finalInput2 = input2;
++        ItemStack finalInput3 = input3;
++        return playerInventory.player.level()
++                .getRecipeManager()
++                .getAllRecipesFor(
++                        SulfuricResonanceChamberRecipeRegistry.TYPE.get()
++                )
++                .stream()
++                .anyMatch(holder -> holder.value().matchesPresentInputs(
++                        finalInput1,
++                        finalInput2,
++                        finalInput3
++                ));
++    }
++
+     public ItemStack getMachineStack(int slot) {
+         if (slot < 0 || slot >= MACHINE_SLOT_COUNT) {
+             return ItemStack.EMPTY;

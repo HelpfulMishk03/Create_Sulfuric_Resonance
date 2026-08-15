@@ -70,9 +70,22 @@ public class ThermalRelaySwitchItem extends BlockItem {
                 furnace.getFurnaceIdentity()
         );
 
+        FurnaceLink existingFurnace =
+                getLinkedFurnace(stack);
+
+        boolean startsNewNetwork =
+                existingFurnace == null
+                        || !existingFurnace.equals(
+                        clickedFurnace
+                );
+
         if (!level.isClientSide) {
             setLinkedFurnace(stack, clickedFurnace);
             markInventoryChanged(player);
+
+            if (startsNewNetwork) {
+                ThermalNetworkMessages.showStarted(player);
+            }
         }
 
         return InteractionResult.sidedSuccess(

@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:routed_reaction",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:sulfuric_resonance_chamber"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.sulfuric_resonance_chamber.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.sulfuric_resonance_chamber.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_sulfuric_resonance_chamber": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:sulfuric_resonance_chamber"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

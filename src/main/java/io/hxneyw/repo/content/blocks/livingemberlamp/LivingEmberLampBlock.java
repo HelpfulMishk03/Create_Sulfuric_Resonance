@@ -45,7 +45,7 @@ public class LivingEmberLampBlock
             IntegerProperty.create("light_level", 0, 15);
 
     private static final VoxelShape SHAPE = Shapes.or(
-            // Lower floor
+            
             Block.box(2, 0, 2, 3, 2, 3),
             Block.box(13, 0, 2, 14, 2, 3),
             Block.box(3, 0, 3, 13, 1, 13),
@@ -104,7 +104,7 @@ public class LivingEmberLampBlock
             Block.box(10, 15, 10, 11, 16, 11)
     ).optimize();
 
-    public LivingEmberLampBlock(BlockBehaviour.Properties properties) {
+    public LivingEmberLampBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
                 this.stateDefinition.any()

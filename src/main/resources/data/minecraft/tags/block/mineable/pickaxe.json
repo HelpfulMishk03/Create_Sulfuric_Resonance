@@ -20,10 +20,15 @@
     "sulfuricresonance:ash_ceramic_crucible",
     "sulfuricresonance:thermochemical_shaft",
     "sulfuricresonance:thermochemical_gearbox",
+    "sulfuricresonance:parallel_thermochemical_gearbox",
     "sulfuricresonance:carbon_deposit_block",
     "sulfuricresonance:infernal_carbon_deposit_block",
     "sulfuricresonance:thermochemical_cogwheel",
     "sulfuricresonance:large_thermochemical_cogwheel",
-    "sulfuricresonance:sulfur_burner"
+    "sulfuricresonance:sulfur_burner",
+    "sulfuricresonance:sulfuric_resonance_chamber",
+    "sulfuricresonance:thermochemical_link_drive",
+    "sulfuricresonance:thermal_gauge",
+    "sulfuricresonance:resonant_heat_injector"
   ]
 }

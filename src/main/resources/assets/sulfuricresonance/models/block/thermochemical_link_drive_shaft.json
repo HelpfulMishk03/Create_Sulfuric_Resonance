@@ -1,0 +1,22 @@
+{
+  "textures": {
+    "axis": "sulfuricresonance:block/thermochemical_link_drive_axis",
+    "axis_top": "sulfuricresonance:block/thermochemical_link_drive_axis_top",
+    "particle": "#axis"
+  },
+  "elements": [
+    {
+      "from": [6, 0, 6],
+      "to": [10, 16, 10],
+      "shade": false,
+      "faces": {
+        "north": {"uv": [6, 0, 10, 16], "texture": "#axis"},
+        "east": {"uv": [6, 0, 10, 16], "texture": "#axis"},
+        "south": {"uv": [6, 0, 10, 16], "texture": "#axis"},
+        "west": {"uv": [6, 0, 10, 16], "texture": "#axis"},
+        "up": {"uv": [6, 6, 10, 10], "texture": "#axis_top"},
+        "down": {"uv": [6, 6, 10, 10], "texture": "#axis_top"}
+      }
+    }
+  ]
+}

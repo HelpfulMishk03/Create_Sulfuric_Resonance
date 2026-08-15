@@ -13,11 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-/**
- * Depot-like Mechanical Arm interaction for Rubber Padding.
- * Holds one physical item stack, merges matching deposits, and never reaches
- * into neighboring blocks for unrelated dropped items.
- */
+
 public final class RubberPaddingArmPoint extends ArmInteractionPoint {
    public RubberPaddingArmPoint(
            ArmInteractionPointType type,

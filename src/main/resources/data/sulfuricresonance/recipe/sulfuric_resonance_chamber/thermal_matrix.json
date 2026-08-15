@@ -1,0 +1,20 @@
+{
+  "type": "sulfuricresonance:sulfuric_resonance_chamber",
+  "substrate": {
+    "item": "sulfuricresonance:thermochemical_casing"
+  },
+  "catalyst": {
+    "item": "sulfuricresonance:activated_sulfur_catalyst"
+  },
+  "auxiliary": {
+    "item": "sulfuricresonance:unfinished_thermal_matrix"
+  },
+  "result": {
+    "id": "sulfuricresonance:thermal_matrix",
+    "count": 1
+  },
+  "acid_amount": 500,
+  "minimum_heat": "superheated",
+  "minimum_speed": 128,
+  "processing_time": 400
+}

@@ -1,0 +1,15 @@
+{
+  "type": "sulfuricresonance:sulfuric_resonance_chamber",
+  "substrate": {
+    "item": "minecraft:gold_ingot"
+  },
+
+  "result": {
+    "id": "sulfuricresonance:resonant_gold_ingot",
+    "count": 1
+  },
+  "acid_amount": 250,
+  "minimum_heat": "heated",
+  "minimum_speed": 32,
+  "processing_time": 240
+}

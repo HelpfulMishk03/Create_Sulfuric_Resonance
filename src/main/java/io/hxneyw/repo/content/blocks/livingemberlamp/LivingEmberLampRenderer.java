@@ -47,7 +47,7 @@ public class LivingEmberLampRenderer
 
         poseStack.pushPose();
 
-        // Center of the internal chamber
+        
         poseStack.translate(
                 0.5D,
                 0.60D + bob,

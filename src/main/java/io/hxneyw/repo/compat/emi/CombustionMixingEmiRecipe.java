@@ -4,6 +4,7 @@ import com.simibubi.create.content.processing.basin.BasinRecipe;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.content.processing.recipe.HeatCondition;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
+import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.item.ItemHelper;
 import com.simibubi.create.foundation.utility.CreateLang;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -11,6 +12,8 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
+import io.hxneyw.repo.compat.emi.animations.EmiAnimatedCeramicCrucibleMixer;
+import io.hxneyw.repo.compat.emi.animations.EmiAnimatedMoltenRotor;
 import io.hxneyw.repo.content.Items;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +35,6 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
 
     private static final int WIDTH = 177;
     private static final int HEIGHT = 112;
-    private static final int LABEL_COLOR = 0x555555;
-    private static final int VALUE_COLOR = 0x303030;
-    private static final int PANEL_COLOR = 0x12000000;
-
     private final ResourceLocation id;
     private final BasinRecipe recipe;
     private final List<EmiIngredient> inputs;
@@ -44,6 +43,10 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
     private final EmiStack mixer;
     private final EmiStack furnace;
     private final EmiStack soulFiredCake;
+    private final EmiAnimatedCeramicCrucibleMixer mixerAnimation =
+            new EmiAnimatedCeramicCrucibleMixer();
+    private final EmiAnimatedMoltenRotor furnaceAnimation =
+            new EmiAnimatedMoltenRotor();
 
     public CombustionMixingEmiRecipe(
             RecipeHolder<BasinRecipe> holder
@@ -120,11 +123,10 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
                 WIDTH,
                 HEIGHT,
                 (graphics, mouseX, mouseY, delta) ->
-                        drawBackground(graphics, this.recipe)
+                        drawScreen(graphics)
         );
 
         addInputWidgets(widgets);
-        addMachineWidgets(widgets);
         addOutputWidgets(widgets);
         addHeatWidgets(widgets);
     }
@@ -149,8 +151,8 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
 
             widgets.addSlot(
                     ingredient,
-                    8 + xOffset + index % 3 * 19,
-                    47 - index / 3 * 19
+                    17 + xOffset + index % 3 * 19,
+                    51 - index / 3 * 19
             );
 
             index++;
@@ -161,8 +163,8 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
             EmiIngredient ingredient =
                     toEmiIngredient(fluidIngredient);
 
-            int x = 8 + xOffset + index % 3 * 19;
-            int y = 47 - index / 3 * 19;
+            int x = 17 + xOffset + index % 3 * 19;
+            int y = 51 - index / 3 * 19;
 
             widgets.addTank(
                     ingredient,
@@ -177,14 +179,6 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
         }
     }
 
-    private void addMachineWidgets(WidgetHolder widgets) {
-        widgets.addSlot(this.mixer, 77, 12)
-                .catalyst(true);
-
-        widgets.addSlot(this.crucible, 77, 34)
-                .catalyst(true);
-    }
-
     private void addOutputWidgets(WidgetHolder widgets) {
         int size = this.recipe.getRollableResults().size()
                 + this.recipe.getFluidResults().size();
@@ -193,7 +187,7 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
         for (ProcessingOutput result
                 : this.recipe.getRollableResults()) {
             int x = outputX(size, index);
-            int y = 47 - 19 * (index / 2);
+            int y = 51 - 19 * (index / 2);
 
             EmiStack stack = EmiStack.of(result.getStack())
                     .setChance(result.getChance());
@@ -207,7 +201,7 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
         for (FluidStack fluidResult
                 : this.recipe.getFluidResults()) {
             int x = outputX(size, index);
-            int y = 47 - 19 * (index / 2);
+            int y = 51 - 19 * (index / 2);
             EmiStack stack = toEmiStack(fluidResult);
 
             widgets.addTank(
@@ -228,48 +222,51 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
                 this.recipe.getRequiredHeat();
 
         if (!requiredHeat.testBlazeBurner(HeatLevel.NONE)) {
-            widgets.addSlot(this.furnace, 121, 90)
+            widgets.addSlot(this.furnace, 134, 81)
                     .catalyst(true);
         }
 
         if (!requiredHeat.testBlazeBurner(HeatLevel.KINDLED)) {
-            widgets.addSlot(this.soulFiredCake, 142, 90)
+            widgets.addSlot(this.soulFiredCake, 153, 81)
                     .catalyst(true);
         }
     }
 
-    private static void drawBackground(
-            GuiGraphics graphics,
-            BasinRecipe recipe
-    ) {
-        Font font = Minecraft.getInstance().font;
-        HeatCondition requiredHeat = recipe.getRequiredHeat();
+    private void drawScreen(GuiGraphics graphics) {
+        HeatCondition requiredHeat = this.recipe.getRequiredHeat();
+        boolean noHeat = requiredHeat == HeatCondition.NONE;
+        int verticalRows = (
+                1
+                        + this.recipe.getFluidResults().size()
+                        + this.recipe.getRollableResults().size()
+        ) / 2;
+        int centerX = WIDTH / 2 + 3;
 
-        graphics.drawString(
-                font,
-                Component.literal("→"),
-                60,
-                34,
-                VALUE_COLOR,
-                false
-        );
+        if (verticalRows <= 2) {
+            AllGuiTextures.JEI_DOWN_ARROW.render(
+                    graphics,
+                    136,
+                    -19 * (verticalRows - 1) + 32
+            );
+        }
 
-        graphics.drawString(
-                font,
-                Component.literal("→"),
-                102,
-                34,
-                VALUE_COLOR,
-                false
-        );
+        AllGuiTextures shadow = noHeat
+                ? AllGuiTextures.JEI_SHADOW
+                : AllGuiTextures.JEI_LIGHT;
+        shadow.render(graphics, 81, 58 + (noHeat ? 10 : 30));
 
-        graphics.fill(
-                5,
-                73,
-                WIDTH - 5,
-                HEIGHT - 5,
-                PANEL_COLOR
-        );
+        if (!noHeat) {
+            this.furnaceAnimation
+                    .withHeat(requiredHeat.visualizeAsBlazeBurner())
+                    .draw(graphics, centerX, 55);
+        }
+
+        this.mixerAnimation.draw(graphics, centerX, 34);
+
+        AllGuiTextures heatBar = noHeat
+                ? AllGuiTextures.JEI_NO_HEAT_BAR
+                : AllGuiTextures.JEI_HEAT_BAR;
+        heatBar.render(graphics, 4, 80);
 
         Component heatText;
         int heatColor;
@@ -286,25 +283,12 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
             heatColor = requiredHeat.getColor();
         }
 
-        graphics.drawString(
-                font,
-                Component.translatable(
-                        "jei.sulfuricresonance.combustion_belt.label.heat"
-                ),
-                9,
-                82,
-                LABEL_COLOR,
-                false
-        );
-
+        Font font = Minecraft.getInstance().font;
         graphics.drawString(
                 font,
                 heatText,
-                Math.max(
-                        70,
-                        WIDTH - 9 - font.width(heatText)
-                ),
-                82,
+                9,
+                86,
                 heatColor,
                 false
         );
@@ -387,7 +371,7 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
     }
 
     private static int outputX(int size, int index) {
-        return 135 - (
+        return 142 - (
                 size % 2 != 0 && index == size - 1
                         ? 0
                         : index % 2 == 0 ? 10 : -9

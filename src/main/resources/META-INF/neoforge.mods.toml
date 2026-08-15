@@ -2,20 +2,17 @@ modLoader = "javafml"
 loaderVersion = "[4,)"
 
 # Create: Sulfuric Resonance is proprietary software.
-# The complete terms must also be included as LICENSE.md
-# in the root of the finished mod JAR.
 license = "All Rights Reserved; see LICENSE.md"
 
-# issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/issues"
+issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/issues"
 
 
 [[mods]]
 modId = "sulfuricresonance"
-version = "0.2.8-beta-hotfix3"
+version = "0.2.9-beta"
 displayName = "Create: Sulfuric Resonance"
 
-# This file must be located directly inside:
-# src/main/resources/createsulfuricresonance.png
+
 logoFile = "createsulfuricresonance.png"
 
 # Preserve the hard pixel-art edges when NeoForge scales the logo.
@@ -24,7 +21,7 @@ logoBlur = false
 authors = "Hxney, Ł"
 credits = "Created and developed by Hxney, Ł. An independent addon for Create."
 
-# displayURL = "https://www.curseforge.com/minecraft/mc-mods/create-sulfuric-resonance"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/create-sulfuric-resonance"
 
 
 description = '''

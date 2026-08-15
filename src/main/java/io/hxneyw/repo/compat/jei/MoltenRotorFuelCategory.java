@@ -2,11 +2,9 @@ package io.hxneyw.repo.compat.jei;
 
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplay;
+import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplayText;
 import io.hxneyw.repo.compat.jei.animations.AnimatedMoltenRotor;
-import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity.FuelType;
 import io.hxneyw.repo.content.registry.AllModBlocks;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -142,91 +140,21 @@ public final class MoltenRotorFuelCategory
 
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
-        MetricRows rows = createRows(recipe);
+        MoltenRotorFuelDisplayText.MetricRows rows = MoltenRotorFuelDisplayText.createRows(recipe);
 
         drawMetricRow(graphics, font, 66, rows.first());
         drawMetricRow(graphics, font, 81, rows.second());
         drawMetricRow(graphics, font, 96, rows.third());
         drawMetricRow(graphics, font, 111, rows.fourth());
-        drawNote(graphics, font, behaviorNote(recipe));
+        drawNote(graphics, font, MoltenRotorFuelDisplayText.behaviorNote(recipe));
     }
 
-    private static MetricRows createRows(MoltenRotorFuelDisplay recipe) {
-        if (recipe.specialBehavior()
-                == MoltenRotorFuelDisplay.SpecialBehavior.STICK_BOOST) {
-            return new MetricRows(
-                    new Metric(
-                            label("burn_time_added"),
-                            plusDuration(recipe.burnTimeTicks())
-                    ),
-                    new Metric(
-                            label("log_heating_rate"),
-                            heatingRate(FuelType.LOG.celsiusPerSecond)
-                    ),
-                    new Metric(
-                            label("log_maximum"),
-                            temperature(550.0F)
-                    ),
-                    new Metric(
-                            label("maximum_tier"),
-                            tier(550.0F)
-                    )
-            );
-        }
-
-        if (recipe.isManualHeatBoost()) {
-            return new MetricRows(
-                    new Metric(
-                            label("heat_duration"),
-                            plusDuration(recipe.burnTimeTicks())
-                    ),
-                    new Metric(
-                            label("immediate_heat"),
-                            Component.translatable(
-                                    "jei.sulfuricresonance.molten_rotor_fuels.value.at_least_celsius",
-                                    formatNumber(recipe.maximumTemperature())
-                            )
-                    ),
-                    new Metric(
-                            label("maximum_tier"),
-                            Component.translatable(
-                                    "jei.sulfuricresonance.molten_rotor_fuels.tier.combustion"
-                            )
-                    ),
-                    new Metric(
-                            label("insertion"),
-                            Component.translatable(
-                                    "jei.sulfuricresonance.molten_rotor_fuels.value.manual_only"
-                            )
-                    )
-            );
-        }
-
-        return new MetricRows(
-                new Metric(
-                        label("burn_time"),
-                        duration(recipe.burnTimeTicks())
-                ),
-                new Metric(
-                        label("heating_rate"),
-                        heatingRate(recipe.heatingRate())
-                ),
-                new Metric(
-                        label("maximum_temperature"),
-                        temperature(recipe.maximumTemperature())
-                ),
-                new Metric(
-                        label("maximum_tier"),
-                        tier(recipe.maximumTemperature())
-                )
-        );
-    }
 
     private static void drawMetricRow(
             GuiGraphics graphics,
             Font font,
             int y,
-            Metric metric
+            MoltenRotorFuelDisplayText.Metric metric
     ) {
         graphics.drawString(
                 font,
@@ -272,100 +200,6 @@ public final class MoltenRotorFuelCategory
         }
     }
 
-    private static Component label(String name) {
-        return Component.translatable(
-                "jei.sulfuricresonance.molten_rotor_fuels.label." + name
-        );
-    }
-
-    private static Component behaviorNote(MoltenRotorFuelDisplay recipe) {
-        String key = switch (recipe.specialBehavior()) {
-            case STANDARD -> "standard";
-            case STICK_BOOST -> "stick";
-            case CINDER_BRIQUETTE -> "cinder_briquette";
-            case SOUL_FIRED_REQUIREMENT -> "soul_fired";
-            case TNT_RISK -> "tnt";
-            case NETHER_STAR_BOOST -> "nether_star";
-            case DRAGON_BREATH_BOOST -> "dragon_breath";
-        };
-
-        return Component.translatable(
-                "jei.sulfuricresonance.molten_rotor_fuels.note." + key
-        );
-    }
-
-    private static Component heatingRate(float rate) {
-        return Component.translatable(
-                "jei.sulfuricresonance.molten_rotor_fuels.value.celsius_per_second",
-                formatNumber(rate)
-        );
-    }
-
-    private static Component temperature(float value) {
-        return Component.translatable(
-                "jei.sulfuricresonance.molten_rotor_fuels.value.celsius",
-                formatNumber(value)
-        );
-    }
-
-    private static Component tier(float maximumTemperature) {
-        String tier = maximumTemperature >= 1300.0F
-                ? "combustion"
-                : maximumTemperature >= 800.0F
-                ? "superheated"
-                : maximumTemperature >= 300.0F
-                ? "heated"
-                : "unheated";
-
-        return Component.translatable(
-                "jei.sulfuricresonance.molten_rotor_fuels.tier." + tier
-        );
-    }
-
-    private static Component plusDuration(float ticks) {
-        return Component.literal("+").append(duration(ticks));
-    }
-
-    private static Component duration(float ticks) {
-        BigDecimal seconds = BigDecimal.valueOf(Math.max(0.0F, ticks))
-                .divide(
-                        BigDecimal.valueOf(20L),
-                        2,
-                        RoundingMode.HALF_UP
-                )
-                .stripTrailingZeros();
-
-        if (seconds.scale() <= 0 && seconds.longValue() >= 60L) {
-            long totalSeconds = seconds.longValue();
-            long minutes = totalSeconds / 60L;
-            long remainingSeconds = totalSeconds % 60L;
-
-            if (remainingSeconds == 0L) {
-                return Component.translatable(
-                        "jei.sulfuricresonance.molten_rotor_fuels.value.minutes",
-                        minutes
-                );
-            }
-
-            return Component.translatable(
-                    "jei.sulfuricresonance.molten_rotor_fuels.value.minutes_seconds",
-                    minutes,
-                    remainingSeconds
-            );
-        }
-
-        return Component.translatable(
-                "jei.sulfuricresonance.molten_rotor_fuels.value.seconds",
-                seconds.toPlainString()
-        );
-    }
-
-    private static String formatNumber(float value) {
-        return BigDecimal.valueOf(value)
-                .setScale(2, RoundingMode.HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString();
-    }
 
     private static HeatLevel displayHeat(MoltenRotorFuelDisplay recipe) {
         float maximumTemperature = recipe.specialBehavior()
@@ -384,14 +218,4 @@ public final class MoltenRotorFuelCategory
         return HeatLevel.NONE;
     }
 
-    private record Metric(Component label, Component value) {
-    }
-
-    private record MetricRows(
-            Metric first,
-            Metric second,
-            Metric third,
-            Metric fourth
-    ) {
-    }
 }

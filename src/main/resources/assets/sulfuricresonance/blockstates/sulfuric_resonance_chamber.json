@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "sulfuricresonance:block/sulfuric_resonance_chamber" },
+    "facing=east": { "model": "sulfuricresonance:block/sulfuric_resonance_chamber", "y": 90 },
+    "facing=south": { "model": "sulfuricresonance:block/sulfuric_resonance_chamber", "y": 180 },
+    "facing=west": { "model": "sulfuricresonance:block/sulfuric_resonance_chamber", "y": 270 }
+  }
+}

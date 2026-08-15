@@ -209,11 +209,11 @@ public final class MoltenRotorFuelRenderer {
     private static double[][] getLogPositions(int visibleLogs) {
         return visibleLogs == 2
                 ? new double[][]{
-                {0.0, -0.205, -0.050}, // BACKLOG: Changed from -0.100 to -0.050 (moves it forward)
-                {0.0, -0.205, 0.130}   // FRONT LOG: Changed from 0.180 to 0.130 (moves it backward)
+                {0.0, -0.205, -0.050}, 
+                {0.0, -0.205, 0.130}   
         }
                 : new double[][]{
-                {0.0, -0.205, 0.040}   // Single center log
+                {0.0, -0.205, 0.040}   
         };
     }
 
@@ -272,10 +272,10 @@ public final class MoltenRotorFuelRenderer {
             return;
         }
 
-        /*
-         * Kindling always stays on the chamber floor for every fuel type.
-         * Logs are raised independently above it in renderLogFuelScene().
-         */
+        
+
+
+
         double kindlingY = -0.285;
         double kindlingDepth = 0.060;
         float kindlingScale = 0.12F;

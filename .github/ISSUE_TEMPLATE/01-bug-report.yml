@@ -1,0 +1,123 @@
+name: Bug Report
+description: "Report a problem or unintended behavior in Create: Sulfuric Resonance."
+title: "[Bug] "
+labels:
+  - bug
+  - needs-triage
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem with Create: Sulfuric Resonance.
+
+        Please provide as much information as possible so the issue can be reproduced and fixed.
+
+  - type: checkboxes
+    id: existing
+    attributes:
+      label: Existing Issue Check
+      description: "Please check the existing issues before submitting a new report."
+      options:
+        - label: "I have searched the existing issues and did not find this problem already reported."
+          required: true
+
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft Version
+      placeholder: "Example: 1.21.1"
+    validations:
+      required: true
+
+  - type: input
+    id: neoforge-version
+    attributes:
+      label: NeoForge Version
+      placeholder: "Example: 21.1.247"
+    validations:
+      required: true
+
+  - type: input
+    id: create-version
+    attributes:
+      label: Create Version
+      placeholder: "Example: 6.0.7"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the problem as clearly as possible.
+      placeholder: |
+        Explain what happened, what block or system was involved, and anything unusual you noticed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: Describe what you expected CSR to do instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Please give exact steps if possible.
+      placeholder: |
+        1. Place...
+        2. Connect...
+        3. Insert...
+        4. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other Installed Mods
+      description: |
+        List any other mods that may be relevant. A mod list is especially useful if the problem does not occur with only CSR and its required dependencies installed.
+      placeholder: |
+        Create:
+        JEI:
+        EMI:
+        Jade:
+        Other mods:
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Attach latest.log or paste the relevant section here if available.
+        You can drag log files directly into this field on GitHub.
+      placeholder: Drag latest.log here or paste the relevant error.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Videos
+      description: |
+        Drag screenshots, GIFs, or videos here if they help demonstrate the problem.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Anything else that may help reproduce or understand the issue.
+    validations:
+      required: false

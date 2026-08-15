@@ -5,11 +5,13 @@ import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
+import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
+import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
 public final class ThermochemicalHeatResolver {
@@ -358,8 +361,6 @@ public final class ThermochemicalHeatResolver {
         Queue<PhysicalStep> pending = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>(alreadyVisited);
 
-        // The controller is already present in targetToController. Remove it
-        // from this local visited set so it can be used as the BFS root once.
         visited.remove(controllerPosition);
 
         pending.add(new PhysicalStep(
@@ -385,8 +386,6 @@ public final class ThermochemicalHeatResolver {
                 continue;
             }
 
-            // A Molten Rotor can terminate the physical search from any
-            // genuinely connected bridge node.
             for (Direction direction : Direction.values()) {
                 BlockPos furnacePosition = position.relative(direction);
 
@@ -437,7 +436,6 @@ public final class ThermochemicalHeatResolver {
                 List<BlockPos> nextPath =
                         new ArrayList<>(step.pathFromController());
 
-                // controllerPosition is already in targetToController.
                 if (!neighbour.equals(controllerPosition)) {
                     nextPath.add(neighbour.immutable());
                 }
@@ -712,9 +710,21 @@ public final class ThermochemicalHeatResolver {
 
         if (firstState.getBlock() instanceof ThermochemicalCogwheelBlock
                 && secondState.getBlock() instanceof ThermochemicalCogwheelBlock) {
-            // RotationPropagator already proved these two cogs are genuinely
-            // meshed. This intentionally supports Create's non-face-adjacent
-            // small/large diagonal cog connection.
+            return true;
+        }
+
+        Direction direction = directionBetween(
+                firstPosition,
+                secondPosition
+        );
+        if (direction == null) {
+            return false;
+        }
+
+        if (areLinkDrivesSegmentConnected(
+                firstState,
+                secondState
+        )) {
             return true;
         }
 
@@ -734,10 +744,6 @@ public final class ThermochemicalHeatResolver {
 
             if (isAllowedNode(firstState)
                     && isAllowedNode(secondState)) {
-                // The Rotation Speed Controller has special Create kinetic
-                // propagation rules. Once its dedicated controller cog is the
-                // CSR Large Thermochemical Cogwheel, Create's confirmed kinetic
-                // edge is also allowed to carry thermochemical heat.
                 return true;
             }
         }
@@ -749,14 +755,6 @@ public final class ThermochemicalHeatResolver {
 
         if (!thermochemicalEdge) {
             return true;
-        }
-
-        Direction direction = directionBetween(
-                firstPosition,
-                secondPosition
-        );
-        if (direction == null) {
-            return false;
         }
 
         if (firstState.getBlock()
@@ -831,6 +829,183 @@ public final class ThermochemicalHeatResolver {
         return connections;
     }
 
+    public static boolean areLinkDrivesSegmentConnected(
+            BlockState firstState,
+            BlockState secondState
+    ) {
+        return firstState.getBlock() instanceof ThermochemicalLinkDriveBlock
+                && secondState.getBlock() instanceof ThermochemicalLinkDriveBlock;
+    }
+
+    public static LinkDriveConnectionStats getLinkDriveConnectionStats(
+            Level level,
+            BlockPos start
+    ) {
+        if (!level.isLoaded(start)
+                || !(level.getBlockState(start).getBlock()
+                instanceof ThermochemicalLinkDriveBlock)) {
+            return LinkDriveConnectionStats.NONE;
+        }
+
+        Set<BlockPos> segment = new HashSet<>();
+        Queue<BlockPos> queue = new ArrayDeque<>();
+        queue.add(start.immutable());
+
+        while (!queue.isEmpty()) {
+            BlockPos current = queue.remove();
+
+            if (!segment.add(current)) {
+                continue;
+            }
+
+            BlockState currentState =
+                    level.getBlockState(current);
+
+            for (Direction direction : Direction.values()) {
+                BlockPos neighbour =
+                        current.relative(direction);
+
+                if (!level.isLoaded(neighbour)
+                        || segment.contains(neighbour)) {
+                    continue;
+                }
+
+                BlockState neighbourState =
+                        level.getBlockState(neighbour);
+
+                if (areLinkDrivesKineticallyConnected(
+                        currentState,
+                        neighbourState,
+                        direction
+                )) {
+                    queue.add(neighbour.immutable());
+                }
+            }
+        }
+
+        int connections = 0;
+
+        for (BlockPos drivePosition : segment) {
+            BlockState driveState =
+                    level.getBlockState(drivePosition);
+
+            Direction.Axis axis =
+                    driveState.getValue(
+                            BlockStateProperties.AXIS
+                    );
+
+            Direction negative =
+                    Direction.get(
+                            Direction.AxisDirection.NEGATIVE,
+                            axis
+                    );
+
+            Direction positive =
+                    Direction.get(
+                            Direction.AxisDirection.POSITIVE,
+                            axis
+                    );
+
+            if (hasLinkDriveShaftConnection(
+                    level,
+                    drivePosition,
+                    driveState,
+                    negative
+            )) {
+                connections++;
+            }
+
+            if (hasLinkDriveShaftConnection(
+                    level,
+                    drivePosition,
+                    driveState,
+                    positive
+            )) {
+                connections++;
+            }
+        }
+
+        return new LinkDriveConnectionStats(
+                connections,
+                segment.size() * 2
+        );
+    }
+
+    private static boolean areLinkDrivesKineticallyConnected(
+            BlockState firstState,
+            BlockState secondState,
+            Direction direction
+    ) {
+        if (!(firstState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock)
+                || !(secondState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock)) {
+            return false;
+        }
+
+        Direction.Axis firstAxis =
+                firstState.getValue(
+                        BlockStateProperties.AXIS
+                );
+
+        Direction.Axis secondAxis =
+                secondState.getValue(
+                        BlockStateProperties.AXIS
+                );
+
+        if (direction.getAxis() == firstAxis
+                && direction.getAxis() == secondAxis) {
+            return true;
+        }
+
+        return ChainDriveBlock.areBlocksConnected(
+                firstState,
+                secondState,
+                direction
+        ) || ChainDriveBlock.areBlocksConnected(
+                secondState,
+                firstState,
+                direction.getOpposite()
+        );
+    }
+
+    private static boolean hasLinkDriveShaftConnection(
+            Level level,
+            BlockPos drivePosition,
+            BlockState driveState,
+            Direction direction
+    ) {
+        BlockPos neighbourPosition = drivePosition.relative(direction);
+        if (!level.isLoaded(neighbourPosition)) {
+            return false;
+        }
+
+        BlockState neighbourState = level.getBlockState(neighbourPosition);
+        if (neighbourState.getBlock() instanceof ThermochemicalLinkDriveBlock) {
+            return false;
+        }
+        if (neighbourState.getBlock() instanceof ChainDriveBlock) {
+            return false;
+        }
+
+        if (!(driveState.getBlock() instanceof IRotate driveRotate)
+                || !(neighbourState.getBlock() instanceof IRotate neighbourRotate)) {
+            return false;
+        }
+
+        return driveRotate.hasShaftTowards(
+                level,
+                drivePosition,
+                driveState,
+                direction
+        ) && neighbourRotate.hasShaftTowards(
+                level,
+                neighbourPosition,
+                neighbourState,
+                direction.getOpposite()
+        );
+    }
+
     private static boolean isCombustionBeltPulley(
             Level level,
             BlockPos position
@@ -858,6 +1033,14 @@ public final class ThermochemicalHeatResolver {
             return null;
         }
         return Direction.fromDelta(x, y, z);
+    }
+
+    public record LinkDriveConnectionStats(
+            int connections,
+            int capacity
+    ) {
+        public static final LinkDriveConnectionStats NONE =
+                new LinkDriveConnectionStats(0, 0);
     }
 
     private record PhysicalStep(

@@ -10,14 +10,18 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
+import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlock;
+import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
@@ -58,6 +62,20 @@ public class AllModBlocks {
 
     );
 
+    public static final DeferredBlock<ThermochemicalLinkDriveBlock>
+            THERMOCHEMICAL_LINK_DRIVE =
+            BLOCKS.register(
+                    "thermochemical_link_drive",
+                    () -> new ThermochemicalLinkDriveBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
     public static final DeferredBlock<Block> RUBBER_PADDING = BLOCKS.register(
             "rubber_padding",
             () -> new RubberPaddingBlock(
@@ -87,7 +105,7 @@ public class AllModBlocks {
     public static final DeferredBlock<Block> CARBON_DEPOSIT_BLOCK =
             BLOCKS.registerSimpleBlock(
                     "carbon_deposit_block",
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_BLACK)
                             .strength(3.0F, 6.0F)
                             .requiresCorrectToolForDrops()
@@ -97,7 +115,7 @@ public class AllModBlocks {
     public static final DeferredBlock<Block> INFERNAL_CARBON_DEPOSIT_BLOCK =
             BLOCKS.registerSimpleBlock(
                     "infernal_carbon_deposit_block",
-                    BlockBehaviour.Properties.of()
+                    Properties.of()
                             .mapColor(MapColor.COLOR_BLACK)
                             .strength(4.0F, 8.0F)
                             .requiresCorrectToolForDrops()
@@ -318,6 +336,20 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                     )
             );
 
+    public static final DeferredBlock<ParallelThermochemicalGearboxBlock>
+            PARALLEL_THERMOCHEMICAL_GEARBOX =
+            BLOCKS.register(
+                    "parallel_thermochemical_gearbox",
+                    () -> new ParallelThermochemicalGearboxBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
     public static final DeferredBlock<LivingEmberLampBlock> LIVING_EMBER_LAMP =
             BLOCKS.register(
                     "living_ember_lamp",
@@ -346,12 +378,24 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                     .noOcclusion()
                     )
             );
+    public static final DeferredBlock<ThermalGaugeBlock> THERMAL_GAUGE =
+            BLOCKS.register(
+                    "thermal_gauge",
+                    () -> new ThermalGaugeBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(2.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
     public static final DeferredBlock<SulfurBurnerBlock>
             SULFUR_BURNER =
             BLOCKS.register(
                     "sulfur_burner",
                     () -> new SulfurBurnerBlock(
-                            BlockBehaviour.Properties.of()
+                            Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(3.0F, 6.0F)
                                     .requiresCorrectToolForDrops()
@@ -363,6 +407,34 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                         case KINDLED, SEETHING -> 4;
                                         default -> 0;
                                     })
+                    )
+            );
+
+    public static final DeferredBlock<ResonantHeatInjectorBlock>
+            RESONANT_HEAT_INJECTOR =
+            BLOCKS.register(
+                    "resonant_heat_injector",
+                    () -> new ResonantHeatInjectorBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(4.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<SulfuricResonanceChamberBlock>
+            SULFURIC_RESONANCE_CHAMBER =
+            BLOCKS.register(
+                    "sulfuric_resonance_chamber",
+                    () -> new SulfuricResonanceChamberBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(5.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
                     )
             );
 

@@ -48,8 +48,8 @@ public final class LivingEmberLampBreakParticles {
                                 pos
                         );
 
-                        // Stop vanilla from generating particles for every
-                        // separate box in the lamp's complex voxel shape.
+                        
+                        
                         return true;
                     }
                 },
