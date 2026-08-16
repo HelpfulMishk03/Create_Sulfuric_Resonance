@@ -92,6 +92,31 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel THERMAL_GAUGE_NEEDLE =
             partial("block/thermal_gauge_needle");
 
+    public static final PartialModel THERMAL_WARNING_ALARM_BELL =
+            partial("block/thermal_warning_alarm_bell");
+
+    public static final PartialModel THERMAL_WARNING_ALARM_STRIKER =
+            partial("block/thermal_warning_alarm_striker");
+
+    public static final PartialModel THERMAL_WARNING_ALARM_MAIN_BULB =
+            partial("block/thermal_warning_alarm_main_bulb");
+
+    public static final PartialModel THERMAL_WARNING_ALARM_MAIN_FILAMENT =
+            partial("block/thermal_warning_alarm_main_filament");
+
+
+    public static final PartialModel THERMAL_WARNING_ALARM_STATUS_RED =
+            partial("block/thermal_warning_alarm_status_red");
+
+    public static final PartialModel THERMAL_WARNING_ALARM_STATUS_GREEN =
+            partial("block/thermal_warning_alarm_status_green");
+
+    public static final PartialModel THERMAL_WARNING_ALARM_VIBRATION_LEFT =
+            partial("block/thermal_warning_alarm_vibration_left");
+
+    public static final PartialModel THERMAL_WARNING_ALARM_VIBRATION_RIGHT =
+            partial("block/thermal_warning_alarm_vibration_right");
+
     private static PartialModel partial(String path) {
         return PartialModel.of(
                 ResourceLocation.fromNamespaceAndPath(
@@ -175,6 +200,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
             ItemBlockRenderTypes.setRenderLayer(
                     AllModBlocks.TEMPERED_ASHESIL_PANE.get(),
                     RenderType.translucent()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.THERMAL_WARNING_ALARM.get(),
+                    RenderType.cutout()
             );
 
             BlockEntityRenderers.register(
@@ -272,6 +302,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMAL_WARNING_ALARM.get(),
+                ThermalWarningAlarmRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.SULFURIC_RESONANCE_CHAMBER.get(),
                 SulfuricResonanceChamberRenderer::new
         );
@@ -335,6 +370,78 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "block/thermal_gauge_needle"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_bell"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_striker"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_main_bulb"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_main_filament"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_status_red"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_status_green"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_vibration_left"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermal_warning_alarm_vibration_right"
                         )
                 )
         );

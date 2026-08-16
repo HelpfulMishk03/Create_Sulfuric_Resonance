@@ -592,5 +592,15 @@
   "tag.item.c.buckets.chocolate": "Chocolate Buckets",
   "tag.item.c.drinks.tea": "Tea Drinks",
   "tag.item.c.foods.chocolate": "Chocolate Foods",
-  "tag.item.curios.head": "Head Curios"
+  "tag.item.curios.head": "Head Curios",
+  "block.sulfuricresonance.thermal_warning_alarm": "Thermal Warning Alarm",
+  "message.sulfuricresonance.thermal_warning_alarm.network_set": "Thermal network connected",
+  "message.sulfuricresonance.thermal_warning_alarm.network_copied": "Thermal network copied to held device",
+  "message.sulfuricresonance.thermal_warning_alarm.network_removed": "Thermal network disconnected",
+  "message.sulfuricresonance.thermal_warning_alarm.mode": "Alarm Mode: %s",
+  "mode.sulfuricresonance.thermal_warning_alarm.fuel_warning": "Fuel Warning",
+  "mode.sulfuricresonance.thermal_warning_alarm.heat_loss": "Heat Loss",
+  "mode.sulfuricresonance.thermal_warning_alarm.superheated": "Superheated",
+  "mode.sulfuricresonance.thermal_warning_alarm.combustion": "Combustion",
+  "subtitles.sulfuricresonance.thermal_warning_alarm_strike": "Thermal alarm strikes"
 }

@@ -4,11 +4,11 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "sulfuricresonance:block/sulfurstand_textured",
-		"1": "sulfuricresonance:block/andesite_bottom",
-		"2": "sulfuricresonance:block/copper_shell",
-		"3": "sulfuricresonance:block/sturdy_sheet_burner_top",
-		"particle": "sulfuricresonance:block/copper_shell"
+		"0": "sulfuricresonance:block/sulfur_burner/sulfurstand_textured",
+		"1": "sulfuricresonance:block/sulfur_burner/andesite_bottom",
+		"2": "sulfuricresonance:block/sulfur_burner/copper_shell",
+		"3": "sulfuricresonance:block/sulfur_burner/sturdy_sheet_burner_top",
+		"particle": "sulfuricresonance:block/sulfur_burner/copper_shell"
 	},
 	"elements": [
 			{

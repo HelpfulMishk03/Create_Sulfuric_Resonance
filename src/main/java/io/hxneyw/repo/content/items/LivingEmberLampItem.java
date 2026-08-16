@@ -68,14 +68,10 @@ public class LivingEmberLampItem extends BlockItem {
                             furnace.getFurnaceIdentity()
                     );
 
-            boolean startsNewNetwork =
-                    getLink(stack)
-                            .map(existing ->
-                                    !existing.equals(newLink)
-                            )
-                            .orElse(true);
-
             if (!level.isClientSide) {
+                boolean startsNewNetwork = furnace.getThermalNetworkId() == null;
+                furnace.getOrCreateThermalNetworkId();
+
                 setLink(
                         stack,
                         newLink

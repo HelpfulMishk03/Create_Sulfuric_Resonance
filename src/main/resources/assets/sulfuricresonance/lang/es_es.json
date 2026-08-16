@@ -592,5 +592,15 @@
   "tag.item.c.buckets.chocolate": "Cubos de chocolate",
   "tag.item.c.drinks.tea": "Bebidas de té",
   "tag.item.c.foods.chocolate": "Alimentos de chocolate",
-  "tag.item.curios.head": "Curios de cabeza"
+  "tag.item.curios.head": "Curios de cabeza",
+  "block.sulfuricresonance.thermal_warning_alarm": "Alarma térmica",
+  "message.sulfuricresonance.thermal_warning_alarm.network_set": "Red térmica conectada",
+  "message.sulfuricresonance.thermal_warning_alarm.network_copied": "Red térmica copiada al dispositivo en la mano",
+  "message.sulfuricresonance.thermal_warning_alarm.network_removed": "Red térmica desconectada",
+  "message.sulfuricresonance.thermal_warning_alarm.mode": "Modo de alarma: %s",
+  "mode.sulfuricresonance.thermal_warning_alarm.fuel_warning": "Aviso de combustible",
+  "mode.sulfuricresonance.thermal_warning_alarm.heat_loss": "Pérdida de calor",
+  "mode.sulfuricresonance.thermal_warning_alarm.superheated": "Sobrecalentado",
+  "mode.sulfuricresonance.thermal_warning_alarm.combustion": "Combustión",
+  "subtitles.sulfuricresonance.thermal_warning_alarm_strike": "La alarma térmica suena"
 }

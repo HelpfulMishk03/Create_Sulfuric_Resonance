@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.blocks.livingemberlamp;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.LivingEmberLampItem;
+import io.hxneyw.repo.content.network.ThermochemicalNetworkResolver;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.Collections;
 import java.util.List;
@@ -152,26 +153,32 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     }
 
     private int findTargetLight(Level level) {
-        this.lowFuelWarning = false;
-
         BlockPos linkedPos = this.linkedFurnacePos;
         String linkedDimension = this.linkedFurnaceDimension;
         UUID linkedIdentity = this.linkedFurnaceIdentity;
 
         if (linkedPos == null
-                || linkedIdentity == null
-                || !level.dimension().location().toString()
-                .equals(linkedDimension)
-                || !level.isLoaded(linkedPos)) {
+                || linkedDimension == null
+                || linkedIdentity == null) {
+            this.lowFuelWarning = false;
             return 0;
         }
 
-        if (!(level.getBlockEntity(linkedPos)
-                instanceof MoltenRotorBlockEntity furnace)) {
-            return 0;
+        ThermochemicalNetworkResolver.Resolution resolution =
+                ThermochemicalNetworkResolver.resolve(
+                        level,
+                        linkedPos,
+                        linkedDimension,
+                        linkedIdentity
+                );
+
+        if (resolution.isLinkedButUnavailable()) {
+            return this.targetLight;
         }
 
-        if (!linkedIdentity.equals(furnace.getFurnaceIdentity())) {
+        this.lowFuelWarning = false;
+        MoltenRotorBlockEntity furnace = resolution.furnace();
+        if (furnace == null) {
             return 0;
         }
 

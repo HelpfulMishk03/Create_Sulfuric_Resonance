@@ -6,8 +6,8 @@
     8
   ],
   "textures": {
-    "0": "sulfuricresonance:block/thermal_gauge",
-    "particle": "sulfuricresonance:block/thermal_gauge"
+    "0": "sulfuricresonance:block/thermal_gauge/thermal_gauge",
+    "particle": "sulfuricresonance:block/thermal_gauge/thermal_gauge"
   },
   "elements": [
     {

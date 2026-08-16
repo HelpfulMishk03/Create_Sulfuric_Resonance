@@ -6,8 +6,8 @@
     64
   ],
   "textures": {
-    "0": "sulfuricresonance:block/living_ember_lamp",
-    "particle": "sulfuricresonance:block/living_ember_lamp",
+    "0": "sulfuricresonance:block/living_ember_lamp/living_ember_lamp",
+    "particle": "sulfuricresonance:block/living_ember_lamp/living_ember_lamp",
     "embersol": "sulfuricresonance:item/embersol"
   },
   "elements": [

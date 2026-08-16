@@ -7,9 +7,9 @@
   ],
   "render_type": "minecraft:translucent",
   "textures": {
-    "0": "sulfuricresonance:block/thermal_gauge",
-    "1": "sulfuricresonance:block/thermal_gauge_colours",
-    "particle": "sulfuricresonance:block/thermal_gauge"
+    "0": "sulfuricresonance:block/thermal_gauge/thermal_gauge",
+    "1": "sulfuricresonance:block/thermal_gauge/thermal_gauge_colours",
+    "particle": "sulfuricresonance:block/thermal_gauge/thermal_gauge"
   },
   "elements": [
     {

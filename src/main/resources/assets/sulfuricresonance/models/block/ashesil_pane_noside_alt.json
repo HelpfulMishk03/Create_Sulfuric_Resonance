@@ -2,7 +2,7 @@
   "parent": "create:block/connected_glass_pane/noside_alt",
   "render_type": "minecraft:translucent",
   "textures": {
-    "pane": "sulfuricresonance:block/ashesil",
-    "edge": "sulfuricresonance:block/ashesil_pane_top"
+    "pane": "sulfuricresonance:block/ashesil/ashesil",
+    "edge": "sulfuricresonance:block/ashesil/ashesil_pane_top"
   }
 }

@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
    private static final String FURNACE_IDENTITY_TAG = "FurnaceIdentity";
+   private static final String THERMAL_NETWORK_ID_TAG = "ThermalNetworkId";
 
    private static Consumer<MoltenRotorBlockEntity> clientSoundTick =
            blockEntity -> {};
@@ -39,6 +40,8 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    private boolean creativeMode = false;
    private boolean kineticsInitialized = false;
    private UUID furnaceIdentity = UUID.randomUUID();
+   @Nullable
+   private UUID thermalNetworkId;
    public int tntCooldown = 0;
 
    private final MoltenRotorFuelController fuelController =
@@ -128,6 +131,22 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public @NotNull UUID getFurnaceIdentity() {
       return this.furnaceIdentity;
+   }
+
+   public @Nullable UUID getThermalNetworkId() {
+      return this.thermalNetworkId;
+   }
+
+   public @NotNull UUID getOrCreateThermalNetworkId() {
+      if (this.thermalNetworkId == null) {
+         this.thermalNetworkId = UUID.randomUUID();
+         this.setChanged();
+         if (this.level != null) {
+            this.sendData();
+         }
+      }
+
+      return this.thermalNetworkId;
    }
 
    public float getTotalStressOutput() {
@@ -609,6 +628,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.temperatureController.write(tag);
       this.fuelController.write(tag, provider);
       tag.putUUID(FURNACE_IDENTITY_TAG, this.furnaceIdentity);
+      if (this.thermalNetworkId != null) {
+         tag.putUUID(THERMAL_NETWORK_ID_TAG, this.thermalNetworkId);
+      }
       tag.putBoolean("KineticsInit", this.kineticsInitialized);
       tag.putBoolean("CreativeMode", this.creativeMode);
       tag.putInt("LastNotifiedFuel", this.lastNotifiedFuelCount);
@@ -623,6 +645,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       } else {
          this.furnaceIdentity = UUID.randomUUID();
       }
+      this.thermalNetworkId = tag.hasUUID(THERMAL_NETWORK_ID_TAG)
+              ? tag.getUUID(THERMAL_NETWORK_ID_TAG)
+              : null;
       this.kineticsInitialized = tag.getBoolean("KineticsInit");
       this.creativeMode = tag.getBoolean("CreativeMode");
       this.lastNotifiedFuelCount = tag.getInt("LastNotifiedFuel");

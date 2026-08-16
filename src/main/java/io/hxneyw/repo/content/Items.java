@@ -84,6 +84,7 @@ public class Items {
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<ThermalRelaySwitchItem> THERMAL_RELAY_SWITCH_ITEM = ITEMS.register("thermal_relay_switch", () -> new ThermalRelaySwitchItem(AllModBlocks.THERMAL_RELAY_SWITCH.get(), new Properties()));
    public static final DeferredItem<ThermalGaugeItem> THERMAL_GAUGE_ITEM = ITEMS.register("thermal_gauge", () -> new ThermalGaugeItem(AllModBlocks.THERMAL_GAUGE.get(), new Properties()));
+   public static final DeferredItem<ThermalWarningAlarmItem> THERMAL_WARNING_ALARM_ITEM = ITEMS.register("thermal_warning_alarm", () -> new ThermalWarningAlarmItem(AllModBlocks.THERMAL_WARNING_ALARM.get(), new Properties()));
    public static final DeferredItem<CombustionBeltConnectorItem> COMBUSTION_BELT_CONNECTOR = ITEMS.register("combustion_belt_connector", () -> new CombustionBeltConnectorItem(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_CONDUIT_ITEM = ITEMS.register("thermochemical_conduit", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CONDUIT.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_SHAFT_ITEM = ITEMS.register("thermochemical_shaft", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_SHAFT.get(), new Properties()));

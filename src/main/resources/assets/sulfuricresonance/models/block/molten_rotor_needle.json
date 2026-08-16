@@ -1,8 +1,8 @@
 {
   "credit": "Made with Blockbench By Hxney - Heat Gauge Needle",
   "textures": {
-    "1": "sulfuricresonance:block/molten_rotor_furnace",
-    "particle": "sulfuricresonance:block/molten_rotor_furnace"
+    "1": "sulfuricresonance:block/molten_rotor_furnace/molten_rotor_furnace",
+    "particle": "sulfuricresonance:block/molten_rotor_furnace/molten_rotor_furnace"
   },
   "elements": [
     {

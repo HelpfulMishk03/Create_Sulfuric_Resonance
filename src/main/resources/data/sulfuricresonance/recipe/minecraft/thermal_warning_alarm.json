@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "A",
+    "E",
+    "R"
+  ],
+  "key": {
+    "A": {
+      "item": "sulfuricresonance:ashesil"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "R": {
+      "item": "sulfuricresonance:resonant_gold_ingot"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:thermal_warning_alarm",
+    "count": 1
+  }
+}

@@ -3,12 +3,12 @@
 	"credit": "Made with Blockbench By Hxney",
 	"render_type": "cutout",
 	"textures": {
-        "1": "sulfuricresonance:block/molten_rotor_furnace",
-        "2": "sulfuricresonance:block/reinforced_iron_base",
-        "3": "sulfuricresonance:block/gaugetone",
-		"4": "sulfuricresonance:block/layer_two_furnace",
-		"5": "sulfuricresonance:block/impeller_stand",
-        "particle": "sulfuricresonance:block/molten_rotor_furnace"
+        "1": "sulfuricresonance:block/molten_rotor_furnace/molten_rotor_furnace",
+        "2": "sulfuricresonance:block/molten_rotor_furnace/reinforced_iron_base",
+        "3": "sulfuricresonance:block/molten_rotor_furnace/gaugetone",
+		"4": "sulfuricresonance:block/molten_rotor_furnace/layer_two_furnace",
+		"5": "sulfuricresonance:block/molten_rotor_furnace/impeller_stand",
+        "particle": "sulfuricresonance:block/molten_rotor_furnace/molten_rotor_furnace"
 	},
 	"elements": [
 		{

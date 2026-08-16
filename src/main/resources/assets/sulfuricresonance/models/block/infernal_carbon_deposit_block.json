@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "sulfuricresonance:block/infernal_carbon_deposit_block"
+    "all": "sulfuricresonance:block/infernal_carbon_deposit_block/infernal_carbon_deposit_block"
   }
 }

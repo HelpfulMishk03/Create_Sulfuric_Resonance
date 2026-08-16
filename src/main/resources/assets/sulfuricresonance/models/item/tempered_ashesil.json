@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "sulfuricresonance:block/tempered_ashesil"
+    "all": "sulfuricresonance:block/tempered_ashesil/tempered_ashesil"
   },
   "display": {
     "ground": {

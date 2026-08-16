@@ -13,6 +13,7 @@ import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlock;
+import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
@@ -382,6 +383,18 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
             BLOCKS.register(
                     "thermal_gauge",
                     () -> new ThermalGaugeBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(2.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+    public static final DeferredBlock<ThermalWarningAlarmBlock> THERMAL_WARNING_ALARM =
+            BLOCKS.register(
+                    "thermal_warning_alarm",
+                    () -> new ThermalWarningAlarmBlock(
                             Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(2.5F, 6.0F)

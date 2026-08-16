@@ -9,6 +9,7 @@ import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
@@ -143,6 +144,17 @@ public class AllBlockEntities {
             () -> Builder.of(
                     ThermalGaugeBlockEntity::new,
                     AllModBlocks.THERMAL_GAUGE.get()
+            ).build(null)
+    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermalWarningAlarmBlockEntity>
+            > THERMAL_WARNING_ALARM = BLOCK_ENTITIES.register(
+            "thermal_warning_alarm",
+            () -> Builder.of(
+                    ThermalWarningAlarmBlockEntity::new,
+                    AllModBlocks.THERMAL_WARNING_ALARM.get()
             ).build(null)
     );
 

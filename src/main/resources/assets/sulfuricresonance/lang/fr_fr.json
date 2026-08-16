@@ -592,5 +592,15 @@
   "tag.item.c.buckets.chocolate": "Seaux de chocolat",
   "tag.item.c.drinks.tea": "Boissons au thé",
   "tag.item.c.foods.chocolate": "Aliments au chocolat",
-  "tag.item.curios.head": "Curios de tête"
+  "tag.item.curios.head": "Curios de tête",
+  "block.sulfuricresonance.thermal_warning_alarm": "Alarme thermique",
+  "message.sulfuricresonance.thermal_warning_alarm.network_set": "Réseau thermique connecté",
+  "message.sulfuricresonance.thermal_warning_alarm.network_copied": "Réseau thermique copié vers l’appareil tenu",
+  "message.sulfuricresonance.thermal_warning_alarm.network_removed": "Réseau thermique déconnecté",
+  "message.sulfuricresonance.thermal_warning_alarm.mode": "Mode d’alarme : %s",
+  "mode.sulfuricresonance.thermal_warning_alarm.fuel_warning": "Alerte de combustible",
+  "mode.sulfuricresonance.thermal_warning_alarm.heat_loss": "Perte de chaleur",
+  "mode.sulfuricresonance.thermal_warning_alarm.superheated": "Surchauffe",
+  "mode.sulfuricresonance.thermal_warning_alarm.combustion": "Combustion",
+  "subtitles.sulfuricresonance.thermal_warning_alarm_strike": "L’alarme thermique retentit"
 }

@@ -39,6 +39,7 @@ public class ModTabs {
 
                   output.accept(Items.THERMAL_RELAY_SWITCH_ITEM.get());
                   output.accept(Items.THERMAL_GAUGE_ITEM.get());
+                  output.accept(Items.THERMAL_WARNING_ALARM_ITEM.get());
                   output.accept(Items.LIVING_EMBER_LAMP_ITEM.get());
 
                   output.accept(Items.RUBBER_PADDING.get());

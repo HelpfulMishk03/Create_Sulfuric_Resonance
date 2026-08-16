@@ -6,8 +6,8 @@
     64
   ],
   "textures": {
-    "9": "sulfuricresonance:block/resonancecomponenets",
-    "particle": "sulfuricresonance:block/resonancecomponenets"
+    "9": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancecomponenets",
+    "particle": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancecomponenets"
   },
   "elements": [
     {

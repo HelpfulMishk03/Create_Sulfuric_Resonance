@@ -1,7 +1,7 @@
 {
   "parent": "create:block/large_cogwheel_shaftless",
   "textures": {
-    "4": "sulfuricresonance:block/large_thermochemical_cogwheel",
-    "particle": "sulfuricresonance:block/large_thermochemical_cogwheel"
+    "4": "sulfuricresonance:block/large_thermochemical_cogwheel/large_thermochemical_cogwheel",
+    "particle": "sulfuricresonance:block/large_thermochemical_cogwheel/large_thermochemical_cogwheel"
   }
 }

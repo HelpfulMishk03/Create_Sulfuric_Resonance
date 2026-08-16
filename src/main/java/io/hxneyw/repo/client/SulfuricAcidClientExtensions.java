@@ -28,13 +28,13 @@ public final class SulfuricAcidClientExtensions {
     private static final ResourceLocation STILL_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     CreateSulfuricResonance.MODID,
-                    "block/sulfuric_acid_still"
+                    "block/sulfuric_acid/sulfuric_acid_still"
             );
 
     private static final ResourceLocation FLOWING_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(
                     CreateSulfuricResonance.MODID,
-                    "block/sulfuric_acid_flow"
+                    "block/sulfuric_acid/sulfuric_acid_flow"
             );
 
     private static final int TINT_COLOR = 0xFFDEC83A;

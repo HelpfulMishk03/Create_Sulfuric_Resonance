@@ -592,5 +592,15 @@
   "tag.item.c.buckets.chocolate": "Schokoladeneimer",
   "tag.item.c.drinks.tea": "Teegetränke",
   "tag.item.c.foods.chocolate": "Schokoladenspeisen",
-  "tag.item.curios.head": "Kopf-Curios"
+  "tag.item.curios.head": "Kopf-Curios",
+  "block.sulfuricresonance.thermal_warning_alarm": "Thermischer Warnalarm",
+  "message.sulfuricresonance.thermal_warning_alarm.network_set": "Thermisches Netzwerk verbunden",
+  "message.sulfuricresonance.thermal_warning_alarm.network_copied": "Thermisches Netzwerk auf das gehaltene Gerät kopiert",
+  "message.sulfuricresonance.thermal_warning_alarm.network_removed": "Thermisches Netzwerk getrennt",
+  "message.sulfuricresonance.thermal_warning_alarm.mode": "Alarmmodus: %s",
+  "mode.sulfuricresonance.thermal_warning_alarm.fuel_warning": "Brennstoffwarnung",
+  "mode.sulfuricresonance.thermal_warning_alarm.heat_loss": "Wärmeverlust",
+  "mode.sulfuricresonance.thermal_warning_alarm.superheated": "Überhitzt",
+  "mode.sulfuricresonance.thermal_warning_alarm.combustion": "Verbrennung",
+  "subtitles.sulfuricresonance.thermal_warning_alarm_strike": "Thermischer Alarm schlägt"
 }

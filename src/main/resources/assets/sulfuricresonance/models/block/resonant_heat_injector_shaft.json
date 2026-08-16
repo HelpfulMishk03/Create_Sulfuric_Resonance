@@ -1,7 +1,7 @@
 {
   "textures": {
-    "0": "sulfuricresonance:block/injector_axis_part",
-    "particle": "sulfuricresonance:block/injector_axis_part"
+    "0": "sulfuricresonance:block/resonant_heat_injector/injector_axis_part",
+    "particle": "sulfuricresonance:block/resonant_heat_injector/injector_axis_part"
   },
   "elements": [
     {

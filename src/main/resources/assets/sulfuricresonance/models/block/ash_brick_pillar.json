@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/cube_column",
   "textures": {
-    "end": "sulfuricresonance:block/ash_brick_pillar_top",
-    "side": "sulfuricresonance:block/ash_brick_pillar_side"
+    "end": "sulfuricresonance:block/ash_bricks/ash_brick_pillar_top",
+    "side": "sulfuricresonance:block/ash_bricks/ash_brick_pillar_side"
   }
 }

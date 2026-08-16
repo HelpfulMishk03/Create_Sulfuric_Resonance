@@ -29,6 +29,7 @@
     "sulfuricresonance:sulfuric_resonance_chamber",
     "sulfuricresonance:thermochemical_link_drive",
     "sulfuricresonance:thermal_gauge",
+    "sulfuricresonance:thermal_warning_alarm",
     "sulfuricresonance:resonant_heat_injector"
   ]
 }

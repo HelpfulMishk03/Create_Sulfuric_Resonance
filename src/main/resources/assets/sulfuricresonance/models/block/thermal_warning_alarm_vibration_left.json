@@ -1,0 +1,42 @@
+{
+  "format_version": "1.9.0",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "0": "sulfuricresonance:block/thermal_warning_alarm/vibration_lines",
+    "particle": "sulfuricresonance:block/thermal_warning_alarm/vibration_lines"
+  },
+  "elements": [
+    {
+      "from": [
+        -1.2,
+        1.4,
+        -0.75
+      ],
+      "to": [
+        1.2,
+        5.6,
+        -0.75
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            16,
+            0,
+            0,
+            16
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

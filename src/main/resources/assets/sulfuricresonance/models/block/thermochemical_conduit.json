@@ -7,9 +7,9 @@
     32
   ],
   "textures": {
-    "1": "sulfuricresonance:block/thermoaxis",
-    "2": "sulfuricresonance:block/thermochemical_conduit",
-    "particle": "sulfuricresonance:block/thermochemical_conduit"
+    "1": "sulfuricresonance:block/thermochemical_conduit/thermoaxis",
+    "2": "sulfuricresonance:block/thermochemical_conduit/thermochemical_conduit",
+    "particle": "sulfuricresonance:block/thermochemical_conduit/thermochemical_conduit"
   },
   "elements": [
     {

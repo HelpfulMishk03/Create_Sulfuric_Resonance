@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.blocks.thermalrelay;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
+import io.hxneyw.repo.content.network.ThermochemicalNetworkResolver;
 import io.hxneyw.repo.content.logic.LogicCondition;
 import io.hxneyw.repo.content.logic.LogicEvaluation;
 import io.hxneyw.repo.content.logic.LogicEvaluator;
@@ -383,19 +384,22 @@ public class ThermalRelaySwitchBlockEntity
         ThermalRelaySwitchItem.FurnaceLink link =
                 this.linkedFurnace;
 
-        if (link != null
-                && level.dimension()
-                .location()
-                .toString()
-                .equals(link.dimension())) {
-            BlockPos furnacePos = link.position();
+        if (link != null) {
+            ThermochemicalNetworkResolver.Resolution resolution =
+                    ThermochemicalNetworkResolver.resolve(level, link);
 
-            if (level.isLoaded(furnacePos)
-                    && level.getBlockEntity(furnacePos)
-                    instanceof MoltenRotorBlockEntity furnace
-                    && link.furnaceIdentity().equals(
-                    furnace.getFurnaceIdentity()
-            )) {
+            if (resolution.isLinkedButUnavailable()) {
+                return;
+            }
+
+            MoltenRotorBlockEntity furnace = resolution.furnace();
+            if (furnace != null) {
+                UUID headNetworkId = furnace.getOrCreateThermalNetworkId();
+                if (!headNetworkId.equals(this.networkId)) {
+                    this.networkId = headNetworkId;
+                    setChanged();
+                }
+
                 current = HeatBand.from(
                         furnace.getCurrentHeatTier()
                 );

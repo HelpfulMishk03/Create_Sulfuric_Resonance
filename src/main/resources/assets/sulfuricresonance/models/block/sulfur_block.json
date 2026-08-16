@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench, By Hxney",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "sulfuricresonance:block/sulfur_block",
-		"particle": "sulfuricresonance:block/sulfur_block"
+		"0": "sulfuricresonance:block/sulfur_block/sulfur_block",
+		"particle": "sulfuricresonance:block/sulfur_block/sulfur_block"
 	},
 	"elements": [
 		{

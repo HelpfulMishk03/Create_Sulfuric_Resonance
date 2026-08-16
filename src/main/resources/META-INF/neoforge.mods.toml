@@ -9,7 +9,7 @@ issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/i
 
 [[mods]]
 modId = "sulfuricresonance"
-version = "0.2.9-beta"
+version = "0.3.0-beta-dev"
 displayName = "Create: Sulfuric Resonance"
 
 

@@ -5,6 +5,7 @@ import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelSlot;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
+import io.hxneyw.repo.content.network.ThermochemicalNetworkResolver;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -272,13 +273,26 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
                     MoltenRotorBlockEntity.RotorHeatLevel.NONE;
             ThermalRelaySwitchItem.FurnaceLink link = data.linkedFurnace;
 
-            if (link != null
-                    && level.dimension().location().toString().equals(link.dimension())) {
-                BlockPos furnacePos = link.position();
+            if (link != null) {
+                ThermochemicalNetworkResolver.Resolution resolution =
+                        ThermochemicalNetworkResolver.resolve(level, link);
 
-                if (level.isLoaded(furnacePos)
-                        && level.getBlockEntity(furnacePos) instanceof MoltenRotorBlockEntity furnace
-                        && link.furnaceIdentity().equals(furnace.getFurnaceIdentity())) {
+                if (resolution.isLinkedButUnavailable()) {
+                    if (!data.networkConnected) {
+                        data.networkConnected = true;
+                        changed = true;
+                    }
+                    continue;
+                }
+
+                MoltenRotorBlockEntity furnace = resolution.furnace();
+                if (furnace != null) {
+                    UUID headNetworkId = furnace.getOrCreateThermalNetworkId();
+                    if (!headNetworkId.equals(data.networkId)) {
+                        data.networkId = headNetworkId;
+                        changed = true;
+                    }
+
                     nextTemperature = furnace.getDisplayTemperature();
                     nextConnected = true;
                     nextHeatTier = furnace.getCurrentHeatTier();
