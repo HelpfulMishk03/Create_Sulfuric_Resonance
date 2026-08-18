@@ -83,7 +83,7 @@ public final class ResonantHeatInjectorBlock
     }
 
     @Override
-    public @Nullable BlockState getStateForPlacement(
+    public @NotNull BlockState getStateForPlacement(
             @NotNull BlockPlaceContext context
     ) {
         Direction preferredInput = findPreferredInputSide(context);

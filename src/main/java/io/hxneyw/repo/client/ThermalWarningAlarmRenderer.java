@@ -85,6 +85,7 @@ public class ThermalWarningAlarmRenderer
                 RenderType.translucent()
         );
 
+
         renderPartial(
                 ClientModEvents.THERMAL_WARNING_ALARM_MAIN_BULB,
                 state,
@@ -105,6 +106,7 @@ public class ThermalWarningAlarmRenderer
                 RenderType.translucent()
         );
 
+
         renderPartial(
                 ClientModEvents.THERMAL_WARNING_ALARM_STATUS_RED,
                 state,
@@ -114,6 +116,7 @@ public class ThermalWarningAlarmRenderer
                 overlay,
                 RenderType.translucent()
         );
+
 
         if (alarming) {
             renderVibrationLines(
@@ -222,18 +225,39 @@ public class ThermalWarningAlarmRenderer
         poseStack.translate(-ThermalWarningAlarmRenderer.STRIKER_PIVOT_X, -ThermalWarningAlarmRenderer.STRIKER_PIVOT_Y, -ThermalWarningAlarmRenderer.STRIKER_PIVOT_Z);
     }
 
-    private static int boostBlockLight(int packedLight, int minimumBlockLight) {
-        return LightTexture.pack(
-                Math.max(LightTexture.block(packedLight), minimumBlockLight),
-                LightTexture.sky(packedLight)
-        );
-    }
+    private static final float DISCONNECTED_RED_CYCLE_TICKS = 30.0F;
+    private static final float DISCONNECTED_RED_RISE_END_TICKS = 9.0F;
+    private static final float DISCONNECTED_RED_PEAK_END_TICKS = 13.0F;
+    private static final float DISCONNECTED_RED_FALL_END_TICKS = 27.0F;
 
     private static int disconnectedPulseLight(int packedLight, float time) {
-        float phase = TWO_PI * time / 30.0F;
-        float wave = 0.5F - 0.5F * Mth.cos(phase);
-        int pulsedBlockLight = Mth.floor(Mth.lerp(wave, 5.0F, 15.0F));
-        return boostBlockLight(packedLight, pulsedBlockLight);
+        float brightness = disconnectedRedBrightness(time);
+        return emissiveSurfaceLight(packedLight, brightness, 5, 3);
+    }
+
+    private static float disconnectedRedBrightness(float time) {
+        float cycle = time % DISCONNECTED_RED_CYCLE_TICKS;
+        if (cycle < 0.0F) {
+            cycle += DISCONNECTED_RED_CYCLE_TICKS;
+        }
+        final float minimum = 0.28F;
+
+        if (cycle < DISCONNECTED_RED_RISE_END_TICKS) {
+            float progress = cycle / DISCONNECTED_RED_RISE_END_TICKS;
+            return Mth.lerp(smootherStep(progress), minimum, 1.0F);
+        }
+
+        if (cycle < DISCONNECTED_RED_PEAK_END_TICKS) {
+            return 1.0F;
+        }
+
+        if (cycle < DISCONNECTED_RED_FALL_END_TICKS) {
+            float progress = (cycle - DISCONNECTED_RED_PEAK_END_TICKS)
+                    / (DISCONNECTED_RED_FALL_END_TICKS - DISCONNECTED_RED_PEAK_END_TICKS);
+            return Mth.lerp(smootherStep(progress), 1.0F, minimum);
+        }
+
+        return minimum;
     }
 
     private static final float ALARM_LIGHT_CYCLE_TICKS = 40.0F;

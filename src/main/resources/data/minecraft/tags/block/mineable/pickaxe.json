@@ -30,6 +30,8 @@
     "sulfuricresonance:thermochemical_link_drive",
     "sulfuricresonance:thermal_gauge",
     "sulfuricresonance:thermal_warning_alarm",
-    "sulfuricresonance:resonant_heat_injector"
+    "sulfuricresonance:resonant_heat_injector",
+    "sulfuricresonance:process_monitor",
+    "sulfuricresonance:process_gauge"
   ]
 }

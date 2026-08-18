@@ -40,6 +40,8 @@ public class ModTabs {
                   output.accept(Items.THERMAL_RELAY_SWITCH_ITEM.get());
                   output.accept(Items.THERMAL_GAUGE_ITEM.get());
                   output.accept(Items.THERMAL_WARNING_ALARM_ITEM.get());
+                  output.accept(Items.PROCESS_MONITOR_ITEM.get());
+                  output.accept(Items.PROCESS_GAUGE_ITEM.get());
                   output.accept(Items.LIVING_EMBER_LAMP_ITEM.get());
 
                   output.accept(Items.RUBBER_PADDING.get());
@@ -95,6 +97,7 @@ public class ModTabs {
                   output.accept(Items.RESONANT_GOLD_SHEET.get());
                   output.accept(Items.UNFINISHED_THERMAL_MATRIX.get());
                   output.accept(Items.THERMAL_MATRIX.get());
+                  output.accept(Items.LOGIC_BANK.get());
                   output.accept(Items.THERMOCHEMICAL_CASING.get());
 
                   output.accept(Items.IMPELLER_BLADE.get());

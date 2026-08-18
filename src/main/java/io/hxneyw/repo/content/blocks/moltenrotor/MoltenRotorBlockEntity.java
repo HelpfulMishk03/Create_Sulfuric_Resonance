@@ -198,11 +198,6 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.temperatureController.isCombustionActive();
    }
 
-   public boolean shouldShowStatus() {
-      return this.fuelController.hasFuelRemaining()
-              || this.temperatureController.isAboveAmbient();
-   }
-
    public void setCreativeMode(boolean creative) {
       if (this.creativeMode == creative)
          return;

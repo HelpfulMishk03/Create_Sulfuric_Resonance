@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " I ",
+    "GLB",
+    " I "
+  ],
+  "key": {
+    "G": {
+      "item": "sulfuricresonance:thermal_gauge"
+    },
+    "L": {
+      "item": "sulfuricresonance:logic_bank"
+    },
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "B": {
+      "item": "create:brass_sheet"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:process_gauge",
+    "count": 1
+  }
+}

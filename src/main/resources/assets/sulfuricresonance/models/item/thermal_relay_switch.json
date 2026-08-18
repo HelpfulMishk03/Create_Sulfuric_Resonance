@@ -1,5 +1,9 @@
 {
-  "parent": "sulfuricresonance:block/thermal_relay_switch",
+  "parent": "minecraft:builtin/entity",
+  "gui_light": "side",
+  "textures": {
+    "particle": "sulfuricresonance:block/thermal_relay_switch/thermal_relay_switch"
+  },
   "display": {
     "thirdperson_righthand": {
       "rotation": [

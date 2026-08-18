@@ -18,6 +18,8 @@ import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwhe
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlock;
+import io.hxneyw.repo.content.blocks.processmonitor.ProcessMonitorBlock;
+import io.hxneyw.repo.content.blocks.processgauge.ProcessGaugeBlock;
 import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlock;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
@@ -403,6 +405,33 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                     .noOcclusion()
                     )
             );
+
+    public static final DeferredBlock<ProcessMonitorBlock> PROCESS_MONITOR =
+            BLOCKS.register(
+                    "process_monitor",
+                    () -> new ProcessMonitorBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ProcessGaugeBlock> PROCESS_GAUGE =
+            BLOCKS.register(
+                    "process_gauge",
+                    () -> new ProcessGaugeBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(2.5F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
     public static final DeferredBlock<SulfurBurnerBlock>
             SULFUR_BURNER =
             BLOCKS.register(

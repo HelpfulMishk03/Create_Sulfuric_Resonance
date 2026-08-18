@@ -33,6 +33,7 @@ public record LogicCondition(
         );
     }
 
+    @SuppressWarnings("unused")
     public static LogicCondition lowTrip(
             @NotNull LogicSource source,
             int threshold
@@ -45,6 +46,7 @@ public record LogicCondition(
         );
     }
 
+    @SuppressWarnings("unused")
     public static LogicCondition operatingBand(
             @NotNull LogicSource source,
             int low,
@@ -58,6 +60,7 @@ public record LogicCondition(
         );
     }
 
+    @SuppressWarnings("unused")
     public static LogicCondition stateMatch(
             @NotNull LogicSource source,
             int state

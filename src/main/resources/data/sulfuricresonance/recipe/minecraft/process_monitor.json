@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    " B ",
+    "TLT",
+    " I "
+  ],
+  "key": {
+    "T": {
+      "item": "create:transmitter"
+    },
+    "L": {
+      "item": "sulfuricresonance:logic_bank"
+    },
+    "B": {
+      "item": "create:brass_sheet"
+    },
+    "I": {
+      "item": "create:iron_sheet"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:process_monitor",
+    "count": 1
+  }
+}

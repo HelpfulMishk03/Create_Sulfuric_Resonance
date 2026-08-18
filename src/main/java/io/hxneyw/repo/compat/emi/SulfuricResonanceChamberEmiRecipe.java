@@ -55,10 +55,10 @@ public final class SulfuricResonanceChamberEmiRecipe implements EmiRecipe {
         this.recipe = holder.value();
         this.substrate = EmiIngredient.of(this.recipe.substrate());
         this.catalyst = this.recipe.catalyst()
-                .<EmiIngredient>map(EmiIngredient::of)
+                .map(EmiIngredient::of)
                 .orElse(EmiStack.EMPTY);
         this.auxiliary = this.recipe.auxiliary()
-                .<EmiIngredient>map(EmiIngredient::of)
+                .map(EmiIngredient::of)
                 .orElse(EmiStack.EMPTY);
         this.acid = EmiStack.of(
                 AllModFluids.SULFURIC_ACID.get(),
@@ -135,14 +135,12 @@ public final class SulfuricResonanceChamberEmiRecipe implements EmiRecipe {
         addOptionalSlot(
                 widgets,
                 this.catalyst,
-                34,
                 37,
                 "jei.sulfuricresonance.sulfuric_resonance_chamber.catalyst"
         );
         addOptionalSlot(
                 widgets,
                 this.auxiliary,
-                34,
                 59,
                 "jei.sulfuricresonance.sulfuric_resonance_chamber.auxiliary"
         );
@@ -171,12 +169,11 @@ public final class SulfuricResonanceChamberEmiRecipe implements EmiRecipe {
     private static void addOptionalSlot(
             WidgetHolder widgets,
             EmiIngredient ingredient,
-            int x,
             int y,
             String labelKey
     ) {
         if (ingredient.isEmpty()) {
-            widgets.addSlot(x, y)
+            widgets.addSlot(34, y)
                     .appendTooltip(Component.translatable(labelKey))
                     .appendTooltip(Component.translatable(
                             "jei.sulfuricresonance.sulfuric_resonance_chamber.not_used"
@@ -184,7 +181,7 @@ public final class SulfuricResonanceChamberEmiRecipe implements EmiRecipe {
             return;
         }
 
-        widgets.addSlot(ingredient, x, y)
+        widgets.addSlot(ingredient, 34, y)
                 .appendTooltip(Component.translatable(labelKey));
     }
 

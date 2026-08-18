@@ -5,12 +5,15 @@ import com.simibubi.create.foundation.fluid.SmartFluidTank;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
+import io.hxneyw.repo.content.process.IProcessStateProvider;
+import io.hxneyw.repo.content.process.ProcessState;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllModFluids;
 import io.hxneyw.repo.content.registry.ModParticles;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -36,7 +39,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity implements Container {
+@SuppressWarnings("SpellCheckingInspection")
+public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity implements Container, IProcessStateProvider {
 
     public static final int ACID_CAPACITY = 1500;
     public static final int INPUT_1 = 0;
@@ -45,7 +49,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     public static final int OUTPUT = 3;
     public static final int SLOT_COUNT = 4;
 
-    public static final int MENU_DATA_COUNT = 10;
+    public static final int MENU_DATA_COUNT = 11;
 
     private static final Map<ResourceLocation, ReactionLevel> REACTION_LEVELS =
             new ConcurrentHashMap<>();
@@ -366,8 +370,11 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private int processingTime;
     private boolean ready;
     private boolean processing;
+    private OperatingMode operatingMode = OperatingMode.AUTOMATIC;
+    private boolean manualStartRequested;
     private @Nullable ResourceLocation activeRecipeId;
     private ChamberStatus status = ChamberStatus.IDLE;
+    private UUID processIdentity = UUID.randomUUID();
 
     private static final float NORMAL_RING_PEAK_DEGREES_PER_TICK = 5.5F;
     private static final float RESONANCE_RING_PEAK_DEGREES_PER_TICK = 8.0F;
@@ -411,6 +418,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 case 7 -> temperature;
                 case 8 -> getDisplayHeatBand(heatTier);
                 case 9 -> status.ordinal();
+                case 10 -> operatingMode.ordinal();
                 default -> 0;
             };
         }
@@ -575,6 +583,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             processingTime = 0;
             ready = false;
             processing = false;
+            manualStartRequested = false;
             activeRecipeId = null;
             if (!hasAnyInput()) {
                 status = ChamberStatus.IDLE;
@@ -588,14 +597,19 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             SulfuricResonanceChamberRecipe recipe = inputHolder.value();
             processingTime = recipe.processingTime();
             status = determineStatus(recipe);
-            ready = status == ChamberStatus.READY;
+            boolean requirementsReady = status == ChamberStatus.READY;
+            boolean startAllowed = processing
+                    || operatingMode == OperatingMode.AUTOMATIC
+                    || manualStartRequested;
 
-            if (ready) {
+            if (requirementsReady && startAllowed) {
                 if (!processing) {
                     processing = true;
                     activeRecipeId = inputHolder.id();
                 }
 
+                ready = false;
+                manualStartRequested = false;
                 status = ChamberStatus.PROCESSING;
                 processingTicks++;
 
@@ -607,7 +621,13 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                         clearProcessingState();
                     }
                 }
+            } else if (requirementsReady) {
+                ready = true;
+                activeRecipeId = null;
+                resetInterruptedProgress();
             } else {
+                ready = false;
+                manualStartRequested = false;
                 if (processing) {
                     clearProcessingState();
                 } else {
@@ -1015,8 +1035,38 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         processingTime = 0;
         processing = false;
         ready = false;
+        manualStartRequested = false;
         activeRecipeId = null;
         setChanged();
+    }
+
+
+    public boolean toggleOperatingMode() {
+        if (processing) {
+            return false;
+        }
+
+        operatingMode = operatingMode == OperatingMode.AUTOMATIC
+                ? OperatingMode.MANUAL
+                : OperatingMode.AUTOMATIC;
+        manualStartRequested = false;
+        setChanged();
+        sendData();
+        return true;
+    }
+
+    public boolean requestManualStart() {
+        if (operatingMode != OperatingMode.MANUAL
+                || processing
+                || !ready
+                || status != ChamberStatus.READY) {
+            return false;
+        }
+
+        manualStartRequested = true;
+        setChanged();
+        sendData();
+        return true;
     }
 
     private void onContentsChanged() {
@@ -1230,7 +1280,9 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         tag.putInt("ProcessingTime", processingTime);
         tag.putBoolean("Ready", ready);
         tag.putBoolean("Processing", processing);
+        tag.putString("OperatingMode", operatingMode.serializedName());
         tag.putInt("ChamberStatus", status.ordinal());
+        tag.putUUID("ProcessIdentity", processIdentity);
         if (activeRecipeId != null) {
             tag.putString("ActiveRecipe", activeRecipeId.toString());
         } else {
@@ -1275,7 +1327,14 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         processingTime = tag.getInt("ProcessingTime");
         ready = tag.getBoolean("Ready");
         processing = tag.getBoolean("Processing");
+        operatingMode = OperatingMode.fromSerializedName(
+                tag.getString("OperatingMode")
+        );
+        manualStartRequested = false;
         status = ChamberStatus.fromOrdinal(tag.getInt("ChamberStatus"));
+        if (tag.hasUUID("ProcessIdentity")) {
+            processIdentity = tag.getUUID("ProcessIdentity");
+        }
         String activeRecipe = tag.getString("ActiveRecipe");
         activeRecipeId = activeRecipe.isBlank()
                 ? null
@@ -1314,26 +1373,87 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                         clientReactionProgress,
                         syncedProgress
                 );
+                
                 clientPreviousReactionProgress = Math.max(
                         clientPreviousReactionProgress,
-                        Math.min(clientReactionProgress, syncedProgress)
+                        syncedProgress
                 );
                 clientVisualActivation = Math.max(
                         clientVisualActivation,
                         syncedActivation
                 );
+                
                 clientPreviousVisualActivation = Math.max(
                         clientPreviousVisualActivation,
-                        Math.min(clientVisualActivation, syncedActivation)
+                        syncedActivation
                 );
                 clientVisualReactionLevel = getReactionLevel(activeRecipeId);
             }
         }
     }
 
+
+    @Override
+    public @NotNull ProcessState getProcessState() {
+        if (processing || status == ChamberStatus.PROCESSING) {
+            return ProcessState.PROCESSING;
+        }
+
+        if (ready || status == ChamberStatus.READY) {
+            return ProcessState.READY;
+        }
+
+        return switch (status) {
+            case MISSING_ACID,
+                    INSUFFICIENT_HEAT,
+                    INSUFFICIENT_SPEED,
+                    OUTPUT_BLOCKED -> ProcessState.BLOCKED;
+            default -> ProcessState.IDLE;
+        };
+    }
+
+    @Override
+    public @NotNull UUID getProcessIdentity() {
+        return processIdentity;
+    }
+
     public enum ReactionLevel {
         NORMAL,
         RESONANCE
+    }
+
+    public enum OperatingMode {
+        AUTOMATIC("automatic"),
+        MANUAL("manual");
+
+        private final String serializedName;
+
+        OperatingMode(String serializedName) {
+            this.serializedName = serializedName;
+        }
+
+        public String serializedName() {
+            return serializedName;
+        }
+
+        public String translationKey() {
+            return "gui.sulfuricresonance.chamber.mode." + serializedName;
+        }
+
+        public static OperatingMode fromOrdinal(int ordinal) {
+            OperatingMode[] values = values();
+            if (ordinal < 0 || ordinal >= values.length) {
+                return AUTOMATIC;
+            }
+            return values[ordinal];
+        }
+
+        public static OperatingMode fromSerializedName(String name) {
+            if (MANUAL.serializedName.equals(name)) {
+                return MANUAL;
+            }
+            return AUTOMATIC;
+        }
     }
 
     public enum ChamberStatus {

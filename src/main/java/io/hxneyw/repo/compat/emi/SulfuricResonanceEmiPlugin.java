@@ -151,44 +151,45 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                 : registry.getRecipeManager().getRecipes()) {
             Recipe<?> recipe = holder.value();
 
-            if (recipe instanceof CombustionBeltRecipe beltRecipe) {
-                registry.addRecipe(
-                        new CombustionBeltEmiRecipe(
-                                new RecipeHolder<>(
-                                        holder.id(),
-                                        beltRecipe
+            switch (recipe) {
+                case CombustionBeltRecipe beltRecipe -> {
+                    registry.addRecipe(
+                            new CombustionBeltEmiRecipe(
+                                    new RecipeHolder<>(
+                                            holder.id(),
+                                            beltRecipe
+                                    )
+                            )
+                    );
+                    beltRecipes++;
+                }
+                case SulfuricResonanceChamberRecipe chamberRecipe -> {
+                    registry.addRecipe(
+                            new SulfuricResonanceChamberEmiRecipe(
+                                    new RecipeHolder<>(
+                                            holder.id(),
+                                            chamberRecipe
+                                    )
+                            )
+                    );
+                    chamberRecipes++;
+                }
+                case BasinRecipe basinRecipe -> {
+                    if (recipe.getType()
+                            == ModRecipeTypes.COMBUSTION_MIXING.get()) {
+                        registry.addRecipe(
+                                new CombustionMixingEmiRecipe(
+                                        new RecipeHolder<>(
+                                                holder.id(),
+                                                basinRecipe
+                                        )
                                 )
-                        )
-                );
-                beltRecipes++;
-                continue;
-            }
-
-            if (recipe instanceof SulfuricResonanceChamberRecipe chamberRecipe) {
-                registry.addRecipe(
-                        new SulfuricResonanceChamberEmiRecipe(
-                                new RecipeHolder<>(
-                                        holder.id(),
-                                        chamberRecipe
-                                )
-                        )
-                );
-                chamberRecipes++;
-                continue;
-            }
-
-            if (recipe instanceof BasinRecipe basinRecipe
-                    && recipe.getType()
-                    == ModRecipeTypes.COMBUSTION_MIXING.get()) {
-                registry.addRecipe(
-                        new CombustionMixingEmiRecipe(
-                                new RecipeHolder<>(
-                                        holder.id(),
-                                        basinRecipe
-                                )
-                        )
-                );
-                mixingRecipes++;
+                        );
+                        mixingRecipes++;
+                    }
+                }
+                default -> {
+                }
             }
         }
 

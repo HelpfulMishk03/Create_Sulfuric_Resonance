@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.foundation.block.IBE;
 import io.hxneyw.repo.content.blocks.WrenchInteractionHelper;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
+import io.hxneyw.repo.content.process.ProcessMonitorLinking;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,6 +22,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -28,6 +30,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,6 +44,14 @@ public class SulfuricResonanceChamberBlock
     public static final MapCodec<SulfuricResonanceChamberBlock>
             CODEC = simpleCodec(
             SulfuricResonanceChamberBlock::new
+    );
+
+    private static final VoxelShape SUPPORT_SHAPE = Shapes.or(
+            box(0.0D, 0.0D, 0.0D, 16.0D, 15.0D, 16.0D),
+            box(0.0D, 15.0D, 0.0D, 1.0D, 16.0D, 16.0D),
+            box(15.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D),
+            box(1.0D, 15.0D, 0.0D, 15.0D, 16.0D, 1.0D),
+            box(1.0D, 15.0D, 15.0D, 15.0D, 16.0D, 16.0D)
     );
 
     public SulfuricResonanceChamberBlock(
@@ -137,6 +149,18 @@ public class SulfuricResonanceChamberBlock
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
 
+        if (!level.isClientSide
+                && level.getBlockEntity(pos)
+                instanceof SulfuricResonanceChamberBlockEntity chamber
+                && ProcessMonitorLinking.tryComplete(
+                        player,
+                        level,
+                        pos,
+                        chamber
+                )) {
+            return ItemInteractionResult.SUCCESS;
+        }
+
         if (stack.getItem() instanceof BlockItem
                 || stack.getItem() instanceof BucketItem) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
@@ -154,6 +178,18 @@ public class SulfuricResonanceChamberBlock
             @NotNull Player player,
             @NotNull BlockHitResult hit
     ) {
+        if (!level.isClientSide
+                && level.getBlockEntity(pos)
+                instanceof SulfuricResonanceChamberBlockEntity chamber
+                && ProcessMonitorLinking.tryComplete(
+                        player,
+                        level,
+                        pos,
+                        chamber
+                )) {
+            return InteractionResult.SUCCESS;
+        }
+
         openChamberMenu(state, level, pos, player);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -218,6 +254,15 @@ public class SulfuricResonanceChamberBlock
             @Nullable Direction side
     ) {
         return side == Direction.UP || side == itemBackSide(state);
+    }
+
+    @Override
+    public @NotNull VoxelShape getBlockSupportShape(
+            @NotNull BlockState state,
+            @NotNull BlockGetter level,
+            @NotNull BlockPos pos
+    ) {
+        return SUPPORT_SHAPE;
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 19;
+    private static final int REGISTERED_SCENES = 22;
 
     @NotNull
     @Override
@@ -249,6 +249,42 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     "ash_ceramic_crucible/operation",
                     AshCeramicCrucibleScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation processMonitorId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.PROCESS_MONITOR.get()
+                    );
+
+            helper.addStoryBoard(
+                    processMonitorId,
+                    "process_monitor/operation",
+                    ProcessMonitorScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation processGaugeId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.PROCESS_GAUGE.get()
+                    );
+
+            helper.addStoryBoard(
+                    processGaugeId,
+                    "process_gauge/operation",
+                    ProcessGaugeScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation thermalWarningAlarmId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMAL_WARNING_ALARM.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermalWarningAlarmId,
+                    "thermal_warning_alarm/operation",
+                    ThermalWarningAlarmScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
             );
 
             CreateSulfuricResonance.LOGGER.info(

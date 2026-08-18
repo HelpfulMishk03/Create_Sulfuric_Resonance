@@ -1,5 +1,6 @@
 package io.hxneyw.repo.content.blocks.thermalwarningalarm;
 
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import io.hxneyw.repo.content.network.ThermochemicalNetworkResolver;
@@ -7,13 +8,16 @@ import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllModSounds;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -25,12 +29,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ThermalWarningAlarmBlockEntity extends BlockEntity {
+public class ThermalWarningAlarmBlockEntity extends BlockEntity implements IHaveGoggleInformation {
 
     private static final String NETWORK_TAG = "RelayNetwork";
     private static final String POSITION_TAG = "LinkedFurnacePos";
     private static final String DIMENSION_TAG = "LinkedFurnaceDimension";
     private static final String IDENTITY_TAG = "LinkedFurnaceIdentity";
+    private static final String DISPLAY_FUEL_TAG = "DisplayFuelRemainingTicks";
 
     private static final Set<ThermalWarningAlarmBlockEntity> CLIENT_ALARMS =
             Collections.newSetFromMap(new WeakHashMap<>());
@@ -48,6 +53,7 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
     private ThermalRelaySwitchItem.FurnaceLink linkedFurnace;
 
     private int evaluationTicker;
+    private int displayFuelRemainingTicks = -1;
 
     public ThermalWarningAlarmBlockEntity(
             @NotNull BlockPos pos,
@@ -123,6 +129,7 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
         this.networkId = null;
         this.linkedFurnace = null;
         this.evaluationTicker = 0;
+        this.displayFuelRemainingTicks = -1;
         setChanged();
 
         if (level != null && !level.isClientSide) {
@@ -144,6 +151,7 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
     private void evaluate(@NotNull Level level) {
         boolean connected = false;
         boolean alarming = false;
+        int previousFuelTicks = displayFuelRemainingTicks;
 
         ThermalRelaySwitchItem.FurnaceLink link = linkedFurnace;
         if (link != null) {
@@ -162,6 +170,7 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
             if (furnace != null) {
                 connected = true;
                 alarming = isFuelEndingSoon(furnace);
+                displayFuelRemainingTicks = Math.max(0, furnace.getDisplayFuelTime());
 
                 UUID headNetworkId = furnace.getOrCreateThermalNetworkId();
                 if (!headNetworkId.equals(networkId)) {
@@ -171,7 +180,16 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
             }
         }
 
+        if (!connected) {
+            displayFuelRemainingTicks = -1;
+        }
+
         updateVisualState(level, connected, alarming);
+
+        if (displayFuelRemainingTicks != previousFuelTicks) {
+            setChanged();
+            sync();
+        }
     }
 
     private static boolean isFuelEndingSoon(
@@ -195,6 +213,50 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
                 && remainingHeatedTime <= LOW_FUEL_WARNING_TICKS
                 && furnace.getCurrentHeatTier()
                 != MoltenRotorBlockEntity.RotorHeatLevel.NONE;
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(
+            List<Component> tooltip,
+            boolean isPlayerSneaking
+    ) {
+        boolean connected = getBlockState().hasProperty(ThermalWarningAlarmBlock.CONNECTED)
+                && getBlockState().getValue(ThermalWarningAlarmBlock.CONNECTED);
+        boolean alarming = getBlockState().hasProperty(ThermalWarningAlarmBlock.ALARMING)
+                && getBlockState().getValue(ThermalWarningAlarmBlock.ALARMING);
+
+        Component connectionState = Component.translatable(
+                connected
+                        ? "tooltip.sulfuricresonance.thermal_warning_alarm.connected"
+                        : "tooltip.sulfuricresonance.thermal_warning_alarm.disconnected"
+        ).withStyle(connected ? ChatFormatting.GREEN : ChatFormatting.RED);
+
+        String fuelRemaining = connected && displayFuelRemainingTicks >= 0
+                ? String.format(Locale.ROOT, "%.1f s", displayFuelRemainingTicks / 20.0F)
+                : "—";
+        Component fuelValue = Component.literal(fuelRemaining)
+                .withStyle(
+                        !connected
+                                ? ChatFormatting.DARK_GRAY
+                                : alarming
+                                        ? ChatFormatting.GOLD
+                                        : ChatFormatting.WHITE
+                );
+
+        tooltip.add(Component.empty());
+        tooltip.add(
+                Component.translatable(
+                        "tooltip.sulfuricresonance.thermal_warning_alarm.network",
+                        connectionState
+                ).withStyle(ChatFormatting.DARK_GRAY)
+        );
+        tooltip.add(
+                Component.translatable(
+                        "tooltip.sulfuricresonance.thermal_warning_alarm.fuel_remaining",
+                        fuelValue
+                ).withStyle(ChatFormatting.DARK_GRAY)
+        );
+        return true;
     }
 
     private static boolean shouldStrike(long gameTime) {
@@ -260,6 +322,8 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
             tag.putString(DIMENSION_TAG, linkedFurnace.dimension());
             tag.putUUID(IDENTITY_TAG, linkedFurnace.furnaceIdentity());
         }
+
+        tag.putInt(DISPLAY_FUEL_TAG, displayFuelRemainingTicks);
     }
 
     @Override
@@ -285,6 +349,9 @@ public class ThermalWarningAlarmBlockEntity extends BlockEntity {
             linkedFurnace = null;
         }
 
+        displayFuelRemainingTicks = tag.contains(DISPLAY_FUEL_TAG)
+                ? tag.getInt(DISPLAY_FUEL_TAG)
+                : -1;
         evaluationTicker = EVALUATION_INTERVAL;
     }
 

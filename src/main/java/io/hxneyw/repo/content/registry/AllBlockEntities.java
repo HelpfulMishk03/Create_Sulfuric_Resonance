@@ -14,6 +14,8 @@ import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwhe
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.processmonitor.ProcessMonitorBlockEntity;
+import io.hxneyw.repo.content.blocks.processgauge.ProcessGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
@@ -31,6 +33,29 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("DataFlowIssue")
 public class AllBlockEntities {
    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "sulfuricresonance");
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ProcessMonitorBlockEntity>
+            > PROCESS_MONITOR = BLOCK_ENTITIES.register(
+            "process_monitor",
+            () -> Builder.of(
+                    ProcessMonitorBlockEntity::new,
+                    AllModBlocks.PROCESS_MONITOR.get()
+            ).build(null)
+    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ProcessGaugeBlockEntity>
+            > PROCESS_GAUGE = BLOCK_ENTITIES.register(
+            "process_gauge",
+            () -> Builder.of(
+                    ProcessGaugeBlockEntity::new,
+                    AllModBlocks.PROCESS_GAUGE.get()
+            ).build(null)
+    );
+
    public static final DeferredHolder<
            BlockEntityType<?>,
            BlockEntityType<MoltenRotorBlockEntity>

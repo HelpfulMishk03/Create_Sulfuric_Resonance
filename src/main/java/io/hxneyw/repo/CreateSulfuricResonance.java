@@ -9,6 +9,7 @@ import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
+import io.hxneyw.repo.content.process.ProcessMonitorArmPayload;
 import io.hxneyw.repo.content.registry.*;
 import io.hxneyw.repo.ponder.SulfuricResonancePonderPlugin;
 import net.createmod.ponder.foundation.PonderIndex;
@@ -42,6 +43,7 @@ public class CreateSulfuricResonance {
       AllModMenus.register(modEventBus);
       ModParticles.PARTICLE_TYPES.register(modEventBus);
       modEventBus.addListener(ModCapabilities::registerCapabilities);
+      modEventBus.addListener(ProcessMonitorArmPayload::register);
       AllModSounds.SOUNDS.register(modEventBus);
 
       AllModFluids.register(modEventBus);

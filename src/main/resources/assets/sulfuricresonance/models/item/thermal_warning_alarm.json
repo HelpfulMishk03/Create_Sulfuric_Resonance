@@ -1,39 +1,123 @@
 {
-  "parent": "sulfuricresonance:block/thermal_warning_alarm_full",
+  "parent": "minecraft:builtin/entity",
+  "gui_light": "side",
+  "textures": {
+    "particle": "sulfuricresonance:block/thermal_warning_alarm/light"
+  },
   "display": {
     "thirdperson_righthand": {
-      "rotation": [75, 45, 0],
-      "translation": [0, 2.5, 1.5],
-      "scale": [0.375, 0.375, 0.375]
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        1.5
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ]
     },
     "thirdperson_lefthand": {
-      "rotation": [75, 45, 0],
-      "translation": [0, 2.5, 1.5],
-      "scale": [0.375, 0.375, 0.375]
+      "rotation": [
+        75,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        1.5
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ]
     },
     "firstperson_righthand": {
-      "rotation": [25, 45, 0],
-      "translation": [0, 2.5, 0],
-      "scale": [0.45, 0.45, 0.45]
+      "rotation": [
+        25,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        0.45
+      ]
     },
     "firstperson_lefthand": {
-      "rotation": [25, 45, 0],
-      "translation": [0, 2.5, 0],
-      "scale": [0.45, 0.45, 0.45]
+      "rotation": [
+        25,
+        45,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        0
+      ],
+      "scale": [
+        0.45,
+        0.45,
+        0.45
+      ]
     },
     "gui": {
-      "rotation": [30, 135, 0],
-      "translation": [0, 1.25, 0],
-      "scale": [0.72, 0.72, 0.72]
+      "rotation": [
+        30,
+        135,
+        0
+      ],
+      "translation": [
+        0,
+        1.25,
+        0
+      ],
+      "scale": [
+        0.72,
+        0.72,
+        0.72
+      ]
     },
     "ground": {
-      "translation": [0, 3, 0],
-      "scale": [0.35, 0.35, 0.35]
+      "translation": [
+        0,
+        3,
+        0
+      ],
+      "scale": [
+        0.35,
+        0.35,
+        0.35
+      ]
     },
     "fixed": {
-      "rotation": [-90, 0, 0],
-      "translation": [0, 0, -4],
-      "scale": [0.65, 0.65, 0.65]
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        0,
+        -4
+      ],
+      "scale": [
+        0.65,
+        0.65,
+        0.65
+      ]
     }
   }
 }
