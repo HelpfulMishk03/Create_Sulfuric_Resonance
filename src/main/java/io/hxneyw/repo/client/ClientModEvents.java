@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.client.gui.SulfuricResonanceChamberScreen;
+import io.hxneyw.repo.client.screen.PrecisionSpritzerScreen;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerRenderer;
@@ -187,6 +188,10 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.register(
                 AllModMenus.SULFURIC_RESONANCE_CHAMBER.get(),
                 SulfuricResonanceChamberScreen::new
+        );
+        event.register(
+                AllModMenus.PRECISION_SPRITZER.get(),
+                PrecisionSpritzerScreen::new
         );
     }
 

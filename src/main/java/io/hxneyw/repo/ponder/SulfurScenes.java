@@ -4,6 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.Items;
+import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -123,36 +124,52 @@ public final class SulfurScenes {
                 .placeNearTarget();
         scene.idle(105);
 
+        scene.world().modifyBlock(
+                burnerPos,
+                state -> state.setValue(
+                        SulfurBurnerBlock.HEAT_LEVEL,
+                        com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel.KINDLED
+                ),
+                false
+        );
         scene.overlay()
-                .showText(70)
-                .text("Smouldering")
-                .attachKeyFrame()
-                .colored(PonderPalette.MEDIUM)
-                .pointAt(burnerTop)
-                .placeNearTarget();
-        emitBurnerFlames(scene, util, burnerPos, 1, 3);
-        scene.idle(65);
-
-        scene.overlay()
-                .showText(70)
-                .text("Heated")
+                .showText(95)
+                .text("Starting valid fuel makes the Burner Heated immediately")
                 .attachKeyFrame()
                 .colored(PonderPalette.OUTPUT)
                 .pointAt(burnerTop)
                 .placeNearTarget();
         emitBurnerFlames(scene, util, burnerPos, 2, 4);
-        scene.idle(60);
+        scene.idle(105);
 
         scene.overlay()
-                .showText(80)
-                .text("Superheated")
+                .showText(100)
+                .text("It remains Heated during a 100-tick, five-second warmup")
+                .attachKeyFrame()
+                .colored(PonderPalette.OUTPUT)
+                .pointAt(burnerTop)
+                .placeNearTarget();
+        emitBurnerFlames(scene, util, burnerPos, 2, 4);
+        scene.idle(110);
+
+        scene.world().modifyBlock(
+                burnerPos,
+                state -> state.setValue(
+                        SulfurBurnerBlock.HEAT_LEVEL,
+                        com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel.SEETHING
+                ),
+                false
+        );
+        scene.overlay()
+                .showText(95)
+                .text("After that warmup, the Burner reaches Superheated")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(burnerTop)
                 .placeNearTarget();
         emitBurnerFlames(scene, util, burnerPos, 3, 5);
         scene.effects().indicateSuccess(burnerPos);
-        scene.idle(70);
+        scene.idle(105);
 
         scene.world().setBlocks(
                 heatedSelection,

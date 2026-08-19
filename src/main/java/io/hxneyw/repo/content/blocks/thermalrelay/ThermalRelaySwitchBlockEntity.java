@@ -404,35 +404,37 @@ public class ThermalRelaySwitchBlockEntity
                         furnace.getCurrentHeatTier()
                 );
 
-                boolean activeFuelEndingSoon =
-                        this.lowFuelScope.matches(current)
-                                && isActiveFuelEndingSoon(
-                                furnace,
-                                current
-                        );
-
-                boolean heatedStateEndingSoon =
-                        isHeatedStateEndingSoon(
-                                furnace,
-                                current
-                        );
-
-                qualifyingLowFuel =
-                        activeFuelEndingSoon
-                                || heatedStateEndingSoon;
+                if (this.mode == RelayMode.LOW_FUEL
+                        && this.lowFuelScope.matches(current)) {
+                    qualifyingLowFuel =
+                            isActiveFuelEndingSoon(
+                                    furnace,
+                                    current
+                            )
+                                    || isHeatedStateEndingSoon(
+                                            furnace,
+                                            current
+                                    );
+                }
             }
         }
 
         this.currentHeatBand = current.ordinal();
-        this.lowFuelWarningActive = qualifyingLowFuel;
+        this.lowFuelWarningActive =
+                this.mode == RelayMode.LOW_FUEL
+                        && qualifyingLowFuel;
+
+        if (this.mode == RelayMode.LOW_FUEL) {
+            if (qualifyingLowFuel) {
+                applyLowFuelWarning(level);
+            } else {
+                applyOutput(level, 0, 0);
+            }
+            return;
+        }
 
         ConfiguredOutput baseOutput =
                 configuredOutputFor(current);
-
-        if (qualifyingLowFuel) {
-            applyLowFuelWarning(level);
-            return;
-        }
 
         applyOutput(
                 level,

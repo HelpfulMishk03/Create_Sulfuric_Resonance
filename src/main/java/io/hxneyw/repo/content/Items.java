@@ -101,6 +101,7 @@ public class Items {
    public static final DeferredItem<Item> IMPELLER_BLADE = ITEMS.register("impeller_blade", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> SHEATHED_IMPELLER_BLADE = ITEMS.register("sheathed_impeller_blade", () -> new SheathedImpellerBladeItem(new Properties().stacksTo(1)));
    public static final DeferredItem<BlockItem> PERFORATED_SPRITZER = ITEMS.register("perforated_spritzer", () -> new BlockItem(AllModBlocks.PERFORATED_SPRITZER.get(), new Properties()));
+   public static final DeferredItem<PrecisionSpritzerBlockItem> PRECISION_SPRITZER = ITEMS.register("precision_spritzer", () -> new PrecisionSpritzerBlockItem(AllModBlocks.PERFORATED_SPRITZER.get(), new Properties()));
    public static final DeferredItem<Item> FLAMEBORNE_CORE = ITEMS.register("flameborne_core", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> RUBBER_PADDING = ITEMS.register("rubber_padding", () -> new RubberPaddingBlockItem(AllModBlocks.RUBBER_PADDING.get(), new Properties()));
    public static final DeferredItem<Item> CORRUPT_BLAZE_CAKE = ITEMS.register("corrupt_blaze_cake", () -> new Item(new Properties().stacksTo(64)));
@@ -108,6 +109,7 @@ public class Items {
    public static final DeferredItem<Item> MOLTEN_ROTOR_FURNACE = ITEMS.register("molten_rotor_furnace", () -> new BlockItem(AllModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> SULFUR_BLOCK = ITEMS.register("sulfur_block", () -> new BlockItem(AllModBlocks.SULFUR_BLOCK.get(), new Properties()));
    public static final DeferredItem<BucketItem> SULFURIC_ACID_BUCKET = ITEMS.register("sulfuric_acid_bucket", () -> new BucketItem(AllModFluids.SULFURIC_ACID.get(), new Properties().craftRemainder(net.minecraft.world.item.Items.BUCKET).stacksTo(1)));
+   public static final DeferredItem<SuperphosphateFertilizerItem> SUPERPHOSPHATE_FERTILIZER = ITEMS.register("superphosphate_fertilizer", () -> new SuperphosphateFertilizerItem(new Properties().stacksTo(64)));
 
    public static void register(IEventBus eventBus) {
       LOGGER.info("Registering Sulfuric Resonance items");

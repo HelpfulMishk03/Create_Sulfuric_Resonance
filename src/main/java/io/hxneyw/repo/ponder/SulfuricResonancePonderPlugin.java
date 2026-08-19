@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 22;
+    private static final int REGISTERED_SCENES = 24;
 
     @NotNull
     @Override
@@ -93,6 +93,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     spritzerId,
                     "perforated_spritzer/mob_automation",
                     PerforatedSpritzerScenes::mobAutomation,
+                    AllPonderTags.FLUIDS
+            );
+
+            ResourceLocation precisionSpritzerId =
+                    BuiltInRegistries.ITEM.getKey(
+                            io.hxneyw.repo.content.Items.PRECISION_SPRITZER.get()
+                    );
+
+            helper.addStoryBoard(
+                    precisionSpritzerId,
+                    "perforated_spritzer/intro",
+                    PerforatedSpritzerScenes::intro,
                     AllPonderTags.FLUIDS
             );
 
@@ -249,6 +261,30 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     "ash_ceramic_crucible/operation",
                     AshCeramicCrucibleScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation rubberPaddingId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.RUBBER_PADDING.get()
+                    );
+
+            helper.addStoryBoard(
+                    rubberPaddingId,
+                    "rubber_padding/operation",
+                    RubberPaddingScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation sulfuricAcidBucketId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.SULFURIC_ACID_BUCKET.get()
+                    );
+
+            helper.addStoryBoard(
+                    sulfuricAcidBucketId,
+                    "sulfuric_acid/operation",
+                    SulfuricAcidScenes::operation,
+                    AllPonderTags.FLUIDS
             );
 
             ResourceLocation processMonitorId =

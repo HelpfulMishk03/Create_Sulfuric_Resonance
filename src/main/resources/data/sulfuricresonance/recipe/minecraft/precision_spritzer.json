@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "redstone",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:perforated_spritzer"
+    },
+    {
+      "item": "sulfuricresonance:logic_bank"
+    }
+  ],
+  "result": {
+    "id": "sulfuricresonance:precision_spritzer",
+    "count": 1
+  }
+}

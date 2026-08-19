@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench, By Hxney",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "sulfuricresonance:block/perforated_spritzer/perforated_spritzer",
-		"particle": "sulfuricresonance:block/perforated_spritzer/perforated_spritzer"
+		"0": "sulfuricresonance:block/perforated_spritzer/precision_spritzer",
+		"particle": "sulfuricresonance:block/perforated_spritzer/precision_spritzer"
 	},
 	"elements": [
 		{

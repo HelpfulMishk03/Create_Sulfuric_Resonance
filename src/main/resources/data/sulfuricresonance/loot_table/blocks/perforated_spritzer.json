@@ -5,8 +5,26 @@
       "rolls": 1,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "sulfuricresonance:perforated_spritzer"
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "sulfuricresonance:precision_spritzer",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "sulfuricresonance:perforated_spritzer",
+                  "properties": {
+                    "precision": "true"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "sulfuricresonance:perforated_spritzer"
+            }
+          ]
         }
       ],
       "conditions": [

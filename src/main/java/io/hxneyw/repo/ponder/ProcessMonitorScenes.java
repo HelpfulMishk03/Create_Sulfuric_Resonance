@@ -117,8 +117,8 @@ public final class ProcessMonitorScenes {
                 ProcessMonitorBlockEntity.class,
                 nbt -> nbt.putInt("BindingPulseTicks", 8)
         );
-        scene.overlay().showText(115)
-                .text("Sneak-left-click arms only the currently selected channel for linking")
+        scene.overlay().showText(125)
+                .text("Sneak-left-click with an empty main hand arms only the currently selected channel for linking")
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)
                 .pointAt(util.vector().centerOf(monitorPos))
@@ -197,6 +197,14 @@ public final class ProcessMonitorScenes {
                 .placeNearTarget();
         scene.idle(155);
 
+        scene.overlay().showText(145)
+                .text("OFF can recover when the assigned machine becomes available again; ERR stays latched until that channel is manually rebound")
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(monitorPos))
+                .placeNearTarget();
+        scene.idle(155);
+
         scene.overlay().showText(125)
                 .text("The Monitor keeps ownership of all five machine assignments; Process Gauges only read them")
                 .attachKeyFrame()
@@ -204,6 +212,7 @@ public final class ProcessMonitorScenes {
                 .pointAt(util.vector().centerOf(monitorPos))
                 .placeNearTarget();
         scene.idle(135);
+        scene.markAsFinished();
     }
 
     private static void configureLinkedChannel(

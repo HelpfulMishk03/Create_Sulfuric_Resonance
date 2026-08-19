@@ -51,6 +51,8 @@ public final class AllPonderTags {
 
         helper.addToTag(FLUIDS)
                 .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()))
+                .add(itemKey(Items.PRECISION_SPRITZER.get()))
+                .add(itemKey(Items.SULFURIC_ACID_BUCKET.get()))
                 .add(blockKey(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()))
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()));
 
@@ -74,12 +76,15 @@ public final class AllPonderTags {
 
         helper.addToTag(SULFUR_CHEMISTRY)
                 .add(itemKey(Items.SULFUR.get()))
+                .add(itemKey(Items.SULFURIC_ACID_BUCKET.get()))
                 .add(blockKey(AllModBlocks.SULFUR_BURNER.get()))
                 .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()))
                 .add(blockKey(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()))
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()));
 
         helper.addToTag(INTELLIGENT_INDUSTRY)
+                .add(itemKey(Items.PRECISION_SPRITZER.get()))
+                .add(blockKey(AllModBlocks.RUBBER_PADDING.get()))
                 .add(blockKey(AllModBlocks.PROCESS_MONITOR.get()))
                 .add(blockKey(AllModBlocks.PROCESS_GAUGE.get()))
                 .add(blockKey(AllModBlocks.THERMAL_WARNING_ALARM.get()))
@@ -90,7 +95,9 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()));
 
         helper.addToTag(ResourceLocation.parse("create:fluids"))
-                .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()));
+                .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()))
+                .add(itemKey(Items.PRECISION_SPRITZER.get()))
+                .add(itemKey(Items.SULFURIC_ACID_BUCKET.get()));
     }
 
     private static ResourceLocation blockKey(Block block) {

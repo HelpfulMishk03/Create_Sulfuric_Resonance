@@ -117,6 +117,9 @@ public class ProcessMonitorBlockEntity extends BlockEntity {
         if (target == null || level == null) {
             cachedStates[channel] = ProcessState.IDLE;
             availability[channel] = ChannelAvailability.UNLINKED;
+        } else if (previousAvailability == ChannelAvailability.INVALID) {
+            cachedStates[channel] = ProcessState.IDLE;
+            availability[channel] = ChannelAvailability.INVALID;
         } else {
             ProcessTargetResolver.Resolution resolution =
                     ProcessTargetResolver.resolve(level, target);
@@ -196,6 +199,8 @@ public class ProcessMonitorBlockEntity extends BlockEntity {
             return;
         }
         targets[channel] = target;
+        cachedStates[channel] = ProcessState.IDLE;
+        availability[channel] = ChannelAvailability.UNAVAILABLE;
         evaluationTicker = EVALUATION_INTERVAL;
         evaluateChannel(channel);
         setChanged();

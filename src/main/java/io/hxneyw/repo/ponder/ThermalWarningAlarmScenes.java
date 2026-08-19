@@ -131,13 +131,21 @@ public final class ThermalWarningAlarmScenes {
                 alarm,
                 125
         );
-        scene.overlay().showText(120)
-                .text("Place the linked Alarm and its green indicator confirms that the network can be resolved")
+        scene.overlay().showText(135)
+                .text("Place the linked Alarm and its green indicator confirms a valid saved network connection; cross-dimensional links can resolve normally")
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)
                 .pointAt(util.vector().centerOf(alarmPos))
                 .placeNearTarget();
-        scene.idle(130);
+        scene.idle(145);
+
+        scene.overlay().showText(140)
+                .text("If that valid target is temporarily unavailable or unloaded, the Alarm keeps the connection state instead of force-loading the target")
+                .attachKeyFrame()
+                .colored(PonderPalette.BLUE)
+                .pointAt(util.vector().centerOf(alarmPos))
+                .placeNearTarget();
+        scene.idle(150);
 
         scene.world().modifyBlock(
                 alarmPos,
@@ -145,27 +153,36 @@ public final class ThermalWarningAlarmScenes {
                 false
         );
         scene.overlay().showText(135)
-                .text("With 200 fuel ticks or less, no queued fuel, and heat still present, the Alarm enters its warning state")
+                .text("With no fuel queued, the Alarm warns during the final 200 fuel ticks or the final 200 ticks of heated cooldown")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(alarmPos))
                 .placeNearTarget();
         scene.idle(145);
 
-        scene.overlay().showText(120)
-                .text("The striker rapidly oscillates, the bell sounds, and the warning assembly flashes while the condition remains")
+        scene.overlay().showText(110)
+                .text("The striker rapidly oscillates, the bell sounds, and the warning assembly flashes while the warning remains active")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(alarmPos))
                 .placeNearTarget();
         scene.idle(130);
 
-        scene.overlay().showText(120)
-                .text("A queued fuel source or creative Rotor suppresses the low-fuel warning")
+        scene.effects().indicateRedstone(alarmPos);
+        scene.overlay().showText(110)
+                .text("While alarming, the block outputs redstone strength 15 on every side")
+                .attachKeyFrame()
+                .colored(PonderPalette.RED)
+                .pointAt(util.vector().centerOf(alarmPos))
+                .placeNearTarget();
+        scene.idle(120);
+
+        scene.overlay().showText(105)
+                .text("Queued fuel or a creative Rotor suppresses the warning")
                 .attachKeyFrame()
                 .pointAt(util.vector().centerOf(furnacePos))
                 .placeNearTarget();
-        scene.idle(130);
+        scene.idle(115);
 
         scene.world().modifyBlock(
                 alarmPos,
@@ -188,5 +205,6 @@ public final class ThermalWarningAlarmScenes {
                 .pointAt(util.vector().centerOf(alarmPos))
                 .placeNearTarget();
         scene.idle(130);
+        scene.markAsFinished();
     }
 }

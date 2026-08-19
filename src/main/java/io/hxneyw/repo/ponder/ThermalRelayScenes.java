@@ -458,6 +458,11 @@ public final class ThermalRelayScenes {
                 nbt -> {
 
                     nbt.putString(
+                            "RelayMode",
+                            "low_fuel"
+                    );
+
+                    nbt.putString(
                             "LowFuelScope",
                             "both"
                     );
@@ -477,9 +482,9 @@ public final class ThermalRelayScenes {
         scene.overlay().showText(245)
                 .colored(PonderPalette.RED)
                 .text(
-                        "Low Fuel Warning monitors the linked furnace "
-                                + "and pulses when it matches the selected "
-                                + "heat scope with ten seconds of fuel or less"
+                        "Low Fuel mode pulses only when the selected heat scope "
+                                + "has ten seconds of active fuel or less, or ten seconds "
+                                + "of final heated cooldown left after fuel reaches zero"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
@@ -488,8 +493,8 @@ public final class ThermalRelayScenes {
 
         scene.overlay().showText(195)
                 .text(
-                        "The heat scope can target Heated, "
-                                + "Superheated and Combustion, "
+                        "The heat scope can target Heated only, "
+                                + "Superheated and Combustion together, "
                                 + "or both ranges on that furnace"
                 )
                 .placeNearTarget()
@@ -521,8 +526,8 @@ public final class ThermalRelayScenes {
         scene.overlay().showText(160)
                 .colored(PonderPalette.BLUE)
                 .text(
-                        "In Custom Heat mode, the linked furnace's "
-                                + "current heat selects the output profile"
+                        "In Custom Heat mode, only the linked furnace's "
+                                + "current heat selects the configured output profile"
                 )
                 .attachKeyFrame()
                 .placeNearTarget()
@@ -531,8 +536,9 @@ public final class ThermalRelayScenes {
 
         scene.overlay().showText(225)
                 .text(
-                        "In Low Fuel mode, only the linked furnace "
-                                + "is checked against the selected heat scope"
+                        "The two modes are exclusive: Low Fuel mode stays at zero "
+                                + "until its warning condition is true, while Custom Heat "
+                                + "mode never substitutes the low-fuel pulse"
                 )
                 .placeNearTarget()
                 .pointAt(relayCenter);
