@@ -99,21 +99,19 @@ public final class ThermalGaugeMixedInteractionHandler {
             return;
         }
 
-        BlockPos pos = clickedPos;
-        BlockState state = clickedState;
         PanelSlot slot = FactoryPanelBlock.getTargetedSlot(
-                pos,
-                state,
+                clickedPos,
+                clickedState,
                 hit.getLocation()
         );
-        BlockEntity current = level.getBlockEntity(pos);
+        BlockEntity current = level.getBlockEntity(clickedPos);
 
         if (clickedFactoryHost && stack.getItem() instanceof ThermalGaugeItem) {
             placeThermalGaugeOnFactory(
                     event,
                     level,
-                    pos,
-                    state,
+                    clickedPos,
+                    clickedState,
                     slot,
                     player,
                     stack,
@@ -126,8 +124,8 @@ public final class ThermalGaugeMixedInteractionHandler {
             placeFactoryGaugeOnThermal(
                     event,
                     level,
-                    pos,
-                    state,
+                    clickedPos,
+                    clickedState,
                     slot,
                     player,
                     stack,
@@ -147,10 +145,10 @@ public final class ThermalGaugeMixedInteractionHandler {
 
                 if (gauge.removeGauge(slot)) {
                     player.getInventory().placeItemBackInInventory(drop);
-                    IWrenchable.playRemoveSound(level, pos);
+                    IWrenchable.playRemoveSound(level, clickedPos);
 
                     if (gauge.activePanels() == 0) {
-                        level.destroyBlock(pos, false);
+                        level.destroyBlock(clickedPos, false);
                     }
                 }
             }
@@ -266,14 +264,14 @@ public final class ThermalGaugeMixedInteractionHandler {
                     PacketDistributor.sendToPlayersTrackingChunk(
                             serverLevel,
                             new ChunkPos(pos),
-                            new ThermalGaugeHostPayload(pos.immutable())
+                            ThermalGaugeHostPayload.create(gauge)
                     );
                 }
 
                 level.playSound(
                         null,
                         pos,
-                        state.getSoundType().getPlaceSound(),
+                        state.getSoundType(level, pos, player).getPlaceSound(),
                         SoundSource.BLOCKS
                 );
 
@@ -332,7 +330,7 @@ public final class ThermalGaugeMixedInteractionHandler {
                     PacketDistributor.sendToPlayersTrackingChunk(
                             serverLevel,
                             new ChunkPos(pos),
-                            new ThermalGaugeHostPayload(pos.immutable())
+                            ThermalGaugeHostPayload.create(mixed)
                     );
                 }
 
@@ -343,7 +341,7 @@ public final class ThermalGaugeMixedInteractionHandler {
                 level.playSound(
                         null,
                         pos,
-                        state.getSoundType().getPlaceSound(),
+                        state.getSoundType(level, pos, player).getPlaceSound(),
                         SoundSource.BLOCKS
                 );
 

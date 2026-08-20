@@ -124,6 +124,13 @@ This update focuses on:
 ### Create Integration
 
 * Thermal Gauges can share a Factory Gauge panel block with Create Factory Gauges in separate quadrants.
+* Mixed Factory Gauge / Thermal Gauge hosts now preserve their complete panel state across:
+  * world save and reload
+  * client reconnect
+  * chunk unload and reload
+* Mixed gauge hosts now reconstruct their Thermal Gauge client state when a chunk is sent back to the player.
+* Ordinary standalone Create Factory Gauges retain Create's native block-entity behavior and are no longer globally replaced by CSR gauge hosts.
+* Thermal Gauge placement beside existing Factory Gauges now uses the shared panel host without replacing unrelated gauge data.
 * Thermochemical Gearbox can now be rotated with a Wrench.
 * Parallel Thermochemical Gearbox can now be rotated with a Wrench.
 * Sneak-right-clicking a Thermal Gauge with a Wrench now picks it up while preserving its stored thermochemical connection.
@@ -173,6 +180,27 @@ This update focuses on:
 * Monitor linking fixed in both Survival and Creative.
 * Process Gauge advancement renamed to **Condition to Signal** to avoid overlap with **Heat, Delivered**.
 
+### Thermal Gauge / Factory Gauge Integration
+
+* Fixed mixed Thermal Gauge / Factory Gauge panels becoming invisible after leaving and re-entering a world.
+* Fixed mixed gauge hosts losing their client-side Thermal Gauge representation after chunk reload.
+* Fixed Thermal Gauges remaining stored in the world but failing to render after reconnecting.
+* Fixed client-side shared-host conversion using an unattached block entity.
+* Fixed a client synchronization error that could throw:
+  * `this.level is null`
+  * `thermal_gauge_host` payload processing failures
+* Fixed synchronization ordering when converting a Create Factory Gauge host into a mixed CSR gauge host.
+* Fixed mixed-gauge state synchronization so the client receives the complete Factory + Thermal panel state.
+* Fixed mixed hosts failing to reconstruct correctly when chunks are sent to the client.
+* Fixed world-safety issues caused by globally replacing Create Factory Gauge block-entity types.
+* Existing tuned Create Factory Gauges are now preserved when CSR Thermal Gauges are installed alongside them.
+* Mixed gauge panels now survive:
+  * save and reload
+  * full client restart
+  * chunk unload and reload
+  * repeated placement and removal
+* Gauge items stored in mixed hosts are preserved correctly when the supporting panel block is removed.
+
 ### Thermal Warning Alarm
 
 * Network behavior cleaned up.
@@ -210,6 +238,7 @@ This update focuses on:
 * 3D machine-item glass transparency fixed with Continuity installed.
 * Sulfuric Resonance Chamber upper geometry corrected.
 * Chamber player-foot collision behavior corrected.
+* Mixed Thermal Gauge / Factory Gauge rendering now restores correctly after world and chunk reloads.
 
 ### Ponder
 
@@ -224,6 +253,11 @@ This update focuses on:
 ### Code Cleanup
 
 * Large warning-cleanup pass completed.
+* Deprecated API usages cleaned up where applicable.
+* Nullability annotations corrected.
+* Redundant local variables removed.
+* Redundant inspection suppressions removed.
+* Unused Thermal Gauge code removed.
 * Duplicate code removed.
 * Unused code removed.
 * Redundant logic removed.

@@ -1,9 +1,7 @@
 package io.hxneyw.repo.mixin;
 
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock;
-import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
-import io.hxneyw.repo.content.registry.AllBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,12 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(value = FactoryPanelBlock.class, remap = false)
 public abstract class FactoryPanelBlockMixin {
 
-    @Inject(method = "getBlockEntityType", at = @At("HEAD"), cancellable = true)
-    private void sulfuricresonance$useSharedGaugeBlockEntity(
-            CallbackInfoReturnable<BlockEntityType<? extends FactoryPanelBlockEntity>> cir
-    ) {
-        cir.setReturnValue(AllBlockEntities.THERMAL_GAUGE.get());
-    }
     @Inject(method = "onDestroyedByPlayer", at = @At("HEAD"), cancellable = true)
     private void sulfuricresonance$removeThermalGaugeOnly(
             BlockState state,

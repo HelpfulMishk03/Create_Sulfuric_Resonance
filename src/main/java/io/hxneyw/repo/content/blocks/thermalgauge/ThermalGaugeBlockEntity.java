@@ -84,7 +84,6 @@ public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements 
 
     public static void serverTick(
             Level level,
-            BlockState state,
             ThermalGaugeBlockEntity gauge
     ) {
         if (level.isClientSide) {
@@ -105,7 +104,7 @@ public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements 
         super.tick();
 
         if (level != null && !level.isClientSide) {
-            serverTick(level, getBlockState(), this);
+            serverTick(level, this);
         }
     }
 
@@ -138,6 +137,7 @@ public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements 
                 new ThermalGaugeBlockEntity(pos, state);
 
         if (level.isClientSide) {
+            replacement.setLevel(level);
             replacement.readClient(stored, level.registryAccess());
         } else {
             replacement.loadWithComponents(stored, level.registryAccess());
@@ -145,6 +145,41 @@ public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements 
 
         level.setBlockEntity(replacement);
         return replacement;
+    }
+
+    public static void applyClientHostState(
+            Level level,
+            BlockPos pos,
+            CompoundTag stored
+    ) {
+        if (!level.isClientSide || !level.isLoaded(pos)) {
+            return;
+        }
+
+        BlockState state = level.getBlockState(pos);
+        if (!AllBlocks.FACTORY_GAUGE.has(state)) {
+            return;
+        }
+
+        BlockEntity current = level.getBlockEntity(pos);
+        if (current instanceof ThermalGaugeBlockEntity gauge) {
+            gauge.readClient(stored, level.registryAccess());
+            level.sendBlockUpdated(pos, state, state, 16);
+            return;
+        }
+
+        if (!(current instanceof FactoryPanelBlockEntity factory)) {
+            return;
+        }
+
+        factory.onChunkUnloaded();
+
+        ThermalGaugeBlockEntity replacement =
+                new ThermalGaugeBlockEntity(pos, state);
+        replacement.setLevel(level);
+        replacement.readClient(stored, level.registryAccess());
+        level.setBlockEntity(replacement);
+        level.sendBlockUpdated(pos, state, state, 16);
     }
 
     @Nullable
@@ -219,18 +254,6 @@ public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements 
     @Override
     public boolean removePanel(PanelSlot slot) {
         if (hasGauge(slot)) {
-            return false;
-        }
-
-        boolean removed = super.removePanel(slot);
-        if (removed) {
-            convertToThermalHostIfNeeded();
-        }
-        return removed;
-    }
-
-    public boolean removeFactoryPanelWithoutDrop(PanelSlot slot) {
-        if (!hasFactoryPanel(slot)) {
             return false;
         }
 
@@ -796,7 +819,7 @@ public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements 
     }
 
     @Override
-    public @Nullable ClientboundBlockEntityDataPacket getUpdatePacket() {
+    public @NotNull ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 

@@ -80,20 +80,20 @@ public class ThermalGaugeItem extends ThermalRelaySwitchItem {
             return InteractionResult.FAIL;
         }
 
-        if (level instanceof ServerLevel serverLevel) {
-            PacketDistributor.sendToPlayersTrackingChunk(
-                    serverLevel,
-                    new ChunkPos(pos),
-                    new ThermalGaugeHostPayload(pos.immutable())
-            );
-        }
-
         UUID networkId = ThermalRelaySwitchItem.getNetworkId(stack);
         ThermalRelaySwitchItem.FurnaceLink link =
                 ThermalRelaySwitchItem.getLinkedFurnace(stack);
 
         if (!gauge.addGauge(slot, networkId, link)) {
             return InteractionResult.FAIL;
+        }
+
+        if (level instanceof ServerLevel serverLevel) {
+            PacketDistributor.sendToPlayersTrackingChunk(
+                    serverLevel,
+                    new ChunkPos(pos),
+                    ThermalGaugeHostPayload.create(gauge)
+            );
         }
 
         if (!player.isCreative()) {

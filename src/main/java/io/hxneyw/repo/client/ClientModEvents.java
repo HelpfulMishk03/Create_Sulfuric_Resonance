@@ -44,7 +44,6 @@ import org.jetbrains.annotations.NotNull;
         modid = "sulfuricresonance",
         value = {Dist.CLIENT}
 )
-@SuppressWarnings("SpellCheckingInspection")
 public class ClientModEvents {
 
     public static final PartialModel ROTOR_SHAFT_LEFT =

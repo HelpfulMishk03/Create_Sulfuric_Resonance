@@ -4,8 +4,12 @@ import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity.PrecisionFilterMode;
 import io.hxneyw.repo.content.menu.PrecisionSpritzerMenu;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -38,27 +42,47 @@ public final class PrecisionSpritzerScreen
     private static final int LIST_WIDTH = 278;
     private static final int ROW_HEIGHT = 20;
     private static final int VISIBLE_ROWS = 5;
+    private static final int WHEEL_SCROLL_ROWS = 3;
+    private static final int SEARCH_DEBOUNCE_TICKS = 2;
     private static final int SCROLLBAR_WIDTH = 6;
     private static final int SCROLLBAR_GAP = 3;
 
-    private final List<Item> itemTypes = BuiltInRegistries.ITEM.stream()
+    private static final List<ItemIndexEntry> ITEM_INDEX = BuiltInRegistries.ITEM.stream()
             .filter(item -> item != Items.AIR)
-            .sorted(Comparator.comparing(item -> BuiltInRegistries.ITEM.getKey(item).toString()))
+            .map(PrecisionSpritzerScreen::createItemIndexEntry)
+            .sorted(Comparator.comparing(ItemIndexEntry::registryName))
             .toList();
 
-    private final List<EntityType<?>> entityTypes = BuiltInRegistries.ENTITY_TYPE.stream()
-            .sorted(Comparator.comparing(type -> BuiltInRegistries.ENTITY_TYPE.getKey(type).toString()))
+    private static final List<EntityIndexEntry> ENTITY_INDEX = BuiltInRegistries.ENTITY_TYPE.stream()
+            .map(PrecisionSpritzerScreen::createEntityIndexEntry)
+            .sorted(Comparator.comparing(EntityIndexEntry::registryName))
             .toList();
 
+    private final Map<Item, ItemView> itemViews = new IdentityHashMap<>();
+    private final Map<EntityType<?>, EntityView> entityViews = new IdentityHashMap<>();
+    private final Set<Integer> selectedItemIds = new HashSet<>();
+    private final Set<Integer> selectedEntityIds = new HashSet<>();
+    private final int[] itemSelectionSlots =
+            new int[PerforatedSpritzerBlockEntity.MAX_FILTER_ENTRIES];
+    private final int[] entitySelectionSlots =
+            new int[PerforatedSpritzerBlockEntity.MAX_FILTER_ENTRIES];
+
+    private List<ItemIndexEntry> itemCandidates = ITEM_INDEX;
+    private List<EntityIndexEntry> entityCandidates = ENTITY_INDEX;
     private Button itemModeButton;
     private Button entityModeButton;
     private Button clearButton;
     private Button selectedOnlyButton;
     private EditBox searchBox;
+    private PrecisionFilterMode cachedMode;
+    private String cachedQuery = "";
     private int scrollOffset;
     private boolean selectedOnly;
     private boolean draggingScrollbar;
     private int scrollbarGrabOffset;
+    private int searchDebounceTicks;
+    private boolean candidateCacheDirty = true;
+    private boolean selectionCacheInitialized;
 
     public PrecisionSpritzerScreen(
             @NotNull PrecisionSpritzerMenu menu,
@@ -106,7 +130,11 @@ public final class PrecisionSpritzerScreen
                 20,
                 Component.translatable("gui.sulfuricresonance.precision_spritzer.search")
         );
-        this.searchBox.setResponder(value -> this.scrollOffset = 0);
+        this.searchBox.setResponder(value -> {
+            this.scrollOffset = 0;
+            this.searchDebounceTicks = SEARCH_DEBOUNCE_TICKS;
+            this.candidateCacheDirty = true;
+        });
         this.addRenderableWidget(this.searchBox);
 
         this.selectedOnlyButton = this.addRenderableWidget(
@@ -127,12 +155,60 @@ public final class PrecisionSpritzerScreen
                         .build()
         );
 
+        this.refreshSelectionCache();
         this.refreshWidgetState();
+        this.refreshCandidateCache();
+        this.clampScroll();
+    }
+
+    private static ItemIndexEntry createItemIndexEntry(Item item) {
+        ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+        String registryName = id.toString();
+        return new ItemIndexEntry(
+                item,
+                BuiltInRegistries.ITEM.getId(item),
+                registryName,
+                registryName.toLowerCase(Locale.ROOT)
+        );
+    }
+
+    private static EntityIndexEntry createEntityIndexEntry(EntityType<?> type) {
+        ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        String registryName = id.toString();
+        return new EntityIndexEntry(
+                type,
+                BuiltInRegistries.ENTITY_TYPE.getId(type),
+                registryName,
+                registryName.toLowerCase(Locale.ROOT)
+        );
+    }
+
+    private ItemView itemView(ItemIndexEntry entry) {
+        return this.itemViews.computeIfAbsent(entry.item(), item -> {
+            ItemStack stack = new ItemStack(item);
+            String displayName = stack.getHoverName().getString();
+            return new ItemView(
+                    stack,
+                    displayName,
+                    displayName.toLowerCase(Locale.ROOT)
+            );
+        });
+    }
+
+    private EntityView entityView(EntityIndexEntry entry) {
+        return this.entityViews.computeIfAbsent(entry.type(), type -> {
+            String displayName = type.getDescription().getString();
+            return new EntityView(
+                    displayName,
+                    displayName.toLowerCase(Locale.ROOT)
+            );
+        });
     }
 
     private void setMode(PrecisionFilterMode mode) {
         this.scrollOffset = 0;
         this.selectedOnly = false;
+        this.candidateCacheDirty = true;
         this.searchBox.setValue("");
         this.sendButton(
                 mode == PrecisionFilterMode.ITEM
@@ -144,6 +220,7 @@ public final class PrecisionSpritzerScreen
     private void toggleSelectedOnly() {
         this.selectedOnly = !this.selectedOnly;
         this.scrollOffset = 0;
+        this.candidateCacheDirty = true;
         this.searchBox.setValue("");
         this.refreshWidgetState();
     }
@@ -159,53 +236,102 @@ public final class PrecisionSpritzerScreen
         return this.searchBox == null ? "" : this.searchBox.getValue().trim().toLowerCase(Locale.ROOT);
     }
 
-    private List<Item> getItemCandidates() {
-        String query = this.query();
-        return this.itemTypes.stream()
-                .filter(item -> {
-                    int registryId = BuiltInRegistries.ITEM.getId(item);
-                    if (this.selectedOnly && !this.menu.isItemFilterSelected(registryId)) {
-                        return false;
-                    }
-                    if (query.isEmpty()) {
-                        return true;
-                    }
-                    ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-                    String name = new ItemStack(item).getHoverName().getString();
-                    return id.toString().toLowerCase(Locale.ROOT).contains(query)
-                            || name.toLowerCase(Locale.ROOT).contains(query);
-                })
-                .toList();
+    private boolean includeItem(ItemIndexEntry entry, String query) {
+        if (this.selectedOnly && !this.selectedItemIds.contains(entry.registryId())) {
+            return false;
+        }
+        if (query.isEmpty()) {
+            return true;
+        }
+        return entry.registrySearch().contains(query)
+                || this.itemView(entry).displaySearch().contains(query);
     }
 
-    private List<EntityType<?>> getEntityCandidates() {
+    private boolean includeEntity(EntityIndexEntry entry, String query) {
+        if (this.selectedOnly && !this.selectedEntityIds.contains(entry.registryId())) {
+            return false;
+        }
+        if (query.isEmpty()) {
+            return true;
+        }
+        return entry.registrySearch().contains(query)
+                || this.entityView(entry).displaySearch().contains(query);
+    }
+
+    private void refreshCandidateCache() {
+        PrecisionFilterMode mode = this.menu.getMode();
         String query = this.query();
-        return this.entityTypes.stream()
-                .filter(type -> {
-                    int registryId = BuiltInRegistries.ENTITY_TYPE.getId(type);
-                    if (this.selectedOnly && !this.menu.isEntityFilterSelected(registryId)) {
-                        return false;
-                    }
-                    if (query.isEmpty()) {
-                        return true;
-                    }
-                    ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
-                    return id.toString().toLowerCase(Locale.ROOT).contains(query)
-                            || type.getDescription().getString().toLowerCase(Locale.ROOT).contains(query);
-                })
-                .toList();
+        if (!this.candidateCacheDirty
+                && mode == this.cachedMode
+                && query.equals(this.cachedQuery)) {
+            return;
+        }
+
+        this.cachedMode = mode;
+        this.cachedQuery = query;
+
+        if (mode == PrecisionFilterMode.ITEM) {
+            if (!this.selectedOnly && query.isEmpty()) {
+                this.itemCandidates = ITEM_INDEX;
+            } else {
+                this.itemCandidates = ITEM_INDEX.stream()
+                        .filter(entry -> this.includeItem(entry, query))
+                        .toList();
+            }
+        } else if (!this.selectedOnly && query.isEmpty()) {
+            this.entityCandidates = ENTITY_INDEX;
+        } else {
+            this.entityCandidates = ENTITY_INDEX.stream()
+                    .filter(entry -> this.includeEntity(entry, query))
+                    .toList();
+        }
+
+        this.candidateCacheDirty = false;
+    }
+
+    private boolean refreshSelectionCache() {
+        boolean changed = !this.selectionCacheInitialized;
+
+        for (int i = 0; i < PerforatedSpritzerBlockEntity.MAX_FILTER_ENTRIES; i++) {
+            int itemId = this.menu.getItemFilterRegistryId(i);
+            int entityId = this.menu.getEntityFilterRegistryId(i);
+            if (!this.selectionCacheInitialized
+                    || this.itemSelectionSlots[i] != itemId
+                    || this.entitySelectionSlots[i] != entityId) {
+                changed = true;
+            }
+            this.itemSelectionSlots[i] = itemId;
+            this.entitySelectionSlots[i] = entityId;
+        }
+
+        if (!changed) {
+            return false;
+        }
+
+        this.selectedItemIds.clear();
+        this.selectedEntityIds.clear();
+        for (int i = 0; i < PerforatedSpritzerBlockEntity.MAX_FILTER_ENTRIES; i++) {
+            if (this.itemSelectionSlots[i] >= 0) {
+                this.selectedItemIds.add(this.itemSelectionSlots[i]);
+            }
+            if (this.entitySelectionSlots[i] >= 0) {
+                this.selectedEntityIds.add(this.entitySelectionSlots[i]);
+            }
+        }
+        this.selectionCacheInitialized = true;
+        return true;
     }
 
     private int candidateCount() {
         return this.menu.getMode() == PrecisionFilterMode.ITEM
-                ? this.getItemCandidates().size()
-                : this.getEntityCandidates().size();
+                ? this.itemCandidates.size()
+                : this.entityCandidates.size();
     }
 
     private int selectedCount() {
         return this.menu.getMode() == PrecisionFilterMode.ITEM
-                ? this.menu.getSelectedItemCount()
-                : this.menu.getSelectedEntityCount();
+                ? this.selectedItemIds.size()
+                : this.selectedEntityIds.size();
     }
 
     private int maxScroll() {
@@ -280,7 +406,22 @@ public final class PrecisionSpritzerScreen
     @Override
     protected void containerTick() {
         super.containerTick();
+        boolean selectionChanged = this.refreshSelectionCache();
+        PrecisionFilterMode mode = this.menu.getMode();
+        if (mode != this.cachedMode) {
+            this.scrollOffset = 0;
+            this.candidateCacheDirty = true;
+        }
+        if (selectionChanged && this.selectedOnly) {
+            this.candidateCacheDirty = true;
+        }
         this.refreshWidgetState();
+        if (this.searchDebounceTicks > 0) {
+            this.searchDebounceTicks--;
+        }
+        if (this.searchDebounceTicks == 0) {
+            this.refreshCandidateCache();
+        }
         this.clampScroll();
     }
 
@@ -294,6 +435,7 @@ public final class PrecisionSpritzerScreen
         if (this.selectedOnly && selected == 0) {
             this.selectedOnly = false;
             this.scrollOffset = 0;
+            this.candidateCacheDirty = true;
         }
         this.itemModeButton.active = !itemMode;
         this.entityModeButton.active = itemMode;
@@ -319,24 +461,23 @@ public final class PrecisionSpritzerScreen
     }
 
     private boolean toggleRowAt(double mouseY) {
+        this.refreshCandidateCache();
         int row = (int) ((mouseY - (this.topPos + LIST_Y)) / ROW_HEIGHT);
         int index = this.scrollOffset + row;
 
         if (this.menu.getMode() == PrecisionFilterMode.ITEM) {
-            List<Item> candidates = this.getItemCandidates();
-            if (index < 0 || index >= candidates.size()) {
+            if (index < 0 || index >= this.itemCandidates.size()) {
                 return false;
             }
-            int registryId = BuiltInRegistries.ITEM.getId(candidates.get(index));
+            int registryId = this.itemCandidates.get(index).registryId();
             this.sendButton(PrecisionSpritzerMenu.BUTTON_ITEM_BASE + registryId);
             return true;
         }
 
-        List<EntityType<?>> candidates = this.getEntityCandidates();
-        if (index < 0 || index >= candidates.size()) {
+        if (index < 0 || index >= this.entityCandidates.size()) {
             return false;
         }
-        int registryId = BuiltInRegistries.ENTITY_TYPE.getId(candidates.get(index));
+        int registryId = this.entityCandidates.get(index).registryId();
         this.sendButton(PrecisionSpritzerMenu.BUTTON_ENTITY_BASE + registryId);
         return true;
     }
@@ -407,9 +548,9 @@ public final class PrecisionSpritzerScreen
             return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
         if (scrollY > 0.0D) {
-            this.scrollOffset--;
+            this.scrollOffset -= WHEEL_SCROLL_ROWS;
         } else if (scrollY < 0.0D) {
-            this.scrollOffset++;
+            this.scrollOffset += WHEEL_SCROLL_ROWS;
         }
         this.clampScroll();
         return true;
@@ -490,15 +631,13 @@ public final class PrecisionSpritzerScreen
     }
 
     private void renderItemRows(GuiGraphics graphics) {
-        List<Item> candidates = this.getItemCandidates();
         for (int row = 0; row < VISIBLE_ROWS; row++) {
             int index = this.scrollOffset + row;
-            if (index >= candidates.size()) {
+            if (index >= this.itemCandidates.size()) {
                 break;
             }
-            Item item = candidates.get(index);
-            int registryId = BuiltInRegistries.ITEM.getId(item);
-            boolean selected = this.menu.isItemFilterSelected(registryId);
+            ItemIndexEntry entry = this.itemCandidates.get(index);
+            boolean selected = this.selectedItemIds.contains(entry.registryId());
             int y = LIST_Y + row * ROW_HEIGHT;
             graphics.fill(
                     LIST_X,
@@ -507,9 +646,9 @@ public final class PrecisionSpritzerScreen
                     y + ROW_HEIGHT - 1,
                     selected ? ROW_SELECTED : (row % 2 == 0 ? ROW : ROW_ALT)
             );
-            ItemStack stack = new ItemStack(item);
-            graphics.renderItem(stack, LIST_X + 2, y + 2);
-            String name = this.font.plainSubstrByWidth(stack.getHoverName().getString(), 202);
+            ItemView view = this.itemView(entry);
+            graphics.renderItem(view.stack(), LIST_X + 2, y + 2);
+            String name = this.font.plainSubstrByWidth(view.displayName(), 202);
             graphics.drawString(this.font, name, LIST_X + 23, y + 6, TEXT, false);
             if (selected) {
                 graphics.drawString(
@@ -525,15 +664,13 @@ public final class PrecisionSpritzerScreen
     }
 
     private void renderEntityRows(GuiGraphics graphics) {
-        List<EntityType<?>> candidates = this.getEntityCandidates();
         for (int row = 0; row < VISIBLE_ROWS; row++) {
             int index = this.scrollOffset + row;
-            if (index >= candidates.size()) {
+            if (index >= this.entityCandidates.size()) {
                 break;
             }
-            EntityType<?> type = candidates.get(index);
-            int registryId = BuiltInRegistries.ENTITY_TYPE.getId(type);
-            boolean selected = this.menu.isEntityFilterSelected(registryId);
+            EntityIndexEntry entry = this.entityCandidates.get(index);
+            boolean selected = this.selectedEntityIds.contains(entry.registryId());
             int y = LIST_Y + row * ROW_HEIGHT;
             graphics.fill(
                     LIST_X,
@@ -542,9 +679,9 @@ public final class PrecisionSpritzerScreen
                     y + ROW_HEIGHT - 1,
                     selected ? ROW_SELECTED : (row % 2 == 0 ? ROW : ROW_ALT)
             );
-            String name = this.font.plainSubstrByWidth(type.getDescription().getString(), 154);
-            ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
-            String registryName = this.font.plainSubstrByWidth(id.toString(), 94);
+            EntityView view = this.entityView(entry);
+            String name = this.font.plainSubstrByWidth(view.displayName(), 154);
+            String registryName = this.font.plainSubstrByWidth(entry.registryName(), 94);
             graphics.drawString(this.font, name, LIST_X + 4, y + 6, TEXT, false);
             graphics.drawString(this.font, registryName, LIST_X + 164, y + 6, MUTED, false);
             if (selected) {
@@ -568,5 +705,34 @@ public final class PrecisionSpritzerScreen
         int handleY = barY + this.scrollbarHandleOffset();
         graphics.fill(barX, barY, barX + SCROLLBAR_WIDTH, barY + barHeight, BORDER_DARK);
         graphics.fill(barX, handleY, barX + SCROLLBAR_WIDTH, handleY + handleHeight, BORDER);
+    }
+
+    private record ItemIndexEntry(
+            Item item,
+            int registryId,
+            String registryName,
+            String registrySearch
+    ) {
+    }
+
+    private record EntityIndexEntry(
+            EntityType<?> type,
+            int registryId,
+            String registryName,
+            String registrySearch
+    ) {
+    }
+
+    private record ItemView(
+            ItemStack stack,
+            String displayName,
+            String displaySearch
+    ) {
+    }
+
+    private record EntityView(
+            String displayName,
+            String displaySearch
+    ) {
     }
 }

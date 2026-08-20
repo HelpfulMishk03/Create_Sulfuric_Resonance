@@ -43,7 +43,7 @@ public class ParallelThermochemicalGearboxBlock
 
     @Override
     protected void createBlockStateDefinition(
-            StateDefinition.Builder<Block, BlockState> builder
+            @NotNull StateDefinition.Builder<Block, BlockState> builder
     ) {
         super.createBlockStateDefinition(builder);
         builder.add(FACING);
@@ -94,18 +94,18 @@ public class ParallelThermochemicalGearboxBlock
 
     @Override
     public boolean hasShaftTowards(
-            LevelReader level,
-            BlockPos position,
-            BlockState state,
-            Direction face
+            @NotNull LevelReader level,
+            @NotNull BlockPos position,
+            @NotNull BlockState state,
+            @NotNull Direction face
     ) {
         return true;
     }
 
     @Override
     public boolean doesNotHaveThermochemicalConnection(
-            BlockState state,
-            Direction face
+            @NotNull BlockState state,
+            @NotNull Direction face
     ) {
         return false;
     }
@@ -116,7 +116,7 @@ public class ParallelThermochemicalGearboxBlock
 
 
     @Override
-    public Axis getRotationAxis(BlockState state) {
+    public @NotNull Axis getRotationAxis(@NotNull BlockState state) {
         return Axis.Y;
     }
 

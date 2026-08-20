@@ -347,18 +347,18 @@ public class ThermalGaugeBlock
                 return ItemInteractionResult.FAIL;
             }
 
-            if (level instanceof ServerLevel serverLevel) {
-                PacketDistributor.sendToPlayersTrackingChunk(
-                        serverLevel,
-                        new ChunkPos(pos),
-                        new ThermalGaugeHostPayload(pos.immutable())
-                );
-            }
-
             ItemStack panelItem = FactoryPanelBlockItem.fixCtrlCopiedStack(stack);
             UUID network = LogisticallyLinkedBlockItem.networkFromStack(panelItem);
             if (!mixed.addPanel(factorySlot, network)) {
                 return ItemInteractionResult.FAIL;
+            }
+
+            if (level instanceof ServerLevel serverLevel) {
+                PacketDistributor.sendToPlayersTrackingChunk(
+                        serverLevel,
+                        new ChunkPos(pos),
+                        ThermalGaugeHostPayload.create(mixed)
+                );
             }
 
             player.displayClientMessage(
@@ -368,7 +368,7 @@ public class ThermalGaugeBlock
             level.playSound(
                     null,
                     pos,
-                    state.getSoundType().getPlaceSound(),
+                    state.getSoundType(level, pos, player).getPlaceSound(),
                     SoundSource.BLOCKS
             );
 
