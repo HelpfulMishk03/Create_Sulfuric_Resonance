@@ -10,8 +10,6 @@ import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -67,34 +65,12 @@ public final class SulfuricAcidScenes {
                 .placeNearTarget();
         scene.idle(115);
 
-        scene.world().createEntity(world -> {
-            Zombie zombie = new Zombie(EntityType.ZOMBIE, world);
-            Vec3 position = util.vector().centerOf(acidPos).add(0.0, 0.15, 0.0);
-            zombie.setPos(position.x, position.y, position.z);
-            zombie.setNoAi(true);
-            zombie.setNoGravity(true);
-            zombie.setSilent(true);
-            zombie.setDeltaMovement(Vec3.ZERO);
-            return zombie;
-        });
-        scene.idle(15);
-        scene.world().modifyEntities(Zombie.class, zombie -> {
-            zombie.setDeltaMovement(Vec3.ZERO);
-            zombie.hurtDuration = 10;
-            zombie.hurtTime = 10;
-        });
         scene.overlay().showText(100)
                 .text("Acid Burn refreshes to 100 ticks, or five seconds, while the entity remains exposed")
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(acidPos).add(0.0, 0.8, 0.0))
                 .placeNearTarget();
         scene.idle(110);
-        scene.world().modifyEntities(
-                Zombie.class,
-                zombie -> zombie.discard()
-        );
-        scene.idle(20);
-
         scene.world().setBlock(
                 reactionPos,
                 Blocks.WATER.defaultBlockState(),

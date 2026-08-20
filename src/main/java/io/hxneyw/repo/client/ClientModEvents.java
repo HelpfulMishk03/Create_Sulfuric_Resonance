@@ -65,6 +65,9 @@ public class ClientModEvents {
     public static final PartialModel THERMOCHEMICAL_GEARBOX_SHAFT =
             partial("block/thermochemical_gearbox_shaft");
 
+    public static final PartialModel THERMOCHEMICAL_CLUTCH_SHAFT_HALF =
+            partial("block/thermochemical_clutch_shaft_half");
+
     public static final PartialModel
             THERMOCHEMICAL_LINK_DRIVE_SHAFT =
             partial("block/thermochemical_link_drive_shaft");
@@ -228,6 +231,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
             );
 
             ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.THERMOCHEMICAL_CLUTCH.get(),
+                    RenderType.cutoutMipped()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
                     AllModBlocks.ASHESIL.get(),
                     RenderType.translucent()
             );
@@ -327,6 +335,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_CLUTCH.get(),
+                ThermochemicalClutchRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.PARALLEL_THERMOCHEMICAL_GEARBOX.get(),
                 ParallelThermochemicalGearboxRenderer::new
         );
@@ -407,6 +420,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     private static void registerStandalone(
             RegisterAdditional event
     ) {
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermochemical_clutch_shaft_half"
+                        )
+                )
+        );
+
         event.register(
                 ModelResourceLocation.standalone(
                         ResourceLocation.fromNamespaceAndPath(

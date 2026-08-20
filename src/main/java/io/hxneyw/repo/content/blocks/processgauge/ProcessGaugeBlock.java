@@ -183,17 +183,28 @@ public class ProcessGaugeBlock extends FaceAttachedHorizontalDirectionalBlock
     }
 
     @Override
+    protected boolean isSignalSource(
+            @NotNull BlockState state
+    ) {
+        return true;
+    }
+
+    @Override
     protected int getSignal(
             @NotNull BlockState state,
             @NotNull BlockGetter level,
             @NotNull BlockPos pos,
             @NotNull Direction direction
     ) {
-        if (!state.getValue(POWERED)) {
+        if (!isProcessGaugeOutputDirection(state, direction)) {
             return 0;
         }
 
-        return isProcessGaugeOutputDirection(state, direction) ? 15 : 0;
+        if (level.getBlockEntity(pos) instanceof ProcessGaugeBlockEntity gauge) {
+            return gauge.getRedstoneSignal();
+        }
+
+        return state.getValue(POWERED) ? 15 : 0;
     }
 
     @Override
@@ -203,7 +214,7 @@ public class ProcessGaugeBlock extends FaceAttachedHorizontalDirectionalBlock
             @NotNull BlockPos pos,
             @NotNull Direction direction
     ) {
-        return 0;
+        return getSignal(state, level, pos, direction);
     }
 
     @Override

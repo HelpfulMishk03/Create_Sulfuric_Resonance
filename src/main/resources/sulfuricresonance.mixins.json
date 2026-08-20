@@ -9,6 +9,7 @@
     "BeltBlockEntityMixin",
     "BeltBlockMixin",
     "ChainDriveBlockMixin",
+    "FactoryPanelBlockMixin",
     "RotationPropagatorMixin"
   ],
   "client": [

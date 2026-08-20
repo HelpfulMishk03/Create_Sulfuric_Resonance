@@ -1,5 +1,6 @@
 package io.hxneyw.repo.content.registry;
 
+import com.simibubi.create.AllBlocks;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
@@ -12,6 +13,7 @@ import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalclutch.ThermochemicalClutchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.processmonitor.ProcessMonitorBlockEntity;
@@ -168,7 +170,8 @@ public class AllBlockEntities {
             "thermal_gauge",
             () -> Builder.of(
                     ThermalGaugeBlockEntity::new,
-                    AllModBlocks.THERMAL_GAUGE.get()
+                    AllModBlocks.THERMAL_GAUGE.get(),
+                    AllBlocks.FACTORY_GAUGE.get()
             ).build(null)
     );
 
@@ -206,6 +209,18 @@ public class AllBlockEntities {
                    () -> Builder.of(
                            ThermochemicalShaftBlockEntity::new,
                            AllModBlocks.THERMOCHEMICAL_SHAFT.get()
+                   ).build(null)
+           );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ThermochemicalClutchBlockEntity>
+           > THERMOCHEMICAL_CLUTCH =
+           BLOCK_ENTITIES.register(
+                   "thermochemical_clutch",
+                   () -> Builder.of(
+                           ThermochemicalClutchBlockEntity::new,
+                           AllModBlocks.THERMOCHEMICAL_CLUTCH.get()
                    ).build(null)
            );
 

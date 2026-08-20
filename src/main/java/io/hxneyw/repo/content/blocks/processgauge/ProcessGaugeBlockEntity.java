@@ -108,6 +108,7 @@ public class ProcessGaugeBlockEntity extends BlockEntity {
         LinkStatus previousStatus = linkStatus;
         ProcessState previousObservedState = observedState;
         boolean previousActive = active;
+        int previousRedstoneSignal = getRedstoneSignal();
 
         if (monitorReference == null) {
             linkStatus = LinkStatus.UNBOUND;
@@ -146,6 +147,12 @@ public class ProcessGaugeBlockEntity extends BlockEntity {
             updatePoweredState(active);
         }
 
+        int currentRedstoneSignal = getRedstoneSignal();
+        if (previousRedstoneSignal != currentRedstoneSignal
+                && previousActive == active) {
+            updateRedstoneNeighbors();
+        }
+
         if (previousStatus != linkStatus
                 || previousObservedState != observedState
                 || previousActive != active) {
@@ -171,7 +178,8 @@ public class ProcessGaugeBlockEntity extends BlockEntity {
             case AVAILABLE -> {
                 linkStatus = LinkStatus.VALID;
                 observedState = snapshot.state();
-                active = observedState == ProcessState.BLOCKED;
+                active = observedState == ProcessState.READY
+                        || observedState == ProcessState.BLOCKED;
             }
             case INVALID -> {
                 linkStatus = LinkStatus.INVALID;
@@ -199,9 +207,18 @@ public class ProcessGaugeBlockEntity extends BlockEntity {
                     state.setValue(ProcessGaugeBlock.POWERED, powered),
                     Block.UPDATE_ALL
             );
-            level.updateNeighborsAt(worldPosition, state.getBlock());
-            level.updateNeighborsAt(worldPosition.below(), state.getBlock());
+            updateRedstoneNeighbors();
         }
+    }
+
+    private void updateRedstoneNeighbors() {
+        if (level == null || level.isClientSide) {
+            return;
+        }
+
+        BlockState state = getBlockState();
+        level.updateNeighborsAt(worldPosition, state.getBlock());
+        level.updateNeighborsAt(worldPosition.below(), state.getBlock());
     }
 
     public void configureFromItem(
@@ -248,6 +265,18 @@ public class ProcessGaugeBlockEntity extends BlockEntity {
 
     public boolean isActive() {
         return active;
+    }
+
+    public int getRedstoneSignal() {
+        if (linkStatus != LinkStatus.VALID) {
+            return 0;
+        }
+
+        return switch (observedState) {
+            case READY -> 5;
+            case BLOCKED -> 15;
+            case IDLE, PROCESSING -> 0;
+        };
     }
 
     public float getPointerAngle(float partialTicks) {

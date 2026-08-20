@@ -1,146 +1,159 @@
 # Create: Sulfuric Resonance
 
-**Create: Sulfuric Resonance** is an independently developed NeoForge addon for [Create](https://github.com/Creators-of-Create/Create), focused on **combustion engineering, thermochemical heat, sulfur chemistry, industrial materials, and factory automation**.
+**Create: Sulfuric Resonance** is an independently developed NeoForge addon for [Create](https://github.com/Creators-of-Create/Create), focused on **thermochemical engineering, sulfur chemistry, advanced materials, and industrial automation**.
 
-CSR expands Create with new heat-driven machinery, sulfur-based processing, thermochemical infrastructure, specialized materials, and industrial systems designed to fit naturally into Create-style factories.
+CSR expands Create with new heat-driven machinery, sulfur-based processing, dedicated thermochemical infrastructure, specialized materials, and factory systems designed to fit naturally into Create-style builds.
 
-> **Beta:** Create: Sulfuric Resonance is actively developed. Core systems are playable, but recipes, balance, visuals, progression, compatibility, and internal systems may change between beta releases.
+Some progression details, recipes, machinery interactions, and advanced material chains are intentionally left for players to discover through gameplay.
 
 ---
 
 ## Current Version
 
-**0.2.9-beta — Resonance**
+### **0.3.0 — Intelligent Industry**
 
-0.2.9 expands the thermochemical progression introduced in earlier releases and gives established heat infrastructure a more advanced purpose.
+**Intelligent Industry** expands CSR's automation layer.
 
-The update introduces a new resonance-processing stage, additional thermochemical machinery, expanded factory monitoring and routing, new advanced materials, broader automation support, and major presentation improvements across JEI, EMI, Ponder, advancements, and localization.
+Factories can now monitor processes, react to changing machine conditions, control thermochemical infrastructure, and perform more precise industrial operations.
 
-Some progression details, recipes, and advanced material chains are intentionally left for players to discover in-game.
+0.3.0 also includes new chemistry applications, additional machinery, expanded Create integration, and a large polish pass across existing CSR systems.
 
 ---
 
 ## Requirements
 
+### Required
+
 * Minecraft **1.21.1**
-* NeoForge **21.1.247+**
+* NeoForge **21.1.238+**
 * Create **6.0.7+**
 * Java **21**
 
 ### Optional
 
 * JEI **19.42.0.387+**
-* EMI **1.1.24+1.21.1**
-
-Create **6.0.7 and newer** are supported.
+* EMI **1.1.24+**
 
 ---
 
 ## What CSR Adds
 
-CSR is built around several connected industrial systems rather than isolated machines.
+CSR is built around connected industrial systems rather than isolated machines.
 
-### Thermochemical Heat
+### Thermochemical Industry
 
-Generate, transmit, route, monitor, and consume thermochemical heat through dedicated CSR infrastructure.
+Generate, transmit, route, monitor, and use thermochemical heat through dedicated infrastructure designed to operate alongside Create's kinetic systems.
 
-Thermochemical systems are designed to work alongside Create's kinetic network while following their own heat-transfer rules.
+Heat is treated as part of the factory itself rather than simply another recipe condition.
 
-Standard Create components remain useful, but some higher-tier heat behavior requires dedicated CSR machinery.
+### Sulfur Chemistry
 
-### Sulfur Industry
-
-Sulfur serves as a major industrial resource throughout the mod.
+Sulfur plays a central role throughout CSR.
 
 It is used across:
 
 * Sulfuric Acid production
 * Specialized fuels
-* High-temperature processing
-* Advanced machine components
 * Chemical processing
-* Late-stage material progression
-
-CSR uses common tags where practical to improve compatibility with other mods.
+* High-temperature industry
+* Advanced materials
+* Machine components
 
 ### Advanced Processing
 
-CSR extends Create-style processing beyond ordinary Heated and Superheated production.
+CSR expands Create-style manufacturing with several additional forms of industrial processing.
 
-Current systems include:
+These include combustion-driven production, thermochemical processing, acid-based chemistry, precision treatment, and advanced resonance technology.
 
-* Combustion Mixing
-* Ash Ceramic Crucible processing
-* Combustion Belt processing
-* Thermochemical heat application
-* Resonance-based advanced processing
+Exact recipes and progression paths are intended to be discovered in-game.
 
-The exact recipes and progression paths are intended to be discovered through gameplay, Ponder, advancements, and recipe viewers.
+### Resonance
+
+Resonance introduces a higher stage of thermochemical industry built around advanced materials and demanding processing conditions.
+
+The **Sulfuric Resonance Chamber** forms the center of this progression and connects heat, rotation, chemistry, and specialized materials into a new processing system.
+
+### Intelligent Industry
+
+0.3.0 gives factories new ways to understand and react to what their machinery is doing.
+
+New systems allow process information to influence:
+
+* monitoring
+* redstone control
+* machine behavior
+* thermochemical routing
+* factory warnings
+* precision automation
+
+The goal is to make thermochemical information useful for designing smarter factories without replacing Create's physical automation style.
+
+### Precision Processing
+
+Industrial spraying receives a major expansion in 0.3.0.
+
+New precision systems allow sulfuric-acid processing to be controlled far more carefully and introduce additional chemical uses for existing CSR infrastructure.
 
 ### Factory Automation
 
-CSR is designed for automation.
+CSR is designed with automation in mind.
 
-Supported systems include:
+Its machinery integrates with systems such as:
 
 * Create Funnels
 * Mechanical Arms
 * Fluid transport
-* Automated fuel handling
-* Thermal redstone control
+* Redstone
+* Wrenches
+* Engineer's Goggles
 * Linked monitoring systems
-* Engineer's Goggle diagnostics
-* Wrench-based network inspection
 
-Machines are designed to participate in larger factories rather than operate as disconnected crafting stations.
+Machines are intended to become parts of larger factories rather than disconnected crafting stations.
 
 ---
 
-## 0.2.9 Highlights
+## 0.3.0 Highlights
 
-**Resonance** expands CSR with a new tier of thermochemical industry.
+**Intelligent Industry** introduces:
 
-Highlights include:
-
-* A new flagship resonance-processing machine
-* New thermochemical routing and gearbox options
-* Direct thermochemical heat application for supported processing machinery
-* Expanded network monitoring
-* New resonant material progression
-* Improved automation and recipe handling
-* New Ponder scenes
+* Process monitoring and factory-control systems
+* New thermochemical control machinery
+* Precision Spraying
+* Expanded sulfuric-acid utility
+* New industrial chemistry
+* Chamber operating improvements
+* Additional Create integration
+* Expanded Ponder documentation
 * New advancements
-* Expanded localization
-* Complete JEI and EMI presentation passes
+* Improved compatibility
+* Large visual, behavioral, and code-polish passes
 
-The full recipe chains, intermediate materials, and higher-tier processing requirements are intentionally not documented here.
+Many of the exact mechanics are intentionally not documented here.
 
 ---
 
 ## Ponder
 
-Create: Sulfuric Resonance includes in-game Ponder documentation for its major machinery and systems.
+Create: Sulfuric Resonance includes extensive in-game **Ponder** documentation for its major machinery and systems.
 
-Ponder scenes explain setup, heat flow, automation, kinetic behavior, and other important mechanics without requiring external documentation.
+Ponder scenes explain setup, automation, heat flow, controls, processing behavior, and important interactions without requiring an external guide.
 
-New scenes are added as major systems are introduced.
+New scenes continue to be added as CSR expands.
 
 ---
 
 ## Recipe Viewer Support
 
-CSR provides dedicated integration for:
+CSR includes dedicated integration for:
 
 * **JEI**
 * **EMI**
 
-Both viewers are optional.
+Both are optional.
 
-Custom CSR recipe categories include support for major thermal, combustion, fuel, belt, and resonance-processing systems.
+Custom recipe categories cover CSR's major processing systems, with animated machinery presentations where appropriate.
 
-0.2.9 includes a substantial visual pass for both viewers, including animated machinery presentations where appropriate.
-
-JEI and EMI can be used independently or together.
+JEI and EMI may be used independently or together.
 
 ---
 
@@ -148,7 +161,7 @@ JEI and EMI can be used independently or together.
 
 CSR includes an advancement tree covering major progression milestones, machinery, materials, and selected challenges.
 
-The advancement tree is intended to guide progression without revealing every recipe or system in advance.
+Advancements are intended to guide progression while still leaving room for experimentation and discovery.
 
 ---
 
@@ -169,81 +182,11 @@ Major machinery, tooltips, advancements, Ponder scenes, GUIs, and recipe-viewer 
 
 ## Compatibility
 
-Create: Sulfuric Resonance currently supports:
-
 ```text
 Minecraft 1.21.1
-NeoForge 21.1.247+
+NeoForge 21.1.238+
 Create 6.0.7+
 Java 21
+
 JEI 19.42.0.387+ (optional)
-EMI 1.1.24+1.21.1 (optional)
-```
-
-Compatibility with additional Create addons is tested where practical.
-
-Some modded materials, fluids, or fuels may require common tags or explicit compatibility support.
-
----
-
-## Installation
-
-1. Install Minecraft **1.21.1**.
-2. Install NeoForge **21.1.247 or newer**.
-3. Install Create **6.0.7 or newer**.
-4. Place the Create: Sulfuric Resonance `.jar` into the `mods` folder.
-5. Optionally install JEI or EMI for recipe viewing.
-6. Launch the game.
-
----
-
-## Bug Reports
-
-Reproducible bugs and crashes should be reported through the GitHub issue tracker.
-
-Please include:
-
-* CSR version
-* Minecraft version
-* NeoForge version
-* Create version
-* JEI or EMI version if relevant
-* Relevant logs or crash reports
-* Steps to reproduce the issue
-
-Feature suggestions, balance feedback, questions, and factory showcases can be posted through GitHub Discussions.
-
----
-
-## Development Status
-
-CSR is currently in beta and under active development.
-
-0.2.9 establishes the next stage of thermochemical progression while continuing to refine automation, compatibility, presentation, and Create integration.
-
-Future releases may expand:
-
-* Advanced resonance processing
-* Thermochemical factory control
-* Higher-tier materials
-* Additional heat-network applications
-* New processing methods
-* Deeper Create integration
-
-Backward compatibility is maintained against **Create 6.0.7+** unless otherwise stated in a future release.
-
----
-
-## License
-
-Create: Sulfuric Resonance is proprietary software.
-
-**Copyright © 2026 Hxney, Ł. All Rights Reserved.**
-
-Hxney and Ł are two public creative identities used by the same developer and copyright owner.
-
-Official compiled releases may be used for personal, non-commercial gameplay.
-
-Redistribution, re-uploading, modified releases, forks, unauthorized ports, source reuse, asset reuse, impersonation, or false claims of ownership are prohibited except where expressly permitted by the included license.
-
-Create: Sulfuric Resonance is an unofficial addon and is not affiliated with or endorsed by Mojang Studios, Microsoft, NeoForged, or the Creators of Create.
+EMI 1.1.24+ (optional)

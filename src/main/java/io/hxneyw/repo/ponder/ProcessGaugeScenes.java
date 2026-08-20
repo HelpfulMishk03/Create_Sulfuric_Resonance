@@ -200,7 +200,7 @@ public final class ProcessGaugeScenes {
                 130
         );
         scene.overlay().showText(130)
-                .text("BLOCKED outputs 15 through exactly two contacts: the mounted-against face and the lower contact")
+                .text("READY outputs 5 and BLOCKED outputs 15 through exactly two contacts: the mounted-against face and the lower contact")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(gaugePos))
@@ -228,7 +228,7 @@ public final class ProcessGaugeScenes {
                 false
         );
         scene.overlay().showText(125)
-                .text("IDLE, READY, PROCESS, unassigned, OFF, and ERR do not produce the BLOCKED redstone output")
+                .text("IDLE, PROCESS, unassigned, OFF, and ERR output 0")
                 .attachKeyFrame()
                 .pointAt(util.vector().centerOf(gaugePos))
                 .placeNearTarget();

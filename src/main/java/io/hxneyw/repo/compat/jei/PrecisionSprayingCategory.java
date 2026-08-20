@@ -32,8 +32,9 @@ public final class PrecisionSprayingCategory
 
     private static final int WIDTH = 182;
     private static final int HEIGHT = 70;
-    private static final int TEXT = 0x404040;
-    private static final int MUTED = 0x666666;
+    private static final int TEXT = 0xFFFFFF;
+    private static final int MUTED = 0xD0D0D0;
+    private static final int ACID_TEXT = 0x686868;
     private static final int TARGET_X = 8;
     private static final int FILTER_X = 42;
     private static final int ACID_X = 76;
@@ -141,7 +142,7 @@ public final class PrecisionSprayingCategory
                 ),
                 ACID_X + 8,
                 46,
-                MUTED
+                ACID_TEXT
         );
         graphics.drawCenteredString(
                 font,

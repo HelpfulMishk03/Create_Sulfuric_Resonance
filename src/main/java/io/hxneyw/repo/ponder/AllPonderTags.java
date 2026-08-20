@@ -68,6 +68,7 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.SULFUR_BURNER.get()))
                 .add(blockKey(AllModBlocks.RESONANT_HEAT_INJECTOR.get()))
                 .add(blockKey(AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()))
+                .add(blockKey(AllModBlocks.THERMOCHEMICAL_CLUTCH.get()))
                 .add(blockKey(AllModBlocks.THERMAL_RELAY_SWITCH.get()))
                 .add(blockKey(AllModBlocks.THERMAL_GAUGE.get()))
                 .add(blockKey(AllModBlocks.LIVING_EMBER_LAMP.get()))
@@ -92,6 +93,7 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.THERMAL_GAUGE.get()))
                 .add(blockKey(AllModBlocks.LIVING_EMBER_LAMP.get()))
                 .add(blockKey(AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()))
+                .add(blockKey(AllModBlocks.THERMOCHEMICAL_CLUTCH.get()))
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()));
 
         helper.addToTag(ResourceLocation.parse("create:fluids"))

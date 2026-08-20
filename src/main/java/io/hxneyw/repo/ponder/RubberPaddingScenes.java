@@ -9,10 +9,7 @@ import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.phys.Vec3;
 
 public final class RubberPaddingScenes {
 
@@ -34,7 +31,6 @@ public final class RubberPaddingScenes {
 
         BlockPos paddingPos = util.grid().at(2, 1, 2);
         BlockPos armPos = util.grid().at(1, 1, 2);
-        BlockPos itemStartPos = util.grid().at(2, 4, 2);
 
         scene.world().setBlock(
                 paddingPos,
@@ -50,47 +46,22 @@ public final class RubberPaddingScenes {
         );
         scene.idle(20);
 
-        scene.overlay().showText(120)
-                .text("Rubber Padding absorbs fall damage and bounces entities that land on it while bouncing is enabled")
+        scene.overlay().showText(90)
+                .text("Rubber Padding prevents fall damage and bounces entities that land on it")
                 .attachKeyFrame()
                 .colored(PonderPalette.MEDIUM)
                 .pointAt(util.vector().topOf(paddingPos))
                 .placeNearTarget();
-        scene.idle(130);
+        scene.idle(100);
 
-        scene.world().createItemEntity(
-                util.vector().centerOf(itemStartPos),
-                new Vec3(0.11, -0.55, 0.0),
-                new ItemStack(Items.COPPER_INGOT, 8)
-        );
-        scene.idle(45);
-
-        scene.overlay().showText(130)
-                .text("Dropped item stacks use a damped bounce, retain most horizontal motion, and settle after repeated impacts")
-                .attachKeyFrame()
-                .colored(PonderPalette.GREEN)
-                .pointAt(util.vector().topOf(paddingPos))
-                .placeNearTarget();
-        scene.idle(140);
-
-        scene.world().modifyEntities(
-                ItemEntity.class,
-                item -> item.setDeltaMovement(0.08, 0.28, 0.0)
-        );
-        scene.idle(35);
-
-        scene.overlay().showText(130)
-                .text("Living entities use their own bounce multiplier; suppressing bounce restores normal landing behavior instead")
+        scene.overlay().showText(95)
+                .text("Living entities bounce from their incoming fall speed; suppressing bounce restores a normal landing")
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)
                 .pointAt(util.vector().topOf(paddingPos))
                 .placeNearTarget();
-        scene.idle(140);
+        scene.idle(105);
 
-        scene.world().modifyEntities(
-                ItemEntity.class,
-                item -> item.discard()
-        );
         scene.world().setBlock(
                 armPos,
                 AllBlocks.MECHANICAL_ARM.getDefaultState(),
@@ -105,23 +76,25 @@ public final class RubberPaddingScenes {
         scene.overlay().showControls(
                         util.vector().topOf(armPos).add(0.0, 0.45, 0.0),
                         Pointing.DOWN,
-                        60
+                        40
                 )
                 .withItem(new ItemStack(AllBlocks.MECHANICAL_ARM.get()));
-        scene.overlay().showText(140)
-                .text("Mechanical Arms treat the top of the Padding as one exposed item stack: they can deposit, merge matching items, and extract that stack")
+        scene.idle(50);
+
+        scene.overlay().showText(105)
+                .text("Mechanical Arms can deposit, merge, and extract the exposed item stack on top")
                 .attachKeyFrame()
                 .colored(PonderPalette.INPUT)
                 .pointAt(util.vector().topOf(paddingPos))
                 .placeNearTarget();
-        scene.idle(150);
+        scene.idle(115);
 
-        scene.overlay().showText(120)
-                .text("Rubber Padding, item bounce strength, and entity bounce strength can all be adjusted through configuration")
+        scene.overlay().showText(90)
+                .text("Padding behavior, item bounce strength, and entity bounce strength are configurable")
                 .attachKeyFrame()
                 .pointAt(util.vector().centerOf(paddingPos))
                 .placeNearTarget();
-        scene.idle(130);
+        scene.idle(100);
         scene.markAsFinished();
     }
 }

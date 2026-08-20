@@ -21,6 +21,9 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
 
     private static final int WIDTH = 188;
     private static final int HEIGHT = 96;
+    private static final int TEXT = 0xFFFFFF;
+    private static final int MUTED = 0xD0D0D0;
+    private static final int ACID_TEXT = 0x686868;
     private final ResourceLocation id;
     private final PrecisionSprayingDisplay display;
     private final EmiStack input;
@@ -128,15 +131,25 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
                 ),
                 53,
                 18,
-                0x666666
+                MUTED
         );
         graphics.drawString(
                 font,
                 Component.literal("→"),
                 122,
                 36,
-                0x404040,
+                TEXT,
                 false
+        );
+        graphics.drawCenteredString(
+                font,
+                Component.translatable(
+                        "jei.sulfuricresonance.precision_spraying.total_acid",
+                        this.display.fluidAmount()
+                ),
+                84,
+                55,
+                ACID_TEXT
         );
         graphics.drawCenteredString(
                 font,
@@ -144,8 +157,8 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
                         "jei.sulfuricresonance.precision_spraying.stage"
                 ),
                 WIDTH / 2,
-                65,
-                0x404040
+                68,
+                TEXT
         );
         graphics.drawCenteredString(
                 font,
@@ -153,8 +166,8 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
                         "jei.sulfuricresonance.precision_spraying.filter"
                 ),
                 WIDTH / 2,
-                79,
-                0x666666
+                82,
+                MUTED
         );
     }
 }

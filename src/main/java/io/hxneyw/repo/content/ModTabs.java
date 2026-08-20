@@ -34,6 +34,7 @@ public class ModTabs {
                   output.accept(Items.THERMOCHEMICAL_GEARBOX_ITEM.get());
                   output.accept(Items.PARALLEL_THERMOCHEMICAL_GEARBOX_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_LINK_DRIVE_ITEM.get());
+                  output.accept(Items.THERMOCHEMICAL_CLUTCH_ITEM.get());
                   output.accept(Items.THERMAL_RELAY_SWITCH_ITEM.get());
                   output.accept(Items.THERMAL_GAUGE_ITEM.get());
                   output.accept(Items.LIVING_EMBER_LAMP_ITEM.get());

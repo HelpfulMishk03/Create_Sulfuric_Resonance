@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import io.hxneyw.repo.compat.arm.AllModArmInteractionPoints;
 import io.hxneyw.repo.compat.automation.ModCapabilities;
 import io.hxneyw.repo.content.Items;
+import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeHostPayload;
 import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
@@ -44,6 +45,7 @@ public class CreateSulfuricResonance {
       ModParticles.PARTICLE_TYPES.register(modEventBus);
       modEventBus.addListener(ModCapabilities::registerCapabilities);
       modEventBus.addListener(ProcessMonitorArmPayload::register);
+      modEventBus.addListener(ThermalGaugeHostPayload::register);
       AllModSounds.SOUNDS.register(modEventBus);
 
       AllModFluids.register(modEventBus);

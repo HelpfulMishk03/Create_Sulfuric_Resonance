@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:process_monitor",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:thermochemical_clutch"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.thermochemical_clutch.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.thermochemical_clutch.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_thermochemical_clutch": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:thermochemical_clutch"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -91,6 +91,7 @@ public class Items {
    public static final DeferredItem<CombustionBeltConnectorItem> COMBUSTION_BELT_CONNECTOR = ITEMS.register("combustion_belt_connector", () -> new CombustionBeltConnectorItem(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_CONDUIT_ITEM = ITEMS.register("thermochemical_conduit", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CONDUIT.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_SHAFT_ITEM = ITEMS.register("thermochemical_shaft", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_SHAFT.get(), new Properties()));
+   public static final DeferredItem<BlockItem> THERMOCHEMICAL_CLUTCH_ITEM = ITEMS.register("thermochemical_clutch", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CLUTCH.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_GEARBOX_ITEM = ITEMS.register("thermochemical_gearbox", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_GEARBOX.get(), new Properties()));
    public static final DeferredItem<BlockItem> PARALLEL_THERMOCHEMICAL_GEARBOX_ITEM = ITEMS.register("parallel_thermochemical_gearbox", () -> new BlockItem(AllModBlocks.PARALLEL_THERMOCHEMICAL_GEARBOX.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_LINK_DRIVE_ITEM = ITEMS.register("thermochemical_link_drive", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get(), new Properties()));

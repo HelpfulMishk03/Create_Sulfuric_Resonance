@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 24;
+    private static final int REGISTERED_SCENES = 25;
 
     @NotNull
     @Override
@@ -177,6 +177,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     thermochemicalLinkDriveId,
                     "thermochemical_link_drive/operation",
                     ThermochemicalLinkDriveScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermochemicalClutchId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_CLUTCH.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalClutchId,
+                    "thermochemical_clutch/operation",
+                    ThermochemicalClutchScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
             );
 
