@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "sulfuricresonance:item/lit_cinder_flare"
-  }
-}

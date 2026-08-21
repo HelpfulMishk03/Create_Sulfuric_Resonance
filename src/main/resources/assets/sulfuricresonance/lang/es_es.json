@@ -769,11 +769,5 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Canal %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Canal %s del Medidor de proceso — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Lee los canales 1–5 de su Monitor de proceso vinculado",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Agáchate y haz clic derecho en un Medidor Térmico montado con una Llave Inglesa para recogerlo sin perder su conexión de horno guardada",
-  "item.sulfuricresonance.cinder_flare": "Bengala de brasa",
-  "item.sulfuricresonance.lit_cinder_flare": "Bengala de brasa encendida",
-  "tooltip.sulfuricresonance.cinder_flare.unlit": "Sostén un mechero en la mano secundaria y mantén pulsado clic derecho para encenderla.",
-  "tooltip.sulfuricresonance.cinder_flare.lit": "Ardiendo. Clic derecho para lanzar.",
-  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Debes sostener un mechero en la mano secundaria.",
-  "entity.sulfuricresonance.cinder_flare": "Bengala de brasa"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Agáchate y haz clic derecho en un Medidor Térmico montado con una Llave Inglesa para recogerlo sin perder su conexión de horno guardada"
 }
