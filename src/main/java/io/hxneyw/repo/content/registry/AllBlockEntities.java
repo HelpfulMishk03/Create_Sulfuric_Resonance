@@ -1,5 +1,6 @@
 package io.hxneyw.repo.content.registry;
 
+import com.simibubi.create.AllBlocks;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
@@ -9,10 +10,14 @@ import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalclutch.ThermochemicalClutchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlockEntity;
+import io.hxneyw.repo.content.blocks.processmonitor.ProcessMonitorBlockEntity;
+import io.hxneyw.repo.content.blocks.processgauge.ProcessGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlockEntity;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
@@ -30,6 +35,29 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("DataFlowIssue")
 public class AllBlockEntities {
    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "sulfuricresonance");
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ProcessMonitorBlockEntity>
+            > PROCESS_MONITOR = BLOCK_ENTITIES.register(
+            "process_monitor",
+            () -> Builder.of(
+                    ProcessMonitorBlockEntity::new,
+                    AllModBlocks.PROCESS_MONITOR.get()
+            ).build(null)
+    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ProcessGaugeBlockEntity>
+            > PROCESS_GAUGE = BLOCK_ENTITIES.register(
+            "process_gauge",
+            () -> Builder.of(
+                    ProcessGaugeBlockEntity::new,
+                    AllModBlocks.PROCESS_GAUGE.get()
+            ).build(null)
+    );
+
    public static final DeferredHolder<
            BlockEntityType<?>,
            BlockEntityType<MoltenRotorBlockEntity>
@@ -142,7 +170,19 @@ public class AllBlockEntities {
             "thermal_gauge",
             () -> Builder.of(
                     ThermalGaugeBlockEntity::new,
-                    AllModBlocks.THERMAL_GAUGE.get()
+                    AllModBlocks.THERMAL_GAUGE.get(),
+                    AllBlocks.FACTORY_GAUGE.get()
+            ).build(null)
+    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermalWarningAlarmBlockEntity>
+            > THERMAL_WARNING_ALARM = BLOCK_ENTITIES.register(
+            "thermal_warning_alarm",
+            () -> Builder.of(
+                    ThermalWarningAlarmBlockEntity::new,
+                    AllModBlocks.THERMAL_WARNING_ALARM.get()
             ).build(null)
     );
 
@@ -169,6 +209,18 @@ public class AllBlockEntities {
                    () -> Builder.of(
                            ThermochemicalShaftBlockEntity::new,
                            AllModBlocks.THERMOCHEMICAL_SHAFT.get()
+                   ).build(null)
+           );
+
+   public static final DeferredHolder<
+           BlockEntityType<?>,
+           BlockEntityType<ThermochemicalClutchBlockEntity>
+           > THERMOCHEMICAL_CLUTCH =
+           BLOCK_ENTITIES.register(
+                   "thermochemical_clutch",
+                   () -> Builder.of(
+                           ThermochemicalClutchBlockEntity::new,
+                           AllModBlocks.THERMOCHEMICAL_CLUTCH.get()
                    ).build(null)
            );
 

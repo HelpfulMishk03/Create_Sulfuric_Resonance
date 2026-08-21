@@ -1,0 +1,20 @@
+{
+  "parent": "sulfuricresonance:routed_reaction",
+  "display": {
+    "icon": { "id": "sulfuricresonance:process_monitor" },
+    "title": { "translate": "advancements.sulfuricresonance.process_monitor.title" },
+    "description": { "translate": "advancements.sulfuricresonance.process_monitor.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_process_monitor": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [ { "items": [ "sulfuricresonance:process_monitor" ] } ]
+      }
+    }
+  }
+}

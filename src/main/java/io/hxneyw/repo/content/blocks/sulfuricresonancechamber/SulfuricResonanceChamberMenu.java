@@ -14,6 +14,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
 
@@ -21,9 +22,13 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
     private static final int PLAYER_SLOT_START = MACHINE_SLOT_COUNT;
     private static final int PLAYER_SLOT_END = PLAYER_SLOT_START + 36;
 
+    public static final int BUTTON_TOGGLE_MODE = 0;
+    public static final int BUTTON_MANUAL_START = 1;
+
     private final ContainerData data;
     private final ContainerLevelAccess access;
     private final Inventory playerInventory;
+    private final @Nullable SulfuricResonanceChamberBlockEntity chamber;
 
     public SulfuricResonanceChamberMenu(
             int containerId,
@@ -36,7 +41,8 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
                 new SimpleContainerData(
                         SulfuricResonanceChamberBlockEntity.MENU_DATA_COUNT
                 ),
-                ContainerLevelAccess.NULL
+                ContainerLevelAccess.NULL,
+                null
         );
     }
 
@@ -55,7 +61,8 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
                         : ContainerLevelAccess.create(
                                 chamber.getLevel(),
                                 chamber.getBlockPos()
-                        )
+                        ),
+                chamber
         );
     }
 
@@ -64,12 +71,14 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
             Inventory playerInventory,
             Container chamberInventory,
             ContainerData data,
-            ContainerLevelAccess access
+            ContainerLevelAccess access,
+            @Nullable SulfuricResonanceChamberBlockEntity chamber
     ) {
         super(AllModMenus.SULFURIC_RESONANCE_CHAMBER.get(), containerId);
         this.data = data;
         this.access = access;
         this.playerInventory = playerInventory;
+        this.chamber = chamber;
 
         checkContainerDataCount(
                 data,
@@ -79,20 +88,17 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         addSlot(createInputSlot(
                 chamberInventory,
                 SulfuricResonanceChamberBlockEntity.INPUT_1,
-                22,
-                50
+                22
         ));
         addSlot(createInputSlot(
                 chamberInventory,
                 SulfuricResonanceChamberBlockEntity.INPUT_2,
-                46,
-                50
+                46
         ));
         addSlot(createInputSlot(
                 chamberInventory,
                 SulfuricResonanceChamberBlockEntity.INPUT_3,
-                70,
-                50
+                70
         ));
         addSlot(new Slot(
                 chamberInventory,
@@ -132,10 +138,9 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
     private Slot createInputSlot(
             Container chamberInventory,
             int slot,
-            int x,
-            int y
+            int x
     ) {
-        return new Slot(chamberInventory, slot, x, y) {
+        return new Slot(chamberInventory, slot, x, 50) {
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 if (data.get(3) != 0 || data.get(0) > 0) {
@@ -153,6 +158,27 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
                 player,
                 AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
         );
+    }
+
+    @Override
+    public boolean clickMenuButton(
+            @NotNull Player player,
+            int buttonId
+    ) {
+        if (chamber == null || !stillValid(player)) {
+            return false;
+        }
+
+        boolean handled = switch (buttonId) {
+            case BUTTON_TOGGLE_MODE -> chamber.toggleOperatingMode();
+            case BUTTON_MANUAL_START -> chamber.requestManualStart();
+            default -> false;
+        };
+
+        if (handled) {
+            broadcastChanges();
+        }
+        return handled;
     }
 
     @Override
@@ -255,6 +281,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         return false;
     }
 
+    @SuppressWarnings("resource")
     private boolean isValidRecipePlacement(int slot, ItemStack stack) {
         ItemStack input1 = getMachineStack(0).copy();
         ItemStack input2 = getMachineStack(1).copy();
@@ -282,6 +309,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         ItemStack finalInput1 = input1;
         ItemStack finalInput2 = input2;
         ItemStack finalInput3 = input3;
+        
         return playerInventory.player.level()
                 .getRecipeManager()
                 .getAllRecipesFor(
@@ -314,6 +342,10 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         return data.get(3) != 0;
     }
 
+    public boolean isReady() {
+        return data.get(2) != 0;
+    }
+
     public int getAcidAmount() {
         return data.get(4);
     }
@@ -337,5 +369,11 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
     public SulfuricResonanceChamberBlockEntity.ChamberStatus getStatus() {
         return SulfuricResonanceChamberBlockEntity.ChamberStatus
                 .fromOrdinal(data.get(9));
+    }
+
+    public SulfuricResonanceChamberBlockEntity.OperatingMode
+    getOperatingMode() {
+        return SulfuricResonanceChamberBlockEntity.OperatingMode
+                .fromOrdinal(data.get(10));
     }
 }

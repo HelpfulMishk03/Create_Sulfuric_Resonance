@@ -11,19 +11,19 @@ public final class CombustionBeltClientAssets {
     public static final SpriteShiftEntry BELT =
             SpriteShifter.get(
                     createId("block/belt"),
-                    modId("block/combustion_belt_scroll")
+                    modId("block/combustion_belt/combustion_belt_scroll")
             );
 
     public static final SpriteShiftEntry BELT_OFFSET =
             SpriteShifter.get(
                     createId("block/belt_offset"),
-                    modId("block/combustion_belt_scroll")
+                    modId("block/combustion_belt/combustion_belt_scroll")
             );
 
     public static final SpriteShiftEntry BELT_DIAGONAL =
             SpriteShifter.get(
                     createId("block/belt_diagonal"),
-                    modId("block/combustion_belt_diagonal_scroll")
+                    modId("block/combustion_belt/combustion_belt_diagonal_scroll")
             );
 
     private CombustionBeltClientAssets() {

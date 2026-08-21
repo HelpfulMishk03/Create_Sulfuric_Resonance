@@ -1,6 +1,6 @@
 {
   "textures": {
-    "particle": "sulfuricresonance:block/thermal_gauge"
+    "particle": "sulfuricresonance:block/thermal_gauge/thermal_gauge"
   },
   "elements": []
 }

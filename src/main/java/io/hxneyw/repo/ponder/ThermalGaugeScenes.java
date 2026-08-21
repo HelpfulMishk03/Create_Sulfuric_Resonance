@@ -331,6 +331,22 @@ public final class ThermalGaugeScenes {
                 )
                 .withItem(clearedGauge);
         scene.idle(55);
+
+        scene.overlay().showControls(
+                        util.vector().centerOf(gaugePos),
+                        Pointing.DOWN,
+                        60
+                )
+                .whileSneaking()
+                .rightClick()
+                .withItem(new ItemStack(AllItems.WRENCH.get()));
+        scene.overlay().showText(115)
+                .text("Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection")
+                .attachKeyFrame()
+                .colored(PonderPalette.INPUT)
+                .pointAt(util.vector().centerOf(gaugePos))
+                .placeNearTarget();
+        scene.idle(125);
         scene.markAsFinished();
     }
 

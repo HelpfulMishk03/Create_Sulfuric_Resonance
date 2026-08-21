@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "sulfuricresonance:block/thermochemical_shaft"
+    "particle": "sulfuricresonance:block/thermochemical_shaft/thermochemical_shaft"
   }
 }

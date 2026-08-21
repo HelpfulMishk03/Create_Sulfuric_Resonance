@@ -117,13 +117,27 @@ public final class SulfuricResonanceChamberScenes {
                 .placeNearTarget();
         scene.idle(130);
 
-        scene.overlay().showText(125)
-                .text("A reaction begins only when its Sulfuric Acid amount, minimum heat tier, minimum RPM, ingredients, and output space are all satisfied")
+        scene.overlay().showText(130)
+                .text("The Chamber becomes READY only when its Sulfuric Acid amount, minimum heat tier, minimum RPM, ingredients, and output space are all satisfied")
                 .attachKeyFrame()
                 .colored(PonderPalette.OUTPUT)
                 .pointAt(util.vector().centerOf(chamberPos))
                 .placeNearTarget();
-        scene.idle(135);
+        scene.idle(140);
+
+        scene.overlay().showControls(
+                        util.vector().topOf(chamberPos),
+                        Pointing.DOWN,
+                        55
+                )
+                .rightClick();
+        scene.overlay().showText(130)
+                .text("The GUI has Automatic and Manual operating modes: Automatic starts a READY recipe immediately, while Manual waits for the player to press Start")
+                .attachKeyFrame()
+                .colored(PonderPalette.BLUE)
+                .pointAt(util.vector().centerOf(chamberPos))
+                .placeNearTarget();
+        scene.idle(140);
 
         scene.overlay().showText(120)
                 .text("While processing, the input batch is locked against new insertion, but manually removing an input safely aborts and resets the reaction")

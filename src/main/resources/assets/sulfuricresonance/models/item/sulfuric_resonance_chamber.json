@@ -1,5 +1,9 @@
 {
-  "parent": "sulfuricresonance:block/sulfuric_resonance_chamber_full",
+  "parent": "minecraft:builtin/entity",
+  "gui_light": "side",
+  "textures": {
+    "particle": "sulfuricresonance:block/sulfuric_resonance_chamber/resonance_chamber_rings"
+  },
   "display": {
     "thirdperson_righthand": {
       "rotation": [

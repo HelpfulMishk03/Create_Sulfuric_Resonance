@@ -2,6 +2,13 @@ package io.hxneyw.repo.content.blocks.thermalrelay;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
+import io.hxneyw.repo.content.network.ThermochemicalNetworkResolver;
+import io.hxneyw.repo.content.logic.LogicCondition;
+import io.hxneyw.repo.content.logic.LogicEvaluation;
+import io.hxneyw.repo.content.logic.LogicEvaluator;
+import io.hxneyw.repo.content.logic.LogicResponse;
+import io.hxneyw.repo.content.logic.LogicSource;
+import io.hxneyw.repo.content.logic.ThermalLogicLevel;
 import io.hxneyw.repo.content.menu.ThermalRelaySwitchMenu;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.Collections;
@@ -70,6 +77,24 @@ public class ThermalRelaySwitchBlockEntity
 
 
     private static final int PULSE_HALF_PERIOD_TICKS = 10;
+
+    private static final LogicCondition HEATED_CONDITION =
+            LogicCondition.highTrip(
+                    LogicSource.THERMAL,
+                    ThermalLogicLevel.HEATED.value()
+            );
+
+    private static final LogicCondition SUPERHEATED_CONDITION =
+            LogicCondition.highTrip(
+                    LogicSource.THERMAL,
+                    ThermalLogicLevel.SUPERHEATED.value()
+            );
+
+    private static final LogicCondition COMBUSTION_CONDITION =
+            LogicCondition.highTrip(
+                    LogicSource.THERMAL,
+                    ThermalLogicLevel.COMBUSTION.value()
+            );
 
     private static final Set<ThermalRelaySwitchBlockEntity>
             CLIENT_RELAYS = Collections.newSetFromMap(
@@ -359,52 +384,57 @@ public class ThermalRelaySwitchBlockEntity
         ThermalRelaySwitchItem.FurnaceLink link =
                 this.linkedFurnace;
 
-        if (link != null
-                && level.dimension()
-                .location()
-                .toString()
-                .equals(link.dimension())) {
-            BlockPos furnacePos = link.position();
+        if (link != null) {
+            ThermochemicalNetworkResolver.Resolution resolution =
+                    ThermochemicalNetworkResolver.resolve(level, link);
 
-            if (level.isLoaded(furnacePos)
-                    && level.getBlockEntity(furnacePos)
-                    instanceof MoltenRotorBlockEntity furnace
-                    && link.furnaceIdentity().equals(
-                    furnace.getFurnaceIdentity()
-            )) {
+            if (resolution.isLinkedButUnavailable()) {
+                return;
+            }
+
+            MoltenRotorBlockEntity furnace = resolution.furnace();
+            if (furnace != null) {
+                UUID headNetworkId = furnace.getOrCreateThermalNetworkId();
+                if (!headNetworkId.equals(this.networkId)) {
+                    this.networkId = headNetworkId;
+                    setChanged();
+                }
+
                 current = HeatBand.from(
                         furnace.getCurrentHeatTier()
                 );
 
-                boolean activeFuelEndingSoon =
-                        this.lowFuelScope.matches(current)
-                                && isActiveFuelEndingSoon(
-                                furnace,
-                                current
-                        );
-
-                boolean heatedStateEndingSoon =
-                        isHeatedStateEndingSoon(
-                                furnace,
-                                current
-                        );
-
-                qualifyingLowFuel =
-                        activeFuelEndingSoon
-                                || heatedStateEndingSoon;
+                if (this.mode == RelayMode.LOW_FUEL
+                        && this.lowFuelScope.matches(current)) {
+                    qualifyingLowFuel =
+                            isActiveFuelEndingSoon(
+                                    furnace,
+                                    current
+                            )
+                                    || isHeatedStateEndingSoon(
+                                            furnace,
+                                            current
+                                    );
+                }
             }
         }
 
         this.currentHeatBand = current.ordinal();
-        this.lowFuelWarningActive = qualifyingLowFuel;
+        this.lowFuelWarningActive =
+                this.mode == RelayMode.LOW_FUEL
+                        && qualifyingLowFuel;
+
+        if (this.mode == RelayMode.LOW_FUEL) {
+            if (qualifyingLowFuel) {
+                applyLowFuelWarning(level);
+            } else {
+                applyOutput(level, 0, 0);
+            }
+            return;
+        }
 
         ConfiguredOutput baseOutput =
                 configuredOutputFor(current);
-
-        if (qualifyingLowFuel) {
-            applyLowFuelWarning(level);
-            return;
-        }
 
         applyOutput(
                 level,
@@ -432,21 +462,51 @@ public class ThermalRelaySwitchBlockEntity
     private ConfiguredOutput configuredOutputFor(
             @NotNull HeatBand heatBand
     ) {
-        return switch (heatBand) {
-            case UNHEATED -> new ConfiguredOutput(0, 0);
-            case HEATED -> new ConfiguredOutput(
-                    this.heatedRedstone,
-                    this.heatedGlow
-            );
-            case SUPERHEATED -> new ConfiguredOutput(
-                    this.superheatedRedstone,
-                    this.superheatedGlow
-            );
-            case COMBUSTION -> new ConfiguredOutput(
+        int heatValue = heatBand.logicValue();
+
+        if (evaluateHold(
+                heatValue,
+                COMBUSTION_CONDITION
+        ).outputActive()) {
+            return new ConfiguredOutput(
                     this.combustionRedstone,
                     this.combustionGlow
             );
-        };
+        }
+
+        if (evaluateHold(
+                heatValue,
+                SUPERHEATED_CONDITION
+        ).outputActive()) {
+            return new ConfiguredOutput(
+                    this.superheatedRedstone,
+                    this.superheatedGlow
+            );
+        }
+
+        if (evaluateHold(
+                heatValue,
+                HEATED_CONDITION
+        ).outputActive()) {
+            return new ConfiguredOutput(
+                    this.heatedRedstone,
+                    this.heatedGlow
+            );
+        }
+
+        return new ConfiguredOutput(0, 0);
+    }
+
+    private static LogicEvaluation evaluateHold(
+            int currentValue,
+            @NotNull LogicCondition condition
+    ) {
+        return LogicEvaluator.evaluate(
+                currentValue,
+                currentValue,
+                condition,
+                LogicResponse.HOLD
+        );
     }
 
     private static boolean isActiveFuelEndingSoon(
@@ -1157,6 +1217,19 @@ public class ThermalRelaySwitchBlockEntity
         HEATED,
         SUPERHEATED,
         COMBUSTION;
+
+        public int logicValue() {
+            return switch (this) {
+                case UNHEATED ->
+                        ThermalLogicLevel.UNHEATED.value();
+                case HEATED ->
+                        ThermalLogicLevel.HEATED.value();
+                case SUPERHEATED ->
+                        ThermalLogicLevel.SUPERHEATED.value();
+                case COMBUSTION ->
+                        ThermalLogicLevel.COMBUSTION.value();
+            };
+        }
 
         public static HeatBand fromOrdinal(int value) {
             HeatBand[] values = values();

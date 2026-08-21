@@ -1,9 +1,9 @@
 {
   "textures": {
-    "0": "sulfuricresonance:block/box",
-    "1": "sulfuricresonance:block/theframe",
-    "2": "sulfuricresonance:block/parallel_reinforcements",
-    "particle": "sulfuricresonance:block/box"
+    "0": "sulfuricresonance:block/thermochemical_gearbox/box",
+    "1": "sulfuricresonance:block/thermochemical_gearbox/theframe",
+    "2": "sulfuricresonance:block/parallel_thermochemical_gearbox/parallel_reinforcements",
+    "particle": "sulfuricresonance:block/thermochemical_gearbox/box"
   },
   "elements": [
     {

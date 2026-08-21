@@ -3,8 +3,8 @@
 	"credit": "Made with Blockbench, by Hxney",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "sulfuricresonance:block/rubber_padding",
-		"particle": "sulfuricresonance:block/rubber_padding"
+		"0": "sulfuricresonance:block/rubber_padding/rubber_padding",
+		"particle": "sulfuricresonance:block/rubber_padding/rubber_padding"
 	},
 	"elements": [
 		{

@@ -15,6 +15,7 @@ import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
+import io.hxneyw.repo.content.recipes.precisionspraying.PrecisionSprayingRegistry;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
@@ -41,6 +42,9 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
 
     public static final EmiStack SULFURIC_RESONANCE_CHAMBER =
             EmiStack.of(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get());
+
+    public static final EmiStack PRECISION_SPRITZER =
+            EmiStack.of(Items.PRECISION_SPRITZER.get());
 
     public static final EmiRecipeCategory MOLTEN_ROTOR_FUELS =
             new EmiRecipeCategory(
@@ -78,11 +82,21 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                     SULFURIC_RESONANCE_CHAMBER
             );
 
+    public static final EmiRecipeCategory PRECISION_SPRAYING =
+            new EmiRecipeCategory(
+                    ResourceLocation.fromNamespaceAndPath(
+                            CreateSulfuricResonance.MODID,
+                            "precision_spraying"
+                    ),
+                    PRECISION_SPRITZER
+            );
+
     @Override
     public void register(EmiRegistry registry) {
         registerCategories(registry);
         registerWorkstations(registry);
         registerMoltenRotorFuels(registry);
+        registerPrecisionSpraying(registry);
         registerProcessingRecipes(registry);
     }
 
@@ -91,6 +105,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         registry.addCategory(COMBUSTION_BELT_PROCESSING);
         registry.addCategory(COMBUSTION_MIXING);
         registry.addCategory(SULFURIC_RESONANCE_CHAMBER_PROCESSING);
+        registry.addCategory(PRECISION_SPRAYING);
     }
 
     private static void registerWorkstations(EmiRegistry registry) {
@@ -122,6 +137,10 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                 SULFURIC_RESONANCE_CHAMBER_PROCESSING,
                 SULFURIC_RESONANCE_CHAMBER
         );
+        registry.addWorkstation(
+                PRECISION_SPRAYING,
+                PRECISION_SPRITZER
+        );
     }
 
     private static void registerMoltenRotorFuels(
@@ -140,6 +159,15 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         }
     }
 
+    private static void registerPrecisionSpraying(
+            EmiRegistry registry
+    ) {
+        PrecisionSprayingRegistry.createDisplays()
+                .forEach(display -> registry.addRecipe(
+                        new PrecisionSprayingEmiRecipe(display)
+                ));
+    }
+
     private static void registerProcessingRecipes(
             EmiRegistry registry
     ) {
@@ -151,44 +179,45 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                 : registry.getRecipeManager().getRecipes()) {
             Recipe<?> recipe = holder.value();
 
-            if (recipe instanceof CombustionBeltRecipe beltRecipe) {
-                registry.addRecipe(
-                        new CombustionBeltEmiRecipe(
-                                new RecipeHolder<>(
-                                        holder.id(),
-                                        beltRecipe
+            switch (recipe) {
+                case CombustionBeltRecipe beltRecipe -> {
+                    registry.addRecipe(
+                            new CombustionBeltEmiRecipe(
+                                    new RecipeHolder<>(
+                                            holder.id(),
+                                            beltRecipe
+                                    )
+                            )
+                    );
+                    beltRecipes++;
+                }
+                case SulfuricResonanceChamberRecipe chamberRecipe -> {
+                    registry.addRecipe(
+                            new SulfuricResonanceChamberEmiRecipe(
+                                    new RecipeHolder<>(
+                                            holder.id(),
+                                            chamberRecipe
+                                    )
+                            )
+                    );
+                    chamberRecipes++;
+                }
+                case BasinRecipe basinRecipe -> {
+                    if (recipe.getType()
+                            == ModRecipeTypes.COMBUSTION_MIXING.get()) {
+                        registry.addRecipe(
+                                new CombustionMixingEmiRecipe(
+                                        new RecipeHolder<>(
+                                                holder.id(),
+                                                basinRecipe
+                                        )
                                 )
-                        )
-                );
-                beltRecipes++;
-                continue;
-            }
-
-            if (recipe instanceof SulfuricResonanceChamberRecipe chamberRecipe) {
-                registry.addRecipe(
-                        new SulfuricResonanceChamberEmiRecipe(
-                                new RecipeHolder<>(
-                                        holder.id(),
-                                        chamberRecipe
-                                )
-                        )
-                );
-                chamberRecipes++;
-                continue;
-            }
-
-            if (recipe instanceof BasinRecipe basinRecipe
-                    && recipe.getType()
-                    == ModRecipeTypes.COMBUSTION_MIXING.get()) {
-                registry.addRecipe(
-                        new CombustionMixingEmiRecipe(
-                                new RecipeHolder<>(
-                                        holder.id(),
-                                        basinRecipe
-                                )
-                        )
-                );
-                mixingRecipes++;
+                        );
+                        mixingRecipes++;
+                    }
+                }
+                default -> {
+                }
             }
         }
 

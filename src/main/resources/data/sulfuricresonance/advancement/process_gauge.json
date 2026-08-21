@@ -1,0 +1,20 @@
+{
+  "parent": "sulfuricresonance:process_monitor",
+  "display": {
+    "icon": { "id": "sulfuricresonance:process_gauge" },
+    "title": { "translate": "advancements.sulfuricresonance.process_gauge.title" },
+    "description": { "translate": "advancements.sulfuricresonance.process_gauge.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_process_gauge": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [ { "items": [ "sulfuricresonance:process_gauge" ] } ]
+      }
+    }
+  }
+}

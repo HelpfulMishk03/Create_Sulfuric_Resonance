@@ -10,6 +10,7 @@ import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
+import io.hxneyw.repo.content.recipes.precisionspraying.PrecisionSprayingRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import io.hxneyw.repo.content.registry.AllModBlocks;
@@ -118,7 +119,8 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 new CombustionMixingCategory(categoryInfo),
                 new CombustionBeltCategory(guiHelper),
                 new MoltenRotorFuelCategory(guiHelper),
-        new SulfuricResonanceChamberCategory(guiHelper)
+                new SulfuricResonanceChamberCategory(guiHelper),
+                new PrecisionSprayingCategory(guiHelper)
         );
     }
 
@@ -144,6 +146,11 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         registration.addRecipes(
                 MoltenRotorFuelCategory.RECIPE_TYPE,
                 getAllMoltenRotorFuels()
+        );
+
+        registration.addRecipes(
+                PrecisionSprayingCategory.RECIPE_TYPE,
+                PrecisionSprayingRegistry.createDisplays()
         );
     }
 
@@ -211,6 +218,11 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(
                 moltenRotor,
                 MoltenRotorFuelCategory.RECIPE_TYPE
+        );
+
+        registration.addRecipeCatalyst(
+                new ItemStack(Items.PRECISION_SPRITZER.get()),
+                PrecisionSprayingCategory.RECIPE_TYPE
         );
     }
 

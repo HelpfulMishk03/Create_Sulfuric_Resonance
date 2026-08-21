@@ -2,10 +2,12 @@ package io.hxneyw.repo.ponder;
 
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlock;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerBlockEntity;
 import io.hxneyw.repo.content.registry.AllModFluids;
 import io.hxneyw.repo.content.registry.ModParticles;
 import net.createmod.catnip.animation.LerpedFloat.Chaser;
+import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
@@ -60,12 +62,12 @@ public class PerforatedSpritzerScenes {
               .placeNearTarget();
       scene.idle(70);
       scene.overlay()
-              .showText(70)
-              .text("It cannot spray fluid on its own")
+              .showText(85)
+              .text("Once it reaches 3500mB, the Spritzer can begin spraying supported fluid on its own")
               .colored(PonderPalette.MEDIUM)
               .pointAt(util.vector().topOf(spritzerPos))
               .placeNearTarget();
-      scene.idle(80);
+      scene.idle(95);
       FluidStack tankWater = new FluidStack(Fluids.WATER, 8000);
       scene.world().modifyBlockEntity(tankPos, FluidTankBlockEntity.class, be -> be.getTankInventory().setFluid(tankWater));
       scene.world().setKineticSpeed(util.select().position(motorPos), 32.0F);
@@ -80,20 +82,20 @@ public class PerforatedSpritzerScenes {
       scene.world().propagatePipeChange(pumpPos);
       scene.idle(10);
       scene.overlay()
-              .showText(80)
-              .text("It requires pressure from a pump once its tank is full")
+              .showText(90)
+              .text("Pipes and pumps are useful for keeping the internal tank supplied while it sprays")
               .colored(PonderPalette.OUTPUT)
               .pointAt(util.vector().topOf(spritzerPos))
               .placeNearTarget();
-      scene.idle(90);
+      scene.idle(100);
       scene.overlay()
-              .showText(70)
-              .text("When the pump pushes fluid into a full Spritzer...")
+              .showText(80)
+              .text("Filling the Spritzer to 3500mB arms its automatic spray cycle")
               .attachKeyFrame()
               .colored(PonderPalette.GREEN)
               .pointAt(util.vector().centerOf(spritzerPos))
               .placeNearTarget();
-      scene.idle(80);
+      scene.idle(90);
 
       for (int i = 0; i <= 7; i++) {
          int amount = i * 500;
@@ -109,8 +111,8 @@ public class PerforatedSpritzerScenes {
 
       scene.idle(20);
       scene.overlay()
-              .showText(60)
-              .text("...it sprays the fluid downward!")
+              .showText(70)
+              .text("...then it begins spraying the fluid downward automatically!")
               .colored(PonderPalette.GREEN)
               .pointAt(util.vector().blockSurface(spritzerPos, Direction.DOWN))
               .placeNearTarget();
@@ -176,12 +178,117 @@ public class PerforatedSpritzerScenes {
          scene.idle(20);
       }
       scene.overlay()
-              .showText(80)
-              .text("Making their growth speed increase slightly only when farmland beneath them is fully hydrated")
+              .showText(95)
+              .text("Crop growth can be nudged once the farmland below reaches moisture level 4; full hydration is not required")
               .colored(PonderPalette.GREEN)
               .pointAt(util.vector().blockSurface(farmlandPos, Direction.UP))
               .placeNearTarget();
-      scene.idle(90);
+      scene.idle(105);
+
+      scene.addKeyframe();
+      scene.overlay().showControls(
+                      util.vector().topOf(spritzerPos),
+                      Pointing.DOWN,
+                      60
+              )
+              .rightClick()
+              .withItem(new ItemStack(
+                      io.hxneyw.repo.content.Items.LOGIC_BANK.get()
+              ));
+      scene.overlay()
+              .showText(100)
+              .text("Right-click a Perforated Spritzer with a Logic Bank to upgrade it into a Precision Spritzer")
+              .colored(PonderPalette.INPUT)
+              .pointAt(util.vector().centerOf(spritzerPos))
+              .placeNearTarget();
+      scene.idle(70);
+      scene.world().modifyBlock(
+              spritzerPos,
+              state -> state.setValue(PerforatedSpritzerBlock.PRECISION, true),
+              false
+      );
+      scene.idle(40);
+      scene.overlay()
+              .showText(120)
+              .text("The Precision Spritzer only spends fluid when a valid selected item, block, or entity target is present")
+              .attachKeyFrame()
+              .colored(PonderPalette.BLUE)
+              .pointAt(util.vector().centerOf(spritzerPos))
+              .placeNearTarget();
+      scene.idle(130);
+      scene.overlay()
+              .showText(120)
+              .text("Empty-hand right-click opens the internal filter lists; multiple Item and Entity selections can stay active at the same time")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().topOf(spritzerPos))
+              .placeNearTarget();
+      scene.idle(130);
+      scene.overlay()
+              .showText(110)
+              .text("The Item and Entity tabs only choose which saved list you are editing; switching tabs does not disable the other filter")
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().topOf(spritzerPos))
+              .placeNearTarget();
+      scene.idle(120);
+
+      scene.world().hideSection(util.select().position(cropPos), Direction.DOWN);
+      scene.idle(10);
+      scene.world().setBlock(
+              cropPos,
+              Blocks.AIR.defaultBlockState(),
+              false
+      );
+      scene.world().setBlock(
+              farmlandPos,
+              Blocks.OXIDIZED_COPPER.defaultBlockState(),
+              false
+      );
+      scene.effects().indicateSuccess(farmlandPos);
+      fillSpritzer(scene, spritzerPos, AllModFluids.SULFURIC_ACID.get());
+      scene.world().modifyBlockEntity(
+              spritzerPos,
+              PerforatedSpritzerBlockEntity.class,
+              be -> be.setItemFilter(new ItemStack(Blocks.OXIDIZED_COPPER))
+      );
+      scene.idle(25);
+      scene.overlay().showControls(
+                      util.vector().topOf(spritzerPos),
+                      Pointing.DOWN,
+                      60
+              )
+              .rightClick();
+      scene.overlay()
+              .showText(120)
+              .text("With Sulfuric Acid and a matching Item Filter, the exposed copper floor block needs three 25mB spray contacts before one oxidation stage is removed")
+              .attachKeyFrame()
+              .colored(PonderPalette.GREEN)
+              .pointAt(util.vector().centerOf(farmlandPos))
+              .placeNearTarget();
+      scene.idle(130);
+      for (int contact = 0; contact < 3; contact++) {
+         emitSprayPulse(
+                 scene,
+                 util,
+                 spritzerPos,
+                 ModParticles.ACID_DRIP.get(),
+                 new Vec3(0.0, -0.10, 0.0)
+         );
+         scene.idle(28);
+      }
+      scene.world().setBlock(
+              farmlandPos,
+              Blocks.WEATHERED_COPPER.defaultBlockState(),
+              false
+      );
+      scene.effects().indicateSuccess(farmlandPos);
+      scene.idle(20);
+      scene.overlay()
+              .showText(105)
+              .text("Only the first block exposed to the spray can receive contacts; blocks behind it are ignored until exposed")
+              .colored(PonderPalette.MEDIUM)
+              .pointAt(util.vector().centerOf(farmlandPos))
+              .placeNearTarget();
+      scene.idle(115);
       scene.markAsFinished();
    }
 

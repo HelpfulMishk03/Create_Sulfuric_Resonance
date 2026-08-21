@@ -3,12 +3,12 @@
   "credit": "Made with Blockbench",
   "render_type": "minecraft:translucent",
   "textures": {
-    "0": "sulfuricresonance:block/thermal_relay_switch",
-    "1": "sulfuricresonance:block/sides_of_relay",
-    "2": "sulfuricresonance:block/cap",
-    "3": "sulfuricresonance:block/connections",
-    "4": "sulfuricresonance:block/control",
-    "particle": "sulfuricresonance:block/thermal_relay_switch"
+    "0": "sulfuricresonance:block/thermal_relay_switch/thermal_relay_switch",
+    "1": "sulfuricresonance:block/thermal_relay_switch/sides_of_relay",
+    "2": "sulfuricresonance:block/thermal_relay_switch/cap",
+    "3": "sulfuricresonance:block/thermal_relay_switch/connections",
+    "4": "sulfuricresonance:block/thermal_relay_switch/control",
+    "particle": "sulfuricresonance:block/thermal_relay_switch/thermal_relay_switch"
   },
   "elements": [
     {

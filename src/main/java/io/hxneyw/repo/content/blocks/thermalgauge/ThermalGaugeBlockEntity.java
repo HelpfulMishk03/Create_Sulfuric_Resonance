@@ -1,11 +1,16 @@
 package io.hxneyw.repo.content.blocks.thermalgauge;
 
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock;
+import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelSlot;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
+import io.hxneyw.repo.content.network.ThermochemicalNetworkResolver;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
+import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
@@ -23,8 +28,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +42,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleInformation {
+public class ThermalGaugeBlockEntity extends FactoryPanelBlockEntity implements IHaveGoggleInformation {
 
     private static final Set<ThermalGaugeBlockEntity> CLIENT_GAUGES =
             Collections.newSetFromMap(new WeakHashMap<>());
@@ -67,6 +70,7 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
 
     private final EnumMap<PanelSlot, GaugeData> gauges = new EnumMap<>(PanelSlot.class);
     private int updateTicker;
+    private boolean hostConversion;
 
     public ThermalGaugeBlockEntity(BlockPos pos, BlockState state) {
         super(AllBlockEntities.THERMAL_GAUGE.get(), pos, state);
@@ -80,7 +84,6 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
 
     public static void serverTick(
             Level level,
-            BlockState state,
             ThermalGaugeBlockEntity gauge
     ) {
         if (level.isClientSide) {
@@ -93,7 +96,172 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
         }
 
         gauge.updateTicker = 0;
-        gauge.evaluateNetworks(level, state);
+        gauge.evaluateNetworks(level);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (level != null && !level.isClientSide) {
+            serverTick(level, this);
+        }
+    }
+
+    @Nullable
+    public static ThermalGaugeBlockEntity upgradeFactoryGauge(
+            Level level,
+            BlockPos pos
+    ) {
+        BlockEntity current = level.getBlockEntity(pos);
+        if (current instanceof ThermalGaugeBlockEntity gauge) {
+            return gauge;
+        }
+
+        if (!(current instanceof FactoryPanelBlockEntity factory)) {
+            return null;
+        }
+
+        BlockState state = level.getBlockState(pos);
+        if (!AllBlocks.FACTORY_GAUGE.has(state)) {
+            return null;
+        }
+
+        CompoundTag stored = level.isClientSide
+                ? factory.writeClient(new CompoundTag(), level.registryAccess())
+                : factory.saveWithoutMetadata(level.registryAccess());
+
+        factory.onChunkUnloaded();
+
+        ThermalGaugeBlockEntity replacement =
+                new ThermalGaugeBlockEntity(pos, state);
+
+        if (level.isClientSide) {
+            replacement.setLevel(level);
+            replacement.readClient(stored, level.registryAccess());
+        } else {
+            replacement.loadWithComponents(stored, level.registryAccess());
+        }
+
+        level.setBlockEntity(replacement);
+        return replacement;
+    }
+
+    public static void applyClientHostState(
+            Level level,
+            BlockPos pos,
+            CompoundTag stored
+    ) {
+        if (!level.isClientSide || !level.isLoaded(pos)) {
+            return;
+        }
+
+        BlockState state = level.getBlockState(pos);
+        if (!AllBlocks.FACTORY_GAUGE.has(state)) {
+            return;
+        }
+
+        BlockEntity current = level.getBlockEntity(pos);
+        if (current instanceof ThermalGaugeBlockEntity gauge) {
+            gauge.readClient(stored, level.registryAccess());
+            level.sendBlockUpdated(pos, state, state, 16);
+            return;
+        }
+
+        if (!(current instanceof FactoryPanelBlockEntity factory)) {
+            return;
+        }
+
+        factory.onChunkUnloaded();
+
+        ThermalGaugeBlockEntity replacement =
+                new ThermalGaugeBlockEntity(pos, state);
+        replacement.setLevel(level);
+        replacement.readClient(stored, level.registryAccess());
+        level.setBlockEntity(replacement);
+        level.sendBlockUpdated(pos, state, state, 16);
+    }
+
+    @Nullable
+    public ThermalGaugeBlockEntity convertToFactoryHost() {
+        if (level == null || level.isClientSide) {
+            return null;
+        }
+
+        if (AllBlocks.FACTORY_GAUGE.has(getBlockState())) {
+            return this;
+        }
+
+        CompoundTag stored = saveWithoutMetadata(level.registryAccess());
+        BlockState current = getBlockState();
+        BlockState replacementState =
+                AllBlocks.FACTORY_GAUGE.get()
+                        .defaultBlockState()
+                        .setValue(FactoryPanelBlock.FACE, current.getValue(FactoryPanelBlock.FACE))
+                        .setValue(FactoryPanelBlock.FACING, current.getValue(FactoryPanelBlock.FACING));
+
+        hostConversion = true;
+        onChunkUnloaded();
+        level.setBlockAndUpdate(worldPosition, replacementState);
+
+        BlockEntity created = level.getBlockEntity(worldPosition);
+        if (created instanceof ThermalGaugeBlockEntity replacement) {
+            replacement.loadWithComponents(stored, level.registryAccess());
+            replacement.markAndSync();
+            return replacement;
+        }
+
+        if (created instanceof FactoryPanelBlockEntity factory) {
+            factory.onChunkUnloaded();
+        }
+
+        ThermalGaugeBlockEntity replacement =
+                new ThermalGaugeBlockEntity(worldPosition, replacementState);
+        replacement.loadWithComponents(stored, level.registryAccess());
+        level.setBlockEntity(replacement);
+        replacement.markAndSync();
+        return replacement;
+    }
+
+    @Override
+    public int activePanels() {
+        return super.activePanels() + (gauges == null ? 0 : gauges.size());
+    }
+
+    public int activeFactoryPanelCount() {
+        return super.activePanels();
+    }
+
+    public boolean hasFactoryPanel(PanelSlot slot) {
+        return panels != null
+                && panels.get(slot) != null
+                && panels.get(slot).isActive();
+    }
+
+    public boolean isOccupied(PanelSlot slot) {
+        return hasGauge(slot) || hasFactoryPanel(slot);
+    }
+
+    @Override
+    public boolean addPanel(PanelSlot slot, UUID frequency) {
+        if (hasGauge(slot)) {
+            return false;
+        }
+
+        return super.addPanel(slot, frequency);
+    }
+
+    @Override
+    public boolean removePanel(PanelSlot slot) {
+        if (hasGauge(slot)) {
+            return false;
+        }
+
+        boolean removed = super.removePanel(slot);
+        if (removed) {
+            convertToThermalHostIfNeeded();
+        }
+        return removed;
     }
 
     public boolean addGauge(
@@ -101,7 +269,7 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
             @Nullable UUID networkId,
             @Nullable ThermalRelaySwitchItem.FurnaceLink link
     ) {
-        if (gauges.containsKey(slot)) {
+        if (isOccupied(slot)) {
             return false;
         }
 
@@ -116,7 +284,7 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
         markAndSync();
 
         if (level != null && !level.isClientSide) {
-            evaluateNetworks(level, getBlockState());
+            evaluateNetworks(level);
         }
 
         return true;
@@ -182,7 +350,7 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
 
 
     public ItemStack createItemStack(PanelSlot slot) {
-        ItemStack stack = new ItemStack(getBlockState().getBlock().asItem());
+        ItemStack stack = new ItemStack(io.hxneyw.repo.content.Items.THERMAL_GAUGE_ITEM.get());
         GaugeData data = gauges.get(slot);
 
         if (data != null && data.linkedFurnace != null) {
@@ -198,8 +366,9 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
         return stack;
     }
 
+    @Override
     public VoxelShape getShape() {
-        VoxelShape shape = Shapes.empty();
+        VoxelShape shape = super.getShape();
 
         for (PanelSlot slot : gauges.keySet()) {
             shape = Shapes.or(shape, getSlotShape(slot));
@@ -257,12 +426,85 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     }
 
     @Override
-    public void setRemoved() {
+    public void onChunkUnloaded() {
         CLIENT_GAUGES.remove(this);
-        super.setRemoved();
+        super.onChunkUnloaded();
     }
 
-    private void evaluateNetworks(Level level, BlockState state) {
+    @Override
+    public void remove() {
+        CLIENT_GAUGES.remove(this);
+        super.remove();
+    }
+
+    @Override
+    public void destroy() {
+        if (hostConversion) {
+            return;
+        }
+
+        forEachBehaviour(BlockEntityBehaviour::destroy);
+
+        if (level == null || level.isClientSide) {
+            return;
+        }
+
+        int factoryPanels = super.activePanels();
+
+        if (AllBlocks.FACTORY_GAUGE.has(getBlockState())) {
+            if (factoryPanels > 1) {
+                Block.popResource(
+                        level,
+                        worldPosition,
+                        AllBlocks.FACTORY_GAUGE.asStack(factoryPanels - 1)
+                );
+            }
+
+            for (PanelSlot slot : gauges.keySet()) {
+                Block.popResource(level, worldPosition, createItemStack(slot));
+            }
+            return;
+        }
+
+        boolean baseDropReserved = false;
+        for (PanelSlot slot : gauges.keySet()) {
+            if (!baseDropReserved) {
+                baseDropReserved = true;
+                continue;
+            }
+            Block.popResource(level, worldPosition, createItemStack(slot));
+        }
+    }
+
+    private void convertToThermalHostIfNeeded() {
+        if (level == null
+                || level.isClientSide
+                || super.activePanels() != 0
+                || gauges.isEmpty()
+                || !AllBlocks.FACTORY_GAUGE.has(getBlockState())) {
+            return;
+        }
+
+        CompoundTag stored = saveWithoutMetadata(level.registryAccess());
+        BlockState current = getBlockState();
+        BlockState replacementState =
+                AllModBlocks.THERMAL_GAUGE.get()
+                        .defaultBlockState()
+                        .setValue(FactoryPanelBlock.FACE, current.getValue(FactoryPanelBlock.FACE))
+                        .setValue(FactoryPanelBlock.FACING, current.getValue(FactoryPanelBlock.FACING));
+
+        hostConversion = true;
+        onChunkUnloaded();
+        level.setBlockAndUpdate(worldPosition, replacementState);
+
+        if (level.getBlockEntity(worldPosition)
+                instanceof ThermalGaugeBlockEntity replacement) {
+            replacement.loadWithComponents(stored, level.registryAccess());
+            replacement.markAndSync();
+        }
+    }
+
+    private void evaluateNetworks(Level level) {
         boolean changed = false;
 
         for (GaugeData data : gauges.values()) {
@@ -272,13 +514,26 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
                     MoltenRotorBlockEntity.RotorHeatLevel.NONE;
             ThermalRelaySwitchItem.FurnaceLink link = data.linkedFurnace;
 
-            if (link != null
-                    && level.dimension().location().toString().equals(link.dimension())) {
-                BlockPos furnacePos = link.position();
+            if (link != null) {
+                ThermochemicalNetworkResolver.Resolution resolution =
+                        ThermochemicalNetworkResolver.resolve(level, link);
 
-                if (level.isLoaded(furnacePos)
-                        && level.getBlockEntity(furnacePos) instanceof MoltenRotorBlockEntity furnace
-                        && link.furnaceIdentity().equals(furnace.getFurnaceIdentity())) {
+                if (resolution.isLinkedButUnavailable()) {
+                    if (!data.networkConnected) {
+                        data.networkConnected = true;
+                        changed = true;
+                    }
+                    continue;
+                }
+
+                MoltenRotorBlockEntity furnace = resolution.furnace();
+                if (furnace != null) {
+                    UUID headNetworkId = furnace.getOrCreateThermalNetworkId();
+                    if (!headNetworkId.equals(data.networkId)) {
+                        data.networkId = headNetworkId;
+                        changed = true;
+                    }
+
                     nextTemperature = furnace.getDisplayTemperature();
                     nextConnected = true;
                     nextHeatTier = furnace.getCurrentHeatTier();
@@ -305,29 +560,15 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
             return;
         }
 
-        setChanged();
-        level.sendBlockUpdated(
-                worldPosition,
-                state,
-                state,
-                Block.UPDATE_CLIENTS
-        );
+        notifyUpdate();
     }
 
     private void markAndSync() {
-        setChanged();
-
         if (level == null || level.isClientSide) {
             return;
         }
 
-        BlockState state = getBlockState();
-        level.sendBlockUpdated(
-                worldPosition,
-                state,
-                state,
-                Block.UPDATE_CLIENTS
-        );
+        notifyUpdate();
     }
 
     @Override
@@ -401,11 +642,12 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     }
 
     @Override
-    protected void saveAdditional(
-            @NotNull CompoundTag tag,
-            @NotNull HolderLookup.Provider registries
+    protected void write(
+            CompoundTag tag,
+            HolderLookup.Provider registries,
+            boolean clientPacket
     ) {
-        super.saveAdditional(tag, registries);
+        super.write(tag, registries, clientPacket);
 
         ListTag storedGauges = new ListTag();
         for (Map.Entry<PanelSlot, GaugeData> entry : gauges.entrySet()) {
@@ -434,11 +676,12 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     }
 
     @Override
-    protected void loadAdditional(
-            @NotNull CompoundTag tag,
-            @NotNull HolderLookup.Provider registries
+    protected void read(
+            CompoundTag tag,
+            HolderLookup.Provider registries,
+            boolean clientPacket
     ) {
-        super.loadAdditional(tag, registries);
+        super.read(tag, registries, clientPacket);
         gauges.clear();
 
         if (tag.contains(GAUGES_TAG, Tag.TAG_LIST)) {
@@ -447,7 +690,7 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
             for (int index = 0; index < storedGauges.size(); index++) {
                 CompoundTag gaugeTag = storedGauges.getCompound(index);
                 PanelSlot slot = readSlot(gaugeTag.getString(SLOT_TAG));
-                if (slot == null) {
+                if (slot == null || hasFactoryPanel(slot)) {
                     continue;
                 }
 
@@ -463,10 +706,12 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
         if (tag.contains(TEMPERATURE_TAG, Tag.TAG_INT)
                 || tag.contains(LINKED_FURNACES_TAG, Tag.TAG_LIST)
                 || tag.contains(LEGACY_POSITION_TAG, Tag.TAG_LONG)) {
-            gauges.put(
-                    PanelSlot.BOTTOM_LEFT,
-                    readGaugeData(tag)
-            );
+            if (!hasFactoryPanel(PanelSlot.BOTTOM_LEFT)) {
+                gauges.put(
+                        PanelSlot.BOTTOM_LEFT,
+                        readGaugeData(tag)
+                );
+            }
         }
     }
 
@@ -570,13 +815,11 @@ public class ThermalGaugeBlockEntity extends BlockEntity implements IHaveGoggleI
     public @NotNull CompoundTag getUpdateTag(
             @NotNull HolderLookup.Provider registries
     ) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, registries);
-        return tag;
+        return writeClient(new CompoundTag(), registries);
     }
 
     @Override
-    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+    public @NotNull ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 

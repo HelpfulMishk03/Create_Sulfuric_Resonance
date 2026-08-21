@@ -12,5 +12,15 @@
         "attenuation_distance": 16
       }
     ]
+  },
+  "thermal_warning_alarm_strike": {
+    "subtitle": "subtitles.sulfuricresonance.thermal_warning_alarm_strike",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:thermal_warning_alarm/striker",
+        "stream": false,
+        "attenuation_distance": 24
+      }
+    ]
   }
 }

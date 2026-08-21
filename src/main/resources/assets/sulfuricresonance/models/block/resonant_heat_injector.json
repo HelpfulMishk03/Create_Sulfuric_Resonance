@@ -1,9 +1,9 @@
 {
   "textures": {
-    "0": "sulfuricresonance:block/resonant_copper_plate",
-    "1": "sulfuricresonance:block/iron_frame",
-    "2": "sulfuricresonance:block/injector_axis_part",
-    "particle": "sulfuricresonance:block/resonant_copper_plate"
+    "0": "sulfuricresonance:block/resonant_heat_injector/resonant_copper_plate",
+    "1": "sulfuricresonance:block/resonant_heat_injector/iron_frame",
+    "2": "sulfuricresonance:block/resonant_heat_injector/injector_axis_part",
+    "particle": "sulfuricresonance:block/resonant_heat_injector/resonant_copper_plate"
   },
   "elements": [
     {

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "sulfuricresonance:block/ash_brick_block"
+    "all": "sulfuricresonance:block/ash_bricks/ash_brick_block"
   }
 }

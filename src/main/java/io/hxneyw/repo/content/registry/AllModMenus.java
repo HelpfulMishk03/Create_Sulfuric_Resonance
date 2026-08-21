@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.registry;
 
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberMenu;
+import io.hxneyw.repo.content.menu.PrecisionSpritzerMenu;
 import io.hxneyw.repo.content.menu.ThermalRelaySwitchMenu;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
@@ -16,6 +17,15 @@ public final class AllModMenus {
             DeferredRegister.create(
                     Registries.MENU,
                     CreateSulfuricResonance.MODID
+            );
+
+    public static final Supplier<MenuType<PrecisionSpritzerMenu>>
+            PRECISION_SPRITZER = MENUS.register(
+                    "precision_spritzer",
+                    () -> new MenuType<>(
+                            PrecisionSpritzerMenu::new,
+                            FeatureFlags.DEFAULT_FLAGS
+                    )
             );
 
     public static final Supplier<MenuType<ThermalRelaySwitchMenu>>

@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=north": {
       "model": "sulfuricresonance:block/parallel_thermochemical_gearbox"
+    },
+    "facing=east": {
+      "model": "sulfuricresonance:block/parallel_thermochemical_gearbox",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "sulfuricresonance:block/parallel_thermochemical_gearbox",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "sulfuricresonance:block/parallel_thermochemical_gearbox",
+      "y": 270
     }
   }
 }

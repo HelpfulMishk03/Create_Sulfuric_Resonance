@@ -1,4 +1,4 @@
 {
   "parent": "minecraft:block/template_wall_post",
-  "textures": { "wall": "sulfuricresonance:block/ash_brick_block" }
+  "textures": { "wall": "sulfuricresonance:block/ash_bricks/ash_brick_block" }
 }

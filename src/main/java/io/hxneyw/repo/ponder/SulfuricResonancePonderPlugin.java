@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 19;
+    private static final int REGISTERED_SCENES = 25;
 
     @NotNull
     @Override
@@ -96,6 +96,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     AllPonderTags.FLUIDS
             );
 
+            ResourceLocation precisionSpritzerId =
+                    BuiltInRegistries.ITEM.getKey(
+                            io.hxneyw.repo.content.Items.PRECISION_SPRITZER.get()
+                    );
+
+            helper.addStoryBoard(
+                    precisionSpritzerId,
+                    "perforated_spritzer/intro",
+                    PerforatedSpritzerScenes::intro,
+                    AllPonderTags.FLUIDS
+            );
+
             ResourceLocation moltenRotorId =
                     BuiltInRegistries.BLOCK.getKey(
                             AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
@@ -165,6 +177,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     thermochemicalLinkDriveId,
                     "thermochemical_link_drive/operation",
                     ThermochemicalLinkDriveScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermochemicalClutchId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_CLUTCH.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalClutchId,
+                    "thermochemical_clutch/operation",
+                    ThermochemicalClutchScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
             );
 
@@ -249,6 +273,66 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     "ash_ceramic_crucible/operation",
                     AshCeramicCrucibleScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation rubberPaddingId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.RUBBER_PADDING.get()
+                    );
+
+            helper.addStoryBoard(
+                    rubberPaddingId,
+                    "rubber_padding/operation",
+                    RubberPaddingScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation sulfuricAcidBucketId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.SULFURIC_ACID_BUCKET.get()
+                    );
+
+            helper.addStoryBoard(
+                    sulfuricAcidBucketId,
+                    "sulfuric_acid/operation",
+                    SulfuricAcidScenes::operation,
+                    AllPonderTags.FLUIDS
+            );
+
+            ResourceLocation processMonitorId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.PROCESS_MONITOR.get()
+                    );
+
+            helper.addStoryBoard(
+                    processMonitorId,
+                    "process_monitor/operation",
+                    ProcessMonitorScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation processGaugeId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.PROCESS_GAUGE.get()
+                    );
+
+            helper.addStoryBoard(
+                    processGaugeId,
+                    "process_gauge/operation",
+                    ProcessGaugeScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation thermalWarningAlarmId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMAL_WARNING_ALARM.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermalWarningAlarmId,
+                    "thermal_warning_alarm/operation",
+                    ThermalWarningAlarmScenes::operation,
+                    AllPonderTags.INTELLIGENT_INDUSTRY
             );
 
             CreateSulfuricResonance.LOGGER.info(

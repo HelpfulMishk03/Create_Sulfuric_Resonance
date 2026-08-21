@@ -79,14 +79,19 @@ public class Items {
    public static final DeferredItem<Item> UNFINISHED_THERMAL_MATRIX = ITEMS.register("unfinished_thermal_matrix", () -> new Item(new Properties().stacksTo(64)));
 
    public static final DeferredItem<Item> THERMAL_MATRIX = ITEMS.register("thermal_matrix", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> LOGIC_BANK = ITEMS.register("logic_bank", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_THERMOCHEMICAL_CASING = ITEMS.register("incomplete_thermochemical_casing", () -> new SequencedAssemblyItem(new Properties()));
    public static final DeferredItem<Item> THERMOCHEMICAL_CASING = ITEMS.register("thermochemical_casing", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<ThermalRelaySwitchItem> THERMAL_RELAY_SWITCH_ITEM = ITEMS.register("thermal_relay_switch", () -> new ThermalRelaySwitchItem(AllModBlocks.THERMAL_RELAY_SWITCH.get(), new Properties()));
    public static final DeferredItem<ThermalGaugeItem> THERMAL_GAUGE_ITEM = ITEMS.register("thermal_gauge", () -> new ThermalGaugeItem(AllModBlocks.THERMAL_GAUGE.get(), new Properties()));
+   public static final DeferredItem<ThermalWarningAlarmItem> THERMAL_WARNING_ALARM_ITEM = ITEMS.register("thermal_warning_alarm", () -> new ThermalWarningAlarmItem(AllModBlocks.THERMAL_WARNING_ALARM.get(), new Properties()));
+   public static final DeferredItem<BlockItem> PROCESS_MONITOR_ITEM = ITEMS.register("process_monitor", () -> new BlockItem(AllModBlocks.PROCESS_MONITOR.get(), new Properties()));
+   public static final DeferredItem<ProcessGaugeItem> PROCESS_GAUGE_ITEM = ITEMS.register("process_gauge", () -> new ProcessGaugeItem(AllModBlocks.PROCESS_GAUGE.get(), new Properties()));
    public static final DeferredItem<CombustionBeltConnectorItem> COMBUSTION_BELT_CONNECTOR = ITEMS.register("combustion_belt_connector", () -> new CombustionBeltConnectorItem(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_CONDUIT_ITEM = ITEMS.register("thermochemical_conduit", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CONDUIT.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_SHAFT_ITEM = ITEMS.register("thermochemical_shaft", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_SHAFT.get(), new Properties()));
+   public static final DeferredItem<BlockItem> THERMOCHEMICAL_CLUTCH_ITEM = ITEMS.register("thermochemical_clutch", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CLUTCH.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_GEARBOX_ITEM = ITEMS.register("thermochemical_gearbox", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_GEARBOX.get(), new Properties()));
    public static final DeferredItem<BlockItem> PARALLEL_THERMOCHEMICAL_GEARBOX_ITEM = ITEMS.register("parallel_thermochemical_gearbox", () -> new BlockItem(AllModBlocks.PARALLEL_THERMOCHEMICAL_GEARBOX.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_LINK_DRIVE_ITEM = ITEMS.register("thermochemical_link_drive", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get(), new Properties()));
@@ -97,6 +102,7 @@ public class Items {
    public static final DeferredItem<Item> IMPELLER_BLADE = ITEMS.register("impeller_blade", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> SHEATHED_IMPELLER_BLADE = ITEMS.register("sheathed_impeller_blade", () -> new SheathedImpellerBladeItem(new Properties().stacksTo(1)));
    public static final DeferredItem<BlockItem> PERFORATED_SPRITZER = ITEMS.register("perforated_spritzer", () -> new BlockItem(AllModBlocks.PERFORATED_SPRITZER.get(), new Properties()));
+   public static final DeferredItem<PrecisionSpritzerBlockItem> PRECISION_SPRITZER = ITEMS.register("precision_spritzer", () -> new PrecisionSpritzerBlockItem(AllModBlocks.PERFORATED_SPRITZER.get(), new Properties()));
    public static final DeferredItem<Item> FLAMEBORNE_CORE = ITEMS.register("flameborne_core", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> RUBBER_PADDING = ITEMS.register("rubber_padding", () -> new RubberPaddingBlockItem(AllModBlocks.RUBBER_PADDING.get(), new Properties()));
    public static final DeferredItem<Item> CORRUPT_BLAZE_CAKE = ITEMS.register("corrupt_blaze_cake", () -> new Item(new Properties().stacksTo(64)));
@@ -104,6 +110,7 @@ public class Items {
    public static final DeferredItem<Item> MOLTEN_ROTOR_FURNACE = ITEMS.register("molten_rotor_furnace", () -> new BlockItem(AllModBlocks.MOLTEN_ROTOR_FURNACE.get(), new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> SULFUR_BLOCK = ITEMS.register("sulfur_block", () -> new BlockItem(AllModBlocks.SULFUR_BLOCK.get(), new Properties()));
    public static final DeferredItem<BucketItem> SULFURIC_ACID_BUCKET = ITEMS.register("sulfuric_acid_bucket", () -> new BucketItem(AllModFluids.SULFURIC_ACID.get(), new Properties().craftRemainder(net.minecraft.world.item.Items.BUCKET).stacksTo(1)));
+   public static final DeferredItem<SuperphosphateFertilizerItem> SUPERPHOSPHATE_FERTILIZER = ITEMS.register("superphosphate_fertilizer", () -> new SuperphosphateFertilizerItem(new Properties().stacksTo(64)));
 
    public static void register(IEventBus eventBus) {
       LOGGER.info("Registering Sulfuric Resonance items");

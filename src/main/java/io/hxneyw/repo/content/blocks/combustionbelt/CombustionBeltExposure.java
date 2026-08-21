@@ -4,6 +4,7 @@ import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import com.simibubi.create.content.kinetics.belt.transport.BeltInventory;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
@@ -32,14 +33,14 @@ public final class CombustionBeltExposure {
 
     private static final ResourceLocation ROLLING_FIRE_ADVANCEMENT =
             ResourceLocation.fromNamespaceAndPath(
-                    "sulfuricresonance",
+                    CreateSulfuricResonance.MODID,
                     "rolling_fire"
             );
 
     private static final double ROLLING_FIRE_RADIUS_SQUARED = 64.0D;
 
     private static final String MOD_ROOT_KEY =
-            "sulfuricresonance";
+            CreateSulfuricResonance.MODID;
 
     private static final String EXPOSURE_ROOT_KEY =
             "CombustionBeltExposure";
@@ -343,21 +344,6 @@ public final class CombustionBeltExposure {
             }
         }
 
-        if (isExpectedToLeaveBelt(
-                controller,
-                previousPosition,
-                currentPosition
-        )) {
-            if (persistentDataChanged) {
-                document.write(stack);
-            }
-
-            return new UpdateResult(
-                    persistentDataChanged,
-                    false
-            );
-        }
-
         if (persistentDataChanged) {
             document.write(stack);
         }
@@ -373,26 +359,6 @@ public final class CombustionBeltExposure {
     ) {
 
         transported.angle = 180;
-    }
-
-    private static boolean isExpectedToLeaveBelt(
-            BeltBlockEntity controller,
-            float previousPosition,
-            float currentPosition
-    ) {
-        float movement =
-                currentPosition - previousPosition;
-
-        if (movement > MOVEMENT_EPSILON) {
-            return currentPosition + movement
-                    >= controller.beltLength - 0.5F;
-        }
-
-        if (movement < -MOVEMENT_EPSILON) {
-            return currentPosition + movement <= 0.5F;
-        }
-
-        return false;
     }
 
     private static boolean addTraversedSegments(
@@ -857,20 +823,11 @@ public final class CombustionBeltExposure {
                 new UpdateResult(false, false);
     }
 
-    private static final class ExposureDocument {
-        private final CompoundTag root;
-        private final CompoundTag modRoot;
-        private final CompoundTag exposureRoot;
-
-        private ExposureDocument(
-                CompoundTag root,
-                CompoundTag modRoot,
-                CompoundTag exposureRoot
-        ) {
-            this.root = root;
-            this.modRoot = modRoot;
-            this.exposureRoot = exposureRoot;
-        }
+    private record ExposureDocument(
+            CompoundTag root,
+            CompoundTag modRoot,
+            CompoundTag exposureRoot
+    ) {
 
         private static ExposureDocument read(
                 ItemStack stack
@@ -1173,20 +1130,11 @@ public final class CombustionBeltExposure {
         }
     }
 
-    private static final class BandState {
-        private final ExposureBand band;
-        private final CompoundTag exposureRoot;
-        private final CompoundTag bandTag;
-
-        private BandState(
-                ExposureBand band,
-                CompoundTag exposureRoot,
-                CompoundTag bandTag
-        ) {
-            this.band = band;
-            this.exposureRoot = exposureRoot;
-            this.bandTag = bandTag;
-        }
+    private record BandState(
+            ExposureBand band,
+            CompoundTag exposureRoot,
+            CompoundTag bandTag
+    ) {
 
         private int segments() {
             return Math.max(

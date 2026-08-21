@@ -1,9 +1,9 @@
 {
   "parent": "create:block/large_cogwheel",
   "textures": {
-    "0": "sulfuricresonance:block/thermal_axis_top",
-    "1": "sulfuricresonance:block/thermochemicalcogwheel_axis",
-    "4": "sulfuricresonance:block/large_thermochemical_cogwheel",
-    "particle": "sulfuricresonance:block/large_thermochemical_cogwheel"
+    "0": "sulfuricresonance:block/thermochemical_cogwheel/thermal_axis_top",
+    "1": "sulfuricresonance:block/thermochemical_cogwheel/thermochemicalcogwheel_axis",
+    "4": "sulfuricresonance:block/large_thermochemical_cogwheel/large_thermochemical_cogwheel",
+    "particle": "sulfuricresonance:block/large_thermochemical_cogwheel/large_thermochemical_cogwheel"
   }
 }

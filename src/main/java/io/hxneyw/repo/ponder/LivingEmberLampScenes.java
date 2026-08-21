@@ -247,7 +247,7 @@ public final class LivingEmberLampScenes {
         scene.overlay()
                 .showText(175)
                 .text(
-                        "With 200 fuel ticks or less remaining and no fuel queued, a hot Lamp warns you by pulsing noticeably between levels 9 and 15"
+                        "With 200 fuel ticks or less and no fuel queued, or during the final 200 ticks of heated cooldown after fuel reaches zero, the Lamp pulses between levels 9 and 15"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.OUTPUT)
@@ -266,6 +266,18 @@ public final class LivingEmberLampScenes {
 
         scene.idle(105);
 
+        scene.overlay()
+                .showText(180)
+                .text(
+                        "Cross-dimensional links can resolve normally. If a valid linked furnace is temporarily unavailable or unloaded, the Lamp keeps its saved connection and last target instead of force-loading it"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.BLUE)
+                .pointAt(util.vector().centerOf(lampPos))
+                .placeNearTarget();
+
+        scene.idle(190);
+
         scene.world().setBlock(
                 furnacePos,
                 net.minecraft.world.level.block.Blocks.AIR
@@ -274,9 +286,9 @@ public final class LivingEmberLampScenes {
         );
 
         scene.overlay()
-                .showText(170)
+                .showText(150)
                 .text(
-                        "If the linked furnace is removed, unloaded, or in another dimension, the Lamp safely fades back to darkness"
+                        "Destroying the original furnace invalidates its stored identity, so the Lamp fades safely back to darkness"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.MEDIUM)
@@ -284,7 +296,7 @@ public final class LivingEmberLampScenes {
                 .placeNearTarget();
 
         animateLampLight(scene, lampPos, 15, 0);
-        scene.idle(145);
+        scene.idle(160);
 
         scene.overlay()
                 .showText(145)

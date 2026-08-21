@@ -12,11 +12,11 @@ public final class ModSpriteShifts {
                     AllCTTypes.OMNIDIRECTIONAL,
                     ResourceLocation.fromNamespaceAndPath(
                             "sulfuricresonance",
-                            "block/ashesil"
+                            "block/ashesil/ashesil"
                     ),
                     ResourceLocation.fromNamespaceAndPath(
                             "sulfuricresonance",
-                            "block/ashesil_connected"
+                            "block/ashesil/ashesil_connected"
                     )
             );
     public static final CTSpriteShiftEntry TEMPERED_ASHESIL =
@@ -24,11 +24,11 @@ public final class ModSpriteShifts {
                     AllCTTypes.OMNIDIRECTIONAL,
                     ResourceLocation.fromNamespaceAndPath(
                             "sulfuricresonance",
-                            "block/tempered_ashesil"
+                            "block/tempered_ashesil/tempered_ashesil"
                     ),
                     ResourceLocation.fromNamespaceAndPath(
                             "sulfuricresonance",
-                            "block/tempered_ashesil_connected"
+                            "block/tempered_ashesil/tempered_ashesil_connected"
                     )
             );
     private ModSpriteShifts() {

@@ -9,7 +9,7 @@ issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/i
 
 [[mods]]
 modId = "sulfuricresonance"
-version = "0.2.9-beta"
+version = "0.3.0"
 displayName = "Create: Sulfuric Resonance"
 
 
@@ -68,7 +68,7 @@ side = "BOTH"
 [[dependencies."sulfuricresonance"]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.1.247,)"
+versionRange = "[21.1.238,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -80,7 +80,7 @@ side = "BOTH"
 [[dependencies."sulfuricresonance"]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.1,1.22)"
+versionRange = "[1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 

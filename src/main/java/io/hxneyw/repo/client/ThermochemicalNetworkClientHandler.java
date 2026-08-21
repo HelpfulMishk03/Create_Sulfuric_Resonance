@@ -8,6 +8,7 @@ import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlockEntity;
 import io.hxneyw.repo.content.items.LivingEmberLampItem;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import net.minecraft.client.Minecraft;
@@ -133,6 +134,10 @@ public final class ThermochemicalNetworkClientHandler {
 
         if (blockEntity instanceof ThermalRelaySwitchBlockEntity relay) {
             return relay.getFurnaceLink();
+        }
+
+        if (blockEntity instanceof ThermalWarningAlarmBlockEntity alarm) {
+            return alarm.getFurnaceLink();
         }
 
         if (blockEntity instanceof LivingEmberLampBlockEntity lamp) {

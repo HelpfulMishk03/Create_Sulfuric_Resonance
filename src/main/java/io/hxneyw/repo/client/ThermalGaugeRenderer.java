@@ -3,6 +3,7 @@ package io.hxneyw.repo.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock;
+import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelRenderer;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock.PanelSlot;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
@@ -18,6 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ThermalGaugeRenderer extends SafeBlockEntityRenderer<ThermalGaugeBlockEntity> {
 
+    private final FactoryPanelRenderer factoryPanelRenderer;
+
     private static final Map<ThermalGaugeBlockEntity, EnumMap<PanelSlot, Float>> PREVIOUS_ANGLES =
             new WeakHashMap<>();
 
@@ -32,8 +35,9 @@ public class ThermalGaugeRenderer extends SafeBlockEntityRenderer<ThermalGaugeBl
     private static final float MAX_ANGLE = -90.0F;
 
     public ThermalGaugeRenderer(
-            @SuppressWarnings("unused") BlockEntityRendererProvider.Context context
+            BlockEntityRendererProvider.Context context
     ) {
+        factoryPanelRenderer = new FactoryPanelRenderer(context);
     }
 
     @Override
@@ -46,6 +50,17 @@ public class ThermalGaugeRenderer extends SafeBlockEntityRenderer<ThermalGaugeBl
             int overlay
     ) {
         BlockState state = gauge.getBlockState();
+
+        if (gauge.activeFactoryPanelCount() > 0) {
+            factoryPanelRenderer.render(
+                    gauge,
+                    partialTicks,
+                    poseStack,
+                    buffer,
+                    light,
+                    overlay
+            );
+        }
 
         poseStack.pushPose();
         applyMountTransform(poseStack, state);

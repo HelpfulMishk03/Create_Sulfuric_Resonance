@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "sulfuricresonance:thermochemical_cogwheel",
-    "sulfuricresonance:large_thermochemical_cogwheel"
+    "sulfuricresonance:large_thermochemical_cogwheel",
+    "sulfuricresonance:rubber_padding"
   ]
 }

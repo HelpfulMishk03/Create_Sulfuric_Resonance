@@ -70,17 +70,11 @@ public class ThermalRelaySwitchItem extends BlockItem {
                 furnace.getFurnaceIdentity()
         );
 
-        FurnaceLink existingFurnace =
-                getLinkedFurnace(stack);
-
-        boolean startsNewNetwork =
-                existingFurnace == null
-                        || !existingFurnace.equals(
-                        clickedFurnace
-                );
-
         if (!level.isClientSide) {
-            setLinkedFurnace(stack, clickedFurnace);
+            boolean startsNewNetwork = furnace.getThermalNetworkId() == null;
+            UUID networkId = furnace.getOrCreateThermalNetworkId();
+
+            setConnection(stack, networkId, clickedFurnace);
             markInventoryChanged(player);
 
             if (startsNewNetwork) {

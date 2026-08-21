@@ -68,6 +68,8 @@ public class SulfuricResonanceChamberScreen
     private int autoRollTimer;
     private Button previousButton;
     private Button nextButton;
+    private Button modeButton;
+    private Button startButton;
 
     public SulfuricResonanceChamberScreen(
             SulfuricResonanceChamberMenu menu,
@@ -104,12 +106,40 @@ public class SulfuricResonanceChamberScreen
                         .build()
         );
 
+        modeButton = addRenderableWidget(
+                Button.builder(
+                                Component.empty(),
+                                button -> sendButton(
+                                        SulfuricResonanceChamberMenu
+                                                .BUTTON_TOGGLE_MODE
+                                )
+                        )
+                        .bounds(leftPos + 194, topPos + 7, 60, 12)
+                        .build()
+        );
+
+        startButton = addRenderableWidget(
+                Button.builder(
+                                Component.translatable(
+                                        "gui.sulfuricresonance.chamber.start"
+                                ),
+                                button -> sendButton(
+                                        SulfuricResonanceChamberMenu
+                                                .BUTTON_MANUAL_START
+                                )
+                        )
+                        .bounds(leftPos + 258, topPos + 7, 38, 12)
+                        .build()
+        );
+
         updateButtonState();
+        updateControlButtonState();
     }
 
     @Override
     protected void containerTick() {
         super.containerTick();
+        updateControlButtonState();
 
         if (recipes.isEmpty()) {
             refreshRecipes();
@@ -166,6 +196,36 @@ public class SulfuricResonanceChamberScreen
             nextButton.active = multiple && !locked;
             nextButton.visible = !recipes.isEmpty();
         }
+    }
+
+    private void updateControlButtonState() {
+        if (modeButton == null || startButton == null) {
+            return;
+        }
+
+        SulfuricResonanceChamberBlockEntity.OperatingMode mode =
+                menu.getOperatingMode();
+        boolean manual = mode
+                == SulfuricResonanceChamberBlockEntity.OperatingMode.MANUAL;
+
+        modeButton.setMessage(Component.translatable(mode.translationKey()));
+        modeButton.active = !menu.isProcessing();
+
+        startButton.visible = manual;
+        startButton.active = manual
+                && menu.isReady()
+                && !menu.isProcessing();
+    }
+
+    private void sendButton(int buttonId) {
+        if (minecraft == null || minecraft.gameMode == null) {
+            return;
+        }
+
+        minecraft.gameMode.handleInventoryButtonClick(
+                menu.containerId,
+                buttonId
+        );
     }
 
     private void changeRecipe(int direction) {

@@ -1,0 +1,21 @@
+{
+  "texture_size": [16, 16],
+  "textures": {
+    "smart": "sulfuricresonance:item/logic_bank",
+    "particle": "sulfuricresonance:item/logic_bank"
+  },
+  "elements": [
+    {
+      "name": "precision_controller",
+      "from": [5, 15, 5],
+      "to": [11, 15.6, 11],
+      "faces": {
+        "north": {"uv": [5, 14.4, 11, 15], "texture": "#smart"},
+        "east": {"uv": [5, 14.4, 11, 15], "texture": "#smart"},
+        "south": {"uv": [5, 14.4, 11, 15], "texture": "#smart"},
+        "west": {"uv": [5, 14.4, 11, 15], "texture": "#smart"},
+        "up": {"uv": [5, 5, 11, 11], "texture": "#smart"}
+      }
+    }
+  ]
+}

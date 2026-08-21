@@ -122,7 +122,6 @@ public class SulfuricResonanceChamberRenderer
 
         renderRotatingShaft(
                 chamber,
-                partialTick,
                 poseStack,
                 buffer,
                 packedLight,
@@ -176,7 +175,6 @@ public class SulfuricResonanceChamberRenderer
         PoseStack.Pose pose = poseStack.last();
 
         int portColor = rgba(
-                255,
                 118,
                 38,
                 visibleStrength * 0.24F * portPulse
@@ -257,7 +255,7 @@ public class SulfuricResonanceChamberRenderer
         TextureAtlasSprite sprite = getWhiteSprite();
         VertexConsumer consumer = buffer.getBuffer(RenderType.translucent());
         PoseStack.Pose pose = poseStack.last();
-        int color = rgba(255, 150, 62, alpha);
+        int color = rgba(150, 62, alpha);
 
         float x0 = 5.0F / 16.0F;
         float x1 = 11.0F / 16.0F;
@@ -501,7 +499,6 @@ public class SulfuricResonanceChamberRenderer
                             0.0F,
                             0.82F
                     ),
-                    LightTexture.FULL_BRIGHT,
                     overlay
             );
         }
@@ -511,7 +508,6 @@ public class SulfuricResonanceChamberRenderer
 
     private void renderRotatingShaft(
             SulfuricResonanceChamberBlockEntity chamber,
-            float partialTick,
             PoseStack poseStack,
             MultiBufferSource buffer,
             int light,
@@ -642,7 +638,6 @@ public class SulfuricResonanceChamberRenderer
                         0.55F + completionPulse * 0.12F,
                         0.20F + completionPulse * 0.08F,
                         Math.clamp(glow, 0.0F, 0.32F),
-                        LightTexture.FULL_BRIGHT,
                         overlay
                 );
             }
@@ -1072,7 +1067,6 @@ public class SulfuricResonanceChamberRenderer
             float green,
             float blue,
             float alpha,
-            int light,
             int overlay
     ) {
         VertexConsumer consumer = buffer.getBuffer(RenderType.translucent());
@@ -1092,7 +1086,7 @@ public class SulfuricResonanceChamberRenderer
                     green,
                     blue,
                     alpha,
-                    light,
+                    LightTexture.FULL_BRIGHT,
                     overlay
             );
         }
@@ -1113,7 +1107,7 @@ public class SulfuricResonanceChamberRenderer
                         green,
                         blue,
                         alpha,
-                        light,
+                        LightTexture.FULL_BRIGHT,
                         overlay
                 );
             }
@@ -1132,7 +1126,6 @@ public class SulfuricResonanceChamberRenderer
     }
 
     private static int rgba(
-            int red,
             int green,
             int blue,
             float alpha
@@ -1143,7 +1136,7 @@ public class SulfuricResonanceChamberRenderer
                 255
         );
         return alphaByte << 24
-                | red << 16
+                | 255 << 16
                 | green << 8
                 | blue;
     }

@@ -1,0 +1,83 @@
+{
+  "format_version": "1.9.0",
+  "texture_size": [
+    64,
+    64
+  ],
+  "textures": {
+    "0": "sulfuricresonance:block/process_gauge/processgauge_master",
+    "particle": "sulfuricresonance:block/process_gauge/processgauge_master"
+  },
+  "elements": [
+    {
+      "name": "state_drum_core",
+      "from": [
+        7.85,
+        2.85,
+        8.05
+      ],
+      "to": [
+        11.85,
+        5.15,
+        10.4
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            5.5,
+            8,
+            6.5,
+            8.59375
+          ],
+          "texture": "#0",
+          "rotation": 180
+        },
+        "east": {
+          "uv": [
+            7.5,
+            9.25,
+            8.0625,
+            9.84375
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            6.5,
+            8,
+            7.5,
+            8.59375
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            8.75,
+            9.5,
+            9.3125,
+            10.09375
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            9.5,
+            1.5625,
+            8.5,
+            1
+          ],
+          "texture": "#0"
+        },
+        "north": {
+          "uv": [
+            8.5,
+            8.5,
+            7.5,
+            9.0625
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "textures": {
-    "axis": "sulfuricresonance:block/thermochemical_link_drive_axis",
-    "axis_top": "sulfuricresonance:block/thermochemical_link_drive_axis_top",
+    "axis": "sulfuricresonance:block/thermochemical_link_drive/thermochemical_link_drive_axis",
+    "axis_top": "sulfuricresonance:block/thermochemical_link_drive/thermochemical_link_drive_axis_top",
     "particle": "#axis"
   },
   "elements": [

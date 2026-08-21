@@ -7,14 +7,14 @@
     64
   ],
   "textures": {
-    "1": "sulfuricresonance:block/acidresistant",
-    "4": "sulfuricresonance:block/resonancewindow",
-    "5": "sulfuricresonance:block/resonance_chamber_rings",
-    "6": "sulfuricresonance:block/resonancesides",
-    "7": "sulfuricresonance:block/stand",
-    "9": "sulfuricresonance:block/resonancecomponenets",
-    "10": "sulfuricresonance:block/supportsand_top",
-    "particle": "sulfuricresonance:block/resonance_chamber_rings"
+    "1": "sulfuricresonance:block/sulfuric_resonance_chamber/acidresistant",
+    "4": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancewindow",
+    "5": "sulfuricresonance:block/sulfuric_resonance_chamber/resonance_chamber_rings",
+    "6": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancesides",
+    "7": "sulfuricresonance:block/sulfuric_resonance_chamber/stand",
+    "9": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancecomponenets",
+    "10": "sulfuricresonance:block/sulfuric_resonance_chamber/supportsand_top",
+    "particle": "sulfuricresonance:block/sulfuric_resonance_chamber/resonance_chamber_rings"
   },
   "elements": [
     {

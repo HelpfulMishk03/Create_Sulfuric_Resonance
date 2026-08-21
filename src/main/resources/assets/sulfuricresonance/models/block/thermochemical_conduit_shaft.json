@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "0": "sulfuricresonance:block/thermoaxis",
+    "0": "sulfuricresonance:block/thermochemical_conduit/thermoaxis",
     "particle": "#0"
   },
   "elements": [

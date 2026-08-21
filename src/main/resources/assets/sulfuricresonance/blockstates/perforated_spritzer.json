@@ -1,7 +1,20 @@
 {
-  "variants": {
-    "": {
-      "model": "sulfuricresonance:block/perforated_spritzer"
+  "multipart": [
+    {
+      "when": {
+        "precision": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/perforated_spritzer"
+      }
+    },
+    {
+      "when": {
+        "precision": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/precision_spritzer"
+      }
     }
-  }
+  ]
 }

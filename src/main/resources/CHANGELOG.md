@@ -4,7 +4,292 @@ Hxney and Ł are separate public creator identities used by the same developer a
 
 All notable changes to **Create: Sulfuric Resonance** are documented here.
 
-This project is still in beta. Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+
+### 0.3.0 — Intelligent Industry
+
+0.3.0 turns thermochemical information into factory behavior.
+
+This update focuses on:
+- process monitoring
+- intelligent control
+- precision spraying
+- utility chemistry
+- tighter Create-style automation
+- major polish and fixes across existing CSR systems
+
+---
+
+## Added
+
+### Intelligent Industry
+
+* Shared process-state system:
+  * `IDLE`
+  * `READY`
+  * `PROCESSING`
+  * `BLOCKED`
+* Persistent process identities for linked machines.
+* Process Monitor with five independent machine channels.
+* Process Gauge with selectable Monitor channels.
+* Process Gauge redstone output:
+  * `READY` = 5
+  * `BLOCKED` = 15
+  * all other states = 0
+* Logic Bank item.
+* Shared Intelligent Industry logic framework.
+* Thermal Warning Alarm with:
+  * striker animation
+  * alarm sound
+  * network status indication
+  * redstone output
+* Cross-dimensional thermochemical network resolution for supported linked devices.
+
+### Thermochemical Clutch
+
+* Added the Thermochemical Clutch.
+* Redstone controls both:
+  * rotational transmission
+  * thermochemical heat transmission
+* Independent shaft halves allow the driven side to continue rotating while the output side is stopped.
+
+### Precision Spraying
+
+* Added the Precision Spritzer as an upgrade to the Perforated Spritzer.
+* Item filtering.
+* Entity filtering.
+* Searchable registry-backed filter lists.
+* Scrollable entries.
+* Multiple simultaneous selections.
+* Persistent filter selections.
+* Selected Only view.
+* Item and Entity filters can operate simultaneously.
+* Modded entity types are supported by the registry-backed filter system.
+* Dedicated Precision Spraying JEI category.
+* Dedicated Precision Spraying EMI support.
+
+### Chemistry
+
+* Added Superphosphate Fertilizer.
+* Create Mixing recipe support.
+* Broad crop compatibility through `BonemealableBlock`.
+* Added sulfuric-acid copper deoxidation:
+  * Oxidized Copper → Weathered Copper
+  * Weathered Copper → Exposed Copper
+  * Exposed Copper → Copper
+* Each oxidation-stage reduction requires three successful sulfuric-acid contacts.
+
+### Sulfuric Resonance Chamber
+
+* Added Manual and Automatic operating modes.
+* Chamber defaults to Automatic.
+* Added Manual start control.
+
+### Ponder
+
+* Added or expanded Ponder coverage for:
+  * Process Monitor
+  * Process Gauge
+  * Thermal Warning Alarm
+  * Thermochemical Clutch
+  * Precision Spritzer
+  * Rubber Padding
+  * Sulfuric Acid
+  * Intelligent Industry
+  * Fluid Handling
+  * Sulfur Chemistry
+
+---
+
+## Changed
+
+### Process Monitoring
+
+* Process Monitor now owns all machine-channel assignments.
+* Process Gauge reads one of five channels from a linked Process Monitor.
+* Gauge channel switching no longer changes Monitor bindings.
+* Process Monitor and Process Gauge floor placement and orientation were improved.
+
+### Redstone and Control
+
+* Process Gauge now outputs:
+  * `READY` = 5
+  * `BLOCKED` = 15
+  * all remaining states = 0
+* Thermal Relay Switch modes are now fully separated:
+  * Custom Heat
+  * Low Fuel
+* Low Fuel scope now controls both active-fuel and final-cooldown warnings.
+
+### Create Integration
+
+* Thermal Gauges can share a Factory Gauge panel block with Create Factory Gauges in separate quadrants.
+* Mixed Factory Gauge / Thermal Gauge hosts now preserve their complete panel state across:
+  * world save and reload
+  * client reconnect
+  * chunk unload and reload
+* Mixed gauge hosts now reconstruct their Thermal Gauge client state when a chunk is sent back to the player.
+* Ordinary standalone Create Factory Gauges retain Create's native block-entity behavior and are no longer globally replaced by CSR gauge hosts.
+* Thermal Gauge placement beside existing Factory Gauges now uses the shared panel host without replacing unrelated gauge data.
+* Thermochemical Gearbox can now be rotated with a Wrench.
+* Parallel Thermochemical Gearbox can now be rotated with a Wrench.
+* Sneak-right-clicking a Thermal Gauge with a Wrench now picks it up while preserving its stored thermochemical connection.
+
+### Precision Spritzer
+
+* Empty-hand right-click opens the filter interface.
+* Held items and blocks retain normal placement/use behavior.
+* Item and Entity tabs now choose which filter list is being edited.
+* Sulfuric acid is only consumed when a valid selected target exists.
+* Copper deoxidation now affects only the directly exposed block beneath the Spritzer.
+
+### Thermochemical Network
+
+* Living Ember Lamp and related network behavior now support cross-dimensional thermochemical-network resolution.
+* Relevant Ponder documentation was updated accordingly.
+
+### Organization and Compatibility
+
+* Creative-tab ordering was regrouped around:
+  * machinery
+  * thermochemical infrastructure
+  * Intelligent Industry
+  * chemistry
+  * fuels
+  * materials
+  * rubber
+  * ceramics
+  * construction
+* Sulfuric Resonance Chamber geometry now remains fully inside the standard `16×16×16` block volume.
+* NeoForge minimum requirement lowered from `21.1.247+` to `21.1.238+`.
+* Minecraft compatibility metadata now correctly targets Minecraft `1.21.1` only.
+
+---
+
+## Fixed
+
+### Process Monitor / Gauge
+
+* Linked process machines now enter persistent `ERR` when broken or replaced.
+* Replacement machines at the same position no longer silently inherit old bindings.
+* Gauge channel switching fixed.
+* Gauge drum interpolation fixed.
+* READY/BLOCKED redstone output fixed.
+* Wall and floor placement fixed.
+* Selector orientation fixed.
+* Monitor linking fixed in both Survival and Creative.
+* Process Gauge advancement renamed to **Condition to Signal** to avoid overlap with **Heat, Delivered**.
+
+### Thermal Gauge / Factory Gauge Integration
+
+* Fixed mixed Thermal Gauge / Factory Gauge panels becoming invisible after leaving and re-entering a world.
+* Fixed mixed gauge hosts losing their client-side Thermal Gauge representation after chunk reload.
+* Fixed Thermal Gauges remaining stored in the world but failing to render after reconnecting.
+* Fixed client-side shared-host conversion using an unattached block entity.
+* Fixed a client synchronization error that could throw:
+  * `this.level is null`
+  * `thermal_gauge_host` payload processing failures
+* Fixed synchronization ordering when converting a Create Factory Gauge host into a mixed CSR gauge host.
+* Fixed mixed-gauge state synchronization so the client receives the complete Factory + Thermal panel state.
+* Fixed mixed hosts failing to reconstruct correctly when chunks are sent to the client.
+* Fixed world-safety issues caused by globally replacing Create Factory Gauge block-entity types.
+* Existing tuned Create Factory Gauges are now preserved when CSR Thermal Gauges are installed alongside them.
+* Mixed gauge panels now survive:
+  * save and reload
+  * full client restart
+  * chunk unload and reload
+  * repeated placement and removal
+* Gauge items stored in mixed hosts are preserved correctly when the supporting panel block is removed.
+
+### Thermal Warning Alarm
+
+* Network behavior cleaned up.
+* Display behavior corrected.
+* Final-cooldown warnings corrected.
+* Ponder timing and explanations improved.
+
+### Thermal Relay Switch
+
+* Custom Heat and Low Fuel no longer execute simultaneously.
+* Low Fuel behavior now follows its intended scope correctly.
+
+### Thermochemical Clutch
+
+* Live shaft rendering fixed.
+* Shaft lighting fixed.
+* Powered Ponder-side shaft rotation behavior corrected.
+
+### Precision Spritzer
+
+* Scrollbar behavior fixed.
+* Search behavior fixed.
+* Multi-selection fixed.
+* Filter persistence fixed.
+* Inventory-key typing no longer closes the selector.
+* Item presentation fixed.
+* Dedicated texture and model behavior corrected.
+* Drop and pick-block behavior corrected.
+* Precision Spraying JEI and EMI layouts cleaned up.
+* Copper processing no longer affects whole vertical stacks.
+* Copper processing now requires three real acid contacts per oxidation stage.
+
+### Rendering and Models
+
+* 3D machine-item glass transparency fixed with Continuity installed.
+* Sulfuric Resonance Chamber upper geometry corrected.
+* Chamber player-foot collision behavior corrected.
+* Mixed Thermal Gauge / Factory Gauge rendering now restores correctly after world and chunk reloads.
+
+### Ponder
+
+* Missing translations repaired.
+* Missing category hookups repaired.
+* Scene structure coverage corrected.
+* Outdated explanations updated.
+* Living Ember Lamp cross-dimensional behavior corrected.
+* Sulfur Burner Heated → warmup → Superheated explanation corrected.
+* Chamber Automatic / Manual documentation added.
+
+### Code Cleanup
+
+* Large warning-cleanup pass completed.
+* Deprecated API usages cleaned up where applicable.
+* Nullability annotations corrected.
+* Redundant local variables removed.
+* Redundant inspection suppressions removed.
+* Unused Thermal Gauge code removed.
+* Duplicate code removed.
+* Unused code removed.
+* Redundant logic removed.
+
+---
+
+## Compatibility
+
+### Required
+
+* Minecraft **1.21.1**
+* NeoForge **21.1.238+**
+* Create **6.0.7+**
+* Java **21**
+
+### Optional
+
+* JEI **19.42.0.387+**
+* EMI **1.1.24+**
+
+---
+
+## Localization
+
+Full localization-key parity is maintained for:
+
+* English (US)
+* English (UK)
+* Spanish
+* French
+* German
+* Portuguese (Brazil)
 
 ### 0.2.9-beta — Resonance
 

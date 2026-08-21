@@ -16,4 +16,8 @@ public class AllModSounds {
    public static final DeferredHolder<SoundEvent, SoundEvent> MOLTEN_ROTOR_RUMBLE = SOUNDS.register(
            "molten_rotor_rumble", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "molten_rotor_rumble"))
    );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> THERMAL_WARNING_ALARM_STRIKE = SOUNDS.register(
+           "thermal_warning_alarm_strike", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "thermal_warning_alarm_strike"))
+   );
 }

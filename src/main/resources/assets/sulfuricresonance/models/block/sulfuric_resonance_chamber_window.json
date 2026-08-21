@@ -1,14 +1,14 @@
 {
   "format_version": "1.9.0",
   "credit": "Create: Sulfuric Resonance - translucent chamber window, baked",
-  "render_type": "translucent",
+  "render_type": "minecraft:translucent",
   "texture_size": [
     64,
     64
   ],
   "textures": {
-    "4": "sulfuricresonance:block/resonancewindow",
-    "particle": "sulfuricresonance:block/resonancewindow"
+    "4": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancewindow",
+    "particle": "sulfuricresonance:block/sulfuric_resonance_chamber/resonancewindow"
   },
   "elements": [
     {

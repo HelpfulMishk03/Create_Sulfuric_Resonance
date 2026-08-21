@@ -161,9 +161,9 @@ public class RubberPaddingBlock extends Block {
                newZ = 0.0;
             }
 
+            double configMultiplier = Config.ITEM_BOUNCE_MULTIPLIER.get();
             double newY;
             if (!hasBouncedBefore) {
-               double configMultiplier = Config.ITEM_BOUNCE_MULTIPLIER.get();
                newY = BASE_ITEM_FIRST_BOUNCE * configMultiplier;
                itemData.putBoolean(NBT_BOUNCED, true);
                itemData.putInt(NBT_BOUNCE_COUNT, 1);
@@ -179,7 +179,6 @@ public class RubberPaddingBlock extends Block {
                );
                this.spawnItemParticles(level, item);
             } else {
-               double configMultiplier = Config.ITEM_BOUNCE_MULTIPLIER.get();
                newY = BASE_ITEM_FIRST_BOUNCE * configMultiplier * Math.pow(ITEM_SUBSEQUENT_MULTIPLIER, bounceCount);
                itemData.putInt(NBT_BOUNCE_COUNT, bounceCount + 1);
                itemData.putLong(NBT_LAST_BOUNCE_TIME, currentTime);

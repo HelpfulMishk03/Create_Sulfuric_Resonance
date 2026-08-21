@@ -4,6 +4,7 @@ import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlockEntity;
 import io.hxneyw.repo.content.items.LivingEmberLampItem;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
 import net.createmod.catnip.animation.AnimationTickHolder;
@@ -75,6 +76,23 @@ public final class ThermochemicalNetworkOutlineUtil {
             );
         }
 
+        for (ThermalWarningAlarmBlockEntity alarm :
+                ThermalWarningAlarmBlockEntity.getLoadedClientAlarms()) {
+            if (alarm.getLevel() != level
+                    || !link.equals(alarm.getFurnaceLink())) {
+                continue;
+            }
+
+            BlockPos pos = alarm.getBlockPos();
+            renderBlockShape(
+                    level,
+                    player,
+                    pos,
+                    new AlarmOutlineKey(link, pos.immutable()),
+                    color
+            );
+        }
+
         LivingEmberLampItem.FurnaceLink lampLink = lampLink(link);
 
         for (LivingEmberLampBlockEntity lamp :
@@ -127,7 +145,7 @@ public final class ThermochemicalNetworkOutlineUtil {
             ThermalRelaySwitchItem.FurnaceLink link
     ) {
         if (!level.dimension().location().toString().equals(link.dimension())) {
-            return false;
+            return true;
         }
 
         BlockPos pos = link.position();
@@ -149,6 +167,10 @@ public final class ThermochemicalNetworkOutlineUtil {
             ThermalRelaySwitchItem.FurnaceLink link,
             int color
     ) {
+        if (!level.dimension().location().toString().equals(link.dimension())) {
+            return;
+        }
+
         BlockPos pos = link.position();
 
         if (isHidden(level, player, pos)
@@ -226,6 +248,12 @@ public final class ThermochemicalNetworkOutlineUtil {
     }
 
     private record RelayOutlineKey(
+            ThermalRelaySwitchItem.FurnaceLink link,
+            BlockPos position
+    ) {
+    }
+
+    private record AlarmOutlineKey(
             ThermalRelaySwitchItem.FurnaceLink link,
             BlockPos position
     ) {

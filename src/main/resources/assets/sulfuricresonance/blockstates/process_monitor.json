@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "face=wall,facing=north": {
+      "model": "sulfuricresonance:block/process_monitor"
+    },
+    "face=wall,facing=east": {
+      "model": "sulfuricresonance:block/process_monitor",
+      "y": 90
+    },
+    "face=wall,facing=south": {
+      "model": "sulfuricresonance:block/process_monitor",
+      "y": 180
+    },
+    "face=wall,facing=west": {
+      "model": "sulfuricresonance:block/process_monitor",
+      "y": 270
+    },
+    "face=floor,facing=north": {
+      "model": "sulfuricresonance:block/process_monitor_floor"
+    },
+    "face=floor,facing=east": {
+      "model": "sulfuricresonance:block/process_monitor_floor",
+      "y": 90
+    },
+    "face=floor,facing=south": {
+      "model": "sulfuricresonance:block/process_monitor_floor",
+      "y": 180
+    },
+    "face=floor,facing=west": {
+      "model": "sulfuricresonance:block/process_monitor_floor",
+      "y": 270
+    }
+  }
+}
