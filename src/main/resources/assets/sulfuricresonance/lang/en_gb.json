@@ -769,5 +769,11 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Channel %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Process Gauge channel %s — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Reads channels 1–5 from its linked Process Monitor",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection",
+  "item.sulfuricresonance.cinder_flare": "Cinder Flare",
+  "item.sulfuricresonance.lit_cinder_flare": "Lit Cinder Flare",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Hold Flint and Steel in your offhand, then hold Right Click to light.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Burning. Right Click to throw.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Flint and Steel must be held in your offhand.",
+  "entity.sulfuricresonance.cinder_flare": "Cinder Flare"
 }

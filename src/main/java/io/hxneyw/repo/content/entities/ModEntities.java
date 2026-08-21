@@ -14,6 +14,10 @@ public class ModEntities {
       "pyroclastic_powder",
       () -> Builder.<PyroclastBombEntity>of(PyroclastBombEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(4).updateInterval(10).build("pyroclastic_powder")
    );
+   public static final DeferredHolder<EntityType<?>, EntityType<CinderFlareEntity>> CINDER_FLARE = ENTITY_TYPES.register(
+      "cinder_flare",
+      () -> Builder.<CinderFlareEntity>of(CinderFlareEntity::new, MobCategory.MISC).sized(0.2F, 0.2F).fireImmune().clientTrackingRange(8).updateInterval(2).build("cinder_flare")
+   );
 
    public static void register(IEventBus eventBus) {
       ENTITY_TYPES.register(eventBus);

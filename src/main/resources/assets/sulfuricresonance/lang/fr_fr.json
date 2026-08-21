@@ -769,5 +769,11 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Canal %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Canal %s de la Jauge de processus — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Lit les canaux 1 à 5 de son Moniteur de processus lié",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Accroupissez-vous et faites un clic droit sur une Jauge Thermique montée avec une Clé pour la récupérer sans perdre sa connexion de four enregistrée"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Accroupissez-vous et faites un clic droit sur une Jauge Thermique montée avec une Clé pour la récupérer sans perdre sa connexion de four enregistrée",
+  "item.sulfuricresonance.cinder_flare": "Fusée de braise",
+  "item.sulfuricresonance.lit_cinder_flare": "Fusée de braise allumée",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Tenez un briquet dans la main secondaire, puis maintenez le clic droit pour l’allumer.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Allumée. Clic droit pour la lancer.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Un briquet doit être tenu dans la main secondaire.",
+  "entity.sulfuricresonance.cinder_flare": "Fusée de braise"
 }

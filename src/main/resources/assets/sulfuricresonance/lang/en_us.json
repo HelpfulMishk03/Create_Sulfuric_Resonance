@@ -769,5 +769,11 @@
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_4": "The same powered state blocks thermochemical heat, making the Clutch a hard cutoff for the entire route",
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_5": "Remove the redstone signal and both rotation and thermochemical heat reconnect through the line",
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_6": "There is no GUI, mode, threshold, storage, or amplification: redstone alone decides whether the route passes or stops",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection",
+  "item.sulfuricresonance.cinder_flare": "Cinder Flare",
+  "item.sulfuricresonance.lit_cinder_flare": "Lit Cinder Flare",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Hold Flint and Steel in your offhand, then hold Right Click to light.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Burning. Right Click to throw.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Flint and Steel must be held in your offhand.",
+  "entity.sulfuricresonance.cinder_flare": "Cinder Flare"
 }

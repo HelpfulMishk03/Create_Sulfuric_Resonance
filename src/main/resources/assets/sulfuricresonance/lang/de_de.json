@@ -769,5 +769,11 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Kanal %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Prozessanzeige Kanal %s — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Liest die Kanäle 1–5 ihres verknüpften Prozessmonitors",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Schleiche und rechtsklicke mit einem Schraubenschlüssel auf eine montierte Thermochemische Anzeige, um sie aufzunehmen, ohne die gespeicherte Ofenverbindung zu verlieren"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Schleiche und rechtsklicke mit einem Schraubenschlüssel auf eine montierte Thermochemische Anzeige, um sie aufzunehmen, ohne die gespeicherte Ofenverbindung zu verlieren",
+  "item.sulfuricresonance.cinder_flare": "Glutfackel",
+  "item.sulfuricresonance.lit_cinder_flare": "Entzündete Glutfackel",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Feuerzeug in der Nebenhand halten und Rechtsklick gedrückt halten, um sie zu entzünden.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Brennt. Rechtsklick zum Werfen.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Ein Feuerzeug muss in der Nebenhand gehalten werden.",
+  "entity.sulfuricresonance.cinder_flare": "Glutfackel"
 }
