@@ -769,5 +769,7 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Kanal %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Prozessanzeige Kanal %s — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Liest die Kanäle 1–5 ihres verknüpften Prozessmonitors",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Schleiche und rechtsklicke mit einem Schraubenschlüssel auf eine montierte Thermochemische Anzeige, um sie aufzunehmen, ohne die gespeicherte Ofenverbindung zu verlieren"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Schleiche und rechtsklicke mit einem Schraubenschlüssel auf eine montierte Thermochemische Anzeige, um sie aufzunehmen, ohne die gespeicherte Ofenverbindung zu verlieren",
+  "subtitles.sulfuricresonance.thermochemical_clutch_engage": "Thermochemische Kupplung rastet ein",
+  "subtitles.sulfuricresonance.thermochemical_clutch_release": "Thermochemische Kupplung löst"
 }

@@ -22,5 +22,25 @@
         "attenuation_distance": 24
       }
     ]
+  },
+  "thermochemical_clutch_engage": {
+    "subtitle": "subtitles.sulfuricresonance.thermochemical_clutch_engage",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:thermochemical_clutch_engage",
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "thermochemical_clutch_release": {
+    "subtitle": "subtitles.sulfuricresonance.thermochemical_clutch_release",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:thermochemical_clutch_release",
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
   }
 }

@@ -769,5 +769,7 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Canal %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Canal %s del Medidor de proceso — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Lee los canales 1–5 de su Monitor de proceso vinculado",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Agáchate y haz clic derecho en un Medidor Térmico montado con una Llave Inglesa para recogerlo sin perder su conexión de horno guardada"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Agáchate y haz clic derecho en un Medidor Térmico montado con una Llave Inglesa para recogerlo sin perder su conexión de horno guardada",
+  "subtitles.sulfuricresonance.thermochemical_clutch_engage": "El embrague termoquímico se acopla",
+  "subtitles.sulfuricresonance.thermochemical_clutch_release": "El embrague termoquímico se libera"
 }

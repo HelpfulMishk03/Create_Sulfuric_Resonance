@@ -1,0 +1,39 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"0": "sulfuricresonance:block/thermal_clutch/clutch_lock_piece",
+		"particle": "sulfuricresonance:block/thermal_clutch/clutch_lock_piece"
+	},
+	"elements": [
+		{
+			"name": "lock_slide",
+			"from": [6.2, 11.35, 16.015],
+			"to": [9.8, 13.25, 17.065],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 2], "texture": "#0"},
+				"east": {"uv": [4, 1, 5, 3], "texture": "#0"},
+				"south": {"uv": [0, 2, 4, 4], "texture": "#0"},
+				"west": {"uv": [4, 3, 5, 5], "texture": "#0"},
+				"up": {"uv": [4, 5, 0, 4], "texture": "#0"},
+				"down": {"uv": [8, 0, 4, 1], "texture": "#0"}
+			}
+		},
+		{
+			"name": "lock_tooth",
+			"from": [7, 10.3, 16.02],
+			"to": [9, 11.34, 17.02],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -0.05, -0.1]},
+			"faces": {
+				"north": {"uv": [0, 5, 2, 6], "texture": "#0"},
+				"east": {"uv": [5, 3, 6, 4], "texture": "#0"},
+				"south": {"uv": [5, 1, 7, 2], "texture": "#0"},
+				"west": {"uv": [4, 5, 5, 6], "texture": "#0"},
+				"up": {"uv": [4, 6, 2, 5], "texture": "#0"},
+				"down": {"uv": [7, 2, 5, 3], "texture": "#0"}
+			}
+		}
+	]
+}

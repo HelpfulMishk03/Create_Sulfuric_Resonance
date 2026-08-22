@@ -769,5 +769,7 @@
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_4": "The same powered state blocks thermochemical heat, making the Clutch a hard cutoff for the entire route",
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_5": "Remove the redstone signal and both rotation and thermochemical heat reconnect through the line",
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_6": "There is no GUI, mode, threshold, storage, or amplification: redstone alone decides whether the route passes or stops",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection",
+  "subtitles.sulfuricresonance.thermochemical_clutch_engage": "Thermochemical Clutch engages",
+  "subtitles.sulfuricresonance.thermochemical_clutch_release": "Thermochemical Clutch releases"
 }

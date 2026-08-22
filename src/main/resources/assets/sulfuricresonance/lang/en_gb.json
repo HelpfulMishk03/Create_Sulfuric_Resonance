@@ -769,5 +769,7 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Channel %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Process Gauge channel %s — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Reads channels 1–5 from its linked Process Monitor",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection",
+  "subtitles.sulfuricresonance.thermochemical_clutch_engage": "Thermochemical Clutch engages",
+  "subtitles.sulfuricresonance.thermochemical_clutch_release": "Thermochemical Clutch releases"
 }

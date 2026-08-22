@@ -67,6 +67,12 @@ public class ClientModEvents {
     public static final PartialModel THERMOCHEMICAL_CLUTCH_SHAFT_HALF =
             partial("block/thermochemical_clutch_shaft_half");
 
+    public static final PartialModel THERMOCHEMICAL_CLUTCH_LOCK_HOUSING =
+            partial("block/thermochemical_clutch_lock_housing");
+
+    public static final PartialModel THERMOCHEMICAL_CLUTCH_LOCK_PIECE =
+            partial("block/thermochemical_clutch_lock_piece");
+
     public static final PartialModel
             THERMOCHEMICAL_LINK_DRIVE_SHAFT =
             partial("block/thermochemical_link_drive_shaft");

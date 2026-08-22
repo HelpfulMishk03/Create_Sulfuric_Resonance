@@ -769,5 +769,7 @@
   "message.sulfuricresonance.process_monitor.selected_channel_state": "Canal %s — %s",
   "message.sulfuricresonance.process_gauge.channel_state": "Canal %s de la Jauge de processus — %s",
   "tooltip.sulfuricresonance.process_gauge.reads_channels": "Lit les canaux 1 à 5 de son Moniteur de processus lié",
-  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Accroupissez-vous et faites un clic droit sur une Jauge Thermique montée avec une Clé pour la récupérer sans perdre sa connexion de four enregistrée"
+  "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Accroupissez-vous et faites un clic droit sur une Jauge Thermique montée avec une Clé pour la récupérer sans perdre sa connexion de four enregistrée",
+  "subtitles.sulfuricresonance.thermochemical_clutch_engage": "L’embrayage thermochimique s’engage",
+  "subtitles.sulfuricresonance.thermochemical_clutch_release": "L’embrayage thermochimique se libère"
 }

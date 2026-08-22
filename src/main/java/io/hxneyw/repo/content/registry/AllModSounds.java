@@ -20,4 +20,12 @@ public class AllModSounds {
    public static final DeferredHolder<SoundEvent, SoundEvent> THERMAL_WARNING_ALARM_STRIKE = SOUNDS.register(
            "thermal_warning_alarm_strike", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "thermal_warning_alarm_strike"))
    );
+   public static final DeferredHolder<SoundEvent, SoundEvent> THERMOCHEMICAL_CLUTCH_ENGAGE = SOUNDS.register(
+           "thermochemical_clutch_engage", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "thermochemical_clutch_engage"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> THERMOCHEMICAL_CLUTCH_RELEASE = SOUNDS.register(
+           "thermochemical_clutch_release", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "thermochemical_clutch_release"))
+   );
+
 }
