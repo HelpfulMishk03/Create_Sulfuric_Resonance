@@ -4,19 +4,19 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
+import io.hxneyw.repo.content.registry.AllModSounds;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -33,11 +33,10 @@ public class SulfurBurnerBlockEntity
         implements IHaveGoggleInformation {
 
     public static final int WARMUP_TICKS = 100;
-    private static final int HEATED_FLAME_INTERVAL_TICKS =
-            10;
 
-    private static final int SUPERHEATED_FLAME_INTERVAL_TICKS =
-            6;
+    private static Consumer<SulfurBurnerBlockEntity> clientEffectsTick =
+            blockEntity -> {};
+
     private int remainingBurnTicks;
     private int activeBurnTicks;
     private int syncCountdown = 20;
@@ -143,7 +142,14 @@ public class SulfurBurnerBlockEntity
 
 
         if (burner.remainingBurnTicks <= 0) {
-            if (!burner.tryStartNextFuel()) {
+            boolean wasBurning =
+                    burner.activeBurnTicks > 0
+                            || !burner.activeFuelStack.isEmpty();
+
+            if (!burner.tryStartNextFuel(
+                    level,
+                    pos
+            )) {
                 burner.activeBurnTicks = 0;
                 burner.activeFuelStack =
                         ItemStack.EMPTY;
@@ -153,6 +159,17 @@ public class SulfurBurnerBlockEntity
                         pos,
                         HeatLevel.NONE
                 );
+
+                if (wasBurning) {
+                    level.playSound(
+                            null,
+                            pos,
+                            AllModSounds.SULFUR_BURNER_EXTINGUISH.get(),
+                            SoundSource.BLOCKS,
+                            0.6F,
+                            1.00F
+                    );
+                }
 
                 burner.markAndSync();
                 return;
@@ -182,7 +199,10 @@ public class SulfurBurnerBlockEntity
         }
     }
 
-    private boolean tryStartNextFuel() {
+    private boolean tryStartNextFuel(
+            Level level,
+            BlockPos pos
+    ) {
         ItemStack queued =
                 fuelInventory.getStackInSlot(0);
 
@@ -192,6 +212,10 @@ public class SulfurBurnerBlockEntity
         if (burnTicks <= 0) {
             return false;
         }
+
+        boolean coldStart =
+                activeBurnTicks <= 0
+                        && activeFuelStack.isEmpty();
 
         activeFuelStack =
                 queued.copyWithCount(1);
@@ -204,6 +228,17 @@ public class SulfurBurnerBlockEntity
 
         remainingBurnTicks =
                 burnTicks;
+
+        if (coldStart) {
+            level.playSound(
+                    null,
+                    pos,
+                    AllModSounds.SULFUR_BURNER_IGNITE.get(),
+                    SoundSource.BLOCKS,
+                    1.7F,
+                    0.98F
+            );
+        }
 
         markAndSync();
 
@@ -423,121 +458,77 @@ public class SulfurBurnerBlockEntity
                         SulfurBurnerBlock.HEAT_LEVEL
                 );
 
-        if (heat != HeatLevel.KINDLED
-                && heat != HeatLevel.SEETHING) {
-            return;
+        if (heat == HeatLevel.KINDLED
+                || heat == HeatLevel.SEETHING) {
+            burner.activeBurnTicks++;
         }
 
-        int flameInterval =
-                heat == HeatLevel.SEETHING
-                        ? SUPERHEATED_FLAME_INTERVAL_TICKS
-                        : HEATED_FLAME_INTERVAL_TICKS;
-
-        long time = level.getGameTime();
-        long phase = time + pos.asLong();
-
-        if (phase % flameInterval == 0L) {
-            spawnSulfurFlame(
-                    level,
-                    pos,
-                    state,
-                    time,
-                    flameInterval
-            );
-        }
-
-        if (phase % 60L == 0L) {
-            level.playLocalSound(
-                    pos.getX() + 0.5D,
-                    pos.getY() + 0.35D,
-                    pos.getZ() + 0.5D,
-                    SoundEvents.CAMPFIRE_CRACKLE,
-                    SoundSource.BLOCKS,
-                    0.32F,
-                    heat == HeatLevel.SEETHING
-                            ? 1.08F
-                            : 0.96F,
-                    false
-            );
-        }
+        clientEffectsTick.accept(burner);
     }
 
-
-    private static void spawnSulfurFlame(
-            Level level,
-            BlockPos pos,
-            BlockState state,
-            long gameTime,
-            int interval
+    public static void setClientEffectsTick(
+            Consumer<SulfurBurnerBlockEntity> effectsTick
     ) {
-        Direction facing =
+        clientEffectsTick =
+                Objects.requireNonNull(effectsTick);
+    }
+
+    public boolean isBurning() {
+        BlockState state =
+                getBlockState();
+
+        if (!state.hasProperty(
+                SulfurBurnerBlock.HEAT_LEVEL
+        )) {
+            return false;
+        }
+
+        HeatLevel heat =
                 state.getValue(
-                        SulfurBurnerBlock.FACING
+                        SulfurBurnerBlock.HEAT_LEVEL
                 );
 
-        Direction right =
-                facing.getClockWise();
-
-        double inward =
-                2.5D / 16.0D;
-
-        double y =
-                pos.getY()
-                        + 3.3D / 16.0D
-                        + 0.025D
-                        - 0.6D / 16.0D;
-
-        int anchor =
-                (int) (
-                        (
-                                gameTime / interval
-                                        + pos.asLong()
-                        ) & 3L
-                );
-
-        double lateral =
-                switch (anchor) {
-                    case 0 -> -0.090D;
-                    case 1 -> 0.090D;
-                    case 2 -> -0.035D;
-                    default -> 0.035D;
-                };
-
-        double x =
-                pos.getX()
-                        + 0.5D
-                        - facing.getStepX()
-                        * inward
-                        + right.getStepX()
-                        * lateral;
-
-        double z =
-                pos.getZ()
-                        + 0.5D
-                        - facing.getStepZ()
-                        * inward
-                        + right.getStepZ()
-                        * lateral;
-
-        level.addParticle(
-                ParticleTypes.SOUL_FIRE_FLAME,
-                x,
-                y,
-                z,
-                0.0D,
-                0.012D,
-                0.0D
+        return remainingBurnTicks > 0
+                && (
+                heat == HeatLevel.KINDLED
+                        || heat == HeatLevel.SEETHING
         );
     }
 
+    public HeatLevel getHeatLevel() {
+        BlockState state =
+                getBlockState();
 
+        if (!state.hasProperty(
+                SulfurBurnerBlock.HEAT_LEVEL
+        )) {
+            return HeatLevel.NONE;
+        }
 
+        return state.getValue(
+                SulfurBurnerBlock.HEAT_LEVEL
+        );
+    }
 
+    public int getRemainingBurnTicks() {
+        return remainingBurnTicks;
+    }
 
+    public int getActiveBurnTicks() {
+        return activeBurnTicks;
+    }
 
+    public float getWarmupProgress() {
+        if (!isBurning()) {
+            return 0.0F;
+        }
 
-
-
+        return Math.min(
+                1.0F,
+                activeBurnTicks
+                        / (float) WARMUP_TICKS
+        );
+    }
 
     private static String formatTicks(int ticks) {
         int totalSeconds = ticks / 20;

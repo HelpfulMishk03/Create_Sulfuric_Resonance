@@ -104,6 +104,9 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel RESONANCE_CHAMBER_RING_BOTTOM =
             partial("block/sulfuric_resonance_chamber_ring_bottom");
 
+    public static final PartialModel RESONANCE_CHAMBER_PLATFORM =
+            partial("block/sulfuric_resonance_chamber_platform");
+
     public static final PartialModel THERMAL_GAUGE_BASE =
             partial("block/thermal_gauge_base");
 
@@ -528,6 +531,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "block/sulfuric_resonance_chamber_window"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/sulfuric_resonance_chamber_platform"
                         )
                 )
         );

@@ -28,4 +28,43 @@ public class AllModSounds {
            "thermochemical_clutch_release", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "thermochemical_clutch_release"))
    );
 
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFUR_BURNER_IGNITE = SOUNDS.register(
+           "sulfur_burner_ignite", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfur_burner_ignite"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFUR_BURNER_CRACKING = SOUNDS.register(
+           "sulfur_burner_cracking", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfur_burner_cracking"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFUR_BURNER_LOOP = SOUNDS.register(
+           "sulfur_burner_loop", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfur_burner_loop"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFUR_BURNER_EXTINGUISH = SOUNDS.register(
+           "sulfur_burner_extinguish", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfur_burner_extinguish"))
+   );
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFURIC_RESONANCE_CHAMBER_STARTUP = SOUNDS.register(
+           "sulfuric_resonance_chamber_startup", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfuric_resonance_chamber_startup"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFURIC_RESONANCE_CHAMBER_LOCK_IN = SOUNDS.register(
+           "sulfuric_resonance_chamber_lock_in", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfuric_resonance_chamber_lock_in"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFURIC_RESONANCE_CHAMBER_READY = SOUNDS.register(
+           "sulfuric_resonance_chamber_ready", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfuric_resonance_chamber_ready"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFURIC_RESONANCE_CHAMBER_RELEASE = SOUNDS.register(
+           "sulfuric_resonance_chamber_release", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfuric_resonance_chamber_release"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFURIC_RESONANCE_CHAMBER_STRAIN = SOUNDS.register(
+           "sulfuric_resonance_chamber_strain", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfuric_resonance_chamber_strain"))
+   );
+
+   public static final DeferredHolder<SoundEvent, SoundEvent> SULFURIC_RESONANCE_CHAMBER_DRY_CLICK = SOUNDS.register(
+           "sulfuric_resonance_chamber_dry_click", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "sulfuric_resonance_chamber_dry_click"))
+   );
+
 }

@@ -2,7 +2,7 @@ package io.hxneyw.repo.content.blocks.sulfurburner;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
+import io.hxneyw.repo.client.sound.SulfurBurnerEffects;
 import io.hxneyw.repo.content.Items;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -117,26 +117,11 @@ public class SulfurBurnerRenderer
                         - facing.getStepZ()
                         * CORE_INWARD_OFFSET;
 
-        BlazeBurnerBlock.HeatLevel heat =
-                blockEntity.getBlockState()
-                        .getValue(
-                                SulfurBurnerBlock.HEAT_LEVEL
-                        );
-
         int coreLight =
-                switch (heat) {
-                    case SEETHING ->
-                            LightTexture.FULL_BRIGHT;
-
-                    case KINDLED ->
-                            LightTexture.pack(
-                                    8,
-                                    LightTexture.sky(packedLight)
-                            );
-
-                    default ->
-                            packedLight;
-                };
+                SulfurBurnerEffects.getCoreLight(
+                        blockEntity,
+                        packedLight
+                );
 
         poseStack.pushPose();
 

@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.UUID;
+import java.util.Objects;
+import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
@@ -53,6 +55,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
 
     private static final Map<ResourceLocation, ReactionLevel> REACTION_LEVELS =
             new ConcurrentHashMap<>();
+    private static Consumer<SulfuricResonanceChamberBlockEntity> clientEffectsTick =
+            blockEntity -> {};
 
     static {
         setReactionLevel(
@@ -383,7 +387,16 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private static final float NORMAL_RING_PEAK_SPEED_BOOST = 0.10F;
     private static final float RESONANCE_RING_PEAK_SPEED_BOOST = 0.18F;
     private static final float RING_ENGAGEMENT_SPAN = 0.14F;
-    private static final float VISUAL_WAKE_PER_TICK = 1.0F / 24.0F;
+    private static final int NORMAL_VISUAL_STARTUP_TICKS = 100;
+    private static final int RESONANCE_VISUAL_STARTUP_TICKS = 140;
+    private static final float READY_RING_INNER_SPEED = 0.16F;
+    private static final float READY_RING_OUTER_SPEED = 0.10F;
+    private static final float HEAT_WAIT_RING_INNER_SPEED = 0.065F;
+    private static final float HEAT_WAIT_RING_OUTER_SPEED = 0.040F;
+    private static final float PLATFORM_RISE_PER_TICK = 0.085F;
+    private static final float PLATFORM_FALL_PER_TICK = 0.040F;
+    private static final float READY_GLOW_RISE_PER_TICK = 0.10F;
+    private static final float READY_GLOW_FALL_PER_TICK = 0.08F;
     private static final float NORMAL_VISUAL_COOLDOWN_PER_TICK = 1.0F / 42.0F;
     private static final float RESONANCE_VISUAL_COOLDOWN_PER_TICK = 1.0F / 56.0F;
     private static final float NORMAL_REACTION_COOLDOWN_PER_TICK = 0.025F;
@@ -401,7 +414,12 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private float clientVisualActivation;
     private float clientPreviousCompletionPulse;
     private float clientCompletionPulse;
+    private float clientPreviousPlatformLift;
+    private float clientPlatformLift;
+    private float clientPreviousReadyGlow;
+    private float clientReadyGlow;
     private int clientCompletionPeakTicks;
+    private boolean clientVisualStateInitialized;
     private ReactionLevel clientVisualReactionLevel = ReactionLevel.NORMAL;
 
     private final ContainerData menuData = new ContainerData() {
@@ -455,12 +473,23 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             clientPreviousReactionProgress = clientReactionProgress;
             clientPreviousVisualActivation = clientVisualActivation;
             clientPreviousCompletionPulse = clientCompletionPulse;
+            clientPreviousPlatformLift = clientPlatformLift;
+            clientPreviousReadyGlow = clientReadyGlow;
+
+            if (!clientVisualStateInitialized) {
+                clientVisualStateInitialized = true;
+                clientPlatformLift = getClientPlatformTarget();
+                clientPreviousPlatformLift = clientPlatformLift;
+                clientReadyGlow = ready ? 1.0F : 0.0F;
+                clientPreviousReadyGlow = clientReadyGlow;
+            }
 
             if (processing) {
                 clientVisualReactionLevel = getReactionLevel(activeRecipeId);
                 clientVisualActivation = Math.min(
                         1.0F,
-                        clientVisualActivation + VISUAL_WAKE_PER_TICK
+                        clientVisualActivation
+                                + getVisualWakePerTick(clientVisualReactionLevel)
                 );
 
                 if (processingTime > 0) {
@@ -490,6 +519,14 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                     );
                 }
             } else {
+                RecipeHolder<SulfuricResonanceChamberRecipe> visualRecipe =
+                        findInputRecipe();
+                if (visualRecipe != null) {
+                    clientVisualReactionLevel = getReactionLevel(
+                            visualRecipe.id()
+                    );
+                }
+
                 if (clientCompletionPeakTicks > 0) {
                     clientVisualActivation = Math.max(
                             clientVisualActivation,
@@ -526,20 +563,53 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 }
             }
 
-            float innerSpeed = getRingSpeed(
-                    clientVisualActivation,
-                    INNER_RING_START,
-                    clientReactionProgress,
-                    clientCompletionPulse,
-                    clientVisualReactionLevel
+            float targetPlatformLift = getClientPlatformTarget();
+            float platformStep = targetPlatformLift > clientPlatformLift
+                    ? PLATFORM_RISE_PER_TICK
+                    : PLATFORM_FALL_PER_TICK;
+            clientPlatformLift = moveToward(
+                    clientPlatformLift,
+                    targetPlatformLift,
+                    platformStep
             );
-            float outerSpeed = getRingSpeed(
-                    clientVisualActivation,
-                    OUTER_RING_START,
-                    clientReactionProgress,
-                    clientCompletionPulse,
-                    clientVisualReactionLevel
+
+            float targetReadyGlow = ready ? 1.0F : 0.0F;
+            float readyGlowStep = targetReadyGlow > clientReadyGlow
+                    ? READY_GLOW_RISE_PER_TICK
+                    : READY_GLOW_FALL_PER_TICK;
+            clientReadyGlow = moveToward(
+                    clientReadyGlow,
+                    targetReadyGlow,
+                    readyGlowStep
             );
+
+            float innerSpeed;
+            float outerSpeed;
+            if (processing) {
+                innerSpeed = getRingSpeed(
+                        clientVisualActivation,
+                        INNER_RING_START,
+                        clientReactionProgress,
+                        clientCompletionPulse,
+                        clientVisualReactionLevel
+                );
+                outerSpeed = getRingSpeed(
+                        clientVisualActivation,
+                        OUTER_RING_START,
+                        clientReactionProgress,
+                        clientCompletionPulse,
+                        clientVisualReactionLevel
+                );
+            } else if (ready) {
+                innerSpeed = READY_RING_INNER_SPEED;
+                outerSpeed = READY_RING_OUTER_SPEED;
+            } else if (status == ChamberStatus.INSUFFICIENT_HEAT) {
+                innerSpeed = HEAT_WAIT_RING_INNER_SPEED;
+                outerSpeed = HEAT_WAIT_RING_OUTER_SPEED;
+            } else {
+                innerSpeed = 0.0F;
+                outerSpeed = 0.0F;
+            }
 
             clientInnerRingAngle += innerSpeed;
             if (clientInnerRingAngle >= 360.0F) {
@@ -555,9 +625,12 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
 
             if (clientVisualActivation <= 0.0F
                     && clientReactionProgress <= 0.0F
-                    && clientCompletionPulse <= 0.0F) {
+                    && clientCompletionPulse <= 0.0F
+                    && !ready) {
                 clientVisualReactionLevel = ReactionLevel.NORMAL;
             }
+
+            clientEffectsTick.accept(this);
             return;
         }
 
@@ -647,6 +720,42 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             setChanged();
             sendData();
         }
+    }
+
+    private static float getVisualWakePerTick(
+            ReactionLevel reactionLevel
+    ) {
+        int ticks = reactionLevel == ReactionLevel.RESONANCE
+                ? RESONANCE_VISUAL_STARTUP_TICKS
+                : NORMAL_VISUAL_STARTUP_TICKS;
+        return 1.0F / ticks;
+    }
+
+    private float getClientPlatformTarget() {
+        if (processing
+                || ready
+                || status == ChamberStatus.OUTPUT_BLOCKED
+                || !inventory.get(OUTPUT).isEmpty()) {
+            return 1.0F;
+        }
+        if (status == ChamberStatus.INSUFFICIENT_HEAT) {
+            return 0.62F;
+        }
+        if (status == ChamberStatus.INSUFFICIENT_SPEED) {
+            return 0.38F;
+        }
+        return 0.0F;
+    }
+
+    private static float moveToward(
+            float current,
+            float target,
+            float amount
+    ) {
+        if (current < target) {
+            return Math.min(target, current + amount);
+        }
+        return Math.max(target, current - amount);
     }
 
     private static float getRingSpeed(
@@ -1156,6 +1265,54 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return processing ? 1.0F : 0.0F;
     }
 
+    public float getClientPlatformLift(float partialTick) {
+        if (level != null && level.isClientSide) {
+            return Math.clamp(
+                    clientPreviousPlatformLift
+                            + (clientPlatformLift - clientPreviousPlatformLift)
+                            * partialTick,
+                    0.0F,
+                    1.0F
+            );
+        }
+        return getClientPlatformTarget();
+    }
+
+    public float getClientReadyGlow(float partialTick) {
+        if (level != null && level.isClientSide) {
+            return Math.clamp(
+                    clientPreviousReadyGlow
+                            + (clientReadyGlow - clientPreviousReadyGlow)
+                            * partialTick,
+                    0.0F,
+                    1.0F
+            );
+        }
+        return ready ? 1.0F : 0.0F;
+    }
+
+    public float getClientFailureIndexOffset(float partialTick) {
+        if (level == null || status != ChamberStatus.INSUFFICIENT_SPEED) {
+            return 0.0F;
+        }
+
+        long offset = Math.floorMod(worldPosition.asLong(), 64L);
+        float cycle = Math.floorMod(level.getGameTime() + offset, 64L)
+                + partialTick;
+        if (cycle >= 24.0F) {
+            return 0.0F;
+        }
+
+        float local = cycle < 12.0F
+                ? cycle / 12.0F
+                : (cycle - 12.0F) / 12.0F;
+        local = Math.clamp(local, 0.0F, 1.0F);
+        float eased = local * local * (3.0F - 2.0F * local);
+        return cycle < 12.0F
+                ? eased * 7.0F
+                : (1.0F - eased) * 7.0F;
+    }
+
     public float getClientCompletionPulse(float partialTick) {
         if (level != null && level.isClientSide) {
             return Math.clamp(
@@ -1181,6 +1338,28 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             case SEETHING -> 0.52F;
             case RADIANT -> 0.68F;
         };
+    }
+
+    public ChamberStatus getStatus() {
+        return status;
+    }
+
+    public boolean isProcessingActive() {
+        return processing;
+    }
+
+    public boolean isReadyState() {
+        return ready || status == ChamberStatus.READY;
+    }
+
+    public boolean hasCompletedOutput() {
+        return !inventory.get(OUTPUT).isEmpty();
+    }
+
+    public static void setClientEffectsTick(
+            Consumer<SulfuricResonanceChamberBlockEntity> effectsTick
+    ) {
+        clientEffectsTick = Objects.requireNonNull(effectsTick);
     }
 
     public ReactionLevel getActiveReactionLevel() {
@@ -1365,7 +1544,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                         1.0F
                 );
                 float syncedActivation = Math.clamp(
-                        processingTicks * VISUAL_WAKE_PER_TICK,
+                        processingTicks
+                                * getVisualWakePerTick(
+                                getReactionLevel(activeRecipeId)
+                        ),
                         0.0F,
                         1.0F
                 );

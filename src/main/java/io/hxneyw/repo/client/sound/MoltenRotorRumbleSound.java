@@ -104,11 +104,11 @@ public final class MoltenRotorRumbleSound
     private static float targetVolume(RotorHeatLevel tier) {
         return switch (tier) {
             case NONE -> 0.0F;
-            case FADING -> 0.04F;
-            case SMOULDERING -> 0.10F;
-            case KINDLED -> 0.18F;
-            case SEETHING -> 0.28F;
-            case RADIANT -> 0.38F;
+            case FADING -> 0.30F;
+            case SMOULDERING -> 0.42F;
+            case KINDLED -> 0.58F;
+            case SEETHING -> 0.74F;
+            case RADIANT -> 0.9F;
         };
     }
 

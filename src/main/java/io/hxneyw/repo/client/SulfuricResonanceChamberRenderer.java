@@ -38,6 +38,7 @@ public class SulfuricResonanceChamberRenderer
     private static final float FLUID_MIN_XZ = 3.15F / 16.0F;
     private static final float FLUID_MAX_XZ = 12.85F / 16.0F;
     private static final double ITEM_PLATFORM_Y = 5.3D / 16.0D;
+    private static final double PLATFORM_TRAVEL = 1.0D / 16.0D;
     private static final double ITEM_VERTICAL_OFFSET = 0.018D;
     private static final float ITEM_SCALE = 0.32F;
     private static final double ITEM_STACK_SPACING = 0.030D;
@@ -96,6 +97,15 @@ public class SulfuricResonanceChamberRenderer
                 packedOverlay
         );
 
+        renderPlatform(
+                chamber,
+                partialTick,
+                poseStack,
+                buffer,
+                packedLight,
+                packedOverlay
+        );
+
         renderPlatformGlow(
                 chamber,
                 partialTick,
@@ -115,6 +125,7 @@ public class SulfuricResonanceChamberRenderer
 
         renderStoredItems(
                 chamber,
+                partialTick,
                 poseStack,
                 buffer,
                 packedOverlay
@@ -136,6 +147,44 @@ public class SulfuricResonanceChamberRenderer
                 packedLight,
                 packedOverlay
         );
+    }
+
+    private void renderPlatform(
+            SulfuricResonanceChamberBlockEntity chamber,
+            float partialTick,
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            int light,
+            int overlay
+    ) {
+        BakedModel model = ClientModEvents.RESONANCE_CHAMBER_PLATFORM.get();
+        Minecraft minecraft = Minecraft.getInstance();
+        if (model == null
+                || model == minecraft.getModelManager().getMissingModel()) {
+            return;
+        }
+
+        Direction facing = chamber.getBlockState()
+                .getValue(SulfuricResonanceChamberBlock.FACING);
+        double yOffset = platformYOffset(
+                chamber.getClientPlatformLift(partialTick)
+        );
+
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 0.5D, 0.5D);
+        rotateToFacing(poseStack, facing);
+        poseStack.translate(-0.5D, -0.5D + yOffset, -0.5D);
+
+        renderBakedModel(
+                poseStack,
+                buffer,
+                model,
+                RenderType.cutout(),
+                light,
+                overlay
+        );
+
+        poseStack.popPose();
     }
 
     private void renderHeatInputGlow(
@@ -225,7 +274,10 @@ public class SulfuricResonanceChamberRenderer
 
         float activation = chamber.getClientVisualActivation(partialTick);
         float completionPulse = chamber.getClientCompletionPulse(partialTick);
-        if (activation <= 0.0F && completionPulse <= 0.0F) {
+        float readyGlow = chamber.getClientReadyGlow(partialTick);
+        if (activation <= 0.0F
+                && completionPulse <= 0.0F
+                && readyGlow <= 0.0F) {
             return;
         }
 
@@ -246,7 +298,8 @@ public class SulfuricResonanceChamberRenderer
         );
         float alpha = 0.055F * initialization * flicker
                 + 0.135F * engagement
-                + 0.095F * completionPulse;
+                + 0.095F * completionPulse
+                + 0.040F * readyGlow;
 
         if (alpha <= 0.001F) {
             return;
@@ -261,7 +314,10 @@ public class SulfuricResonanceChamberRenderer
         float x1 = 11.0F / 16.0F;
         float z0 = 5.0F / 16.0F;
         float z1 = 11.0F / 16.0F;
-        float y = 5.20F / 16.0F;
+        float y = 5.31F / 16.0F
+                + (float) platformYOffset(
+                chamber.getClientPlatformLift(partialTick)
+        );
 
         quad(
                 consumer, pose,
@@ -284,9 +340,13 @@ public class SulfuricResonanceChamberRenderer
             int light,
             int overlay
     ) {
-        float innerAngle = chamber.getClientInnerRingAngle(partialTick);
-        float outerAngle = chamber.getClientOuterRingAngle(partialTick);
+        float failureOffset = chamber.getClientFailureIndexOffset(partialTick);
+        float innerAngle = chamber.getClientInnerRingAngle(partialTick)
+                + failureOffset;
+        float outerAngle = chamber.getClientOuterRingAngle(partialTick)
+                - failureOffset * 0.78F;
         float activation = chamber.getClientVisualActivation(partialTick);
+        float readyGlow = chamber.getClientReadyGlow(partialTick);
         float reactionProgress = chamber.getClientReactionProgress(partialTick);
         float completionPulse = chamber.getClientCompletionPulse(partialTick);
         ReactionLevel reactionLevel = chamber.getClientVisualReactionLevel();
@@ -300,6 +360,7 @@ public class SulfuricResonanceChamberRenderer
                 getRingGlowLight(
                         light,
                         activation,
+                        readyGlow,
                         true,
                         reactionLevel
                 ),
@@ -308,6 +369,7 @@ public class SulfuricResonanceChamberRenderer
                         activation,
                         reactionProgress,
                         completionPulse,
+                        readyGlow,
                         true,
                         reactionLevel
                 ),
@@ -326,6 +388,7 @@ public class SulfuricResonanceChamberRenderer
                 getRingGlowLight(
                         light,
                         activation,
+                        readyGlow,
                         false,
                         reactionLevel
                 ),
@@ -334,6 +397,7 @@ public class SulfuricResonanceChamberRenderer
                         activation,
                         reactionProgress,
                         completionPulse,
+                        readyGlow,
                         false,
                         reactionLevel
                 ),
@@ -347,6 +411,7 @@ public class SulfuricResonanceChamberRenderer
     private static int getRingGlowLight(
             int packedLight,
             float activation,
+            float readyGlow,
             boolean topRing,
             ReactionLevel reactionLevel
     ) {
@@ -363,8 +428,16 @@ public class SulfuricResonanceChamberRenderer
         int blockLight = packedLight >> 4 & 15;
         int skyLight = packedLight >> 20 & 15;
 
-        if (activation <= start) {
+        if (activation <= start && readyGlow <= 0.0F) {
             return packedLight;
+        }
+
+        if (activation <= start && readyGlow > 0.0F) {
+            int pilotLight = Math.max(
+                    blockLight,
+                    Math.round(6.0F * readyGlow)
+            );
+            return LightTexture.pack(pilotLight, skyLight);
         }
 
         int minimumLight = Math.max(
@@ -385,6 +458,7 @@ public class SulfuricResonanceChamberRenderer
             float activation,
             float reactionProgress,
             float completionPulse,
+            float readyGlow,
             boolean topRing,
             ReactionLevel reactionLevel
     ) {
@@ -394,7 +468,7 @@ public class SulfuricResonanceChamberRenderer
                 : profile.bottomStart();
 
         if (activation <= start) {
-            return 0.0F;
+            return topRing ? readyGlow * 0.11F : readyGlow * 0.035F;
         }
 
         float localActivation = smoothStep(Math.clamp(
@@ -610,6 +684,7 @@ public class SulfuricResonanceChamberRenderer
             float activation = chamber.getClientVisualActivation(partialTick);
             float completionPulse =
                     chamber.getClientCompletionPulse(partialTick);
+            float readyGlow = chamber.getClientReadyGlow(partialTick);
             float time = chamber.getLevel().getGameTime() + partialTick;
             float initialization = Math.clamp(
                     activation / 0.18F,
@@ -627,7 +702,8 @@ public class SulfuricResonanceChamberRenderer
             );
             float glow = 0.045F * initialization * flicker
                     + 0.165F * engagement
-                    + 0.095F * completionPulse;
+                    + 0.095F * completionPulse
+                    + 0.030F * readyGlow;
 
             if (glow > 0.001F) {
                 renderTintedBakedModel(
@@ -648,6 +724,7 @@ public class SulfuricResonanceChamberRenderer
 
     private void renderStoredItems(
             SulfuricResonanceChamberBlockEntity chamber,
+            float partialTick,
             PoseStack poseStack,
             MultiBufferSource buffer,
             int overlay
@@ -660,6 +737,7 @@ public class SulfuricResonanceChamberRenderer
             renderPlatformItem(
                     chamber,
                     output,
+                    partialTick,
                     poseStack,
                     buffer,
                     overlay,
@@ -671,6 +749,7 @@ public class SulfuricResonanceChamberRenderer
         renderPlatformItem(
                 chamber,
                 chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_1),
+                partialTick,
                 poseStack,
                 buffer,
                 overlay,
@@ -680,6 +759,7 @@ public class SulfuricResonanceChamberRenderer
         renderPlatformItem(
                 chamber,
                 chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_3),
+                partialTick,
                 poseStack,
                 buffer,
                 overlay,
@@ -689,6 +769,7 @@ public class SulfuricResonanceChamberRenderer
         renderPlatformItem(
                 chamber,
                 chamber.getItem(SulfuricResonanceChamberBlockEntity.INPUT_2),
+                partialTick,
                 poseStack,
                 buffer,
                 overlay,
@@ -699,6 +780,7 @@ public class SulfuricResonanceChamberRenderer
     private void renderPlatformItem(
             SulfuricResonanceChamberBlockEntity chamber,
             ItemStack stack,
+            float partialTick,
             PoseStack poseStack,
             MultiBufferSource buffer,
             int overlay,
@@ -738,7 +820,12 @@ public class SulfuricResonanceChamberRenderer
 
         poseStack.translate(
                 0.5D,
-                ITEM_PLATFORM_Y + ITEM_VERTICAL_OFFSET + additionalHeight,
+                ITEM_PLATFORM_Y
+                        + ITEM_VERTICAL_OFFSET
+                        + additionalHeight
+                        + platformYOffset(
+                        chamber.getClientPlatformLift(partialTick)
+                ),
                 0.5D
         );
 
@@ -817,6 +904,11 @@ public class SulfuricResonanceChamberRenderer
                 );
             }
         }
+    }
+
+    private static double platformYOffset(float lift) {
+        return -PLATFORM_TRAVEL
+                * (1.0D - Math.clamp(lift, 0.0F, 1.0F));
     }
 
     private static float rotationForItem(Direction facing) {

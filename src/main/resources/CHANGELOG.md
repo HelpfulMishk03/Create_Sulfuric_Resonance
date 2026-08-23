@@ -6,6 +6,90 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+# Create: Sulfuric Resonance 0.3.1 — Industrial Pulse
+
+0.3.1 focuses on making CSR machinery feel more physical, responsive, and alive through improved animation, sound, particles, lighting, and state feedback.
+
+## Added
+
+## Localization
+
+- Added complete Simplified Chinese (`zh_cn`) localization.
+- Added complete Russian (`ru_ru`) localization.
+- Updated all existing language files with the complete 0.3.1 localization set.
+- Brought every supported locale to full translation-key parity with American English.
+- Added localized names, tooltips, GUIs, status messages, advancements, JEI/EMI text, Ponder scenes, subtitles, machine states, and Industrial Pulse feedback text across all supported languages.
+- Preserved formatting placeholders, numerical values, technical identifiers, registry tags, and Create-specific terminology across translations.
+- Reviewed Russian and Simplified Chinese translations for semantic accuracy, replacing overly literal wording where necessary to preserve the original gameplay meaning.
+
+### Supported Languages
+
+- American English (`en_us`)
+- British English (`en_gb`)
+- German (`de_de`)
+- Spanish (`es_es`)
+- French (`fr_fr`)
+- Brazilian Portuguese (`pt_br`)
+- Russian (`ru_ru`)
+- Simplified Chinese (`zh_cn`)
+
+### Thermochemical Clutch
+
+- Added a dedicated animated mechanical locking assembly.
+- Added smooth engagement and release movement instead of relying only on the powered casing state.
+- Added dedicated Thermochemical Clutch engagement and release sounds.
+- Added separate timing for the physical lock motion and its mechanical sound response.
+- Added directional lock placement so the locking mechanism appears on the actual driven / interrupted side of the Clutch.
+
+### Sulfur Burner
+
+- Added a complete combustion feedback sequence across the existing five-second warmup period.
+- Added a dedicated ignition whoosh when a cold Sulfur Burner first accepts fuel.
+- Added unstable combustion cracking during early warmup.
+- Added a continuous Sulfur Burner combustion ambience while operating.
+- Added a dedicated fuel-depletion extinguish hiss.
+- Added staged sulfur-flame, cinder, smoke, and combustion particle behavior.
+- Added progressive Brimstone Core illumination during warmup.
+- Added an ignition flash when combustion begins.
+- Added a stabilization pulse when the Burner reaches full heat.
+- Added a lingering Brimstone Core afterglow after combustion stops.
+
+## Changed
+
+### Sulfur Burner
+
+- Reworked the Sulfur Burner's visual progression so KINDLED now visibly develops into SEETHING rather than appearing as a mostly static waiting period.
+- Early warmup now behaves as unstable combustion before gradually becoming a controlled industrial burn.
+- Combustion cracking becomes less prominent as the Burner stabilizes.
+- The main burner ambience increases with warmup progress.
+- Fully heated combustion is intentionally calmer and more controlled than the unstable startup phase.
+- Continuous queued fuel no longer causes repeated ignition sequences between individual fuel items.
+- Reloading an already-burning Sulfur Burner does not trigger a false ignition event.
+- Shutdown feedback now occurs only when the Burner actually exhausts its available fuel.
+
+### Thermochemical Clutch
+
+- Redstone still interrupts rotation and thermochemical heat immediately while the new lock animation follows the state transition visually.
+- Refined the lock geometry and positioning to provide visible clearance between moving and stationary components.
+- Updated the lock assembly rendering to prevent overlapping surface artifacts.
+- Rebalanced engagement and release audio so the engagement reads as the heavier mechanical action.
+
+### Molten Rotor Furnace
+
+- Replaced the previous harsh / minecart-like persistent machinery sound with a dedicated industrial rotor rumble.
+- Rebalanced Molten Rotor rumble volume across its heat tiers.
+- Increased the audible presence of the Rotor at normal Minecraft volume settings.
+- Preserved heat-tier-dependent pitch and volume progression.
+- Preserved smooth rumble fade-in and fade-out as the furnace heats and cools.
+
+## Fixed
+
+- Fixed Thermochemical Clutch lock geometry producing visible z-fighting.
+- Fixed the Clutch locking component appearing on the incorrect side in some orientations.
+- Fixed Sulfur Burner combustion audio being too quiet during normal operation.
+- Fixed short Sulfur Burner hiss audio repeatedly restarting during continuous operation.
+- Fixed fuel-depletion hiss behavior so it is used as a one-shot shutdown effect rather than the persistent burner sound.
+
 ### 0.3.0 — Intelligent Industry
 
 0.3.0 turns thermochemical information into factory behavior.

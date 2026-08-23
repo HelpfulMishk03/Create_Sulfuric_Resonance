@@ -771,5 +771,15 @@
   "sulfuricresonance.ponder.thermochemical_clutch.operation.text_6": "There is no GUI, mode, threshold, storage, or amplification: redstone alone decides whether the route passes or stops",
   "sulfuricresonance.ponder.thermal_gauge.operation.text_10": "Sneak-right-click a mounted Thermal Gauge with a Wrench to pick it up while keeping its stored furnace connection",
   "subtitles.sulfuricresonance.thermochemical_clutch_engage": "Thermochemical Clutch engages",
-  "subtitles.sulfuricresonance.thermochemical_clutch_release": "Thermochemical Clutch releases"
+  "subtitles.sulfuricresonance.thermochemical_clutch_release": "Thermochemical Clutch releases",
+  "subtitles.sulfuricresonance.sulfur_burner_ignite": "Sulfur Burner ignites",
+  "subtitles.sulfuricresonance.sulfur_burner_cracking": "Sulfur Burner crackles",
+  "subtitles.sulfuricresonance.sulfur_burner_loop": "Sulfur Burner burns",
+  "subtitles.sulfuricresonance.sulfur_burner_extinguish": "Sulfur Burner extinguishes",
+  "subtitles.sulfuricresonance.sulfuric_resonance_chamber_startup": "Resonance Chamber spins up",
+  "subtitles.sulfuricresonance.sulfuric_resonance_chamber_lock_in": "Resonance Chamber locks into position",
+  "subtitles.sulfuricresonance.sulfuric_resonance_chamber_ready": "Resonance Chamber resonates",
+  "subtitles.sulfuricresonance.sulfuric_resonance_chamber_release": "Resonance Chamber releases",
+  "subtitles.sulfuricresonance.sulfuric_resonance_chamber_strain": "Resonance Chamber strains",
+  "subtitles.sulfuricresonance.sulfuric_resonance_chamber_dry_click": "Resonance Chamber clicks dry"
 }
