@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "sulfuricresonance:block/thermochemical_shaft_encased_base",
   "textures": {
     "casing": "create:block/railway_casing",

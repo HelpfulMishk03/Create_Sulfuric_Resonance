@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "minecraft:block/cube_column",
   "textures": {
     "end": "sulfuricresonance:block/ash_bricks/ash_brick_pillar_top",

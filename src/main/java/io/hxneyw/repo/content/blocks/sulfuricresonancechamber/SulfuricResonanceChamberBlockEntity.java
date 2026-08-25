@@ -51,7 +51,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     public static final int OUTPUT = 3;
     public static final int SLOT_COUNT = 4;
 
-    public static final int MENU_DATA_COUNT = 11;
+    public static final int MENU_DATA_COUNT = 12;
 
     private static final Map<ResourceLocation, ReactionLevel> REACTION_LEVELS =
             new ConcurrentHashMap<>();
@@ -375,6 +375,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     private boolean ready;
     private boolean processing;
     private OperatingMode operatingMode = OperatingMode.AUTOMATIC;
+    private boolean audioEnabled = true;
     private boolean manualStartRequested;
     private @Nullable ResourceLocation activeRecipeId;
     private ChamberStatus status = ChamberStatus.IDLE;
@@ -437,6 +438,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 case 8 -> getDisplayHeatBand(heatTier);
                 case 9 -> status.ordinal();
                 case 10 -> operatingMode.ordinal();
+                case 11 -> audioEnabled ? 1 : 0;
                 default -> 0;
             };
         }
@@ -732,19 +734,11 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     }
 
     private float getClientPlatformTarget() {
-        if (processing
-                || ready
-                || status == ChamberStatus.OUTPUT_BLOCKED
-                || !inventory.get(OUTPUT).isEmpty()) {
-            return 1.0F;
-        }
-        if (status == ChamberStatus.INSUFFICIENT_HEAT) {
-            return 0.62F;
-        }
-        if (status == ChamberStatus.INSUFFICIENT_SPEED) {
-            return 0.38F;
-        }
-        return 0.0F;
+        return processing
+                || findInputRecipe() != null
+                || !inventory.get(OUTPUT).isEmpty()
+                ? 1.0F
+                : 0.0F;
     }
 
     private static float moveToward(
@@ -1164,6 +1158,17 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return true;
     }
 
+    public boolean toggleAudioEnabled() {
+        audioEnabled = !audioEnabled;
+        setChanged();
+        sendData();
+        return true;
+    }
+
+    public boolean isAudioEnabled() {
+        return audioEnabled;
+    }
+
     public boolean requestManualStart() {
         if (operatingMode != OperatingMode.MANUAL
                 || processing
@@ -1460,6 +1465,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         tag.putBoolean("Ready", ready);
         tag.putBoolean("Processing", processing);
         tag.putString("OperatingMode", operatingMode.serializedName());
+        tag.putBoolean("AudioEnabled", audioEnabled);
         tag.putInt("ChamberStatus", status.ordinal());
         tag.putUUID("ProcessIdentity", processIdentity);
         if (activeRecipeId != null) {
@@ -1509,6 +1515,8 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         operatingMode = OperatingMode.fromSerializedName(
                 tag.getString("OperatingMode")
         );
+        audioEnabled = !tag.contains("AudioEnabled")
+                || tag.getBoolean("AudioEnabled");
         manualStartRequested = false;
         status = ChamberStatus.fromOrdinal(tag.getInt("ChamberStatus"));
         if (tag.hasUUID("ProcessIdentity")) {

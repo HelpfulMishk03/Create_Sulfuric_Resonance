@@ -33,6 +33,7 @@
     "sulfuricresonance:thermal_warning_alarm",
     "sulfuricresonance:resonant_heat_injector",
     "sulfuricresonance:process_monitor",
-    "sulfuricresonance:process_gauge"
+    "sulfuricresonance:process_gauge",
+    "sulfuricresonance:thermochemical_boiler_interface"
   ]
 }

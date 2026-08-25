@@ -14,6 +14,7 @@ import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBloc
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalclutch.ThermochemicalClutchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalboilerinterface.ThermochemicalBoilerInterfaceBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlockEntity;
 import io.hxneyw.repo.content.blocks.processmonitor.ProcessMonitorBlockEntity;
@@ -78,6 +79,18 @@ public class AllBlockEntities {
                     () -> Builder.of(
                             ResonantHeatInjectorBlockEntity::new,
                             AllModBlocks.RESONANT_HEAT_INJECTOR.get()
+                    ).build(null)
+            );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermochemicalBoilerInterfaceBlockEntity>
+            > THERMOCHEMICAL_BOILER_INTERFACE =
+            BLOCK_ENTITIES.register(
+                    "thermochemical_boiler_interface",
+                    () -> Builder.of(
+                            ThermochemicalBoilerInterfaceBlockEntity::new,
+                            AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get()
                     ).build(null)
             );
 

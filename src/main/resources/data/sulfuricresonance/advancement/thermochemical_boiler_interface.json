@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:thermochemical_clutch",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:thermochemical_boiler_interface"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.thermochemical_boiler_interface.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.thermochemical_boiler_interface.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_thermochemical_boiler_interface": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:thermochemical_boiler_interface"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

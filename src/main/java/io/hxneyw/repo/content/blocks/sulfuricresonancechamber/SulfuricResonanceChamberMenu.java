@@ -24,6 +24,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
 
     public static final int BUTTON_TOGGLE_MODE = 0;
     public static final int BUTTON_MANUAL_START = 1;
+    public static final int BUTTON_TOGGLE_AUDIO = 2;
 
     private final ContainerData data;
     private final ContainerLevelAccess access;
@@ -172,6 +173,7 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         boolean handled = switch (buttonId) {
             case BUTTON_TOGGLE_MODE -> chamber.toggleOperatingMode();
             case BUTTON_MANUAL_START -> chamber.requestManualStart();
+            case BUTTON_TOGGLE_AUDIO -> chamber.toggleAudioEnabled();
             default -> false;
         };
 
@@ -375,5 +377,9 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
     getOperatingMode() {
         return SulfuricResonanceChamberBlockEntity.OperatingMode
                 .fromOrdinal(data.get(10));
+    }
+
+    public boolean isAudioEnabled() {
+        return data.get(11) != 0;
     }
 }

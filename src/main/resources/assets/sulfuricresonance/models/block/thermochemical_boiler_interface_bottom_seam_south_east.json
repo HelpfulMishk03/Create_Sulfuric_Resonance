@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "0": "sulfuricresonance:block/thermochemical_boiler_interface",
+    "particle": "sulfuricresonance:block/thermochemical_boiler_interface"
+  },
+  "elements": [
+    {
+      "from": [
+        14,
+        0,
+        15
+      ],
+      "to": [
+        16,
+        3,
+        16
+      ],
+      "faces": {
+        "south": {
+          "uv": [
+            6.5,
+            3.375,
+            6.75,
+            3.75
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

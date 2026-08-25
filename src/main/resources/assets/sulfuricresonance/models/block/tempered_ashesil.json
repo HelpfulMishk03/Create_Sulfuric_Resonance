@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "minecraft:block/cube_all",
   "textures": {
     "all": "sulfuricresonance:block/tempered_ashesil/tempered_ashesil"

@@ -8,87 +8,156 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 # Create: Sulfuric Resonance 0.3.1 — Industrial Pulse
 
-0.3.1 focuses on making CSR machinery feel more physical, responsive, and alive through improved animation, sound, particles, lighting, and state feedback.
+**Industrial Pulse** is a focused machinery-feedback and presentation update.
+
+Rather than expanding CSR with another major progression system, 0.3.1 brings existing machinery to life through stronger mechanical animation, responsive audio, state-driven lighting, restrained particles, smoother transitions, and clearer physical feedback.
+
+Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical Boiler Interface, allowing CSR thermochemical networks to directly heat Create steam boilers through automatically connected heater arrays ranging from a single Interface to a full 3×3 installation.
+
 
 ## Added
 
-## Localization
+### Thermochemical Boiler Interface
 
-- Added complete Simplified Chinese (`zh_cn`) localization.
-- Added complete Russian (`ru_ru`) localization.
-- Updated all existing language files with the complete 0.3.1 localization set.
-- Brought every supported locale to full translation-key parity with American English.
-- Added localized names, tooltips, GUIs, status messages, advancements, JEI/EMI text, Ponder scenes, subtitles, machine states, and Industrial Pulse feedback text across all supported languages.
-- Preserved formatting placeholders, numerical values, technical identifiers, registry tags, and Create-specific terminology across translations.
-- Reviewed Russian and Simplified Chinese translations for semantic accuracy, replacing overly literal wording where necessary to preserve the original gameplay meaning.
-
-### Supported Languages
-
-- American English (`en_us`)
-- British English (`en_gb`)
-- German (`de_de`)
-- Spanish (`es_es`)
-- French (`fr_fr`)
-- Brazilian Portuguese (`pt_br`)
-- Russian (`ru_ru`)
-- Simplified Chinese (`zh_cn`)
-
+* Added the Thermochemical Boiler Interface for powering Create steam boilers from CSR thermochemical networks.
+* Supports automatically connected 1–9 block arrays within Create's 3×3 boiler heating footprint.
+* One thermochemical shaft connection can supply heat to the entire connected array without a controller, GUI, or linking tool.
+* Thermochemical Boiler Interfaces draw thermochemical heat from the connected network without consuming kinetic Stress Units.
+* Array size scales gross boiler output with diminishing returns while retaining Create's normal boiler size, water, and Steam Engine limits.
+* Higher thermochemical heat tiers provide increasingly powerful boiler heating beyond the normal Blaze Burner heating ceiling.
+* Multiple thermochemical shaft connections on the same array do not stack heat or duplicate boiler output.
+* Added automatic connected-side manifold models and a configurable shaft-interface face.
+* Added wrench interaction for moving the array's thermochemical shaft interface to a valid exterior face.
+* Added a shaped crafting recipe using Iron Sheets, a Copper Sheet, Thermochemical Casings, and a Thermochemical Shaft.
 ### Thermochemical Clutch
 
-- Added a dedicated animated mechanical locking assembly.
-- Added smooth engagement and release movement instead of relying only on the powered casing state.
-- Added dedicated Thermochemical Clutch engagement and release sounds.
-- Added separate timing for the physical lock motion and its mechanical sound response.
-- Added directional lock placement so the locking mechanism appears on the actual driven / interrupted side of the Clutch.
+* Added a dedicated animated mechanical locking assembly.
+* Added smooth engagement and release movement.
+* Added dedicated engagement and release sounds.
+* Added directional lock placement so the mechanism appears on the actual interrupted/output side of the Clutch.
+* Added separate physical timing for lock movement and mechanical impact feedback.
 
 ### Sulfur Burner
 
-- Added a complete combustion feedback sequence across the existing five-second warmup period.
-- Added a dedicated ignition whoosh when a cold Sulfur Burner first accepts fuel.
-- Added unstable combustion cracking during early warmup.
-- Added a continuous Sulfur Burner combustion ambience while operating.
-- Added a dedicated fuel-depletion extinguish hiss.
-- Added staged sulfur-flame, cinder, smoke, and combustion particle behavior.
-- Added progressive Brimstone Core illumination during warmup.
-- Added an ignition flash when combustion begins.
-- Added a stabilization pulse when the Burner reaches full heat.
-- Added a lingering Brimstone Core afterglow after combustion stops.
+* Added a complete combustion feedback sequence across the existing five-second warmup period.
+* Added a dedicated ignition whoosh when a cold Burner accepts fuel.
+* Added unstable combustion cracking during early warmup.
+* Added continuous industrial combustion ambience while operating.
+* Added a dedicated fuel-depletion extinguish effect.
+* Added staged sulfur flame, cinder, smoke, and combustion particles.
+* Added progressive Brimstone Core illumination during warmup.
+* Added an ignition flash when combustion begins.
+* Added a stabilization pulse when full heat is reached.
+* Added a lingering Brimstone Core afterglow after shutdown.
+
+### Sulfuric Resonance Chamber
+
+* Added a physically animated reaction platform.
+* The platform now rests below its operating position and rises as the Chamber becomes engaged.
+* Added distinct platform positions for insufficient heat and insufficient rotational speed.
+* Completed output now keeps the reaction assembly physically latched until the output is removed.
+* Added READY-state ring movement and restrained standby illumination.
+* Added state-driven ring behavior for insufficient heat and insufficient speed.
+* Added dedicated Chamber startup audio with different behavior for normal and Resonance-class reactions.
+* Added dedicated READY, lock-in, release, insufficient-speed strain, and missing-acid feedback sounds.
+* Added startup and release particle pulses.
+* Added restrained resonance particles during active processing.
+* Added subtle READY-state particles.
+* Added completion-pulse feedback.
+* Added smooth visual cooldown after processing instead of immediately returning the Chamber to a cold state.
+
+### Localization
+
+* Added complete Russian (`ru_ru`) localization.
+* Added complete Simplified Chinese (`zh_cn`) localization.
+* Expanded CSR to **8 fully supported languages**:
+
+  * American English (`en_us`)
+  * British English (`en_gb`)
+  * German (`de_de`)
+  * Spanish (`es_es`)
+  * French (`fr_fr`)
+  * Brazilian Portuguese (`pt_br`)
+  * Russian (`ru_ru`)
+  * Simplified Chinese (`zh_cn`)
+* Updated all supported locales for the complete 0.3.1 text set.
+* Added localized subtitles for new Industrial Pulse audio.
+* Preserved formatting placeholders, numerical values, technical identifiers, registry tags, and Create-specific terminology across translations.
+* Reviewed Russian and Simplified Chinese translations for semantic accuracy rather than relying on overly literal wording.
 
 ## Changed
 
-### Sulfur Burner
-
-- Reworked the Sulfur Burner's visual progression so KINDLED now visibly develops into SEETHING rather than appearing as a mostly static waiting period.
-- Early warmup now behaves as unstable combustion before gradually becoming a controlled industrial burn.
-- Combustion cracking becomes less prominent as the Burner stabilizes.
-- The main burner ambience increases with warmup progress.
-- Fully heated combustion is intentionally calmer and more controlled than the unstable startup phase.
-- Continuous queued fuel no longer causes repeated ignition sequences between individual fuel items.
-- Reloading an already-burning Sulfur Burner does not trigger a false ignition event.
-- Shutdown feedback now occurs only when the Burner actually exhausts its available fuel.
-
 ### Thermochemical Clutch
 
-- Redstone still interrupts rotation and thermochemical heat immediately while the new lock animation follows the state transition visually.
-- Refined the lock geometry and positioning to provide visible clearance between moving and stationary components.
-- Updated the lock assembly rendering to prevent overlapping surface artifacts.
-- Rebalanced engagement and release audio so the engagement reads as the heavier mechanical action.
+* Redstone continues to interrupt rotation and thermochemical heat immediately while the physical lock follows the state transition visually.
+* Refined lock geometry and positioning for proper clearance between moving and stationary components.
+* Rebalanced engagement and release audio so engagement reads as the heavier mechanical action.
+* Improved the Clutch's powered-state readability without changing its mechanics, balance, or automation behavior.
+
+### Sulfur Burner
+
+* Reworked the KINDLED → SEETHING warmup so it now reads as an actual developing combustion process.
+* Early warmup behaves as unstable combustion before gradually becoming a controlled industrial burn.
+* Combustion cracking becomes less prominent as the Burner stabilizes.
+* Main burner ambience builds alongside warmup progress.
+* Fully heated combustion is calmer and more stable than the startup phase.
+* Continuous queued fuel no longer repeatedly triggers the ignition sequence between individual fuel items.
+* Reloading an already-burning Sulfur Burner no longer produces a false ignition event.
+* Shutdown feedback occurs only when the Burner actually exhausts its available fuel.
+
+### Sulfuric Resonance Chamber
+
+* Reworked Chamber state presentation so its operating condition is substantially more readable without relying entirely on the GUI.
+* Normal reactions now use a deliberate startup envelope before reaching full visual intensity.
+* Resonance-class reactions use a longer, heavier startup profile with distinct ring-speed behavior.
+* Ring speed now develops alongside reaction progress instead of simply switching directly to full operation.
+* READY, insufficient-heat, insufficient-speed, processing, completed, and output-blocked states now have distinct physical behavior.
+* Insufficient rotational speed now produces periodic mechanical strain feedback.
+* Missing sulfuric acid now produces a dry mechanical response.
+* Completion and shutdown behavior now settle progressively rather than visually snapping back to idle.
+* Existing Automatic and Manual operating mechanics remain unchanged.
 
 ### Molten Rotor Furnace
 
-- Replaced the previous harsh / minecart-like persistent machinery sound with a dedicated industrial rotor rumble.
-- Rebalanced Molten Rotor rumble volume across its heat tiers.
-- Increased the audible presence of the Rotor at normal Minecraft volume settings.
-- Preserved heat-tier-dependent pitch and volume progression.
-- Preserved smooth rumble fade-in and fade-out as the furnace heats and cools.
+* Replaced the previous harsh persistent machinery sound with a dedicated industrial rotor rumble.
+* Rebalanced Rotor rumble volume across heat tiers.
+* Increased its audible presence at normal Minecraft volume settings.
+* Preserved temperature-dependent pitch and volume progression.
+* Preserved smooth audio fade-in and fade-out as the Furnace heats and cools.
+* Existing Rotor visual and mechanical behavior otherwise remains unchanged.
 
 ## Fixed
 
-- Fixed Thermochemical Clutch lock geometry producing visible z-fighting.
-- Fixed the Clutch locking component appearing on the incorrect side in some orientations.
-- Fixed Sulfur Burner combustion audio being too quiet during normal operation.
-- Fixed short Sulfur Burner hiss audio repeatedly restarting during continuous operation.
-- Fixed fuel-depletion hiss behavior so it is used as a one-shot shutdown effect rather than the persistent burner sound.
+### Thermochemical Clutch
+
+* Fixed visible Z-fighting in the locking assembly.
+* Fixed the locking component appearing on the incorrect side in some orientations.
+* Fixed overlapping surfaces in the moving lock geometry.
+
+### Sulfur Burner
+
+* Fixed normal operating combustion audio being too quiet.
+* Fixed short hiss audio repeatedly restarting during continuous operation.
+* Fixed the fuel-depletion sound behaving like persistent ambience instead of a one-shot shutdown effect.
+* Fixed false ignition feedback when loading a Burner that was already operating.
+
+### Sulfuric Resonance Chamber
+
+* Prevented Chamber startup/completion effects from falsely replaying when loading an already-running machine.
+* Improved synchronization between logical process state and client-side animation state.
+* Prevented startup audio from continuing after processing has stopped or the Chamber is no longer present.
+* Improved transition handling between processing, completion, blocked output, READY, and idle states.
+
+## Industrial Pulse Consistency Pass
+
+* Audited machinery feedback across the completed 0.3.1 systems.
+* Normalized transition behavior so visual feedback follows real machine state rather than operating independently from it.
+* Kept persistent particles restrained to prevent normal factories from becoming visually excessive.
+* Kept startup, shutdown, and failure effects event-driven where appropriate.
+* Checked feedback behavior for world reloads and client reconstruction to avoid false machine events.
+* Preserved existing redstone, processing, thermochemical-network, and automation mechanics throughout the polish pass.
+
+
 
 ### 0.3.0 — Intelligent Industry
 

@@ -57,7 +57,15 @@ public final class SulfuricResonanceChamberEffects {
         ChamberStatus status = chamber.getStatus();
         boolean processing = chamber.isProcessingActive();
         boolean outputPresent = chamber.hasCompletedOutput();
+        boolean audioEnabled = chamber.isAudioEnabled();
         float platformLift = chamber.getClientPlatformLift(1.0F);
+
+        if (!audioEnabled) {
+            ChamberStartupSound startupSound = STARTUP_SOUNDS.remove(chamber);
+            if (startupSound != null && !startupSound.isStopped()) {
+                startupSound.stopImmediately();
+            }
+        }
 
         if (!state.initialized) {
             state.initialized = true;
@@ -70,17 +78,20 @@ public final class SulfuricResonanceChamberEffects {
         }
 
         if (!state.wasProcessing && processing) {
-            playLocal(
-                    level,
-                    chamber,
-                    AllModSounds.SULFURIC_RESONANCE_CHAMBER_READY.get(),
-                    0.46F,
-                    1.02F
-            );
-            startStartupSound(chamber);
+            if (audioEnabled) {
+                playLocal(
+                        level,
+                        chamber,
+                        AllModSounds.SULFURIC_RESONANCE_CHAMBER_READY.get(),
+                        0.46F,
+                        1.02F
+                );
+                startStartupSound(chamber);
+            }
             spawnStartupPulse(level, chamber);
         } else if (state.previousStatus != ChamberStatus.READY
-                && status == ChamberStatus.READY) {
+                && status == ChamberStatus.READY
+                && audioEnabled) {
             playLocal(
                     level,
                     chamber,
@@ -91,7 +102,8 @@ public final class SulfuricResonanceChamberEffects {
         }
 
         if (state.previousStatus != ChamberStatus.MISSING_ACID
-                && status == ChamberStatus.MISSING_ACID) {
+                && status == ChamberStatus.MISSING_ACID
+                && audioEnabled) {
             playLocal(
                     level,
                     chamber,
@@ -103,12 +115,16 @@ public final class SulfuricResonanceChamberEffects {
 
         if (status == ChamberStatus.INSUFFICIENT_SPEED) {
             if (state.previousStatus != ChamberStatus.INSUFFICIENT_SPEED) {
-                playStrain(level, chamber);
+                if (audioEnabled) {
+                    playStrain(level, chamber);
+                }
                 state.strainCooldown = 80;
             } else if (state.strainCooldown > 0) {
                 state.strainCooldown--;
             } else {
-                playStrain(level, chamber);
+                if (audioEnabled) {
+                    playStrain(level, chamber);
+                }
                 state.strainCooldown = 80;
             }
         } else {
@@ -121,26 +137,30 @@ public final class SulfuricResonanceChamberEffects {
         if (latchEligible
                 && platformLift >= 0.94F
                 && !state.platformLatched) {
-            playLocal(
-                    level,
-                    chamber,
-                    AllModSounds.SULFURIC_RESONANCE_CHAMBER_LOCK_IN.get(),
-                    0.82F,
-                    0.94F
-            );
+            if (audioEnabled) {
+                playLocal(
+                        level,
+                        chamber,
+                        AllModSounds.SULFURIC_RESONANCE_CHAMBER_LOCK_IN.get(),
+                        0.82F,
+                        0.94F
+                );
+            }
             state.platformLatched = true;
         } else if (platformLift < 0.28F) {
             state.platformLatched = false;
         }
 
         if (state.hadOutput && !outputPresent) {
-            playLocal(
-                    level,
-                    chamber,
-                    AllModSounds.SULFURIC_RESONANCE_CHAMBER_RELEASE.get(),
-                    0.78F,
-                    1.00F
-            );
+            if (audioEnabled) {
+                playLocal(
+                        level,
+                        chamber,
+                        AllModSounds.SULFURIC_RESONANCE_CHAMBER_RELEASE.get(),
+                        0.78F,
+                        1.00F
+                );
+            }
             spawnReleasePulse(level, chamber);
         }
 
@@ -342,7 +362,9 @@ public final class SulfuricResonanceChamberEffects {
 
         @Override
         public void tick() {
-            if (!isChamberStillPresent() || !chamber.isProcessingActive()) {
+            if (!isChamberStillPresent()
+                    || !chamber.isProcessingActive()
+                    || !chamber.isAudioEnabled()) {
                 ending = true;
             }
 
@@ -368,6 +390,10 @@ public final class SulfuricResonanceChamberEffects {
                     : Mth.lerp(activation, 0.78F, 1.00F);
             volume = Mth.lerp(0.14F, volume, targetVolume);
             pitch = Mth.lerp(0.10F, pitch, targetPitch);
+        }
+
+        private void stopImmediately() {
+            stop();
         }
 
         private boolean isChamberStillPresent() {

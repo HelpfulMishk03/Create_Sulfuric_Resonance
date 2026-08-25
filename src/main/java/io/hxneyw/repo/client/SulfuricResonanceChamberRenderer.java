@@ -37,8 +37,9 @@ public class SulfuricResonanceChamberRenderer
     private static final float FLUID_MAX_Y = 4.85F / 16.0F;
     private static final float FLUID_MIN_XZ = 3.15F / 16.0F;
     private static final float FLUID_MAX_XZ = 12.85F / 16.0F;
-    private static final double ITEM_PLATFORM_Y = 5.3D / 16.0D;
-    private static final double PLATFORM_TRAVEL = 1.0D / 16.0D;
+    private static final double ITEM_PLATFORM_Y = 6.3D / 16.0D;
+    private static final double PLATFORM_HOME_OFFSET = 1.0D / 16.0D;
+    private static final double PLATFORM_TRAVEL = 0.35D / 16.0D;
     private static final double ITEM_VERTICAL_OFFSET = 0.018D;
     private static final float ITEM_SCALE = 0.32F;
     private static final double ITEM_STACK_SPACING = 0.030D;
@@ -314,7 +315,7 @@ public class SulfuricResonanceChamberRenderer
         float x1 = 11.0F / 16.0F;
         float z0 = 5.0F / 16.0F;
         float z1 = 11.0F / 16.0F;
-        float y = 5.31F / 16.0F
+        float y = 6.31F / 16.0F
                 + (float) platformYOffset(
                 chamber.getClientPlatformLift(partialTick)
         );
@@ -907,7 +908,7 @@ public class SulfuricResonanceChamberRenderer
     }
 
     private static double platformYOffset(float lift) {
-        return -PLATFORM_TRAVEL
+        return -PLATFORM_HOME_OFFSET - PLATFORM_TRAVEL
                 * (1.0D - Math.clamp(lift, 0.0F, 1.0F));
     }
 

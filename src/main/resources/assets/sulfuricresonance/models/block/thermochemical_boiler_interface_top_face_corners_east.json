@@ -1,0 +1,50 @@
+{
+  "textures": {
+    "0": "sulfuricresonance:block/thermochemical_boiler_interface",
+    "particle": "sulfuricresonance:block/thermochemical_boiler_interface"
+  },
+  "elements": [
+    {
+      "from": [15, 14, 0],
+      "to": [16, 15, 2],
+      "faces": {
+        "east": {
+          "uv": [5.625, 6.875, 5.75, 7],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [0.125, 5.25, 0, 5.125],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [15, 14, 2],
+      "to": [16, 15, 14],
+      "faces": {
+        "east": {
+          "uv": [5.75, 6.875, 7.25, 7],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [0.125, 5.125, 0, 3.625],
+          "texture": "#0"
+        }
+      }
+    },
+    {
+      "from": [15, 14, 14],
+      "to": [16, 15, 16],
+      "faces": {
+        "east": {
+          "uv": [7.25, 6.875, 7.375, 7],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [0.125, 3.625, 0, 3.5],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

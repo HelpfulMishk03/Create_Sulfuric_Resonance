@@ -16,6 +16,7 @@ import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlock;
 import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalclutch.ThermochemicalClutchBlock;
+import io.hxneyw.repo.content.blocks.thermochemicalboilerinterface.ThermochemicalBoilerInterfaceBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalConduitBlock;
 import io.hxneyw.repo.content.blocks.thermochemicalgearbox.ThermochemicalGearboxBlock;
 import io.hxneyw.repo.content.blocks.parallelthermochemicalgearbox.ParallelThermochemicalGearboxBlock;
@@ -320,6 +321,20 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                             Properties.of()
                                     .mapColor(MapColor.METAL)
                                     .strength(2.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ThermochemicalBoilerInterfaceBlock>
+            THERMOCHEMICAL_BOILER_INTERFACE =
+            BLOCKS.register(
+                    "thermochemical_boiler_interface",
+                    () -> new ThermochemicalBoilerInterfaceBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(3.5F, 6.0F)
                                     .requiresCorrectToolForDrops()
                                     .sound(SoundType.METAL)
                                     .noOcclusion()

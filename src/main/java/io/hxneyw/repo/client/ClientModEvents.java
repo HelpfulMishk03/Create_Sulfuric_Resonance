@@ -61,6 +61,9 @@ public class ClientModEvents {
     public static final PartialModel THERMOCHEMICAL_SHAFT =
             partial("block/thermochemical_shaft");
 
+    public static final PartialModel THERMOCHEMICAL_BOILER_INTERFACE_PORT_SHAFT =
+            partial("block/thermochemical_boiler_interface_port_shaft");
+
     public static final PartialModel THERMOCHEMICAL_GEARBOX_SHAFT =
             partial("block/thermochemical_gearbox_shaft");
 
@@ -333,6 +336,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_BOILER_INTERFACE.get(),
+                ThermochemicalBoilerInterfaceRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_COGWHEEL.get(),
                 ThermochemicalCogwheelRenderer::new
         );
@@ -428,6 +436,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     private static void registerStandalone(
             RegisterAdditional event
     ) {
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermochemical_boiler_interface_port_shaft"
+                        )
+                )
+        );
+
         event.register(
                 ModelResourceLocation.standalone(
                         ResourceLocation.fromNamespaceAndPath(

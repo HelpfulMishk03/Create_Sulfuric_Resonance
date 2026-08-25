@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "create:block/encased_chain_drive/middle_vertical",
   "textures": {
     "1": "sulfuricresonance:block/thermochemical_link_drive/thermochemical_link_drive_middle",

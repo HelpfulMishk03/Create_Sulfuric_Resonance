@@ -1,0 +1,50 @@
+{
+  "credit": "Made in Blockbench by Hxney",
+  "textures": {
+    "0": "sulfuricresonance:block/thermochemical_boiler_interface",
+    "particle": "sulfuricresonance:block/thermochemical_boiler_interface"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        14,
+        15
+      ],
+      "to": [
+        15,
+        15,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            1.75,
+            5.25,
+            0,
+            5.125
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            1.75,
+            5.25,
+            0,
+            5.125
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            8.625,
+            4.75,
+            8.75,
+            4.875
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
+}

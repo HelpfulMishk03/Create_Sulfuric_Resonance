@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "create:block/large_cogwheel_shaftless",
   "textures": {
     "4": "sulfuricresonance:block/large_thermochemical_cogwheel/large_thermochemical_cogwheel",

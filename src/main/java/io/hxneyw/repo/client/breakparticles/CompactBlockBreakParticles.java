@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 )
 public final class CompactBlockBreakParticles {
 
-    private static final int DESTROY_PARTICLE_COUNT = 12;
+    private static final int DESTROY_PARTICLE_COUNT = 13;
 
     private CompactBlockBreakParticles() {
     }
@@ -65,7 +65,8 @@ public final class CompactBlockBreakParticles {
                 AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get(),
                 AllModBlocks.THERMAL_WARNING_ALARM.get(),
                 AllModBlocks.PROCESS_GAUGE.get(),
-                AllModBlocks.PROCESS_MONITOR.get()
+                AllModBlocks.PROCESS_MONITOR.get(),
+                AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get()
         );
     }
 

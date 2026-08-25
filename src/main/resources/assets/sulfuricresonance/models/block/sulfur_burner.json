@@ -1,7 +1,7 @@
 {
 	"parent": "minecraft:block/block",
 	"format_version": "1.9.0",
-	"credit": "Made with Blockbench",
+	"credit": "Made in Blockbench by Hxney",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "sulfuricresonance:block/sulfur_burner/sulfurstand_textured",

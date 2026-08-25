@@ -1,6 +1,6 @@
 {
   "format_version": "1.9.0",
-  "credit": "Made with Blockbench",
+  "credit": "Made in Blockbench by Hxney",
   "render_type": "minecraft:translucent",
   "textures": {
     "0": "sulfuricresonance:block/thermal_relay_switch/thermal_relay_switch",

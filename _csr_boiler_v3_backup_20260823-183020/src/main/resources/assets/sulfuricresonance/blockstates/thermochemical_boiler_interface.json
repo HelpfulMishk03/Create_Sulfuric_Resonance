@@ -1,0 +1,279 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_core"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "port_west": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_frame_west"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "port_east": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_frame_east"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_inner_fill_north"
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_inner_fill_south"
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_inner_fill_west"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_inner_fill_east"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_seam_north"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_seam_east"
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_seam_south"
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_seam_west"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_corner_north_west"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "east": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_corner_north_east"
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_corner_south_west"
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "east": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_top_corner_south_east"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "west": "true",
+        "port_north": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_north_west"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "east": "true",
+        "port_north": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_north_east"
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "west": "true",
+        "port_south": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_south_west"
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "east": "true",
+        "port_south": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_south_east"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "port_east": "false",
+        "north": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_east_north"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "port_east": "false",
+        "south": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_east_south"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "port_west": "false",
+        "north": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_west_north"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "port_west": "false",
+        "south": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_seam_west_south"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "port_north": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_side_closed_north"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "port_north": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_port_north"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "port_east": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_side_closed_east"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "port_east": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_port_east"
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "port_south": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_side_closed_south"
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "port_south": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_port_south"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "port_west": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_side_closed_west"
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "port_west": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/thermochemical_boiler_interface_port_west"
+      }
+    }
+  ]
+}
