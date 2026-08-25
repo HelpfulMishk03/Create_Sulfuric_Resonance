@@ -1,6 +1,8 @@
 package io.hxneyw.repo.content.blocks.thermochemicalboilerinterface;
 
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlockEntity;
+import com.simibubi.create.content.kinetics.steamEngine.SteamEngineBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalHeatResolver;
 import java.util.ArrayDeque;
@@ -55,7 +57,16 @@ public final class ThermochemicalBoilerInterfaceArray {
             );
         }
 
-        InputCandidate selected = findSelectedInput(level, members, bounds);
+        FluidTankBlockEntity boilerController = findBoilerController(
+                level,
+                members
+        );
+        InputCandidate selected = findSelectedInput(
+                level,
+                members,
+                bounds,
+                boilerController
+        );
         PortSelection configuredPort = selected == null
                 ? findConfiguredPort(level, members, bounds)
                 : new PortSelection(selected.position(), selected.side());
@@ -119,6 +130,11 @@ public final class ThermochemicalBoilerInterfaceArray {
             return;
         }
 
+        boolean clearSelection = ThermochemicalBoilerInterfaceBlock.hasPort(
+                level.getBlockState(position),
+                side
+        );
+
         for (BlockPos member : members) {
             BlockState state = level.getBlockState(member);
             if (!(state.getBlock() instanceof ThermochemicalBoilerInterfaceBlock)) {
@@ -130,7 +146,9 @@ public final class ThermochemicalBoilerInterfaceArray {
                 updated = ThermochemicalBoilerInterfaceBlock.setPort(
                         updated,
                         horizontal,
-                        member.equals(position) && horizontal == side
+                        !clearSelection
+                                && member.equals(position)
+                                && horizontal == side
                 );
             }
             updated = updated.setValue(
@@ -292,8 +310,15 @@ public final class ThermochemicalBoilerInterfaceArray {
             return null;
         }
 
+        return findBoilerController(level, snapshot.members());
+    }
+
+    private static @Nullable FluidTankBlockEntity findBoilerController(
+            Level level,
+            List<BlockPos> members
+    ) {
         FluidTankBlockEntity commonController = null;
-        for (BlockPos member : snapshot.members()) {
+        for (BlockPos member : members) {
             BlockEntity above = level.getBlockEntity(member.above());
             if (!(above instanceof FluidTankBlockEntity tank)) {
                 return null;
@@ -314,7 +339,8 @@ public final class ThermochemicalBoilerInterfaceArray {
     private static @Nullable InputCandidate findSelectedInput(
             Level level,
             List<BlockPos> members,
-            Bounds bounds
+            Bounds bounds,
+            @Nullable FluidTankBlockEntity boilerController
     ) {
         List<InputCandidate> candidates = new ArrayList<>();
         for (BlockPos member : members) {
@@ -343,6 +369,14 @@ public final class ThermochemicalBoilerInterfaceArray {
                 if (result.heatTier() == MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
                     continue;
                 }
+                if (boilerController != null
+                        && isPoweredByBoiler(
+                        level,
+                        result.sourcePos(),
+                        boilerController
+                )) {
+                    continue;
+                }
 
                 InputCandidate candidate = new InputCandidate(
                         member,
@@ -359,6 +393,32 @@ public final class ThermochemicalBoilerInterfaceArray {
         }
         candidates.sort(InputCandidateComparator.INSTANCE);
         return candidates.getFirst();
+    }
+
+    private static boolean isPoweredByBoiler(
+            Level level,
+            @Nullable BlockPos sourcePosition,
+            FluidTankBlockEntity boilerController
+    ) {
+        if (sourcePosition == null) {
+            return false;
+        }
+        BlockEntity sourceEntity = level.getBlockEntity(sourcePosition);
+        if (!(sourceEntity instanceof PoweredShaftBlockEntity shaft)
+                || shaft.enginePos == null) {
+            return false;
+        }
+        BlockPos enginePosition = sourcePosition.subtract(shaft.enginePos);
+        BlockEntity engineEntity = level.getBlockEntity(enginePosition);
+        if (!(engineEntity instanceof SteamEngineBlockEntity engine)
+                || engine.getShaft() != shaft) {
+            return false;
+        }
+        FluidTankBlockEntity sourceController = engine.getTank();
+        return sourceController != null
+                && sourceController.getBlockPos().equals(
+                boilerController.getBlockPos()
+        );
     }
 
     private static @Nullable PortSelection findConfiguredPort(

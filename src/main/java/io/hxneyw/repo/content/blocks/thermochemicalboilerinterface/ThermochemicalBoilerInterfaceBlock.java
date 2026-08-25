@@ -48,7 +48,7 @@ public final class ThermochemicalBoilerInterfaceBlock
                 .setValue(EAST, false)
                 .setValue(SOUTH, false)
                 .setValue(WEST, false)
-                .setValue(PORT_NORTH, false)
+                .setValue(PORT_NORTH, true)
                 .setValue(PORT_EAST, false)
                 .setValue(PORT_SOUTH, false)
                 .setValue(PORT_WEST, false)

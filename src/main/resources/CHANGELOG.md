@@ -10,36 +10,47 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 **Industrial Pulse** is a focused machinery-feedback and presentation update.
 
-Rather than expanding CSR with another major progression system, 0.3.1 brings existing machinery to life through stronger mechanical animation, responsive audio, state-driven lighting, restrained particles, smoother transitions, and clearer physical feedback.
+Rather than introducing another major progression system, 0.3.1 brings existing machinery to life through stronger mechanical animation, responsive audio, state-driven lighting, restrained particles, smoother transitions, and clearer physical feedback.
 
-Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical Boiler Interface, allowing CSR thermochemical networks to directly heat Create steam boilers through automatically connected heater arrays ranging from a single Interface to a full 3×3 installation.
-
+Alongside this machinery-feedback pass, Industrial Pulse introduces the **Thermochemical Boiler Interface**, allowing CSR thermochemical networks to directly heat Create steam boilers through automatically connected heater arrays ranging from a single Interface to a complete 3×3 installation.
 
 ## Added
 
 ### Thermochemical Boiler Interface
 
 * Added the Thermochemical Boiler Interface for powering Create steam boilers from CSR thermochemical networks.
-* Supports automatically connected 1–9 block arrays within Create's 3×3 boiler heating footprint.
-* One thermochemical shaft connection can supply heat to the entire connected array without a controller, GUI, or linking tool.
-* Thermochemical Boiler Interfaces draw thermochemical heat from the connected network without consuming kinetic Stress Units.
-* Array size scales gross boiler output with diminishing returns while retaining Create's normal boiler size, water, and Steam Engine limits.
+* Supports automatically connected arrays of 1–9 Interfaces within Create’s 3×3 boiler-heating footprint.
+* Touching Interfaces automatically merge into one controllerless shared array without a GUI or linking tool.
+* One thermochemical shaft connection can supply heat to the entire connected array.
+* Thermochemical Boiler Interfaces draw thermochemical heat from the connected network without consuming or transmitting kinetic Stress Units.
+* Array size scales boiler output with diminishing returns while retaining Create’s normal boiler size, water-supply, and Steam Engine limits.
 * Higher thermochemical heat tiers provide increasingly powerful boiler heating beyond the normal Blaze Burner heating ceiling.
-* Multiple thermochemical shaft connections on the same array do not stack heat or duplicate boiler output.
-* Added automatic connected-side manifold models and a configurable shaft-interface face.
-* Added wrench interaction for moving the array's thermochemical shaft interface to a valid exterior face.
+* Multiple thermochemical shaft connections on the same array cannot stack heat or duplicate boiler output.
+* Added automatic connected-side manifold models that close internal faces between adjacent Interfaces.
+* Added one configurable shaft-interface face for each array.
+* Standalone Interfaces begin with a visible north-facing shaft port.
+* Smaller arrays support any valid exposed shaft-interface face.
+* Complete 3×3 arrays restrict the shaft interface to the center position of an outer edge.
+* Wrenching an exposed face moves the array’s shaft interface to that face.
+* Wrenching the currently selected face removes the shaft interface.
+* Added protection against a boiler-fed thermochemical network recursively supplying heat back into the same boiler.
+* Added Engineer’s Goggle information for array size, validity, heat tier, temperature, selected input, boiler connection, and target output.
+* Added Steam Engine Goggle information for thermochemical heat, temperature, RPM, and generated Stress Units.
+* Added a dedicated Ponder scene covering Interface arrays, shaft-port selection, boiler heating, Steam Engine assembly, and boiler-fed thermochemical output.
+* Added the **Boiling Point** advancement for crafting a Thermochemical Boiler Interface.
 * Added a shaped crafting recipe using Iron Sheets, a Copper Sheet, Thermochemical Casings, and a Thermochemical Shaft.
+
 ### Thermochemical Clutch
 
 * Added a dedicated animated mechanical locking assembly.
 * Added smooth engagement and release movement.
 * Added dedicated engagement and release sounds.
-* Added directional lock placement so the mechanism appears on the actual interrupted/output side of the Clutch.
+* Added directional lock placement so the mechanism appears on the actual interrupted or output side of the Clutch.
 * Added separate physical timing for lock movement and mechanical impact feedback.
 
 ### Sulfur Burner
 
-* Added a complete combustion feedback sequence across the existing five-second warmup period.
+* Added a complete combustion-feedback sequence across the existing five-second warmup period.
 * Added a dedicated ignition whoosh when a cold Burner accepts fuel.
 * Added unstable combustion cracking during early warmup.
 * Added continuous industrial combustion ambience while operating.
@@ -55,11 +66,12 @@ Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical B
 * Added a physically animated reaction platform.
 * The platform now rests below its operating position and rises as the Chamber becomes engaged.
 * Added distinct platform positions for insufficient heat and insufficient rotational speed.
-* Completed output now keeps the reaction assembly physically latched until the output is removed.
+* Completed output keeps the reaction assembly physically latched until the output is removed.
 * Added READY-state ring movement and restrained standby illumination.
 * Added state-driven ring behavior for insufficient heat and insufficient speed.
 * Added dedicated Chamber startup audio with different behavior for normal and Resonance-class reactions.
 * Added dedicated READY, lock-in, release, insufficient-speed strain, and missing-acid feedback sounds.
+* Added a per-machine **Audio** toggle to the Chamber interface.
 * Added startup and release particle pulses.
 * Added restrained resonance particles during active processing.
 * Added subtle READY-state particles.
@@ -69,7 +81,9 @@ Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical B
 ### Localization
 
 * Added complete Russian (`ru_ru`) localization.
+
 * Added complete Simplified Chinese (`zh_cn`) localization.
+
 * Expanded CSR to **8 fully supported languages**:
 
   * American English (`en_us`)
@@ -80,9 +94,13 @@ Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical B
   * Brazilian Portuguese (`pt_br`)
   * Russian (`ru_ru`)
   * Simplified Chinese (`zh_cn`)
-* Updated all supported locales for the complete 0.3.1 text set.
-* Added localized subtitles for new Industrial Pulse audio.
+
+* Updated every supported locale for the complete 0.3.1 text set.
+
+* Added localized subtitles for all new Industrial Pulse audio.
+
 * Preserved formatting placeholders, numerical values, technical identifiers, registry tags, and Create-specific terminology across translations.
+
 * Reviewed Russian and Simplified Chinese translations for semantic accuracy rather than relying on overly literal wording.
 
 ## Changed
@@ -92,14 +110,14 @@ Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical B
 * Redstone continues to interrupt rotation and thermochemical heat immediately while the physical lock follows the state transition visually.
 * Refined lock geometry and positioning for proper clearance between moving and stationary components.
 * Rebalanced engagement and release audio so engagement reads as the heavier mechanical action.
-* Improved the Clutch's powered-state readability without changing its mechanics, balance, or automation behavior.
+* Improved powered-state readability without changing the Clutch’s mechanics, balance, or automation behavior.
 
 ### Sulfur Burner
 
-* Reworked the KINDLED → SEETHING warmup so it now reads as an actual developing combustion process.
+* Reworked the KINDLED → SEETHING warmup so it reads as a developing combustion process.
 * Early warmup behaves as unstable combustion before gradually becoming a controlled industrial burn.
 * Combustion cracking becomes less prominent as the Burner stabilizes.
-* Main burner ambience builds alongside warmup progress.
+* Main Burner ambience builds alongside warmup progress.
 * Fully heated combustion is calmer and more stable than the startup phase.
 * Continuous queued fuel no longer repeatedly triggers the ignition sequence between individual fuel items.
 * Reloading an already-burning Sulfur Burner no longer produces a false ignition event.
@@ -110,11 +128,11 @@ Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical B
 * Reworked Chamber state presentation so its operating condition is substantially more readable without relying entirely on the GUI.
 * Normal reactions now use a deliberate startup envelope before reaching full visual intensity.
 * Resonance-class reactions use a longer, heavier startup profile with distinct ring-speed behavior.
-* Ring speed now develops alongside reaction progress instead of simply switching directly to full operation.
+* Ring speed develops alongside reaction progress instead of switching directly to full operation.
 * READY, insufficient-heat, insufficient-speed, processing, completed, and output-blocked states now have distinct physical behavior.
-* Insufficient rotational speed now produces periodic mechanical strain feedback.
-* Missing sulfuric acid now produces a dry mechanical response.
-* Completion and shutdown behavior now settle progressively rather than visually snapping back to idle.
+* Insufficient rotational speed produces periodic mechanical strain feedback.
+* Missing sulfuric acid produces a dry mechanical response.
+* Completion and shutdown behavior settle progressively instead of visually snapping back to idle.
 * Existing Automatic and Manual operating mechanics remain unchanged.
 
 ### Molten Rotor Furnace
@@ -143,18 +161,21 @@ Alongside the machinery-feedback pass, 0.3.1 introduces the new Thermochemical B
 
 ### Sulfuric Resonance Chamber
 
-* Prevented Chamber startup/completion effects from falsely replaying when loading an already-running machine.
+* Prevented Chamber startup and completion effects from falsely replaying when loading an already-running machine.
 * Improved synchronization between logical process state and client-side animation state.
-* Prevented startup audio from continuing after processing has stopped or the Chamber is no longer present.
+* Prevented startup audio from continuing after processing stops or the Chamber is no longer present.
 * Improved transition handling between processing, completion, blocked output, READY, and idle states.
+* Preserved the per-machine Audio setting across world saves and reloads.
 
 ## Industrial Pulse Consistency Pass
 
-* Audited machinery feedback across the completed 0.3.1 systems.
+* Audited machinery feedback across every completed 0.3.1 system.
 * Normalized transition behavior so visual feedback follows real machine state rather than operating independently from it.
 * Kept persistent particles restrained to prevent normal factories from becoming visually excessive.
 * Kept startup, shutdown, and failure effects event-driven where appropriate.
-* Checked feedback behavior for world reloads and client reconstruction to avoid false machine events.
+* Checked feedback behavior across world reloads, chunk reconstruction, and client reconnection to prevent false machine events.
+* Audited registered blocks, items, blockstates, models, textures, recipes, loot tables, advancements, sounds, Ponder structures, mixins, metadata, and localization resources.
+* Verified complete localization-key parity and formatting-placeholder consistency across all eight supported languages.
 * Preserved existing redstone, processing, thermochemical-network, and automation mechanics throughout the polish pass.
 
 
@@ -595,23 +616,6 @@ Resonance completes the next major stage of CSR's thermochemical progression:
 * Fixed JEI rendering issues.
 * Additional compatibility and presentation fixes.
 
-### 0.2.7-beta — Reactive Heat
-
-Introduced the core thermochemical heat infrastructure used by later CSR systems.
-
-Major additions included:
-
-* Thermochemical Shaft
-* Thermochemical Conduit
-* Thermochemical Gearbox
-* Combustion Belt
-* Thermal Relay Switch
-* Expanded Molten Rotor Furnace fuels
-* Additional ceramic and industrial material processing
-* Expanded Ponder support
-* JEI and EMI integration improvements
-
-
 ## [0.2.7-beta] — Reactive Heat
 
 ### Summary
@@ -771,10 +775,10 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Added shared Sulfuric Acid fluid and bucket tags.
 - Removed unsafe hard references to optional TFMG content.
 - Verified compatibility with:
-    - TFMG Sulfur Dust
-    - TFMG Sulfuric Acid
-    - Butchery Sulfur
-    - Railcraft Reborn Sulfur Dust
+  - TFMG Sulfur Dust
+  - TFMG Sulfuric Acid
+  - Butchery Sulfur
+  - Railcraft Reborn Sulfur Dust
 - Added common Sulfur storage-block tags.
 - Added Create filling and emptying recipes for the Sulfuric Acid Bucket.
 
@@ -805,7 +809,7 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Explains compatibility with properly tagged external Sulfur dusts.
 - Explains why raw ores, chunks, and storage blocks are not accepted as processed Sulfur inputs.
 
-## 0.2.4-beta1] - Progression Hotfix
+## [0.2.4-beta1] - Progression Hotfix
 
 ### Fixed
 
