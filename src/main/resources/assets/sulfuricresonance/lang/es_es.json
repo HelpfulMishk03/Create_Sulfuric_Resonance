@@ -809,4 +809,11 @@
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Añadir un eje crea el eje motriz de Create y el conjunto móvil completo del motor",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Un eje termoquímico conectado al eje motriz transporta el nivel de calor de la caldera; sus RPM y SU proceden solo de la caldera",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Las redes de entrada y salida permanecen separadas; las gafas de ingeniero muestran el calor de la caldera y la salida del motor de vapor"
+,
+  "item.sulfuricresonance.cinder_flare": "Bengala de brasa",
+  "item.sulfuricresonance.lit_cinder_flare": "Bengala de brasa encendida",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Sostén un mechero en la mano secundaria y mantén pulsado clic derecho para encenderla.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Ardiendo. Clic derecho para lanzar.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Debes sostener un mechero en la mano secundaria.",
+  "entity.sulfuricresonance.cinder_flare": "Bengala de brasa"
 }

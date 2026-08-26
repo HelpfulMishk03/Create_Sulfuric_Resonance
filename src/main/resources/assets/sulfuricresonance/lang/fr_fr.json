@@ -809,4 +809,11 @@
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "L’ajout d’un arbre crée l’arbre motorisé de Create et l’ensemble mobile complet de la machine",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Un arbre thermochimique relié à l’arbre motorisé transporte le niveau de chaleur de la chaudière ; ses tr/min et SU proviennent uniquement de la chaudière",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Les réseaux d’entrée et de sortie restent séparés ; les lunettes d’ingénieur affichent la chaleur de la chaudière et la sortie de la machine à vapeur"
+,
+  "item.sulfuricresonance.cinder_flare": "Fusée de braise",
+  "item.sulfuricresonance.lit_cinder_flare": "Fusée de braise allumée",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Tenez un briquet dans la main secondaire, puis maintenez le clic droit pour l’allumer.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Allumée. Clic droit pour la lancer.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Un briquet doit être tenu dans la main secondaire.",
+  "entity.sulfuricresonance.cinder_flare": "Fusée de braise"
 }

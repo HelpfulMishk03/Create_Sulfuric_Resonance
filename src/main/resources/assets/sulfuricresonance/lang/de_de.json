@@ -809,4 +809,11 @@
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Das Hinzufügen einer Welle erzeugt Creates angetriebene Welle und die vollständige bewegliche Dampfmaschinenmechanik",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Eine Thermochemische Welle an der angetriebenen Welle führt die Wärmestufe des Kessels; ihre Drehzahl und SU stammen nur vom Kessel",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Eingangs- und Ausgangsnetz bleiben getrennt; die Ingenieursbrille zeigt kesselgespeiste Wärme und Dampfmaschinenleistung"
+,
+  "item.sulfuricresonance.cinder_flare": "Glutfackel",
+  "item.sulfuricresonance.lit_cinder_flare": "Entzündete Glutfackel",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Feuerzeug in der Nebenhand halten und Rechtsklick gedrückt halten, um sie zu entzünden.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Brennt. Rechtsklick zum Werfen.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Ein Feuerzeug muss in der Nebenhand gehalten werden.",
+  "entity.sulfuricresonance.cinder_flare": "Glutfackel"
 }

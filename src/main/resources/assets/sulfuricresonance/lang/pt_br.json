@@ -809,4 +809,11 @@
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Adicionar um Eixo cria o Eixo Motriz do Create e o conjunto móvel completo do motor",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Um Eixo Termoquímico no Eixo Motriz transporta o nível de calor da caldeira; sua RPM e seus SU vêm apenas da caldeira",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "As redes de entrada e saída permanecem separadas; os Óculos de Engenheiro mostram o calor da caldeira e a saída do Motor a Vapor"
+,
+  "item.sulfuricresonance.cinder_flare": "Sinalizador de Brasa",
+  "item.sulfuricresonance.lit_cinder_flare": "Sinalizador de Brasa Aceso",
+  "tooltip.sulfuricresonance.cinder_flare.unlit": "Segure Pederneira e Aço na mão secundária e mantenha o botão direito pressionado para acender.",
+  "tooltip.sulfuricresonance.cinder_flare.lit": "Aceso. Clique com o botão direito para arremessar.",
+  "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Pederneira e Aço deve estar na mão secundária.",
+  "entity.sulfuricresonance.cinder_flare": "Sinalizador de Brasa"
 }

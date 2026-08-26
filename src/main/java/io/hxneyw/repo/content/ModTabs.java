@@ -82,6 +82,7 @@ public class ModTabs {
                   output.accept(Items.PYROCLASTIC_POWDER.get());
 
                   output.accept(Items.PYROCLAST_BOMB.get());
+                  output.accept(Items.CINDER_FLARE.get());
                   output.accept(Items.RESONANT_COPPER_INGOT.get());
                   output.accept(Items.RESONANT_COPPER_SHEET.get());
                   output.accept(Items.RESONANT_IRON_INGOT.get());
