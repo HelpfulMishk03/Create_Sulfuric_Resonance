@@ -1,0 +1,19 @@
+{
+  "type": "create:filling",
+  "ingredients": [
+    {
+      "item": "minecraft:glass_bottle"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "sulfuricresonance:sulfuric_acid"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:sulfuric_acid_flask",
+      "count": 1
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "SULFURICRESONANCE_CINDER_FLARE_LIGHTING",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "io/hxneyw/repo/client/animation/CinderFlareClientEnumParams",
+        "field": "CINDER_FLARE_LIGHTING"
+      }
+    }
+  ]
+}

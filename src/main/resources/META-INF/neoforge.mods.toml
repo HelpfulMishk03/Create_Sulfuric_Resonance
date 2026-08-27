@@ -11,7 +11,7 @@ issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/i
 modId = "sulfuricresonance"
 version = "0.4.0"
 displayName = "Create: Sulfuric Resonance"
-
+enumExtensions = "META-INF/enumextensions.json"
 
 logoFile = "createsulfuricresonance.png"
 

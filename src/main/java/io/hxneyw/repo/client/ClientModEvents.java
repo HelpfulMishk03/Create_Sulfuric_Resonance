@@ -1,5 +1,6 @@
 package io.hxneyw.repo.client;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
 import com.simibubi.create.content.processing.basin.BasinRenderer;
 import com.simibubi.create.foundation.block.connected.GlassPaneCTBehaviour;
@@ -8,6 +9,8 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.client.gui.SulfuricResonanceChamberScreen;
+import io.hxneyw.repo.client.animation.CinderFlareAnimationHandler;
+import io.hxneyw.repo.client.animation.CinderFlareClientEnumParams;
 import io.hxneyw.repo.client.screen.PrecisionSpritzerScreen;
 import io.hxneyw.repo.client.renderer.CinderFlareRenderer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
@@ -27,8 +30,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -287,6 +296,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                     CinderFlareRenderer::new
             );
 
+            EntityRenderers.register(
+                    ModEntities.SULFURIC_ACID_FLASK.get(),
+                    ThrownItemRenderer::new
+            );
+
             BlockEntityRenderers.register(
                     AllBlockEntities.PERFORATED_SPRITZER.get(),
                     PerforatedSpritzerRenderer::new
@@ -427,6 +441,77 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 Items.THERMAL_RELAY_SWITCH_ITEM.get(),
                 Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get(),
                 Items.THERMAL_WARNING_ALARM_ITEM.get()
+        );
+
+        IClientItemExtensions cinderFlareExtensions = new IClientItemExtensions() {
+            @Override
+            public boolean applyForgeHandTransform(
+                    PoseStack poseStack,
+                    LocalPlayer player,
+                    HumanoidArm arm,
+                    ItemStack itemInHand,
+                    float partialTick,
+                    float equipProcess,
+                    float swingProcess
+            ) {
+                return CinderFlareAnimationHandler.applyFirstPersonItemTransform(
+                        poseStack,
+                        player,
+                        arm,
+                        itemInHand,
+                        partialTick,
+                        equipProcess
+                );
+            }
+
+            @Override
+            public HumanoidModel.ArmPose getArmPose(
+                    LivingEntity entity,
+                    InteractionHand hand,
+                    ItemStack stack
+            ) {
+                if (!entity.isUsingItem()
+                        || entity.getUsedItemHand() != hand
+                        || hand != InteractionHand.MAIN_HAND
+                        || !stack.is(Items.CINDER_FLARE.get())
+                        || !entity.getOffhandItem().is(net.minecraft.world.item.Items.FLINT_AND_STEEL)) {
+                    return null;
+                }
+
+                return CinderFlareClientEnumParams.CINDER_FLARE_LIGHTING.getValue();
+            }
+        };
+
+        event.registerItem(
+                cinderFlareExtensions,
+                Items.CINDER_FLARE.get()
+        );
+
+        IClientItemExtensions flintAndSteelExtensions = new IClientItemExtensions() {
+            @Override
+            public boolean applyForgeHandTransform(
+                    PoseStack poseStack,
+                    LocalPlayer player,
+                    HumanoidArm arm,
+                    ItemStack itemInHand,
+                    float partialTick,
+                    float equipProcess,
+                    float swingProcess
+            ) {
+                return CinderFlareAnimationHandler.applyFirstPersonItemTransform(
+                        poseStack,
+                        player,
+                        arm,
+                        itemInHand,
+                        partialTick,
+                        equipProcess
+                );
+            }
+        };
+
+        event.registerItem(
+                flintAndSteelExtensions,
+                net.minecraft.world.item.Items.FLINT_AND_STEEL
         );
     }
 
