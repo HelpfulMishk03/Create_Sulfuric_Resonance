@@ -815,5 +815,9 @@
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Sostén un mechero en la mano secundaria y mantén pulsado clic derecho para encenderla.",
   "tooltip.sulfuricresonance.cinder_flare.lit": "Ardiendo. Clic derecho para lanzar.",
   "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Debes sostener un mechero en la mano secundaria.",
-  "entity.sulfuricresonance.cinder_flare": "Bengala de brasa"
+  "entity.sulfuricresonance.cinder_flare": "Bengala de brasa",
+  "item.sulfuricresonance.sulfuric_acid_flask": "Frasco de ácido sulfúrico",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.throw": "Clic derecho para lanzar. Se rompe al impactar.",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.effect": "Provoca Quemadura ácida y elimina una etapa de oxidación de hasta tres bloques de cobre.",
+  "entity.sulfuricresonance.sulfuric_acid_flask": "Frasco de ácido sulfúrico"
 }

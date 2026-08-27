@@ -48,6 +48,7 @@ public class Items {
    public static final DeferredItem<Item> BLAZE_SHARD = ITEMS.register("blaze_shard", () -> new Item(new Properties().stacksTo(64).fireResistant()));
    public static final DeferredItem<Item> PYROCLASTIC_POWDER = ITEMS.register("pyroclastic_powder", () -> new Item(new Properties().stacksTo(64).fireResistant()));
    public static final DeferredItem<Item> PYROCLAST_BOMB = ITEMS.register("pyroclast_bomb", () -> new PyroclastBombItem(new Properties().stacksTo(16)));
+   public static final DeferredItem<SulfuricAcidFlaskItem> SULFURIC_ACID_FLASK = ITEMS.register("sulfuric_acid_flask", () -> new SulfuricAcidFlaskItem(new Properties().stacksTo(16)));
    public static final DeferredItem<CinderFlareItem> CINDER_FLARE = ITEMS.register("cinder_flare", () -> new CinderFlareItem(new Properties().stacksTo(16).fireResistant()));
    public static final DeferredItem<LitCinderFlareItem> LIT_CINDER_FLARE = ITEMS.register("lit_cinder_flare", () -> new LitCinderFlareItem(new Properties().stacksTo(64).fireResistant()));
    public static final DeferredItem<Item> REINFORCED_CINDER_COMPOUND = ITEMS.register("reinforced_cinder_compound", () -> new Item(new Properties().stacksTo(64)));

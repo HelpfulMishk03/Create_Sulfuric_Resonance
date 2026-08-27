@@ -808,5 +808,9 @@
   "tooltip.sulfuricresonance.steam_engine.su": "生成应力容量：%s SU",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "添加传动轴会生成Create的动力轴以及完整的运动引擎组件",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "连接在动力轴上的热化学传动轴会传递锅炉的热量等级；其转速和SU仅由锅炉提供",
-  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "输入与输出网络保持分离；工程师护目镜会显示锅炉供给的热量和蒸汽机输出"
+  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "输入与输出网络保持分离；工程师护目镜会显示锅炉供给的热量和蒸汽机输出",
+  "item.sulfuricresonance.sulfuric_acid_flask": "硫酸烧瓶",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.throw": "右键投掷，命中后碎裂。",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.effect": "施加酸灼伤，并使最多三个铜块降低一个氧化阶段。",
+  "entity.sulfuricresonance.sulfuric_acid_flask": "硫酸烧瓶"
 }

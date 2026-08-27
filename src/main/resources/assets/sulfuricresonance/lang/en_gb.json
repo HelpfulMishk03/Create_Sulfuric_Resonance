@@ -815,5 +815,9 @@
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Hold Flint and Steel in your offhand, then hold Right Click to light.",
   "tooltip.sulfuricresonance.cinder_flare.lit": "Burning. Right Click to throw.",
   "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Flint and Steel must be held in your offhand.",
-  "entity.sulfuricresonance.cinder_flare": "Cinder Flare"
+  "entity.sulfuricresonance.cinder_flare": "Cinder Flare",
+  "item.sulfuricresonance.sulfuric_acid_flask": "Sulfuric Acid Flask",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.throw": "Right Click to throw. Shatters on impact.",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.effect": "Splashes Acid Burn and removes one oxidation stage from up to three copper blocks.",
+  "entity.sulfuricresonance.sulfuric_acid_flask": "Sulfuric Acid Flask"
 }

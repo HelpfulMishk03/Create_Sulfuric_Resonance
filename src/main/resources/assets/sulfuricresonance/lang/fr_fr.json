@@ -815,5 +815,9 @@
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Tenez un briquet dans la main secondaire, puis maintenez le clic droit pour l’allumer.",
   "tooltip.sulfuricresonance.cinder_flare.lit": "Allumée. Clic droit pour la lancer.",
   "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Un briquet doit être tenu dans la main secondaire.",
-  "entity.sulfuricresonance.cinder_flare": "Fusée de braise"
+  "entity.sulfuricresonance.cinder_flare": "Fusée de braise",
+  "item.sulfuricresonance.sulfuric_acid_flask": "Fiole d'acide sulfurique",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.throw": "Clic droit pour lancer. Se brise à l'impact.",
+  "tooltip.sulfuricresonance.sulfuric_acid_flask.effect": "Inflige Brûlure acide et retire un stade d'oxydation à jusqu'à trois blocs de cuivre.",
+  "entity.sulfuricresonance.sulfuric_acid_flask": "Fiole d'acide sulfurique"
 }

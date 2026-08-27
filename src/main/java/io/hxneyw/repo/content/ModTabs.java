@@ -52,6 +52,7 @@ public class ModTabs {
                   output.accept(Items.SULFUR_BLOCK.get());
 
                   output.accept(Items.SULFURIC_ACID_BUCKET.get());
+                  output.accept(Items.SULFURIC_ACID_FLASK.get());
                   output.accept(Items.SUPERPHOSPHATE_FERTILIZER.get());
                   output.accept(Items.EMBER_CATALYST.get());
                   output.accept(Items.ACTIVATED_SULFUR_CATALYST.get());
