@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "connected=false": {
+      "model": "sulfuricresonance:block/catalyst_bed"
+    },
+    "connected=true": {
+      "model": "sulfuricresonance:block/catalyst_bed_connected"
+    }
+  }
+}

@@ -17,10 +17,10 @@ public class ModdedPotatoProjectileTypes {
       ctx.register(
          PYROCLAST_BOMB,
               new Builder()
-                      .damage(3)
+                      .damage(0)
                       .reloadTicks(25)
-                      .velocity(0.7F)
-                      .knockback(1.5F)
+                      .velocity(1.5F)
+                      .knockback(0.0F)
                       .renderTumbling()
                       .soundPitch(0.7F)
                       .addItems(Items.PYROCLAST_BOMB.get())

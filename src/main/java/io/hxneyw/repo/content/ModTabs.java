@@ -21,6 +21,7 @@ public class ModTabs {
                   output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
                   output.accept(Items.SULFUR_BURNER_ITEM.get());
                   output.accept(Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get());
+                  output.accept(Items.CATALYST_BED_ITEM.get());
                   output.accept(Items.RESONANT_HEAT_INJECTOR_ITEM.get());
                   output.accept(Items.ASH_CERAMIC_CRUCIBLE_ITEM.get());
                   output.accept(Items.PERFORATED_SPRITZER.get());

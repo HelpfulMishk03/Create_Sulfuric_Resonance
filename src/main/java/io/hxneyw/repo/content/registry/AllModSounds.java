@@ -13,6 +13,10 @@ public class AllModSounds {
            "rubber_padding_hit", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "rubber_padding_hit"))
    );
 
+   public static final DeferredHolder<SoundEvent, SoundEvent> PYROCLAST_BOMB_DETONATE = SOUNDS.register(
+           "pyroclast_bomb_detonate", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "pyroclast_bomb_detonate"))
+   );
+
    public static final DeferredHolder<SoundEvent, SoundEvent> MOLTEN_ROTOR_RUMBLE = SOUNDS.register(
            "molten_rotor_rumble", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "molten_rotor_rumble"))
    );

@@ -23,6 +23,7 @@ import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.fluids.spritzer.PerforatedSpritzerRenderer;
 import io.hxneyw.repo.content.particles.AcidDripParticle;
 import io.hxneyw.repo.content.particles.CombustionPurpleFlameParticle;
+import io.hxneyw.repo.content.particles.PyroclasticFragmentParticle;
 import io.hxneyw.repo.content.registry.*;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -203,6 +204,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 ModParticles.ACID_DRIP.get(),
                 AcidDripParticle.Provider::new
         );
+
+        event.registerSpriteSet(
+                ModParticles.PYROCLASTIC_FRAGMENT.get(),
+                PyroclasticFragmentParticle.Provider::new
+        );
     }
 
     @SubscribeEvent
@@ -254,6 +260,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
             ItemBlockRenderTypes.setRenderLayer(
                     AllModBlocks.THERMOCHEMICAL_CLUTCH.get(),
                     RenderType.cutoutMipped()
+            );
+
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.CATALYST_BED.get(),
+                    RenderType.cutout()
             );
 
             ItemBlockRenderTypes.setRenderLayer(

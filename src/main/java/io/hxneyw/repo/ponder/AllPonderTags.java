@@ -73,6 +73,7 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.THERMAL_GAUGE.get()))
                 .add(blockKey(AllModBlocks.LIVING_EMBER_LAMP.get()))
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()))
+                .add(blockKey(AllModBlocks.CATALYST_BED.get()))
                 .add(blockKey(AllModBlocks.THERMAL_WARNING_ALARM.get()));
 
         helper.addToTag(SULFUR_CHEMISTRY)
@@ -81,7 +82,8 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.SULFUR_BURNER.get()))
                 .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()))
                 .add(blockKey(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()))
-                .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()));
+                .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()))
+                .add(blockKey(AllModBlocks.CATALYST_BED.get()));
 
         helper.addToTag(INTELLIGENT_INDUSTRY)
                 .add(itemKey(Items.PRECISION_SPRITZER.get()))

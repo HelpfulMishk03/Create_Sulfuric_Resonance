@@ -10,13 +10,11 @@ Some progression details, recipes, machinery interactions, and advanced material
 
 ## Current Version
 
-### **0.3.0 — Intelligent Industry**
+### **0.4.0**
 
-**Intelligent Industry** expands CSR's automation layer.
+0.4.0 expands CSR's field equipment and advanced resonance infrastructure.
 
-Factories can now monitor processes, react to changing machine conditions, control thermochemical infrastructure, and perform more precise industrial operations.
-
-0.3.0 also includes new chemistry applications, additional machinery, expanded Create integration, and a large polish pass across existing CSR systems.
+The release adds the Catalyst Bed for faster Sulfuric Resonance Chamber processing, completes the Cinder Flare and Sulfuric Acid Flask, and overhauls the Pyroclast Bomb with improved throwing, detonation, water interaction, and Create Potato Cannon support.
 
 ---
 
@@ -112,21 +110,17 @@ Machines are intended to become parts of larger factories rather than disconnect
 
 ---
 
-## 0.3.0 Highlights
+## 0.4.0 Highlights
 
-**Intelligent Industry** introduces:
+0.4.0 introduces:
 
-* Process monitoring and factory-control systems
-* New thermochemical control machinery
-* Precision Spraying
-* Expanded sulfuric-acid utility
-* New industrial chemistry
-* Chamber operating improvements
-* Additional Create integration
-* Expanded Ponder documentation
-* New advancements
-* Improved compatibility
-* Large visual, behavioral, and code-polish passes
+* The Catalyst Bed, a direct physical Chamber upgrade with 1.5× live processing
+* Connected and disconnected Catalyst Bed visuals built around the Chamber's moving platform
+* Staged Cinder Flare ignition and throwable lit flares
+* Throwable Sulfuric Acid Flasks with acid and copper-deoxidation effects
+* A complete Pyroclast Bomb behavior and presentation overhaul
+* Create Potato Cannon support for Pyroclast Bombs
+* New advancement, Ponder, Goggle, recipe, and localization coverage
 
 Many of the exact mechanics are intentionally not documented here.
 
@@ -175,6 +169,8 @@ CSR currently maintains localization coverage for:
 * French
 * German
 * Portuguese (Brazil)
+* Russian
+* Simplified Chinese
 
 Major machinery, tooltips, advancements, Ponder scenes, GUIs, and recipe-viewer text are localized across the supported language files.
 

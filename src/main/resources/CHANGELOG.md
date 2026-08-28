@@ -6,6 +6,51 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+# Create: Sulfuric Resonance 0.4.0
+
+0.4.0 expands CSR's field equipment and advanced resonance infrastructure with three completed throwable-item passes and the new Catalyst Bed for the Sulfuric Resonance Chamber.
+
+## Added
+
+### Catalyst Bed
+
+* Added the Catalyst Bed as a physical upgrade placed directly beneath a Sulfuric Resonance Chamber.
+* An installed Catalyst Bed advances live Chamber processing at 1.5× normal speed without changing recipe files, displayed recipe durations, ingredients, heat requirements, RPM requirements, acid use, automation, or operating modes.
+* Only the Catalyst Bed immediately beneath a Chamber applies; additional Beds cannot stack the acceleration.
+* Installing or removing the Bed during a reaction changes the processing rate without resetting completed progress.
+* The Chamber continues to operate normally without a Catalyst Bed.
+* Added disconnected and connected model states using the finished Catalyst Bed atlas.
+* The raised connector appears only while a valid Chamber is directly above and remains visually compatible with the Chamber's moving reaction platform.
+* Collision and interaction geometry remain entirely inside the Catalyst Bed's own block space.
+* Added Engineer's Goggle status for active and missing Catalyst Beds.
+* Added a shaped crafting recipe using Resonant Iron Sheets, Iron Bars, and an Activated Sulfur Catalyst.
+* Added block loot, pickaxe and tool-tier tags, an item model, creative-tab placement, and the **Resonant Foundation** advancement.
+* Added a dedicated Ponder scene covering placement, connection visuals, acceleration, live removal, and non-stacking behavior.
+
+### Cinder Flare
+
+* Added a staged two-second ignition action using Flint and Steel in the off hand.
+* Added synchronized ignition sounds, sparks, flame feedback, and dedicated lit and unlit item states.
+* Added throwable lit flares with persistent flame presentation and multiplayer-aware entity behavior.
+
+### Sulfuric Acid Flask
+
+* Added throwable Sulfuric Acid Flasks with dedicated projectile rendering and synchronized impact behavior.
+* Flask impacts apply Acid Burn and remove one oxidation stage from up to three copper blocks.
+* Added water interaction, impact cleanup, localized tooltips, and entity presentation.
+
+### Pyroclast Bomb Overhaul
+
+* Rebuilt hand throwing around a deliberate short wind-up and arcing projectile trajectory.
+* Added controlled impact demolition of up to five blocks, moderate combat damage, restrained knockback, and a limited ignition chance.
+* Water now extinguishes a Pyroclast Bomb so it can be recovered.
+* Added dedicated detonation sound and subtitle coverage, pyroclastic fragments, smoke, flame, flash, and debris feedback.
+* Added Create Potato Cannon ammunition support alongside normal hand throwing.
+
+### Localization
+
+* Added complete Catalyst Bed names, tooltips, advancement text, Goggle status, and Ponder documentation across all eight supported locales.
+
 # Create: Sulfuric Resonance 0.3.1 — Industrial Pulse
 
 **Industrial Pulse** is a focused machinery-feedback and presentation update.
