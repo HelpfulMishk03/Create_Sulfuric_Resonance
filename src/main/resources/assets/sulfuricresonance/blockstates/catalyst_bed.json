@@ -4,7 +4,7 @@
       "model": "sulfuricresonance:block/catalyst_bed"
     },
     "connected=true": {
-      "model": "sulfuricresonance:block/catalyst_bed_connected"
+      "model": "sulfuricresonance:block/catalyst_bed"
     }
   }
 }

@@ -6,7 +6,7 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
-# Create: Sulfuric Resonance 0.4.0
+# Create: Sulfuric Resonance 0.4.0 -- Reactive Tools
 
 0.4.0 expands CSR's field equipment and advanced resonance infrastructure with three completed throwable-item passes and the new Catalyst Bed for the Sulfuric Resonance Chamber.
 
@@ -50,6 +50,31 @@ Older entries are reconstructed from surviving builds, development notes, testin
 ### Localization
 
 * Added complete Catalyst Bed names, tooltips, advancement text, Goggle status, and Ponder documentation across all eight supported locales.
+
+## Changed
+
+### Item Textures
+
+* Updated the Sulfuric Acid Bucket texture.
+
+## Fixed
+
+### Catalyst Bed Presentation
+
+* Replaced the static connected-state sleeve with a rendered connector that extends and retracts with the Sulfuric Resonance Chamber platform.
+* Corrected the render-pass order so Sulfuric Acid blends over the sleeve instead of depth-hiding it during processing.
+* Corrected first-person, third-person, GUI, dropped-item, and item-frame transforms for the Catalyst Bed item model.
+* Rebuilt the hover outline from the finished model's individual voxel bounds instead of using a broad box through the machine.
+* Switched the binary-alpha Catalyst Bed model from translucent blending to cutout rendering so selection highlighting cannot reveal the floor through opaque machinery.
+
+### Thermochemical Boiler Output
+
+* Fixed connected Thermochemical Link Drives inheriting one three-block heat span when every Link Drive was directly attached to its own active Steam Engine powered shaft.
+* Each direct boiler-powered shaft connection now acts as a local thermochemical heat source for its attached Link Drive.
+
+
+----------------
+
 
 # Create: Sulfuric Resonance 0.3.1 — Industrial Pulse
 
@@ -222,6 +247,9 @@ Alongside this machinery-feedback pass, Industrial Pulse introduces the **Thermo
 * Audited registered blocks, items, blockstates, models, textures, recipes, loot tables, advancements, sounds, Ponder structures, mixins, metadata, and localization resources.
 * Verified complete localization-key parity and formatting-placeholder consistency across all eight supported languages.
 * Preserved existing redstone, processing, thermochemical-network, and automation mechanics throughout the polish pass.
+
+
+----------------
 
 
 
@@ -510,6 +538,11 @@ Full localization-key parity is maintained for:
 * German
 * Portuguese (Brazil)
 
+
+----------------
+
+
+
 ### 0.2.9-beta — Resonance
 
 0.2.9 gives CSR's thermochemical infrastructure an advanced purpose by combining heat, rotation, sulfuric acid, specialized reagents, and automation into a new resonance-processing stage.
@@ -632,6 +665,12 @@ Resonance completes the next major stage of CSR's thermochemical progression:
 0.2.9 also completes a broad presentation and compatibility pass across JEI, EMI, Ponder, advancements, automation, localization, models, and Chamber rendering.
 
 
+
+----------------
+
+
+
+
 ### 0.2.8-beta — Sulfurous Capabilities
 
 0.2.8 expands the thermochemical infrastructure introduced in 0.2.7 with new sulfur-based fuels, heat sources, materials, and dedicated kinetic components.
@@ -660,6 +699,11 @@ Resonance completes the next major stage of CSR's thermochemical progression:
 * Updated language entries.
 * Fixed JEI rendering issues.
 * Additional compatibility and presentation fixes.
+
+
+
+----------------
+
 
 ## [0.2.7-beta] — Reactive Heat
 
@@ -735,6 +779,10 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Fixed Molten Rotor fuel synchronization and save compatibility.
 
 
+----------------
+
+
+
 ## [0.2.6-beta] — Ashen Resonance
 
 ### Added
@@ -806,6 +854,11 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Fixed missing or inconsistent creative-tab placement for newly added content.
 - Fixed item and block presentation inconsistencies discovered during the final visual pass.
 
+
+----------------
+
+
+
 ## [0.2.5-beta] — Compatibility, Guidance, and Progression
 
 ### Updated
@@ -854,6 +907,11 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Explains compatibility with properly tagged external Sulfur dusts.
 - Explains why raw ores, chunks, and storage blocks are not accepted as processed Sulfur inputs.
 
+
+----------------
+
+
+
 ## [0.2.4-beta1] - Progression Hotfix
 
 ### Fixed
@@ -861,6 +919,11 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Fixed a progression-blocking recipe loop where the Molten Rotor Furnace required Flameborne Core while Flameborne Core required sulfur obtained through the furnace progression.
 - Replaced the Molten Rotor Furnace's Flameborne Core ingredient with Blaze Shard.
 - Restored a valid progression path from early Blaze processing to the Molten Rotor Furnace and then into sulfur chemistry.
+
+
+----------------
+
+
 
 ## [0.2.4-beta] - Ponder, Projectile, and Build Stability Update
 
@@ -906,6 +969,11 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Fuel compatibility remains intentionally selective; not every modded furnace fuel or log is accepted automatically.
 - Furnace lighting is still based on Minecraft's normal block-light behavior and renderer effects rather than truly directional light propagation.
 - Additional Ponder coverage and recipe explanations may still be expanded during beta.
+
+
+----------------
+
+
 
 ## [0.2.3-betaA] - Pre-Release Public
 
@@ -1057,6 +1125,11 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Balancing, recipe progression, visuals, naming, and broad mod compatibility may change during beta.
 - Tag-based support is broader than before but does not guarantee compatibility with every modded fuel.
 
+
+----------------
+
+
+
 ## [0.2.1-betaA through 0.2.1-betaE] - Source Restoration Baseline
 
 ### Added and restored
@@ -1078,6 +1151,11 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 - Fixed recipe serializer and recipe-type generic issues.
 - Fixed numerous renderer regressions and restored a stable visual baseline.
 
+
+----------------
+
+
+
 ## [0.1.9-beta] - Earlier Surviving Beta
 
 - Earlier compiled beta used as one source of reference during restoration.
@@ -1086,4 +1164,4 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 
 ## Project history note
 
-Create: Sulfuric Resonance is developed and maintained by **Hxney**. Approximately eight months of active development led to the `0.2.4-beta` public-beta candidate, excluding an approximately one-year interruption caused by unforeseen life emergencies.
+Create: Sulfuric Resonance is developed and maintained by **Hxney**. Approximately eight months of active development led to the `0.2.4-beta` public-beta candidate, excluding a one-year interruption caused by unforeseen life emergencies.

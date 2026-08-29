@@ -21,9 +21,45 @@ public final class CatalystBedBlock extends Block {
     public static final BooleanProperty CONNECTED =
             BooleanProperty.create("connected");
 
-    private static final VoxelShape SHAPE = Shapes.or(
+    private static final VoxelShape OUTLINE_SHAPE = Shapes.or(
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
-            Block.box(1.0D, 2.0D, 1.0D, 15.0D, 11.0D, 15.0D),
+            Block.box(2.0D, 2.0D, 2.0D, 14.0D, 11.0D, 14.0D),
+            Block.box(1.0D, 2.0D, 1.0D, 2.0D, 11.0D, 2.0D),
+            Block.box(14.0D, 2.0D, 1.0D, 15.0D, 11.0D, 2.0D),
+            Block.box(1.0D, 2.0D, 14.0D, 2.0D, 11.0D, 15.0D),
+            Block.box(14.0D, 2.0D, 14.0D, 15.0D, 11.0D, 15.0D),
+            Block.box(2.0D, 9.0D, 1.0D, 14.0D, 11.0D, 2.0D),
+            Block.box(2.0D, 5.0D, 1.0D, 14.0D, 7.0D, 2.0D),
+            Block.box(2.0D, 9.0D, 14.0D, 14.0D, 11.0D, 15.0D),
+            Block.box(2.0D, 5.0D, 14.0D, 14.0D, 7.0D, 15.0D),
+            Block.box(1.0D, 5.0D, 2.0D, 2.0D, 7.0D, 14.0D),
+            Block.box(1.0D, 9.0D, 2.0D, 2.0D, 11.0D, 14.0D),
+            Block.box(14.0D, 9.0D, 2.0D, 15.0D, 11.0D, 14.0D),
+            Block.box(14.0D, 5.0D, 2.0D, 15.0D, 7.0D, 14.0D),
+            Block.box(14.0D, 7.0D, 7.0D, 15.0D, 9.0D, 9.0D),
+            Block.box(14.0D, 2.0D, 7.0D, 15.0D, 5.0D, 9.0D),
+            Block.box(1.0D, 2.0D, 7.0D, 2.0D, 5.0D, 9.0D),
+            Block.box(1.0D, 2.0D, 11.0D, 2.0D, 5.0D, 12.0D),
+            Block.box(1.0D, 7.0D, 7.0D, 2.0D, 9.0D, 9.0D),
+            Block.box(1.0D, 7.0D, 11.0D, 2.0D, 9.0D, 12.0D),
+            Block.box(1.0D, 7.0D, 4.0D, 2.0D, 9.0D, 5.0D),
+            Block.box(1.0D, 2.0D, 4.0D, 2.0D, 5.0D, 5.0D),
+            Block.box(14.0D, 7.0D, 11.0D, 15.0D, 9.0D, 12.0D),
+            Block.box(14.0D, 2.0D, 11.0D, 15.0D, 5.0D, 12.0D),
+            Block.box(14.0D, 2.0D, 4.0D, 15.0D, 5.0D, 5.0D),
+            Block.box(14.0D, 7.0D, 4.0D, 15.0D, 9.0D, 5.0D),
+            Block.box(7.0D, 7.0D, 14.0D, 9.0D, 9.0D, 15.0D),
+            Block.box(11.0D, 7.0D, 14.0D, 12.0D, 9.0D, 15.0D),
+            Block.box(7.0D, 2.0D, 14.0D, 9.0D, 5.0D, 15.0D),
+            Block.box(11.0D, 2.0D, 14.0D, 12.0D, 5.0D, 15.0D),
+            Block.box(4.0D, 2.0D, 14.0D, 5.0D, 5.0D, 15.0D),
+            Block.box(4.0D, 7.0D, 14.0D, 5.0D, 9.0D, 15.0D),
+            Block.box(11.0D, 7.0D, 1.0D, 12.0D, 9.0D, 2.0D),
+            Block.box(11.0D, 2.0D, 1.0D, 12.0D, 5.0D, 2.0D),
+            Block.box(4.0D, 7.0D, 1.0D, 5.0D, 9.0D, 2.0D),
+            Block.box(4.0D, 2.0D, 1.0D, 5.0D, 5.0D, 2.0D),
+            Block.box(7.0D, 7.0D, 1.0D, 9.0D, 9.0D, 2.0D),
+            Block.box(7.0D, 2.0D, 1.0D, 9.0D, 5.0D, 2.0D),
             Block.box(2.0D, 11.0D, 2.0D, 14.0D, 13.0D, 14.0D),
             Block.box(3.0D, 13.0D, 3.0D, 13.0D, 15.0D, 13.0D),
             Block.box(3.0D, 15.0D, 3.0D, 13.0D, 16.0D, 5.5D),
@@ -31,6 +67,14 @@ public final class CatalystBedBlock extends Block {
             Block.box(3.0D, 15.0D, 5.5D, 5.5D, 16.0D, 10.5D),
             Block.box(10.5D, 15.0D, 5.5D, 13.0D, 16.0D, 10.5D),
             Block.box(5.5D, 15.0D, 5.5D, 10.5D, 15.25D, 10.5D)
+    );
+
+    private static final VoxelShape COLLISION_SHAPE = Shapes.or(
+            Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
+            Block.box(1.0D, 2.0D, 1.0D, 15.0D, 11.0D, 15.0D),
+            Block.box(2.0D, 11.0D, 2.0D, 14.0D, 13.0D, 14.0D),
+            Block.box(3.0D, 13.0D, 3.0D, 13.0D, 15.0D, 13.0D),
+            Block.box(3.0D, 15.0D, 3.0D, 13.0D, 16.0D, 13.0D)
     );
 
     public CatalystBedBlock(Properties properties) {
@@ -95,7 +139,7 @@ public final class CatalystBedBlock extends Block {
             @NotNull BlockPos position,
             @NotNull CollisionContext context
     ) {
-        return SHAPE;
+        return OUTLINE_SHAPE;
     }
 
     @Override
@@ -105,7 +149,7 @@ public final class CatalystBedBlock extends Block {
             @NotNull BlockPos position,
             @NotNull CollisionContext context
     ) {
-        return SHAPE;
+        return COLLISION_SHAPE;
     }
 
     @Override
@@ -114,7 +158,7 @@ public final class CatalystBedBlock extends Block {
             @NotNull BlockGetter level,
             @NotNull BlockPos position
     ) {
-        return SHAPE;
+        return COLLISION_SHAPE;
     }
 
     @Override

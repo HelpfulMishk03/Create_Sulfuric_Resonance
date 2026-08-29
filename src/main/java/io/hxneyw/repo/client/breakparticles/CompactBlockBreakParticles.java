@@ -66,7 +66,8 @@ public final class CompactBlockBreakParticles {
                 AllModBlocks.THERMAL_WARNING_ALARM.get(),
                 AllModBlocks.PROCESS_GAUGE.get(),
                 AllModBlocks.PROCESS_MONITOR.get(),
-                AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get()
+                AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get(),
+                AllModBlocks.CATALYST_BED.get()
         );
     }
 

@@ -40,6 +40,8 @@ public class SulfuricResonanceChamberRenderer
     private static final double ITEM_PLATFORM_Y = 6.3D / 16.0D;
     private static final double PLATFORM_HOME_OFFSET = 1.0D / 16.0D;
     private static final double PLATFORM_TRAVEL = 0.35D / 16.0D;
+    private static final double CATALYST_CONNECTOR_IDLE_EXTENSION =
+            0.15D / 16.0D;
     private static final double ITEM_VERTICAL_OFFSET = 0.018D;
     private static final float ITEM_SCALE = 0.32F;
     private static final double ITEM_STACK_SPACING = 0.030D;
@@ -82,6 +84,15 @@ public class SulfuricResonanceChamberRenderer
             int packedLight,
             int packedOverlay
     ) {
+        renderCatalystBedConnector(
+                chamber,
+                partialTick,
+                poseStack,
+                buffer,
+                packedLight,
+                packedOverlay
+        );
+
         renderAcid(
                 chamber,
                 poseStack,
@@ -910,6 +921,44 @@ public class SulfuricResonanceChamberRenderer
     private static double platformYOffset(float lift) {
         return -PLATFORM_HOME_OFFSET - PLATFORM_TRAVEL
                 * (1.0D - Math.clamp(lift, 0.0F, 1.0F));
+    }
+
+    private void renderCatalystBedConnector(
+            SulfuricResonanceChamberBlockEntity chamber,
+            float partialTick,
+            PoseStack poseStack,
+            MultiBufferSource buffer,
+            int light,
+            int overlay
+    ) {
+        if (!chamber.hasCatalystBed()) {
+            return;
+        }
+
+        BakedModel model = ClientModEvents.CATALYST_BED_CONNECTOR.get();
+        Minecraft minecraft = Minecraft.getInstance();
+        if (model == null
+                || model == minecraft.getModelManager().getMissingModel()) {
+            return;
+        }
+
+        double extension = CATALYST_CONNECTOR_IDLE_EXTENSION
+                + PLATFORM_TRAVEL
+                * chamber.getClientPlatformLift(partialTick);
+
+        poseStack.pushPose();
+        poseStack.translate(0.0D, -1.0D + extension, 0.0D);
+
+        renderBakedModel(
+                poseStack,
+                buffer,
+                model,
+                RenderType.cutout(),
+                light,
+                overlay
+        );
+
+        poseStack.popPose();
     }
 
     private static float rotationForItem(Direction facing) {

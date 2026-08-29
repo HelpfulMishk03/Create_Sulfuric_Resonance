@@ -1,22 +1,23 @@
 # Create: Sulfuric Resonance
 
-**Create: Sulfuric Resonance** is an independently developed NeoForge addon for [Create](https://github.com/Creators-of-Create/Create), focused on **thermochemical engineering, sulfur chemistry, advanced materials, and industrial automation**.
+**Create: Sulfuric Resonance**, or **CSR**, is a NeoForge addon for [Create](https://github.com/Creators-of-Create/Create) built around sulfur chemistry, thermochemical heat, advanced materials, and factory automation.
 
-CSR expands Create with new heat-driven machinery, sulfur-based processing, dedicated thermochemical infrastructure, specialized materials, and factory systems designed to fit naturally into Create-style builds.
+It adds another side to Create's progression: furnaces that need more than rotational power, heat networks that run through the factory, sulfuric acid production, reactive materials, and machinery that can report what it is doing.
 
-Some progression details, recipes, machinery interactions, and advanced material chains are intentionally left for players to discover through gameplay.
+CSR is meant to feel at home in a Create factory. Most machines use physical inputs, shafts, pipes, funnels, Mechanical Arms, redstone, and Engineer's Goggles instead of existing as isolated menu blocks.
 
----
+## Current release: 0.4.0
 
-## Current Version
+0.4.0 expands the Sulfuric Resonance Chamber and adds several pieces of usable field equipment.
 
-### **0.4.0**
+### What's new
 
-0.4.0 expands CSR's field equipment and advanced resonance infrastructure.
-
-The release adds the Catalyst Bed for faster Sulfuric Resonance Chamber processing, completes the Cinder Flare and Sulfuric Acid Flask, and overhauls the Pyroclast Bomb with improved throwing, detonation, water interaction, and Create Potato Cannon support.
-
----
+* **Catalyst Bed** — installs directly beneath a Sulfuric Resonance Chamber and speeds up live processing by 1.5×. Its connector physically follows the Chamber's moving platform.
+* **Cinder Flare** — light it with Flint and Steel in your off hand, then throw it as a persistent blue-violet flare.
+* **Sulfuric Acid Flask** — a throwable acid flask with its own impact behavior, Acid Burn, and copper deoxidation.
+* **Pyroclast Bomb overhaul** — rebuilt throwing, impact behavior, demolition, water extinguishing, recovery, and visual effects.
+* **Create Potato Cannon support** for Pyroclast Bombs.
+* New Ponder scenes, advancements, Goggle information, recipes, sounds, visuals, and localization for the 0.4.0 content.
 
 ## Requirements
 
@@ -32,136 +33,57 @@ The release adds the Catalyst Bed for faster Sulfuric Resonance Chamber processi
 * JEI **19.42.0.387+**
 * EMI **1.1.24+**
 
----
+JEI and EMI can be used separately or together.
 
-## What CSR Adds
+## What you can build
 
-CSR is built around connected industrial systems rather than isolated machines.
+### Thermochemical heat networks
 
-### Thermochemical Industry
+Generate heat, move it through dedicated shafts and conduits, split or interrupt it, monitor it, and use it alongside Create's kinetic network.
 
-Generate, transmit, route, monitor, and use thermochemical heat through dedicated infrastructure designed to operate alongside Create's kinetic systems.
+Thermochemical heat is part of the factory layout. Where it comes from and how it reaches a machine matters.
 
-Heat is treated as part of the factory itself rather than simply another recipe condition.
+### Sulfur processing
 
-### Sulfur Chemistry
+Sulfur runs through much of CSR's progression: specialized fuels, Sulfuric Acid, high-temperature processing, ceramics, rubber, machine components, and advanced materials.
 
-Sulfur plays a central role throughout CSR.
+### Resonance machinery
 
-It is used across:
+The **Sulfuric Resonance Chamber** combines heat, rotation, Sulfuric Acid, and specialized materials in one processing system. The Catalyst Bed extends the machine without replacing its existing recipes or automation.
 
-* Sulfuric Acid production
-* Specialized fuels
-* Chemical processing
-* High-temperature industry
-* Advanced materials
-* Machine components
+### Smarter factories
 
-### Advanced Processing
+Process Monitors, Process Gauges, Thermal Warning Alarms, Thermochemical Clutches, linked displays, and redstone output let a factory react to machine state instead of relying only on timers.
 
-CSR expands Create-style manufacturing with several additional forms of industrial processing.
+### Steam boiler integration
 
-These include combustion-driven production, thermochemical processing, acid-based chemistry, precision treatment, and advanced resonance technology.
+The Thermochemical Boiler Interface lets CSR heat feed Create steam boilers through connected heater arrays. Steam Engine outputs can also act as local thermochemical sources through directly connected Link Drives.
 
-Exact recipes and progression paths are intended to be discovered in-game.
+## Automation
 
-### Resonance
+CSR machinery works with the tools already used in Create builds, including:
 
-Resonance introduces a higher stage of thermochemical industry built around advanced materials and demanding processing conditions.
-
-The **Sulfuric Resonance Chamber** forms the center of this progression and connects heat, rotation, chemistry, and specialized materials into a new processing system.
-
-### Intelligent Industry
-
-0.3.0 gives factories new ways to understand and react to what their machinery is doing.
-
-New systems allow process information to influence:
-
-* monitoring
-* redstone control
-* machine behavior
-* thermochemical routing
-* factory warnings
-* precision automation
-
-The goal is to make thermochemical information useful for designing smarter factories without replacing Create's physical automation style.
-
-### Precision Processing
-
-Industrial spraying receives a major expansion in 0.3.0.
-
-New precision systems allow sulfuric-acid processing to be controlled far more carefully and introduce additional chemical uses for existing CSR infrastructure.
-
-### Factory Automation
-
-CSR is designed with automation in mind.
-
-Its machinery integrates with systems such as:
-
-* Create Funnels
+* Funnels and belts
 * Mechanical Arms
-* Fluid transport
+* Fluid pipes and tanks
 * Redstone
 * Wrenches
 * Engineer's Goggles
-* Linked monitoring systems
+* Linked monitoring equipment
 
-Machines are intended to become parts of larger factories rather than disconnected crafting stations.
+The machines are made to sit inside real production lines, not beside a manual crafting station.
 
----
+## Learning the mod
 
-## 0.4.0 Highlights
+Major machines and systems have in-game **Ponder** scenes covering setup, heat flow, controls, and automation.
 
-0.4.0 introduces:
+Advancements provide a loose progression path, while Engineer's Goggles expose useful machine and network information. JEI and EMI include CSR's custom processing categories and animated machinery where appropriate.
 
-* The Catalyst Bed, a direct physical Chamber upgrade with 1.5× live processing
-* Connected and disconnected Catalyst Bed visuals built around the Chamber's moving platform
-* Staged Cinder Flare ignition and throwable lit flares
-* Throwable Sulfuric Acid Flasks with acid and copper-deoxidation effects
-* A complete Pyroclast Bomb behavior and presentation overhaul
-* Create Potato Cannon support for Pyroclast Bombs
-* New advancement, Ponder, Goggle, recipe, and localization coverage
+Not every recipe or material chain is listed here on purpose. Some of CSR is better discovered by building it.
 
-Many of the exact mechanics are intentionally not documented here.
+## Languages
 
----
-
-## Ponder
-
-Create: Sulfuric Resonance includes extensive in-game **Ponder** documentation for its major machinery and systems.
-
-Ponder scenes explain setup, automation, heat flow, controls, processing behavior, and important interactions without requiring an external guide.
-
-New scenes continue to be added as CSR expands.
-
----
-
-## Recipe Viewer Support
-
-CSR includes dedicated integration for:
-
-* **JEI**
-* **EMI**
-
-Both are optional.
-
-Custom recipe categories cover CSR's major processing systems, with animated machinery presentations where appropriate.
-
-JEI and EMI may be used independently or together.
-
----
-
-## Advancements
-
-CSR includes an advancement tree covering major progression milestones, machinery, materials, and selected challenges.
-
-Advancements are intended to guide progression while still leaving room for experimentation and discovery.
-
----
-
-## Localization
-
-CSR currently maintains localization coverage for:
+CSR currently includes:
 
 * English (US)
 * English (UK)
@@ -172,17 +94,8 @@ CSR currently maintains localization coverage for:
 * Russian
 * Simplified Chinese
 
-Major machinery, tooltips, advancements, Ponder scenes, GUIs, and recipe-viewer text are localized across the supported language files.
+Localization covers major machinery, tooltips, GUIs, advancements, Ponder scenes, and recipe-viewer text.
 
 ---
 
-## Compatibility
-
-```text
-Minecraft 1.21.1
-NeoForge 21.1.238+
-Create 6.0.7+
-Java 21
-
-JEI 19.42.0.387+ (optional)
-EMI 1.1.24+ (optional)
+Create: Sulfuric Resonance is independently developed and is not an official Create project.
