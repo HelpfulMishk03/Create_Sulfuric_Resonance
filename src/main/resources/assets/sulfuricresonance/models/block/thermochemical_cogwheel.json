@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "create:block/cogwheel",
   "textures": {
     "0": "sulfuricresonance:block/thermochemical_cogwheel/thermochemicalcogwheel_axis",

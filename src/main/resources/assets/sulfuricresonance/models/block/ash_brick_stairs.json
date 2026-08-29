@@ -1,4 +1,5 @@
 {
+  "credit": "Made in Blockbench by Hxney",
   "parent": "minecraft:block/stairs",
   "textures": {
     "bottom": "sulfuricresonance:block/ash_bricks/ash_brick_block",

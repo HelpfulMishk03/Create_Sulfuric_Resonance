@@ -61,11 +61,20 @@ public class ClientModEvents {
     public static final PartialModel THERMOCHEMICAL_SHAFT =
             partial("block/thermochemical_shaft");
 
+    public static final PartialModel THERMOCHEMICAL_BOILER_INTERFACE_PORT_SHAFT =
+            partial("block/thermochemical_boiler_interface_port_shaft");
+
     public static final PartialModel THERMOCHEMICAL_GEARBOX_SHAFT =
             partial("block/thermochemical_gearbox_shaft");
 
     public static final PartialModel THERMOCHEMICAL_CLUTCH_SHAFT_HALF =
             partial("block/thermochemical_clutch_shaft_half");
+
+    public static final PartialModel THERMOCHEMICAL_CLUTCH_LOCK_HOUSING =
+            partial("block/thermochemical_clutch_lock_housing");
+
+    public static final PartialModel THERMOCHEMICAL_CLUTCH_LOCK_PIECE =
+            partial("block/thermochemical_clutch_lock_piece");
 
     public static final PartialModel
             THERMOCHEMICAL_LINK_DRIVE_SHAFT =
@@ -97,6 +106,9 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
 
     public static final PartialModel RESONANCE_CHAMBER_RING_BOTTOM =
             partial("block/sulfuric_resonance_chamber_ring_bottom");
+
+    public static final PartialModel RESONANCE_CHAMBER_PLATFORM =
+            partial("block/sulfuric_resonance_chamber_platform");
 
     public static final PartialModel THERMAL_GAUGE_BASE =
             partial("block/thermal_gauge_base");
@@ -324,6 +336,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMOCHEMICAL_BOILER_INTERFACE.get(),
+                ThermochemicalBoilerInterfaceRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.THERMOCHEMICAL_COGWHEEL.get(),
                 ThermochemicalCogwheelRenderer::new
         );
@@ -419,6 +436,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     private static void registerStandalone(
             RegisterAdditional event
     ) {
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/thermochemical_boiler_interface_port_shaft"
+                        )
+                )
+        );
+
         event.register(
                 ModelResourceLocation.standalone(
                         ResourceLocation.fromNamespaceAndPath(
@@ -522,6 +548,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         ResourceLocation.fromNamespaceAndPath(
                                 "sulfuricresonance",
                                 "block/sulfuric_resonance_chamber_window"
+                        )
+                )
+        );
+
+        event.register(
+                ModelResourceLocation.standalone(
+                        ResourceLocation.fromNamespaceAndPath(
+                                "sulfuricresonance",
+                                "block/sulfuric_resonance_chamber_platform"
                         )
                 )
         );

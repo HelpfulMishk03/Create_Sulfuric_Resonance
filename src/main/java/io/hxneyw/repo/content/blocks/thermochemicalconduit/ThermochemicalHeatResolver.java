@@ -6,6 +6,7 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
+import com.simibubi.create.content.kinetics.steamEngine.PoweredShaftBlockEntity;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
@@ -13,6 +14,7 @@ import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
+import io.hxneyw.repo.compat.create.ThermochemicalBoilerInterfaceCompat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -131,6 +133,33 @@ public final class ThermochemicalHeatResolver {
 
             BlockEntity sourceEntity = level.getBlockEntity(sourcePosition);
             totalDistance++;
+
+            if (sourceEntity instanceof PoweredShaftBlockEntity poweredShaft) {
+                if (lacksInheritedConnection(
+                        level,
+                        sourcePosition,
+                        currentPosition
+                )) {
+                    return Result.NONE;
+                }
+
+                ThermochemicalBoilerInterfaceCompat.SteamSource steamSource =
+                        ThermochemicalBoilerInterfaceCompat.resolveSteamSource(
+                                poweredShaft
+                        );
+                if (!steamSource.active()) {
+                    return Result.NONE;
+                }
+
+                return buildResult(
+                        level,
+                        targetToSource,
+                        steamSource.heatTier(),
+                        sourcePosition,
+                        steamSource.temperature(),
+                        totalDistance
+                );
+            }
 
             if (sourceEntity instanceof MoltenRotorBlockEntity furnace) {
                 if (lacksInheritedConnection(

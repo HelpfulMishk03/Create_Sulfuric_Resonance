@@ -68,6 +68,7 @@ public class SulfuricResonanceChamberScreen
     private int autoRollTimer;
     private Button previousButton;
     private Button nextButton;
+    private Button audioButton;
     private Button modeButton;
     private Button startButton;
 
@@ -106,6 +107,18 @@ public class SulfuricResonanceChamberScreen
                         .build()
         );
 
+        audioButton = addRenderableWidget(
+                Button.builder(
+                                Component.empty(),
+                                button -> sendButton(
+                                        SulfuricResonanceChamberMenu
+                                                .BUTTON_TOGGLE_AUDIO
+                                )
+                        )
+                        .bounds(leftPos + 140, topPos + 13, 50, 12)
+                        .build()
+        );
+
         modeButton = addRenderableWidget(
                 Button.builder(
                                 Component.empty(),
@@ -114,7 +127,7 @@ public class SulfuricResonanceChamberScreen
                                                 .BUTTON_TOGGLE_MODE
                                 )
                         )
-                        .bounds(leftPos + 194, topPos + 7, 60, 12)
+                        .bounds(leftPos + 194, topPos + 13, 60, 12)
                         .build()
         );
 
@@ -128,7 +141,7 @@ public class SulfuricResonanceChamberScreen
                                                 .BUTTON_MANUAL_START
                                 )
                         )
-                        .bounds(leftPos + 258, topPos + 7, 38, 12)
+                        .bounds(leftPos + 258, topPos + 13, 38, 12)
                         .build()
         );
 
@@ -199,7 +212,7 @@ public class SulfuricResonanceChamberScreen
     }
 
     private void updateControlButtonState() {
-        if (modeButton == null || startButton == null) {
+        if (audioButton == null || modeButton == null || startButton == null) {
             return;
         }
 
@@ -207,6 +220,13 @@ public class SulfuricResonanceChamberScreen
                 menu.getOperatingMode();
         boolean manual = mode
                 == SulfuricResonanceChamberBlockEntity.OperatingMode.MANUAL;
+
+        audioButton.setMessage(Component.translatable(
+                menu.isAudioEnabled()
+                        ? "gui.sulfuricresonance.chamber.audio.on"
+                        : "gui.sulfuricresonance.chamber.audio.off"
+        ));
+        audioButton.active = true;
 
         modeButton.setMessage(Component.translatable(mode.translationKey()));
         modeButton.active = !menu.isProcessing();
@@ -380,7 +400,7 @@ public class SulfuricResonanceChamberScreen
             int mouseX,
             int mouseY
     ) {
-        graphics.drawString(font, title, 10, 9, TEXT, false);
+        graphics.drawString(font, title, 10, 3, TEXT, false);
 
         graphics.drawCenteredString(
                 font,

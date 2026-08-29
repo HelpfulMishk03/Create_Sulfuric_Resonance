@@ -1,6 +1,5 @@
 {
   "format_version": "1.9.0",
-  "credit": "Made with Blockbench, By Hxney",
   "textures": {
     "0": "sulfuricresonance:item/impeller_blade",
     "particle": "sulfuricresonance:item/impeller_blade"

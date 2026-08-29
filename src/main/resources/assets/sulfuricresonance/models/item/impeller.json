@@ -1,6 +1,5 @@
 {
   "format_version": "1.9.0",
-  "credit": "Made with Blockbench, by Hxney",
   "textures": {
     "0": "sulfuricresonance:item/molten_rotor",
     "particle": "sulfuricresonance:item/molten_rotor"

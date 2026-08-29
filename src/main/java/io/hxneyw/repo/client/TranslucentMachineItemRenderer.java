@@ -173,6 +173,16 @@ public class TranslucentMachineItemRenderer
                 RenderType.cutout()
         );
         renderPart(
+                ClientModEvents.RESONANCE_CHAMBER_PLATFORM,
+                state,
+                stack,
+                poseStack,
+                buffer,
+                light,
+                overlay,
+                RenderType.cutout()
+        );
+        renderPart(
                 ClientModEvents.RESONANCE_CHAMBER_SHAFT,
                 state,
                 stack,

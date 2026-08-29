@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 25;
+    private static final int REGISTERED_SCENES = 27;
 
     @NotNull
     @Override
@@ -333,6 +333,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     "thermal_warning_alarm/operation",
                     ThermalWarningAlarmScenes::operation,
                     AllPonderTags.INTELLIGENT_INDUSTRY
+            );
+
+            ResourceLocation thermochemicalBoilerInterfaceId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermochemicalBoilerInterfaceId,
+                    "thermochemical_boiler_interface/operation",
+                    ThermochemicalBoilerInterfaceScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
             );
 
             CreateSulfuricResonance.LOGGER.info(

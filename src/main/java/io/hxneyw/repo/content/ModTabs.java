@@ -27,6 +27,7 @@ public class ModTabs {
                   output.accept(Items.PRECISION_SPRITZER.get());
                   output.accept(Items.COMBUSTION_BELT_CONNECTOR.get());
                   output.accept(Items.THERMOCHEMICAL_SHAFT_ITEM.get());
+                  output.accept(Items.THERMOCHEMICAL_BOILER_INTERFACE_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_CONDUIT_ITEM.get());
 
                   output.accept(Items.THERMOCHEMICAL_COGWHEEL_ITEM.get());

@@ -10,7 +10,9 @@
     "BeltBlockMixin",
     "ChainDriveBlockMixin",
     "FactoryPanelBlockMixin",
-    "RotationPropagatorMixin"
+    "RotationPropagatorMixin",
+    "BoilerDataBoilerInterfaceMixin",
+    "SteamEngineBlockEntityThermochemicalMixin"
   ],
   "client": [
     "BeltRendererMixin",

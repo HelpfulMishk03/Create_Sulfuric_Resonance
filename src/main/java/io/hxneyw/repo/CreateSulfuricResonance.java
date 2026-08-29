@@ -3,6 +3,7 @@ package io.hxneyw.repo;
 import com.mojang.logging.LogUtils;
 import io.hxneyw.repo.compat.arm.AllModArmInteractionPoints;
 import io.hxneyw.repo.compat.automation.ModCapabilities;
+import io.hxneyw.repo.compat.create.ThermochemicalBoilerInterfaceCompat;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeHostPayload;
 import io.hxneyw.repo.content.ModTabs;
@@ -22,6 +23,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
@@ -47,6 +49,7 @@ public class CreateSulfuricResonance {
       modEventBus.addListener(ProcessMonitorArmPayload::register);
       modEventBus.addListener(ThermalGaugeHostPayload::register);
       AllModSounds.SOUNDS.register(modEventBus);
+      modEventBus.addListener(CreateSulfuricResonance::onCommonSetup);
 
       AllModFluids.register(modEventBus);
       modEventBus.addListener(
@@ -55,6 +58,10 @@ public class CreateSulfuricResonance {
       AllModEffects.register(modEventBus);
       NeoForge.EVENT_BUS.register(this);
       modContainer.registerConfig(Type.COMMON, Config.SPEC);
+   }
+
+   private static void onCommonSetup(FMLCommonSetupEvent event) {
+      event.enqueueWork(ThermochemicalBoilerInterfaceCompat::register);
    }
 
    @SubscribeEvent

@@ -1,7 +1,9 @@
 {
   "rubber_padding_hit": {
     "subtitle": "subtitles.sulfuricresonance.rubber_padding_hit",
-    "sounds": ["sulfuricresonance:rubber_padding_hit"]
+    "sounds": [
+      "sulfuricresonance:rubber_padding_hit"
+    ]
   },
   "molten_rotor_rumble": {
     "subtitle": "subtitles.sulfuricresonance.molten_rotor_rumble",
@@ -9,7 +11,7 @@
       {
         "name": "sulfuricresonance:molten_rotor_rumble",
         "stream": true,
-        "attenuation_distance": 16
+        "attenuation_distance": 24
       }
     ]
   },
@@ -20,6 +22,126 @@
         "name": "sulfuricresonance:thermal_warning_alarm/striker",
         "stream": false,
         "attenuation_distance": 24
+      }
+    ]
+  },
+  "thermochemical_clutch_engage": {
+    "subtitle": "subtitles.sulfuricresonance.thermochemical_clutch_engage",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:thermochemical_clutch_engage",
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "thermochemical_clutch_release": {
+    "subtitle": "subtitles.sulfuricresonance.thermochemical_clutch_release",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:thermochemical_clutch_release",
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "sulfur_burner_ignite": {
+    "subtitle": "subtitles.sulfuricresonance.sulfur_burner_ignite",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfur_burner_ignite",
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "sulfur_burner_cracking": {
+    "subtitle": "subtitles.sulfuricresonance.sulfur_burner_cracking",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfur_burner_combustion_cracking",
+        "stream": true,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "sulfur_burner_loop": {
+    "subtitle": "subtitles.sulfuricresonance.sulfur_burner_loop",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfur_burner_loop",
+        "stream": true,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "sulfur_burner_extinguish": {
+    "subtitle": "subtitles.sulfuricresonance.sulfur_burner_extinguish",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfur_burner_extinguish",
+        "stream": false,
+        "attenuation_distance": 16
+      }
+    ]
+  },
+  "sulfuric_resonance_chamber_startup": {
+    "subtitle": "subtitles.sulfuricresonance.sulfuric_resonance_chamber_startup",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfuric_resonance_chamber_startup",
+        "stream": true,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "sulfuric_resonance_chamber_lock_in": {
+    "subtitle": "subtitles.sulfuricresonance.sulfuric_resonance_chamber_lock_in",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfuric_resonance_chamber_lock_in",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "sulfuric_resonance_chamber_ready": {
+    "subtitle": "subtitles.sulfuricresonance.sulfuric_resonance_chamber_ready",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfuric_resonance_chamber_ready",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "sulfuric_resonance_chamber_release": {
+    "subtitle": "subtitles.sulfuricresonance.sulfuric_resonance_chamber_release",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfuric_resonance_chamber_release",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "sulfuric_resonance_chamber_strain": {
+    "subtitle": "subtitles.sulfuricresonance.sulfuric_resonance_chamber_strain",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfuric_resonance_chamber_strain",
+        "stream": false,
+        "attenuation_distance": 20
+      }
+    ]
+  },
+  "sulfuric_resonance_chamber_dry_click": {
+    "subtitle": "subtitles.sulfuricresonance.sulfuric_resonance_chamber_dry_click",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:sulfuric_resonance_chamber_dry_click",
+        "stream": false,
+        "attenuation_distance": 20
       }
     ]
   }

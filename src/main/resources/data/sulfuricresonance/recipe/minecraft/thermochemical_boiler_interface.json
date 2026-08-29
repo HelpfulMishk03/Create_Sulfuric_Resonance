@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "pattern": [
+    "ICI",
+    "KTK",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "C": {
+      "item": "create:copper_sheet"
+    },
+    "K": {
+      "item": "sulfuricresonance:thermochemical_casing"
+    },
+    "T": {
+      "item": "sulfuricresonance:thermochemical_shaft"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:thermochemical_boiler_interface",
+    "count": 1
+  }
+}
