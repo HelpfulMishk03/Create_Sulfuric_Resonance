@@ -53,10 +53,6 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 ## Changed
 
-### Item Textures
-
-* Updated the Sulfuric Acid Bucket texture.
-
 ## Fixed
 
 ### Catalyst Bed Presentation
@@ -66,11 +62,6 @@ Older entries are reconstructed from surviving builds, development notes, testin
 * Corrected first-person, third-person, GUI, dropped-item, and item-frame transforms for the Catalyst Bed item model.
 * Rebuilt the hover outline from the finished model's individual voxel bounds instead of using a broad box through the machine.
 * Switched the binary-alpha Catalyst Bed model from translucent blending to cutout rendering so selection highlighting cannot reveal the floor through opaque machinery.
-
-### Thermochemical Boiler Output
-
-* Fixed connected Thermochemical Link Drives inheriting one three-block heat span when every Link Drive was directly attached to its own active Steam Engine powered shaft.
-* Each direct boiler-powered shaft connection now acts as a local thermochemical heat source for its attached Link Drive.
 
 
 ----------------
