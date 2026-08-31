@@ -13,6 +13,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -25,7 +26,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class CinderFlareItem extends Item {
-    public static final int LIGHTING_DURATION = 40;
+    public static final int LIGHTING_DURATION = 30;
+    public static final int FIRST_STRIKE_TICK = 14;
+    public static final int SECOND_STRIKE_TICK = 27;
+    public static final int IGNITION_TICK = 28;
 
     public CinderFlareItem(Properties properties) {
         super(properties);
@@ -100,7 +104,8 @@ public class CinderFlareItem extends Item {
     ) {
         int elapsed = LIGHTING_DURATION - remainingUseDuration;
 
-        if (!level.isClientSide && (elapsed == 14 || elapsed == 27)) {
+        if (!level.isClientSide
+                && (elapsed == FIRST_STRIKE_TICK || elapsed == SECOND_STRIKE_TICK)) {
             level.playSound(
                     null,
                     livingEntity.getX(),
@@ -108,13 +113,14 @@ public class CinderFlareItem extends Item {
                     livingEntity.getZ(),
                     SoundEvents.FLINTANDSTEEL_USE,
                     SoundSource.PLAYERS,
-                    elapsed == 27 ? 0.58F : 0.44F,
-                    (elapsed == 27 ? 0.84F : 0.96F) + level.random.nextFloat() * 0.12F
+                    elapsed == SECOND_STRIKE_TICK ? 0.58F : 0.44F,
+                    (elapsed == SECOND_STRIKE_TICK ? 0.84F : 0.96F)
+                            + level.random.nextFloat() * 0.12F
             );
         }
 
         if (!level.isClientSide
-                && (elapsed == 14 || elapsed == 27)
+                && (elapsed == FIRST_STRIKE_TICK || elapsed == SECOND_STRIKE_TICK)
                 && level instanceof ServerLevel serverLevel) {
             Vec3 particlePos = lightingParticlePosition(livingEntity);
             serverLevel.sendParticles(
@@ -122,15 +128,17 @@ public class CinderFlareItem extends Item {
                     particlePos.x,
                     particlePos.y,
                     particlePos.z,
-                    elapsed == 27 ? 4 : 2,
-                    0.012D,
-                    0.01D,
-                    0.012D,
-                    0.012D
+                    elapsed == SECOND_STRIKE_TICK ? 3 : 1,
+                    0.008D,
+                    0.008D,
+                    0.008D,
+                    0.008D
             );
         }
 
-        if (!level.isClientSide && elapsed == 28 && level instanceof ServerLevel serverLevel) {
+        if (!level.isClientSide
+                && elapsed == IGNITION_TICK
+                && level instanceof ServerLevel serverLevel) {
             Vec3 particlePos = lightingParticlePosition(livingEntity);
             serverLevel.sendParticles(
                     ModParticles.COMBUSTION_PURPLE_FLAME.get(),
@@ -142,16 +150,6 @@ public class CinderFlareItem extends Item {
                     0.004D,
                     0.004D,
                     0.001D
-            );
-            level.playSound(
-                    null,
-                    livingEntity.getX(),
-                    livingEntity.getY(),
-                    livingEntity.getZ(),
-                    SoundEvents.FIRECHARGE_USE,
-                    SoundSource.PLAYERS,
-                    0.5F,
-                    1.25F
             );
         }
 
@@ -209,8 +207,17 @@ public class CinderFlareItem extends Item {
     }
 
     private static Vec3 lightingParticlePosition(LivingEntity entity) {
+        double yawRadians = Math.toRadians(entity.getYRot());
+        double handSide = entity.getMainArm() == HumanoidArm.RIGHT ? 1.0D : -1.0D;
+        Vec3 right = new Vec3(
+                -Math.cos(yawRadians),
+                0.0D,
+                -Math.sin(yawRadians)
+        );
+
         return entity.getEyePosition()
-                .add(entity.getLookAngle().scale(0.56D))
-                .add(0.0D, -0.20D, 0.0D);
+                .add(entity.getLookAngle().scale(0.72D))
+                .add(right.scale(0.42D * handSide))
+                .add(0.0D, -0.18D, 0.0D);
     }
 }

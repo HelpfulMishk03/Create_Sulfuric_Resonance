@@ -816,6 +816,7 @@
   "tooltip.sulfuricresonance.cinder_flare.lit": "Aceso. Clique com o botão direito para arremessar.",
   "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Pederneira e Aço deve estar na mão secundária.",
   "entity.sulfuricresonance.cinder_flare": "Sinalizador de Brasa",
+  "entity.sulfuricresonance.pyroclastic_powder": "Bomba Piroclástica",
   "item.sulfuricresonance.sulfuric_acid_flask": "Frasco de Ácido Sulfúrico",
   "tooltip.sulfuricresonance.sulfuric_acid_flask.throw": "Clique com o botão direito para arremessar. Quebra com o impacto.",
   "tooltip.sulfuricresonance.sulfuric_acid_flask.effect": "Aplica Queimadura Ácida e remove um estágio de oxidação de até três blocos de cobre.",

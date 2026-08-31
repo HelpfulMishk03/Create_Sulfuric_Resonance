@@ -460,10 +460,10 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         IClientItemExtensions cinderFlareExtensions = new IClientItemExtensions() {
             @Override
             public boolean applyForgeHandTransform(
-                    @NotNull PoseStack poseStack,
-                    @NotNull LocalPlayer player,
-                    @NotNull HumanoidArm arm,
-                    @NotNull ItemStack itemInHand,
+                    PoseStack poseStack,
+                    LocalPlayer player,
+                    HumanoidArm arm,
+                    ItemStack itemInHand,
                     float partialTick,
                     float equipProcess,
                     float swingProcess
@@ -474,16 +474,15 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         arm,
                         itemInHand,
                         partialTick,
-                        equipProcess,
-                        swingProcess
+                        equipProcess
                 );
             }
 
             @Override
             public HumanoidModel.ArmPose getArmPose(
                     LivingEntity entity,
-                    @NotNull InteractionHand hand,
-                    @NotNull ItemStack stack
+                    InteractionHand hand,
+                    ItemStack stack
             ) {
                 if (!entity.isUsingItem()
                         || entity.getUsedItemHand() != hand
@@ -502,94 +501,13 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 Items.CINDER_FLARE.get()
         );
 
-        IClientItemExtensions litCinderFlareExtensions = new IClientItemExtensions() {
-
-            @Override
-
-            public boolean applyForgeHandTransform(
-
-                    @NotNull PoseStack poseStack,
-
-                    @NotNull LocalPlayer player,
-
-                    @NotNull HumanoidArm arm,
-
-                    @NotNull ItemStack itemInHand,
-
-                    float partialTick,
-
-                    float equipProcess,
-
-                    float swingProcess
-
-            ) {
-
-                return CinderFlareAnimationHandler.applyFirstPersonItemTransform(
-
-                        poseStack,
-
-                        player,
-
-                        arm,
-
-                        itemInHand,
-
-                        partialTick,
-
-                        equipProcess,
-
-                        swingProcess
-
-                );
-
-            }
-
-        
-
-            @Override
-
-            public HumanoidModel.ArmPose getArmPose(
-
-                    @NotNull LivingEntity entity,
-
-                    @NotNull InteractionHand hand,
-
-                    @NotNull ItemStack stack
-
-            ) {
-
-                if (hand != InteractionHand.MAIN_HAND
-
-                        || !stack.is(Items.LIT_CINDER_FLARE.get())
-
-                        || !CinderFlareAnimationHandler.isThrowing(entity, 0.0F)) {
-
-                    return null;
-
-                }
-
-                return CinderFlareClientEnumParams.CINDER_FLARE_LIGHTING.getValue();
-
-            }
-
-        };
-
-        event.registerItem(
-
-                litCinderFlareExtensions,
-
-                Items.LIT_CINDER_FLARE.get()
-
-        );
-
-        
         IClientItemExtensions flintAndSteelExtensions = new IClientItemExtensions() {
             @Override
             public boolean applyForgeHandTransform(
-                    @NotNull PoseStack poseStack,
-                    @NotNull LocalPlayer player,
-                    @NotNull HumanoidArm arm,
-                    @NotNull ItemStack itemInHand,
+                    PoseStack poseStack,
+                    LocalPlayer player,
+                    HumanoidArm arm,
+                    ItemStack itemInHand,
                     float partialTick,
                     float equipProcess,
                     float swingProcess
@@ -600,8 +518,7 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         arm,
                         itemInHand,
                         partialTick,
-                        equipProcess,
-                        swingProcess
+                        equipProcess
                 );
             }
         };

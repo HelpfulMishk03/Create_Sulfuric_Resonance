@@ -2,120 +2,19 @@ package io.hxneyw.repo.client.animation;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.items.CinderFlareItem;
-import net.minecraft.client.Minecraft;
+import io.hxneyw.repo.content.items.LitCinderFlareItem;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderArmEvent;
-import net.neoforged.neoforge.client.event.RenderHandEvent;
 
-@EventBusSubscriber(
-        modid = CreateSulfuricResonance.MODID,
-        value = Dist.CLIENT
-)
 public final class CinderFlareAnimationHandler {
     private CinderFlareAnimationHandler() {
-    }
-
-    @SubscribeEvent
-    public static void onRenderArm(RenderArmEvent event) {
-        if (isLighting(event.getPlayer())) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void onRenderHand(RenderHandEvent event) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !isLighting(player)) {
-            return;
-        }
-
-        HumanoidArm arm = event.getHand() == InteractionHand.MAIN_HAND
-                ? player.getMainArm()
-                : player.getMainArm().getOpposite();
-        AnimationState state = animationState(player, event.getPartialTick());
-        event.getPoseStack().pushPose();
-        renderFirstPersonArm(
-                event,
-                player,
-                arm,
-                state
-        );
-        event.getPoseStack().popPose();
-    }
-
-    private static void renderFirstPersonArm(
-            RenderHandEvent event,
-            LocalPlayer player,
-            HumanoidArm arm,
-            AnimationState state
-    ) {
-        float armSide = arm == HumanoidArm.RIGHT ? 1.0F : -1.0F;
-        float mainSide = player.getMainArm() == HumanoidArm.RIGHT ? 1.0F : -1.0F;
-        float strike = state.firstStrike() * 0.78F + state.secondStrike();
-        boolean flareArm = arm == player.getMainArm();
-        float targetX = flareArm
-                ? -0.06F * mainSide
-                : 0.24F * mainSide + 0.24F * mainSide * strike
-                        - 0.10F * mainSide * state.reset();
-        float targetY = flareArm
-                ? -0.18F + 0.012F * strike
-                : -0.34F + 0.24F * strike - 0.10F * state.reset();
-        float targetZ = flareArm
-                ? -0.70F - 0.012F * strike
-                : -0.69F - 0.025F * strike + 0.018F * state.reset();
-        float idleY = -0.60F - 0.60F * event.getEquipProgress();
-        PoseStack poseStack = event.getPoseStack();
-
-        poseStack.translate(
-                Mth.lerp(state.held(), 0.64F * armSide, targetX),
-                Mth.lerp(state.held(), idleY, targetY),
-                Mth.lerp(state.held(), -0.72F, targetZ)
-        );
-        float armScale = 1.0F - 0.32F * state.held();
-        poseStack.scale(armScale, armScale, armScale);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(
-                flareArm
-                        ? -8.0F * mainSide * state.held()
-                        : -32.0F * mainSide * strike + 14.0F * mainSide * state.reset()
-        ));
-        poseStack.mulPose(Axis.YP.rotationDegrees(45.0F * armSide));
-        poseStack.translate(-1.0F * armSide, 3.6F, 3.5F);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(120.0F * armSide));
-        poseStack.mulPose(Axis.XP.rotationDegrees(200.0F));
-        poseStack.mulPose(Axis.YP.rotationDegrees(-135.0F * armSide));
-        poseStack.translate(5.6F * armSide, 0.0F, 0.0F);
-
-        PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance()
-                .getEntityRenderDispatcher()
-                .getRenderer(player);
-        if (arm == HumanoidArm.RIGHT) {
-            renderer.renderRightHand(
-                    poseStack,
-                    event.getMultiBufferSource(),
-                    event.getPackedLight(),
-                    player
-            );
-        } else {
-            renderer.renderLeftHand(
-                    poseStack,
-                    event.getMultiBufferSource(),
-                    event.getPackedLight(),
-                    player
-            );
-        }
     }
 
     public static boolean applyFirstPersonItemTransform(
@@ -124,105 +23,203 @@ public final class CinderFlareAnimationHandler {
             HumanoidArm arm,
             ItemStack itemInHand,
             float partialTick,
-            float equipProcess
+            float equipProcess,
+            float swingProcess
     ) {
-        if (!isLighting(player)) {
-            return false;
+        if (isLighting(player)) {
+            boolean flare = itemInHand.is(Items.CINDER_FLARE.get())
+                    && arm == player.getMainArm();
+            boolean flint = itemInHand.is(net.minecraft.world.item.Items.FLINT_AND_STEEL)
+                    && arm != player.getMainArm();
+
+            if (!flare && !flint) {
+                return false;
+            }
+
+            AnimationState state = animationState(player, partialTick);
+            if (flare) {
+                transformFlare(poseStack, arm, state, equipProcess);
+            } else {
+                transformFlintAndSteel(poseStack, arm, state, equipProcess);
+            }
+            return true;
         }
 
-        boolean flare = itemInHand.is(Items.CINDER_FLARE.get())
-                && arm == player.getMainArm();
-        boolean flint = itemInHand.is(net.minecraft.world.item.Items.FLINT_AND_STEEL)
-                && arm != player.getMainArm();
-        if (!flare && !flint) {
-            return false;
+        if (itemInHand.is(Items.LIT_CINDER_FLARE.get())
+                && arm == player.getMainArm()
+                && isThrowing(player, partialTick)) {
+            transformThrownFlare(
+                    poseStack,
+                    player,
+                    arm,
+                    partialTick,
+                    equipProcess
+            );
+            return true;
         }
 
-        AnimationState state = animationState(player, partialTick);
-        if (flare) {
-            transformFlare(poseStack, player, state, equipProcess);
-        } else {
-            transformFlintAndSteel(poseStack, player, state, equipProcess);
-        }
-        return true;
+        return false;
     }
 
     private static void transformFlare(
             PoseStack poseStack,
-            LocalPlayer player,
+            HumanoidArm arm,
             AnimationState state,
             float equipProcess
     ) {
-        float side = player.getMainArm() == HumanoidArm.RIGHT ? 1.0F : -1.0F;
-        float strikeReaction = state.firstStrike() * 0.34F + state.secondStrike();
+        float side = armSide(arm);
+        float held = state.flareHeld();
+        float strike = state.firstStrike() * 0.30F + state.secondStrike();
         float idleY = -0.52F - 0.60F * equipProcess;
+        float presentationArc = state.flarePresentationArc();
+        float withdrawalArc = state.flareWithdrawalArc();
+        float swingArc = state.swingArc();
+        float response = state.response();
 
         poseStack.translate(
-                Mth.lerp(state.held(), 0.56F * side, -0.06F * side)
-                        + 0.010F * side * strikeReaction,
-                Mth.lerp(state.held(), idleY, -0.18F)
-                        + 0.012F * strikeReaction
-                        - 0.010F * state.ignition(),
-                Mth.lerp(state.held(), -0.72F, -0.70F)
-                        - 0.012F * strikeReaction
+                Mth.lerp(held, 0.56F * side, 0.02F * side)
+                        - 0.010F * side * strike
+                        + (0.014F * presentationArc
+                        + 0.010F * withdrawalArc
+                        + 0.006F * response
+                        - 0.006F * swingArc) * side,
+                Mth.lerp(held, idleY, -0.49F)
+                        + 0.012F * strike
+                        - 0.026F * presentationArc
+                        - 0.018F * withdrawalArc
+                        - 0.008F * response
+                        + 0.004F * swingArc,
+                Mth.lerp(held, -0.72F, -0.76F)
+                        - 0.010F * strike
+                        + 0.022F * presentationArc
+                        + 0.016F * withdrawalArc
+                        + 0.006F * response
+                        - 0.008F * swingArc
         );
-        float scale = 1.0F - 0.28F * state.held();
+
+        float scale = 1.0F - 0.22F * held;
         poseStack.scale(scale, scale, scale);
+
         poseStack.mulPose(Axis.XP.rotationDegrees(
-                -12.0F * state.held()
-                        + 2.0F * strikeReaction
-                        - 3.0F * state.ignition()
+                -6.0F * held
+                        + 1.0F * strike
+                        - 2.0F * presentationArc
+                        + 1.2F * withdrawalArc
+                        - 0.8F * response
+                        + 0.8F * swingArc
         ));
         poseStack.mulPose(Axis.YP.rotationDegrees(
-                6.0F * side * state.held() - 1.5F * side * strikeReaction
+                3.0F * side * held
+                        + 1.5F * side * presentationArc
+                        - 1.0F * side * withdrawalArc
+                        - 0.8F * side * swingArc
         ));
         poseStack.mulPose(Axis.ZP.rotationDegrees(
-                -22.0F * side * state.held()
-                        + 2.0F * side * strikeReaction
-                        + 3.0F * side * state.ignition()
+                -16.0F * side * held
+                        + 1.0F * side * strike
+                        + 2.2F * side * presentationArc
+                        - 1.4F * side * withdrawalArc
+                        - 1.0F * side * response
+                        - 1.5F * side * swingArc
         ));
     }
 
     private static void transformFlintAndSteel(
             PoseStack poseStack,
-            LocalPlayer player,
+            HumanoidArm arm,
             AnimationState state,
             float equipProcess
     ) {
-        float side = player.getMainArm() == HumanoidArm.RIGHT ? 1.0F : -1.0F;
-        float strikeTravel = state.firstStrike() * 0.78F + state.secondStrike();
+        float offSide = armSide(arm);
+        float held = state.flintHeld();
+        float reach = state.firstStrike() * 0.92F + state.secondStrike();
+        float force = state.firstStrike() * 0.68F + state.secondStrike();
         float idleY = -0.52F - 0.60F * equipProcess;
-        float targetX = 0.24F * side + 0.24F * side * strikeTravel
-                - 0.10F * side * state.reset();
-        float targetY = -0.34F + 0.24F * strikeTravel
-                - 0.10F * state.reset();
+        float presentationArc = state.flintPresentationArc();
+        float withdrawalArc = state.flintWithdrawalArc();
+        float swingArc = state.swingArc();
+        float response = state.response();
+
+        float targetX = (0.26F - 0.24F * reach + 0.020F * state.reset()) * offSide;
+        float targetY = -0.50F + 0.08F * reach - 0.015F * state.reset();
 
         poseStack.translate(
-                Mth.lerp(state.held(), -0.56F * side, targetX),
-                Mth.lerp(state.held(), idleY, targetY),
-                Mth.lerp(state.held(), -0.72F, -0.69F)
-                        - 0.025F * strikeTravel
-                        + 0.018F * state.reset()
-                        + 0.018F * state.ignition()
+                Mth.lerp(held, 0.56F * offSide, targetX)
+                        + (0.012F * presentationArc
+                        + 0.009F * withdrawalArc
+                        + 0.032F * swingArc
+                        + 0.004F * response) * offSide,
+                Mth.lerp(held, idleY, targetY)
+                        - 0.025F * presentationArc
+                        - 0.018F * withdrawalArc
+                        - 0.028F * swingArc
+                        - 0.006F * response,
+                Mth.lerp(held, -0.72F, -0.80F)
+                        - 0.070F * reach
+                        + 0.010F * state.reset()
+                        + 0.020F * presentationArc
+                        + 0.014F * withdrawalArc
+                        + 0.038F * swingArc
+                        + 0.006F * response
         );
-        float scale = 1.0F - 0.28F * state.held();
+
+        float scale = 1.0F - 0.28F * held;
         poseStack.scale(scale, scale, scale);
+
         poseStack.mulPose(Axis.XP.rotationDegrees(
-                -10.0F * state.held()
-                        + 16.0F * strikeTravel
-                        - 8.0F * state.reset()
-                        - 3.0F * state.ignition()
+                -6.0F * held
+                        + 10.0F * force
+                        - 2.0F * state.reset()
+                        - 6.0F * swingArc
+                        - 1.0F * response
         ));
         poseStack.mulPose(Axis.YP.rotationDegrees(
-                7.0F * side * state.held()
-                        - 12.0F * side * strikeTravel
-                        + 6.0F * side * state.reset()
+                2.0F * offSide * held
+                        - 4.0F * offSide * force
+                        + 3.0F * offSide * swingArc
         ));
         poseStack.mulPose(Axis.ZP.rotationDegrees(
-                20.0F * side * state.held()
-                        - 65.0F * side * strikeTravel
-                        + 25.0F * side * state.reset()
-                        - 3.0F * side * state.ignition()
+                10.0F * offSide * held
+                        + 40.0F * offSide * reach
+                        - 7.0F * offSide * state.reset()
+                        + 10.0F * offSide * swingArc
+                        - 2.0F * offSide * response
+        ));
+    }
+
+    private static void transformThrownFlare(
+            PoseStack poseStack,
+            LocalPlayer player,
+            HumanoidArm arm,
+            float partialTick,
+            float equipProcess
+    ) {
+        float side = armSide(arm);
+        ThrowState state = throwState(throwProgress(player, partialTick));
+        float idleY = -0.52F - 0.60F * equipProcess;
+
+        poseStack.translate(
+                0.56F * side
+                        + 0.020F * side * state.back()
+                        - 0.010F * side * state.forward(),
+                idleY
+                        - 0.34F * state.back()
+                        + 0.24F * state.forward(),
+                -0.72F
+                        + 0.14F * state.back()
+                        - 0.20F * state.forward()
+        );
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(
+                -14.0F * state.back()
+                        + 18.0F * state.forward()
+        ));
+        poseStack.mulPose(Axis.YP.rotationDegrees(
+                -0.5F * side * state.forward()
+        ));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(
+                1.0F * side * state.back()
+                        - 1.5F * side * state.forward()
         ));
     }
 
@@ -231,46 +228,104 @@ public final class CinderFlareAnimationHandler {
             ModelPart leftArm,
             LivingEntity entity
     ) {
+        if (isThrowing(entity, 0.0F)) {
+            applyThirdPersonThrowPose(rightArm, leftArm, entity);
+            return;
+        }
+
         if (!isLighting(entity)) {
             return;
         }
 
-        float progress = Mth.clamp(
-                1.0F - (float) entity.getUseItemRemainingTicks() / CinderFlareItem.LIGHTING_DURATION,
-                0.0F,
-                1.0F
-        );
-        float presentation = smooth(Mth.clamp(progress / 0.18F, 0.0F, 1.0F));
-        float withdrawal = smooth(Mth.clamp((progress - 0.80F) / 0.20F, 0.0F, 1.0F));
-        float held = presentation * (1.0F - withdrawal);
-        float firstStrike = stroke(progress, 0.29F, 0.38F, 0.46F);
-        float reset = stroke(progress, 0.44F, 0.50F, 0.56F);
-        float secondStrike = stroke(progress, 0.55F, 0.66F, 0.74F);
-        float strike = firstStrike * 0.72F + secondStrike;
+        AnimationState state = animationState(entity, 0.0F);
+        float reach = state.firstStrike() * 0.92F + state.secondStrike();
+        float force = state.firstStrike() * 0.68F + state.secondStrike();
+        float flareTransitionArc = state.flarePresentationArc()
+                - state.flareWithdrawalArc();
+        float flintTransitionArc = state.flintPresentationArc()
+                - state.flintWithdrawalArc();
+
         boolean rightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
-        float side = rightHanded ? 1.0F : -1.0F;
+        float mainSide = rightHanded ? 1.0F : -1.0F;
+
         ModelPart flareArm = rightHanded ? rightArm : leftArm;
         ModelPart flintArm = rightHanded ? leftArm : rightArm;
 
-        flareArm.xRot = Mth.lerp(held, flareArm.xRot, -1.10F + 0.035F * strike);
-        flareArm.yRot = Mth.lerp(held, flareArm.yRot, -0.42F * side + 0.025F * side * strike);
-        flareArm.zRot = Mth.lerp(held, flareArm.zRot, 0.10F * side - 0.025F * side * strike);
+        flareArm.xRot = Mth.lerp(
+                state.flareHeld(),
+                flareArm.xRot,
+                -0.80F + 0.02F * force
+                        - 0.035F * flareTransitionArc
+                        - 0.015F * state.response()
+                        + 0.012F * state.swingArc()
+        );
+        flareArm.yRot = Mth.lerp(
+                state.flareHeld(),
+                flareArm.yRot,
+                -0.18F * mainSide
+                        + 0.020F * mainSide * flareTransitionArc
+                        - 0.012F * mainSide * state.swingArc()
+        );
+        flareArm.zRot = Mth.lerp(
+                state.flareHeld(),
+                flareArm.zRot,
+                -0.16F * mainSide
+                        + 0.025F * mainSide * flareTransitionArc
+                        - 0.012F * mainSide * state.response()
+                        - 0.020F * mainSide * state.swingArc()
+        );
 
         flintArm.xRot = Mth.lerp(
-                held,
+                state.flintHeld(),
                 flintArm.xRot,
-                -1.28F + 0.30F * strike - 0.14F * reset
+                -0.82F - 0.12F * force
+                        + 0.025F * state.reset()
+                        - 0.080F * state.swingArc()
+                        - 0.020F * state.response()
         );
         flintArm.yRot = Mth.lerp(
-                held,
+                state.flintHeld(),
                 flintArm.yRot,
-                0.58F * side - 0.38F * side * strike + 0.18F * side * reset
+                0.18F * mainSide
+                        + 0.04F * mainSide * force
+                        - 0.01F * mainSide * state.reset()
+                        + 0.040F * mainSide * state.swingArc()
         );
         flintArm.zRot = Mth.lerp(
-                held,
+                state.flintHeld(),
                 flintArm.zRot,
-                -0.22F * side + 0.18F * side * strike - 0.08F * side * reset
+                0.18F * mainSide
+                        + 0.26F * mainSide * reach
+                        - 0.05F * mainSide * state.reset()
+                        + 0.12F * mainSide * state.swingArc()
+                        - 0.025F * mainSide * state.response()
         );
+    }
+
+    private static void applyThirdPersonThrowPose(
+            ModelPart rightArm,
+            ModelPart leftArm,
+            LivingEntity entity
+    ) {
+        boolean rightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
+        ModelPart throwArm = rightHanded ? rightArm : leftArm;
+        ThrowState state = throwState(throwProgress(entity, 0.0F));
+
+        float blend = Mth.clamp(state.back() + state.forward(), 0.0F, 1.0F);
+
+        float targetX = 0.52F * state.back() - 1.08F * state.forward();
+        float targetY = 0.0F;
+        float targetZ = 0.0F;
+
+        throwArm.xRot = Mth.lerp(blend, throwArm.xRot, targetX);
+        throwArm.yRot = Mth.lerp(blend, throwArm.yRot, targetY);
+        throwArm.zRot = Mth.lerp(blend, throwArm.zRot, targetZ);
+    }
+
+    public static boolean isThrowing(LivingEntity entity, float partialTick) {
+        return entity.isUsingItem()
+                && entity.getUsedItemHand() == InteractionHand.MAIN_HAND
+                && entity.getUseItem().is(Items.LIT_CINDER_FLARE.get());
     }
 
     private static boolean isLighting(LivingEntity entity) {
@@ -290,24 +345,85 @@ public final class CinderFlareAnimationHandler {
                 0.0F,
                 1.0F
         );
-        float presentation = smooth(Mth.clamp(progress / 0.18F, 0.0F, 1.0F));
-        float withdrawal = smooth(Mth.clamp((progress - 0.80F) / 0.20F, 0.0F, 1.0F));
-        float held = presentation * (1.0F - withdrawal);
-        float firstStrike = stroke(progress, 0.29F, 0.38F, 0.46F);
-        float reset = stroke(progress, 0.44F, 0.50F, 0.56F);
-        float secondStrike = stroke(progress, 0.55F, 0.66F, 0.74F);
-        float ignition = smooth(Mth.clamp((progress - 0.67F) / 0.09F, 0.0F, 1.0F))
-                * (1.0F - withdrawal);
+
+        float flarePresentationPhase = Mth.clamp(progress / 0.16F, 0.0F, 1.0F);
+        float flintPresentationPhase = Mth.clamp(
+                (progress - 0.06F) / 0.18F,
+                0.0F,
+                1.0F
+        );
+        float flareWithdrawalPhase = Mth.clamp(
+                (progress - 0.93F) / 0.07F,
+                0.0F,
+                1.0F
+        );
+        float flintWithdrawalPhase = Mth.clamp(
+                (progress - 0.90F) / 0.10F,
+                0.0F,
+                1.0F
+        );
+        float flareHeld = smoother(flarePresentationPhase)
+                * (1.0F - smoother(flareWithdrawalPhase));
+        float flintHeld = smoother(flintPresentationPhase)
+                * (1.0F - smoother(flintWithdrawalPhase));
+
+        float firstContact = (float) CinderFlareItem.FIRST_STRIKE_TICK
+                / CinderFlareItem.LIGHTING_DURATION;
+        float secondContact = (float) CinderFlareItem.SECOND_STRIKE_TICK
+                / CinderFlareItem.LIGHTING_DURATION;
+        float firstStrike = impactStroke(progress, 0.28F, firstContact, 0.58F);
+        float reset = stroke(progress, 0.58F, 0.63F, 0.68F);
+        float secondStrike = impactStroke(progress, 0.66F, secondContact, 1.0F);
+        float swingArc = swingArc(progress, 0.28F, firstContact, 0.58F) * 0.70F
+                + swingArc(progress, 0.66F, secondContact, 1.0F);
+        float response = stroke(progress, firstContact, 0.52F, 0.63F) * 0.35F
+                + stroke(progress, secondContact, 0.95F, 1.0F);
+
+        float ignition = smoother(
+                Mth.clamp((progress - 0.88F) / 0.10F, 0.0F, 1.0F)
+        ) * (1.0F - smoother(flareWithdrawalPhase));
+
         return new AnimationState(
-                held,
+                flareHeld,
+                flintHeld,
+                bell(flarePresentationPhase),
+                bell(flintPresentationPhase),
+                bell(flareWithdrawalPhase),
+                bell(flintWithdrawalPhase),
                 firstStrike,
                 reset,
                 secondStrike,
+                swingArc,
+                response,
                 ignition
         );
     }
 
-    private static float stroke(float progress, float start, float contact, float end) {
+    private static ThrowState throwState(float progress) {
+        float back = stroke(progress, 0.00F, 0.12F, 0.40F);
+        float forward = stroke(progress, 0.14F, 0.52F, 0.96F);
+        return new ThrowState(back, forward);
+    }
+
+    private static float throwProgress(LivingEntity entity, float partialTick) {
+        float remaining = entity.getUseItemRemainingTicks() - partialTick;
+        return Mth.clamp(
+                1.0F - remaining / LitCinderFlareItem.THROW_ANIMATION_DURATION,
+                0.0F,
+                1.0F
+        );
+    }
+
+    private static float armSide(HumanoidArm arm) {
+        return arm == HumanoidArm.RIGHT ? 1.0F : -1.0F;
+    }
+
+    private static float stroke(
+            float progress,
+            float start,
+            float contact,
+            float end
+    ) {
         if (progress <= start || progress >= end) {
             return 0.0F;
         }
@@ -319,16 +435,76 @@ public final class CinderFlareAnimationHandler {
         return 1.0F - smooth((progress - contact) / (end - contact));
     }
 
+    private static float impactStroke(
+            float progress,
+            float start,
+            float contact,
+            float end
+    ) {
+        if (progress <= start || progress >= end) {
+            return 0.0F;
+        }
+
+        if (progress < contact) {
+            float value = (progress - start) / (contact - start);
+            return value * value * (2.0F - value);
+        }
+
+        float value = (progress - contact) / (end - contact);
+        float inverse = 1.0F - value;
+        return inverse * inverse * (1.0F + value);
+    }
+
+    private static float swingArc(
+            float progress,
+            float start,
+            float contact,
+            float end
+    ) {
+        if (progress <= start || progress >= end) {
+            return 0.0F;
+        }
+
+        if (progress < contact) {
+            return bell((progress - start) / (contact - start));
+        }
+
+        return -0.55F * bell((progress - contact) / (end - contact));
+    }
+
     private static float smooth(float value) {
         return value * value * (3.0F - 2.0F * value);
     }
 
+    private static float smoother(float value) {
+        return value * value * value
+                * (value * (value * 6.0F - 15.0F) + 10.0F);
+    }
+
+    private static float bell(float value) {
+        float curve = value * (1.0F - value);
+        return 16.0F * curve * curve;
+    }
+
     private record AnimationState(
-            float held,
+            float flareHeld,
+            float flintHeld,
+            float flarePresentationArc,
+            float flintPresentationArc,
+            float flareWithdrawalArc,
+            float flintWithdrawalArc,
             float firstStrike,
             float reset,
             float secondStrike,
+            float swingArc,
+            float response,
             float ignition
+    ) {
+    }
+
+    private record ThrowState(
+            float back,
+            float forward
     ) {
     }
 }
