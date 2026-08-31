@@ -14,7 +14,7 @@ public class AcidBurnEffect extends MobEffect {
 
    public boolean applyEffectTick(LivingEntity entity, int amplifier) {
       if (!entity.level().isClientSide()) {
-         entity.hurt(entity.damageSources().magic(), 4.0F);
+         entity.hurt(entity.damageSources().magic(), 3.0F);
       }
 
       return true;
@@ -22,9 +22,7 @@ public class AcidBurnEffect extends MobEffect {
 
    @NotNull
    public Component getDisplayName() {
-      return Component.translatable("effect.sulfuricresonance.acid_burn")
-         .append(Component.literal(" - "))
-         .append(Component.translatable("effect.sulfuricresonance.acid_burn.description"));
+      return Component.translatable("effect.sulfuricresonance.acid_burn");
    }
 
    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {

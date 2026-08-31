@@ -1,5 +1,6 @@
 package io.hxneyw.repo.content.entities;
 
+import io.hxneyw.repo.Config;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.registry.AllModSounds;
 import io.hxneyw.repo.content.registry.ModParticles;
@@ -23,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-
+@SuppressWarnings("resource")
 public final class PyroclastBombDetonation {
    private static final double ENTITY_RADIUS = 3.25D;
    private static final double BLOCK_RADIUS = 2.4D;
@@ -57,9 +58,11 @@ public final class PyroclastBombDetonation {
          0.96F + level.random.nextFloat() * 0.08F
       );
       damageEntities(level, projectile, owner, center);
-      destroyBlocks(level, owner, center);
+      if (Config.PYROCLAST_BOMB_BLOCK_DAMAGE.get()) {
+         destroyBlocks(level, owner, center);
+         igniteOneBlock(level, center);
+      }
       createParticles(level, center);
-      igniteOneBlock(level, center);
    }
 
    public static void extinguish(ServerLevel level, Vec3 center, ItemStack sourceStack) {

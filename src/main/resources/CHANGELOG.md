@@ -53,15 +53,20 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 ## Changed
 
+### Item Textures
+
+* Updated the Sulfuric Acid Bucket texture.
+
+### Sulfuric Acid Effect balancing
+
+* Reduced Acid Burn damage from 2 hearts per second to 1.5 hearts per second.
+
 ## Fixed
 
-### Catalyst Bed Presentation
+### Thermochemical Boiler Output
 
-* Replaced the static connected-state sleeve with a rendered connector that extends and retracts with the Sulfuric Resonance Chamber platform.
-* Corrected the render-pass order so Sulfuric Acid blends over the sleeve instead of depth-hiding it during processing.
-* Corrected first-person, third-person, GUI, dropped-item, and item-frame transforms for the Catalyst Bed item model.
-* Rebuilt the hover outline from the finished model's individual voxel bounds instead of using a broad box through the machine.
-* Switched the binary-alpha Catalyst Bed model from translucent blending to cutout rendering so selection highlighting cannot reveal the floor through opaque machinery.
+* Fixed connected Thermochemical Link Drives inheriting one three-block heat span when every Link Drive was directly attached to its own active Steam Engine powered shaft.
+* Each direct boiler-powered shaft connection now acts as a local thermochemical heat source for its attached Link Drive.
 
 
 ----------------

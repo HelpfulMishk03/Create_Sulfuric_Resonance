@@ -816,6 +816,7 @@
   "tooltip.sulfuricresonance.cinder_flare.lit": "Brennt. Rechtsklick zum Werfen.",
   "message.sulfuricresonance.cinder_flare.requires_flint_and_steel": "Ein Feuerzeug muss in der Nebenhand gehalten werden.",
   "entity.sulfuricresonance.cinder_flare": "Glutfackel",
+  "entity.sulfuricresonance.pyroclastic_powder": "Pyroklastbombe",
   "item.sulfuricresonance.sulfuric_acid_flask": "Schwefelsäurekolben",
   "tooltip.sulfuricresonance.sulfuric_acid_flask.throw": "Rechtsklick zum Werfen. Zerspringt beim Aufprall.",
   "tooltip.sulfuricresonance.sulfuric_acid_flask.effect": "Verursacht Säurebrand und entfernt bei bis zu drei Kupferblöcken eine Oxidationsstufe.",
