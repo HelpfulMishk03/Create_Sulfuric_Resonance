@@ -839,5 +839,12 @@
   "sulfuricresonance.ponder.catalyst_bed.operation.text_2": "仅当正上方存在有效共振室时，抬升连接件才会出现",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_3": "启用的催化床会使共振室当前处理速度提升至正常的1.5倍",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_4": "配方时长和原料均保持不变，其中也包括催化剂原料",
-  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "只有正下方的催化床生效；将其移除后，当前流程会安全恢复为正常速度"
+  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "只有正下方的催化床生效；将其移除后，当前流程会安全恢复为正常速度",
+  "tooltip.sulfuricresonance.cinder_flare.deployer": "可由手持打火石的机械手点燃。",
+  "tooltip.sulfuricresonance.reactive_tools.dispenser": "可由发射器发射。",
+  "sulfuricresonance.ponder.reactive_tools.deployer.header": "自动点燃余烬信号棒",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "手持打火石的机械手可在传送带上点燃未点燃的余烬信号棒",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "已点燃的余烬信号棒会继续沿传送带移动以供收集",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.header": "发射反应工具",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "发射器可发射已点燃的余烬信号棒、硫酸烧瓶和火山碎屑炸弹"
 }

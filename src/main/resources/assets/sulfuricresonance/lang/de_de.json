@@ -840,5 +840,12 @@
   "sulfuricresonance.ponder.catalyst_bed.operation.text_2": "Der erhöhte Anschluss erscheint nur, solange sich direkt darüber eine gültige Kammer befindet",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_3": "Ein aktives Bett beschleunigt die laufende Kammerverarbeitung auf das 1,5-Fache",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_4": "Rezeptdauer und Zutaten bleiben unverändert, einschließlich eines etwaigen Katalysators",
-  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Nur das unmittelbar darunterliegende Bett wirkt; nach dem Entfernen läuft der aktuelle Prozess sicher mit normaler Geschwindigkeit weiter"
+  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Nur das unmittelbar darunterliegende Bett wirkt; nach dem Entfernen läuft der aktuelle Prozess sicher mit normaler Geschwindigkeit weiter",
+  "tooltip.sulfuricresonance.cinder_flare.deployer": "Kann von einem Deployer mit Feuerzeug entzündet werden.",
+  "tooltip.sulfuricresonance.reactive_tools.dispenser": "Kann von einem Spender abgeschossen werden.",
+  "sulfuricresonance.ponder.reactive_tools.deployer.header": "Glutfackeln automatisch entzünden",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Ein Deployer mit Feuerzeug entzündet eine unentzündete Glutfackel auf einem laufenden Förderband",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "Die entzündete Glutfackel läuft zur Abholung auf dem Förderband weiter",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Reaktive Werkzeuge abschießen",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Spender können entzündete Glutfackeln, Schwefelsäurekolben und Pyroklastbomben abschießen"
 }

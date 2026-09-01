@@ -38,6 +38,9 @@ public class SulfuricAcidFlaskItem extends Item {
         tooltipComponents.add(Component.translatable(
                 "tooltip.sulfuricresonance.sulfuric_acid_flask.effect"
         ).withStyle(ChatFormatting.YELLOW));
+        tooltipComponents.add(Component.translatable(
+                "tooltip.sulfuricresonance.reactive_tools.dispenser"
+        ).withStyle(ChatFormatting.DARK_AQUA));
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 

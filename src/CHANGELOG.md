@@ -5,6 +5,18 @@ Hxney and Ł are separate public creator identities used by the same developer a
 All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+# Create: Sulfuric Resonance 0.4.1 -- Adjusted Equilibrium
+
+### Added
+
+* Cinder Flares can now be ignited automatically on moving belts using a Deployer holding Flint and Steel.
+* Dispensers can now launch Lit Cinder Flares, Sulfuric Acid Flasks, and Pyroclast Bombs.
+* Added dedicated Ponder scenes demonstrating Cinder Flare ignition and Reactive Tool launching.
+* Added localized automation hints to Reactive Tool tooltips.
+
+
+-------
+
 
 # Create: Sulfuric Resonance 0.4.0 -- Reactive Tools
 

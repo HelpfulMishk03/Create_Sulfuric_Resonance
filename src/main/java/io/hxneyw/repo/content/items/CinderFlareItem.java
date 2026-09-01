@@ -46,6 +46,10 @@ public class CinderFlareItem extends Item {
                 Component.translatable("tooltip.sulfuricresonance.cinder_flare.unlit")
                         .withStyle(ChatFormatting.GRAY)
         );
+        tooltipComponents.add(
+                Component.translatable("tooltip.sulfuricresonance.cinder_flare.deployer")
+                        .withStyle(ChatFormatting.DARK_AQUA)
+        );
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 

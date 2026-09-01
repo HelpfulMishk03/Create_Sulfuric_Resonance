@@ -1,0 +1,16 @@
+{
+  "type": "create:deploying",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:cinder_flare"
+    },
+    {
+      "item": "minecraft:flint_and_steel"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:lit_cinder_flare"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ package io.hxneyw.repo;
 import com.mojang.logging.LogUtils;
 import io.hxneyw.repo.compat.arm.AllModArmInteractionPoints;
 import io.hxneyw.repo.compat.automation.ModCapabilities;
+import io.hxneyw.repo.compat.automation.ReactiveToolDispenseBehaviors;
 import io.hxneyw.repo.compat.create.ThermochemicalBoilerInterfaceCompat;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeHostPayload;
@@ -61,7 +62,10 @@ public class CreateSulfuricResonance {
    }
 
    private static void onCommonSetup(FMLCommonSetupEvent event) {
-      event.enqueueWork(ThermochemicalBoilerInterfaceCompat::register);
+      event.enqueueWork(() -> {
+         ThermochemicalBoilerInterfaceCompat.register();
+         ReactiveToolDispenseBehaviors.register();
+      });
    }
 
    @SubscribeEvent

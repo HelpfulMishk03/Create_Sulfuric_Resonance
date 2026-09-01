@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 28;
+    private static final int REGISTERED_SCENES = 30;
 
     @NotNull
     @Override
@@ -310,6 +310,44 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     SulfuricAcidScenes::operation,
                     AllPonderTags.FLUIDS
             );
+
+            ResourceLocation cinderFlareId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.CINDER_FLARE.get()
+                    );
+            ResourceLocation litCinderFlareId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.LIT_CINDER_FLARE.get()
+                    );
+            ResourceLocation sulfuricAcidFlaskId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.SULFURIC_ACID_FLASK.get()
+                    );
+            ResourceLocation pyroclastBombId =
+                    BuiltInRegistries.ITEM.getKey(
+                            Items.PYROCLAST_BOMB.get()
+                    );
+
+            helper.forComponents(
+                            cinderFlareId,
+                            litCinderFlareId
+                    )
+                    .addStoryBoard(
+                            "reactive_tools/deployer",
+                            ReactiveToolScenes::deployerAutomation,
+                            AllPonderTags.SULFUR_CHEMISTRY
+                    );
+
+            helper.forComponents(
+                            litCinderFlareId,
+                            sulfuricAcidFlaskId,
+                            pyroclastBombId
+                    )
+                    .addStoryBoard(
+                            "reactive_tools/dispensers",
+                            ReactiveToolScenes::dispenserLaunching,
+                            AllPonderTags.SULFUR_CHEMISTRY
+                    );
 
             ResourceLocation processMonitorId =
                     BuiltInRegistries.BLOCK.getKey(

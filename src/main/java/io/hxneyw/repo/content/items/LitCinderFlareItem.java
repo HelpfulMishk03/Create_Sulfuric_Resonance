@@ -50,6 +50,10 @@ public class LitCinderFlareItem extends Item {
                 Component.translatable("tooltip.sulfuricresonance.cinder_flare.lit")
                         .withStyle(ChatFormatting.GRAY)
         );
+        tooltipComponents.add(
+                Component.translatable("tooltip.sulfuricresonance.reactive_tools.dispenser")
+                        .withStyle(ChatFormatting.DARK_AQUA)
+        );
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
