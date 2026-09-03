@@ -1,5 +1,5 @@
 # Changelog
-**Copyright © 2026 Hxney, Ł. All Rights Reserved.**
+**Copyright © 2026 Hxney (Ł). All Rights Reserved.**
 Hxney and Ł are separate public creator identities used by the same developer and copyright owner.
 
 All notable changes to **Create: Sulfuric Resonance** are documented here.
