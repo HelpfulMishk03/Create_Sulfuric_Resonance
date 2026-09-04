@@ -840,5 +840,12 @@
   "sulfuricresonance.ponder.catalyst_bed.operation.text_2": "The raised connector appears only while a valid Chamber is directly above",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_3": "An active Bed advances live Chamber processing at 1.5× normal speed",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_4": "Recipe durations and ingredients stay unchanged, including any catalyst ingredient",
-  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Only the Bed immediately below applies; removing it safely returns the current process to normal speed"
+  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Only the Bed immediately below applies; removing it safely returns the current process to normal speed",
+  "tooltip.sulfuricresonance.cinder_flare.deployer": "Can be ignited by a Deployer holding Flint and Steel.",
+  "tooltip.sulfuricresonance.reactive_tools.dispenser": "Can be launched from a Dispenser.",
+  "sulfuricresonance.ponder.reactive_tools.deployer.header": "Automating Cinder Flare Ignition",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "A Deployer holding Flint and Steel ignites an unlit Cinder Flare on a moving Belt",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "The Lit Cinder Flare continues down the Belt for collection",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Launching Reactive Tools",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Dispensers launch Lit Cinder Flares, Sulfuric Acid Flasks, and Pyroclast Bombs"
 }

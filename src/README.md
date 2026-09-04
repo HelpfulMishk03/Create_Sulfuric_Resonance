@@ -6,18 +6,18 @@ It adds another side to Create's progression: furnaces that need more than rotat
 
 CSR is meant to feel at home in a Create factory. Most machines use physical inputs, shafts, pipes, funnels, Mechanical Arms, redstone, and Engineer's Goggles instead of existing as isolated menu blocks.
 
-## Current release: 0.4.0
+## Current release: 0.4.1 — Adjusted Equilibrium
 
-0.4.0 expands the Sulfuric Resonance Chamber and adds several pieces of usable field equipment.
+0.4.1 brings the reactive tools introduced in 0.4.0 into Create-style automation and improves their in-game guidance.
 
 ### What's new
 
-* **Catalyst Bed** — installs directly beneath a Sulfuric Resonance Chamber and speeds up live processing by 1.5×. Its connector physically follows the Chamber's moving platform.
-* **Cinder Flare** — light it with Flint and Steel in your off hand, then throw it as a persistent blue-violet flare.
-* **Sulfuric Acid Flask** — a throwable acid flask with its own impact behavior, Acid Burn, and copper deoxidation.
-* **Pyroclast Bomb overhaul** — rebuilt throwing, impact behavior, demolition, water extinguishing, recovery, and visual effects.
-* **Create Potato Cannon support** for Pyroclast Bombs.
-* New Ponder scenes, advancements, Goggle information, recipes, sounds, visuals, and localization for the 0.4.0 content.
+* **Automated Cinder Flare ignition** — a Deployer holding Flint and Steel can ignite unlit Cinder Flares as they travel along a moving belt.
+* **Reactive Tool dispensing** — Dispensers can launch Lit Cinder Flares, Sulfuric Acid Flasks, and Pyroclast Bombs.
+* **New Ponder scenes** — dedicated demonstrations explain automated Cinder Flare ignition and Reactive Tool launching.
+* **Localized automation hints** — Reactive Tool tooltips now explain their automation options in every supported language.
+
+0.4.1 also includes the Catalyst Bed, Cinder Flare, Sulfuric Acid Flask, and overhauled Pyroclast Bomb introduced in 0.4.0.
 
 ## Requirements
 
@@ -65,6 +65,7 @@ CSR machinery works with the tools already used in Create builds, including:
 
 * Funnels and belts
 * Mechanical Arms
+* Deployers and Dispensers
 * Fluid pipes and tanks
 * Redstone
 * Wrenches
@@ -75,7 +76,7 @@ The machines are made to sit inside real production lines, not beside a manual c
 
 ## Learning the mod
 
-Major machines and systems have in-game **Ponder** scenes covering setup, heat flow, controls, and automation.
+Major machines, systems, and Reactive Tools have in-game **Ponder** scenes covering setup, heat flow, controls, and automation.
 
 Advancements provide a loose progression path, while Engineer's Goggles expose useful machine and network information. JEI and EMI include CSR's custom processing categories and animated machinery where appropriate.
 

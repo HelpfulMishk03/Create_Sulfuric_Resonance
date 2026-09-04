@@ -1,10 +1,22 @@
 # Changelog
-**Copyright © 2026 Hxney, Ł. All Rights Reserved.**
+**Copyright © 2026 Hxney (Ł). All Rights Reserved.**
 Hxney and Ł are separate public creator identities used by the same developer and copyright owner.
 
 All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+# Create: Sulfuric Resonance 0.4.1 -- Adjusted Equilibrium
+
+### Added
+
+* Cinder Flares can now be ignited automatically on moving belts using a Deployer holding Flint and Steel.
+* Dispensers can now launch Lit Cinder Flares, Sulfuric Acid Flasks, and Pyroclast Bombs.
+* Added dedicated Ponder scenes demonstrating Cinder Flare ignition and Reactive Tool launching.
+* Added localized automation hints to Reactive Tool tooltips.
+
+
+-------
+
 
 # Create: Sulfuric Resonance 0.4.0 -- Reactive Tools
 
@@ -68,7 +80,9 @@ Older entries are reconstructed from surviving builds, development notes, testin
 * Fixed connected Thermochemical Link Drives inheriting one three-block heat span when every Link Drive was directly attached to its own active Steam Engine powered shaft.
 * Each direct boiler-powered shaft connection now acts as a local thermochemical heat source for its attached Link Drive.
 
+### Thermochemical Cogwheel Rendering
 
+* Fixed Thermochemical Cogwheels rendering incorrectly in modpacks using alternate client renderers.
 ----------------
 
 

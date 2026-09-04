@@ -840,5 +840,12 @@
   "sulfuricresonance.ponder.catalyst_bed.operation.text_2": "El conector elevado solo aparece mientras haya una Cámara válida justo encima",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_3": "Un Lecho activo acelera el procesamiento actual de la Cámara a 1,5 veces la velocidad normal",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_4": "La duración y los ingredientes de las recetas no cambian, incluido cualquier ingrediente catalizador",
-  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Solo se aplica el Lecho inmediatamente inferior; al retirarlo, el proceso actual vuelve de forma segura a la velocidad normal"
+  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Solo se aplica el Lecho inmediatamente inferior; al retirarlo, el proceso actual vuelve de forma segura a la velocidad normal",
+  "tooltip.sulfuricresonance.cinder_flare.deployer": "Un desplegador con un mechero puede encenderla.",
+  "tooltip.sulfuricresonance.reactive_tools.dispenser": "Se puede lanzar desde un dispensador.",
+  "sulfuricresonance.ponder.reactive_tools.deployer.header": "Encendido automático de bengalas",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Un desplegador con un mechero enciende una bengala de brasa sobre una cinta en movimiento",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "La bengala encendida continúa por la cinta para su recogida",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Lanzamiento de herramientas reactivas",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Los dispensadores lanzan bengalas de brasa encendidas, frascos de ácido sulfúrico y bombas piroclásticas"
 }

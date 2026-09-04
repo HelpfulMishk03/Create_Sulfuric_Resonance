@@ -122,6 +122,7 @@ public final class CinderFlareAnimationHandler {
                         - 1.0F * side * response
                         - 1.5F * side * swingArc
         ));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
     }
 
     private static void transformFlintAndSteel(

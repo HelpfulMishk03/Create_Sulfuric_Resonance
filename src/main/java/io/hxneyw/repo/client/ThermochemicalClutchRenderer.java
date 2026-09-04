@@ -7,9 +7,12 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import io.hxneyw.repo.content.blocks.thermochemicalclutch.ThermochemicalClutchBlockEntity;
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.impl.client.render.ColoringVertexConsumer;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -46,6 +49,14 @@ public class ThermochemicalClutchRenderer
         float time = AnimationTickHolder.getRenderTime(
                 blockEntity.getLevel()
         );
+        float shaftBrightness = getShaftBrightness(blockEntity, partialTicks);
+        ColoringVertexConsumer shaftConsumer = new ColoringVertexConsumer(
+                buffer.getBuffer(RenderType.solid()),
+                shaftBrightness,
+                shaftBrightness,
+                shaftBrightness,
+                1.0F
+        );
 
         for (Direction direction : Iterate.directions) {
             Direction.Axis axis = direction.getAxis();
@@ -73,23 +84,16 @@ public class ThermochemicalClutchRenderer
                     direction
             );
 
-            int shaftLight = blockEntity.getLevel() == null
-                    ? light
-                    : LevelRenderer.getLightColor(
-                            blockEntity.getLevel(),
-                            pos.relative(direction)
-                    );
-
             kineticRotationTransform(
                     shaft,
                     blockEntity,
                     axis,
                     angle,
-                    shaftLight
+                    LightTexture.FULL_BRIGHT
             );
             shaft.renderInto(
                     poseStack,
-                    buffer.getBuffer(RenderType.solid())
+                    shaftConsumer
             );
         }
 
@@ -102,6 +106,21 @@ public class ThermochemicalClutchRenderer
                 light,
                 overlay
         );
+    }
+
+    private static float getShaftBrightness(
+            ThermochemicalClutchBlockEntity blockEntity,
+            float partialTicks
+    ) {
+        if (!(blockEntity.getLevel() instanceof ClientLevel level)) {
+            return 1.0F;
+        }
+
+        float skyDarken = level.getSkyDarken(partialTicks);
+        float daylight = skyDarken * 0.95F + 0.05F;
+        float brightness = daylight * (0.4F + 0.6F * skyDarken);
+
+        return brightness * 0.96F + 0.03F;
     }
 
     private static void renderLock(

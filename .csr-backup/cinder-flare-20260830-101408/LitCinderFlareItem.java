@@ -1,6 +1,6 @@
 package io.hxneyw.repo.content.items;
 
-import io.hxneyw.repo.content.entities.SulfuricAcidFlaskEntity;
+import io.hxneyw.repo.content.entities.CinderFlareEntity;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -16,12 +16,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class SulfuricAcidFlaskItem extends Item {
-    private static final int COOLDOWN_TICKS = 10;
-    private static final float THROW_VELOCITY = 0.8F;
-    private static final float THROW_INACCURACY = 0.6F;
+public class LitCinderFlareItem extends Item {
+    private static final int COOLDOWN_TICKS = 8;
+    private static final float THROW_VELOCITY = 0.72F;
+    private static final float THROW_INACCURACY = 0.85F;
 
-    public SulfuricAcidFlaskItem(Properties properties) {
+    public LitCinderFlareItem(Properties properties) {
         super(properties);
     }
 
@@ -32,15 +32,10 @@ public class SulfuricAcidFlaskItem extends Item {
             @NotNull List<Component> tooltipComponents,
             @NotNull TooltipFlag tooltipFlag
     ) {
-        tooltipComponents.add(Component.translatable(
-                "tooltip.sulfuricresonance.sulfuric_acid_flask.throw"
-        ).withStyle(ChatFormatting.GRAY));
-        tooltipComponents.add(Component.translatable(
-                "tooltip.sulfuricresonance.sulfuric_acid_flask.effect"
-        ).withStyle(ChatFormatting.YELLOW));
-        tooltipComponents.add(Component.translatable(
-                "tooltip.sulfuricresonance.reactive_tools.dispenser"
-        ).withStyle(ChatFormatting.DARK_AQUA));
+        tooltipComponents.add(
+                Component.translatable("tooltip.sulfuricresonance.cinder_flare.lit")
+                        .withStyle(ChatFormatting.GRAY)
+        );
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 
@@ -52,21 +47,22 @@ public class SulfuricAcidFlaskItem extends Item {
             @NotNull InteractionHand hand
     ) {
         ItemStack stack = player.getItemInHand(hand);
+
         level.playSound(
                 null,
                 player.getX(),
                 player.getY(),
                 player.getZ(),
-                SoundEvents.SPLASH_POTION_THROW,
+                SoundEvents.FIRECHARGE_USE,
                 SoundSource.PLAYERS,
-                0.5F,
-                0.9F + level.getRandom().nextFloat() * 0.2F
+                0.45F,
+                1.25F + level.random.nextFloat() * 0.1F
         );
 
         if (!level.isClientSide) {
-            SulfuricAcidFlaskEntity flask = new SulfuricAcidFlaskEntity(level, player);
-            flask.setItem(stack.copyWithCount(1));
-            flask.shootFromRotation(
+            CinderFlareEntity flare = new CinderFlareEntity(level, player);
+            flare.setItem(new ItemStack(io.hxneyw.repo.content.Items.LIT_CINDER_FLARE.get()));
+            flare.shootFromRotation(
                     player,
                     player.getXRot(),
                     player.getYRot(),
@@ -74,11 +70,12 @@ public class SulfuricAcidFlaskItem extends Item {
                     THROW_VELOCITY,
                     THROW_INACCURACY
             );
-            level.addFreshEntity(flask);
+            level.addFreshEntity(flare);
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
         player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
+
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
         }

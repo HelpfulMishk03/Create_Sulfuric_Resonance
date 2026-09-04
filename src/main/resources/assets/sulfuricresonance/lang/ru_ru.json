@@ -839,5 +839,12 @@
   "sulfuricresonance.ponder.catalyst_bed.operation.text_2": "Поднятый соединитель появляется, только пока прямо сверху находится подходящая Камера",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_3": "Активная Платформа ускоряет текущую обработку в Камере в 1,5 раза",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_4": "Длительность и ингредиенты рецепта не меняются, включая ингредиент-катализатор",
-  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Действует только Платформа непосредственно снизу; после её удаления текущий процесс безопасно возвращается к обычной скорости"
+  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Действует только Платформа непосредственно снизу; после её удаления текущий процесс безопасно возвращается к обычной скорости",
+  "tooltip.sulfuricresonance.cinder_flare.deployer": "Её может поджечь развёртыватель с огнивом.",
+  "tooltip.sulfuricresonance.reactive_tools.dispenser": "Можно запустить из раздатчика.",
+  "sulfuricresonance.ponder.reactive_tools.deployer.header": "Автоматический поджиг фальшфейеров",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Развёртыватель с огнивом поджигает угольный фальшфейер на движущемся конвейере",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "Горящий фальшфейер продолжает движение по конвейеру для последующего сбора",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Запуск реактивных инструментов",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Раздатчики запускают горящие угольные фальшфейеры, колбы с серной кислотой и пирокластовые бомбы"
 }

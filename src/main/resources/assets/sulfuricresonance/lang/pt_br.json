@@ -840,5 +840,12 @@
   "sulfuricresonance.ponder.catalyst_bed.operation.text_2": "O conector elevado aparece apenas enquanto houver uma Câmara válida logo acima",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_3": "Um Leito ativo acelera o processamento atual da Câmara para 1,5 vez a velocidade normal",
   "sulfuricresonance.ponder.catalyst_bed.operation.text_4": "A duração e os ingredientes das receitas permanecem inalterados, inclusive qualquer ingrediente catalisador",
-  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Apenas o Leito imediatamente abaixo se aplica; removê-lo faz o processo atual voltar com segurança à velocidade normal"
+  "sulfuricresonance.ponder.catalyst_bed.operation.text_5": "Apenas o Leito imediatamente abaixo se aplica; removê-lo faz o processo atual voltar com segurança à velocidade normal",
+  "tooltip.sulfuricresonance.cinder_flare.deployer": "Pode ser aceso por um Aplicador com Pederneira e Aço.",
+  "tooltip.sulfuricresonance.reactive_tools.dispenser": "Pode ser lançado por um Ejetor.",
+  "sulfuricresonance.ponder.reactive_tools.deployer.header": "Ignição automática de Sinalizadores",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Um Aplicador com Pederneira e Aço acende um Sinalizador de Brasa apagado sobre uma Correia em movimento",
+  "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "O Sinalizador aceso continua pela Correia para ser coletado",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Lançamento de Ferramentas Reativas",
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Ejetores lançam Sinalizadores de Brasa Acesos, Frascos de Ácido Sulfúrico e Bombas Piroclásticas"
 }

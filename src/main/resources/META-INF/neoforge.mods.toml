@@ -9,7 +9,7 @@ issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/i
 
 [[mods]]
 modId = "sulfuricresonance"
-version = "0.4.0"
+version = "0.4.1"
 displayName = "Create: Sulfuric Resonance"
 enumExtensions = "META-INF/enumextensions.json"
 
@@ -18,8 +18,8 @@ logoFile = "createsulfuricresonance.png"
 # Preserve the hard pixel-art edges when NeoForge scales the logo.
 logoBlur = false
 
-authors = "Hxney, Ł"
-credits = "Created and developed by Hxney, Ł. An independent addon for Create."
+authors = "Hxney (Ł)"
+credits = "Created and developed by Hxney (Ł). An independent addon for Create."
 
 displayURL = "https://modrinth.com/mod/create-sulfuric-resonance"
 
@@ -29,7 +29,7 @@ Create: Sulfuric Resonance is an independently developed Create addon
 expanding combustion, heat generation, sulfur chemistry, sulfuric acid,
 rubber processing, automation, and industrial machinery.
 
-Copyright © 2026 Hxney, Ł. All Rights Reserved.
+Copyright © Hxney (Ł). All Rights Reserved.
 
 Unauthorized redistribution, re-uploading, impersonation, publication of
 modified builds, or claiming ownership of this project or its original

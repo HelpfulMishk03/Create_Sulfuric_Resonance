@@ -36,6 +36,7 @@ public class PyroclastBombItem extends Item {
       tooltipComponents.add(Component.translatable("tooltip.sulfuricresonance.pyroclast_bomb.combat").withStyle(ChatFormatting.GRAY));
       tooltipComponents.add(Component.translatable("tooltip.sulfuricresonance.pyroclast_bomb.ignition").withStyle(ChatFormatting.GRAY));
       tooltipComponents.add(Component.translatable("tooltip.sulfuricresonance.pyroclast_bomb.water").withStyle(ChatFormatting.DARK_AQUA));
+      tooltipComponents.add(Component.translatable("tooltip.sulfuricresonance.reactive_tools.dispenser").withStyle(ChatFormatting.DARK_AQUA));
       super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
    }
 

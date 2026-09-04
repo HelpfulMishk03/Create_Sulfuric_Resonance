@@ -1,6 +1,6 @@
 # Create: Sulfuric Resonance License
 
-Copyright © 2026 Hxney, Ł. All Rights Reserved.
+Copyright © 2026 Hxney (Ł). All Rights Reserved.
 
 For clarity, Hxney and Ł are separate public identities used by the same copyright owner and developer.
 
