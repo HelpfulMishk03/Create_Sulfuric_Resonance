@@ -80,7 +80,9 @@ Older entries are reconstructed from surviving builds, development notes, testin
 * Fixed connected Thermochemical Link Drives inheriting one three-block heat span when every Link Drive was directly attached to its own active Steam Engine powered shaft.
 * Each direct boiler-powered shaft connection now acts as a local thermochemical heat source for its attached Link Drive.
 
+### Thermochemical Cogwheel Rendering
 
+* Fixed Thermochemical Cogwheels rendering incorrectly in modpacks using alternate client renderers.
 ----------------
 
 
