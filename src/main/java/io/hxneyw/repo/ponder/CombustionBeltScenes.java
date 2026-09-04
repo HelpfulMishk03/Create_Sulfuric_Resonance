@@ -268,18 +268,6 @@ public final class CombustionBeltScenes {
                 .pointAt(beltCenterTop)
                 .placeNearTarget();
         scene.idle(140);
-        scene.overlay()
-                .showText(155)
-                .text(
-                        "A Rotation Speed Controller is the best way to tune processing: slower Belts give items more heated time, while faster Belts increase throughput only when the recipe still meets both its distance and time requirements"
-                )
-                .attachKeyFrame()
-                .colored(PonderPalette.BLUE)
-                .pointAt(beltCenterTop)
-                .placeNearTarget();
-
-        scene.idle(165);
-
         clearBeltItems(scene, beltStart);
         scene.world().createItemOnBelt(
                 beltStart,
@@ -432,6 +420,17 @@ public final class CombustionBeltScenes {
                 .pointAt(util.vector().centerOf(beltEnd))
                 .placeNearTarget();
         scene.idle(150);
+
+        scene.overlay()
+                .showText(155)
+                .text(
+                        "A Rotation Speed Controller is the best way to tune processing: slower Belts give items more heated time, while faster Belts increase throughput only when the recipe still meets both its distance and time requirements"
+                )
+                .attachKeyFrame()
+                .colored(PonderPalette.BLUE)
+                .pointAt(beltCenterTop)
+                .placeNearTarget();
+        scene.idle(165);
 
         scene.overlay()
                 .showText(135)

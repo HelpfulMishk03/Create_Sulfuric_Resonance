@@ -144,5 +144,15 @@
         "attenuation_distance": 20
       }
     ]
+  },
+  "pyroclast_bomb_detonate": {
+    "subtitle": "subtitles.sulfuricresonance.pyroclast_bomb_detonate",
+    "sounds": [
+      {
+        "name": "sulfuricresonance:pyroclast_bomb_detonate",
+        "stream": false,
+        "attenuation_distance": 32
+      }
+    ]
   }
 }

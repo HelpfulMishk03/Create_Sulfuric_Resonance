@@ -4,6 +4,7 @@ import com.simibubi.create.content.decoration.palettes.ConnectedGlassBlock;
 import com.simibubi.create.content.decoration.palettes.ConnectedGlassPaneBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.CreateSulfuricResonance;
+import io.hxneyw.repo.content.blocks.catalystbed.CatalystBedBlock;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlock;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlock;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
@@ -493,6 +494,21 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                     .requiresCorrectToolForDrops()
                                     .sound(SoundType.METAL)
                                     .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<CatalystBedBlock>
+            CATALYST_BED =
+            BLOCKS.register(
+                    "catalyst_bed",
+                    () -> new CatalystBedBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(4.0F, 6.0F)
+                                    .requiresCorrectToolForDrops()
+                                    .sound(SoundType.METAL)
+                                    .noOcclusion()
+                                    .dynamicShape()
                     )
             );
 

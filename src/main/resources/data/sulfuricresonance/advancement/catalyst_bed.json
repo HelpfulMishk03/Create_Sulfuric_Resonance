@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:sulfuric_resonance_chamber",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:catalyst_bed"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.catalyst_bed.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.catalyst_bed.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_catalyst_bed": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:catalyst_bed"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -13,6 +13,9 @@ public class ModParticles {
       "combustion_purple_flame", () -> new SimpleParticleType(false)
    );
    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ACID_DRIP = PARTICLE_TYPES.register("acid_drip", () -> new SimpleParticleType(false));
+   public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PYROCLASTIC_FRAGMENT = PARTICLE_TYPES.register(
+      "pyroclastic_fragment", () -> new SimpleParticleType(false)
+   );
 
    public static void register(IEventBus eventBus) {
       PARTICLE_TYPES.register(eventBus);

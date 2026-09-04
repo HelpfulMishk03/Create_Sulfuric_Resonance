@@ -21,6 +21,7 @@ public class ModTabs {
                   output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
                   output.accept(Items.SULFUR_BURNER_ITEM.get());
                   output.accept(Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get());
+                  output.accept(Items.CATALYST_BED_ITEM.get());
                   output.accept(Items.RESONANT_HEAT_INJECTOR_ITEM.get());
                   output.accept(Items.ASH_CERAMIC_CRUCIBLE_ITEM.get());
                   output.accept(Items.PERFORATED_SPRITZER.get());
@@ -52,6 +53,7 @@ public class ModTabs {
                   output.accept(Items.SULFUR_BLOCK.get());
 
                   output.accept(Items.SULFURIC_ACID_BUCKET.get());
+                  output.accept(Items.SULFURIC_ACID_FLASK.get());
                   output.accept(Items.SUPERPHOSPHATE_FERTILIZER.get());
                   output.accept(Items.EMBER_CATALYST.get());
                   output.accept(Items.ACTIVATED_SULFUR_CATALYST.get());
@@ -82,6 +84,7 @@ public class ModTabs {
                   output.accept(Items.PYROCLASTIC_POWDER.get());
 
                   output.accept(Items.PYROCLAST_BOMB.get());
+                  output.accept(Items.CINDER_FLARE.get());
                   output.accept(Items.RESONANT_COPPER_INGOT.get());
                   output.accept(Items.RESONANT_COPPER_SHEET.get());
                   output.accept(Items.RESONANT_IRON_INGOT.get());

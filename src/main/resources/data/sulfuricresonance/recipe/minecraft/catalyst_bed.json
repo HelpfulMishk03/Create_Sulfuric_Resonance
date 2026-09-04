@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "RBR",
+    "BAB",
+    "RBR"
+  ],
+  "key": {
+    "R": {
+      "item": "sulfuricresonance:resonant_iron_sheet"
+    },
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "A": {
+      "item": "sulfuricresonance:activated_sulfur_catalyst"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:catalyst_bed",
+    "count": 1
+  }
+}

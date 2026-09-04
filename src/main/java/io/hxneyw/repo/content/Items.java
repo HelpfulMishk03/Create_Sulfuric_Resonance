@@ -48,6 +48,9 @@ public class Items {
    public static final DeferredItem<Item> BLAZE_SHARD = ITEMS.register("blaze_shard", () -> new Item(new Properties().stacksTo(64).fireResistant()));
    public static final DeferredItem<Item> PYROCLASTIC_POWDER = ITEMS.register("pyroclastic_powder", () -> new Item(new Properties().stacksTo(64).fireResistant()));
    public static final DeferredItem<Item> PYROCLAST_BOMB = ITEMS.register("pyroclast_bomb", () -> new PyroclastBombItem(new Properties().stacksTo(16)));
+   public static final DeferredItem<SulfuricAcidFlaskItem> SULFURIC_ACID_FLASK = ITEMS.register("sulfuric_acid_flask", () -> new SulfuricAcidFlaskItem(new Properties().stacksTo(16)));
+   public static final DeferredItem<CinderFlareItem> CINDER_FLARE = ITEMS.register("cinder_flare", () -> new CinderFlareItem(new Properties().stacksTo(16).fireResistant()));
+   public static final DeferredItem<LitCinderFlareItem> LIT_CINDER_FLARE = ITEMS.register("lit_cinder_flare", () -> new LitCinderFlareItem(new Properties().stacksTo(16).fireResistant()));
    public static final DeferredItem<Item> REINFORCED_CINDER_COMPOUND = ITEMS.register("reinforced_cinder_compound", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD = ITEMS.register("obsidian_fiber_mold", () -> new Item(new Properties().stacksTo(16)));
    @SuppressWarnings("unused")
@@ -58,6 +61,7 @@ public class Items {
    public static final DeferredItem<CogwheelBlockItem> LARGE_THERMOCHEMICAL_COGWHEEL_ITEM = ITEMS.register("large_thermochemical_cogwheel", () -> new CogwheelBlockItem(AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFUR_BURNER_ITEM = ITEMS.register("sulfur_burner", () -> new BlockItem(AllModBlocks.SULFUR_BURNER.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFURIC_RESONANCE_CHAMBER_ITEM = ITEMS.register("sulfuric_resonance_chamber", () -> new BlockItem(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get(), new Properties()));
+   public static final DeferredItem<BlockItem> CATALYST_BED_ITEM = ITEMS.register("catalyst_bed", () -> new BlockItem(AllModBlocks.CATALYST_BED.get(), new Properties()));
    public static final DeferredItem<BlockItem> RESONANT_HEAT_INJECTOR_ITEM = ITEMS.register("resonant_heat_injector", () -> new BlockItem(AllModBlocks.RESONANT_HEAT_INJECTOR.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));
    public static final DeferredItem<Item> WET_ASH_CERAMIC = ITEMS.register("wet_ash_ceramic", () -> new Item(new Properties().stacksTo(64)));

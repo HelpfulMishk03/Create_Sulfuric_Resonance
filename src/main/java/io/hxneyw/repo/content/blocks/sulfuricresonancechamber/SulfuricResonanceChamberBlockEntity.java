@@ -9,6 +9,7 @@ import io.hxneyw.repo.content.process.IProcessStateProvider;
 import io.hxneyw.repo.content.process.ProcessState;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllModFluids;
+import io.hxneyw.repo.content.registry.AllModBlocks;
 import io.hxneyw.repo.content.registry.ModParticles;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     public static final int SLOT_COUNT = 4;
 
     public static final int MENU_DATA_COUNT = 12;
+    public static final float CATALYST_BED_SPEED_MULTIPLIER = 1.5F;
+
+    private static final int NORMAL_PROCESSING_SUBTICKS = 2;
+    private static final int CATALYST_BED_PROCESSING_SUBTICKS = 3;
 
     private static final Map<ResourceLocation, ReactionLevel> REACTION_LEVELS =
             new ConcurrentHashMap<>();
@@ -371,6 +376,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
             MoltenRotorBlockEntity.RotorHeatLevel.NONE;
     private int temperature;
     private int processingTicks;
+    private int processingSubticks;
     private int processingTime;
     private boolean ready;
     private boolean processing;
@@ -495,14 +501,19 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 );
 
                 if (processingTime > 0) {
+                    float progressPerTick = hasCatalystBed()
+                            ? CATALYST_BED_SPEED_MULTIPLIER
+                            : 1.0F;
                     float targetProgress = Math.clamp(
-                            (processingTicks + 1.0F) / processingTime,
+                            (processingSubticks / 2.0F + progressPerTick)
+                                    / processingTime,
                             0.0F,
                             1.0F
                     );
                     float predictedProgress = Math.min(
                             1.0F,
-                            clientReactionProgress + 1.0F / processingTime
+                            clientReactionProgress
+                                    + progressPerTick / processingTime
                     );
                     clientReactionProgress = Math.max(
                             predictedProgress,
@@ -686,7 +697,13 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 ready = false;
                 manualStartRequested = false;
                 status = ChamberStatus.PROCESSING;
-                processingTicks++;
+                processingSubticks += hasCatalystBed()
+                        ? CATALYST_BED_PROCESSING_SUBTICKS
+                        : NORMAL_PROCESSING_SUBTICKS;
+                processingTicks = Math.min(
+                        recipe.processingTime(),
+                        processingSubticks / NORMAL_PROCESSING_SUBTICKS
+                );
 
                 if (processingTicks >= recipe.processingTime()) {
                     if (completeRecipe(recipe)) {
@@ -1032,8 +1049,9 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     }
 
     private void resetInterruptedProgress() {
-        if (processingTicks != 0) {
+        if (processingTicks != 0 || processingSubticks != 0) {
             processingTicks = 0;
+            processingSubticks = 0;
             setChanged();
         }
     }
@@ -1135,6 +1153,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
 
     private void clearProcessingState() {
         processingTicks = 0;
+        processingSubticks = 0;
         processingTime = 0;
         processing = false;
         ready = false;
@@ -1424,6 +1443,14 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 sulfuricAcid.getFluidAmount(),
                 ACID_CAPACITY
         ));
+        tooltip.add(Component.translatable(
+                "tooltip.sulfuricresonance.sulfuric_resonance_chamber.catalyst_bed",
+                Component.translatable(
+                        hasCatalystBed()
+                                ? "tooltip.sulfuricresonance.catalyst_bed.active"
+                                : "tooltip.sulfuricresonance.catalyst_bed.inactive"
+                )
+        ));
 
         if (processing && processingTime > 0) {
             tooltip.add(Component.translatable(
@@ -1441,8 +1468,18 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         }
         return Math.min(
                 100,
-                Math.round(processingTicks * 100.0F / processingTime)
+                Math.round(
+                        processingSubticks * 100.0F
+                                / (processingTime
+                                * (float) NORMAL_PROCESSING_SUBTICKS)
+                )
         );
+    }
+
+    public boolean hasCatalystBed() {
+        return level != null
+                && level.getBlockState(worldPosition.below())
+                .is(AllModBlocks.CATALYST_BED.get());
     }
 
     @Override
@@ -1461,6 +1498,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         tag.putString("HeatTier", heatTier.serializedId);
         tag.putInt("Temperature", temperature);
         tag.putInt("ProcessingTicks", processingTicks);
+        tag.putInt("ProcessingSubticks", processingSubticks);
         tag.putInt("ProcessingTime", processingTime);
         tag.putBoolean("Ready", ready);
         tag.putBoolean("Processing", processing);
@@ -1509,6 +1547,9 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
                 .fromSerializedId(tag.getString("HeatTier"));
         temperature = tag.getInt("Temperature");
         processingTicks = tag.getInt("ProcessingTicks");
+        processingSubticks = tag.contains("ProcessingSubticks")
+                ? Math.max(0, tag.getInt("ProcessingSubticks"))
+                : Math.max(0, processingTicks * NORMAL_PROCESSING_SUBTICKS);
         processingTime = tag.getInt("ProcessingTime");
         ready = tag.getBoolean("Ready");
         processing = tag.getBoolean("Processing");
@@ -1547,7 +1588,9 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
 
             if (processing && processingTime > 0) {
                 float syncedProgress = Math.clamp(
-                        processingTicks / (float) processingTime,
+                        processingSubticks
+                                / (processingTime
+                                * (float) NORMAL_PROCESSING_SUBTICKS),
                         0.0F,
                         1.0F
                 );

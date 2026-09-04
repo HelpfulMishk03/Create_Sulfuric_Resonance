@@ -108,6 +108,27 @@ public final class ThermochemicalHeatResolver {
 
             targetToSource.add(currentPosition.immutable());
 
+            DirectSteamSource directSteamSource =
+                    findDirectLinkDriveSteamSource(
+                            level,
+                            currentPosition,
+                            currentState
+                    );
+            if (directSteamSource != null) {
+                Result directResult = buildResult(
+                        level,
+                        targetToSource,
+                        directSteamSource.heatTier(),
+                        directSteamSource.sourcePosition(),
+                        directSteamSource.temperature(),
+                        totalDistance + 1
+                );
+                if (directResult.heatTier()
+                        != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                    return directResult;
+                }
+            }
+
             if (isRotationSpeedController(currentState)) {
                 if (doesNotHaveThermochemicalControllerCog(
                         level,
@@ -259,6 +280,91 @@ public final class ThermochemicalHeatResolver {
         }
 
         return Result.NONE;
+    }
+
+    private static @Nullable DirectSteamSource
+    findDirectLinkDriveSteamSource(
+            Level level,
+            BlockPos linkDrivePosition,
+            BlockState linkDriveState
+    ) {
+        if (!(linkDriveState.getBlock()
+                instanceof ThermochemicalLinkDriveBlock)) {
+            return null;
+        }
+
+        Direction.Axis axis = linkDriveState.getValue(
+                BlockStateProperties.AXIS
+        );
+        DirectSteamSource selected = null;
+
+        for (Direction direction : Direction.values()) {
+            if (direction.getAxis() != axis) {
+                continue;
+            }
+
+            BlockPos sourcePosition = linkDrivePosition.relative(direction);
+            if (!level.isLoaded(sourcePosition)
+                    || !hasLinkDriveShaftConnection(
+                    level,
+                    linkDrivePosition,
+                    linkDriveState,
+                    direction
+            )) {
+                continue;
+            }
+
+            BlockEntity sourceEntity = level.getBlockEntity(sourcePosition);
+            if (!(sourceEntity instanceof PoweredShaftBlockEntity poweredShaft)) {
+                continue;
+            }
+
+            ThermochemicalBoilerInterfaceCompat.SteamSource steamSource =
+                    ThermochemicalBoilerInterfaceCompat.resolveSteamSource(
+                            poweredShaft
+                    );
+            if (!steamSource.active()) {
+                continue;
+            }
+
+            DirectSteamSource candidate = new DirectSteamSource(
+                    sourcePosition.immutable(),
+                    steamSource.heatTier(),
+                    steamSource.temperature()
+            );
+            if (selected == null
+                    || isBetterDirectSteamSource(candidate, selected)) {
+                selected = candidate;
+            }
+        }
+
+        return selected;
+    }
+
+    private static boolean isBetterDirectSteamSource(
+            DirectSteamSource candidate,
+            DirectSteamSource selected
+    ) {
+        int tier = Integer.compare(
+                candidate.heatTier().rank,
+                selected.heatTier().rank
+        );
+        if (tier != 0) {
+            return tier > 0;
+        }
+
+        int temperature = Integer.compare(
+                candidate.temperature(),
+                selected.temperature()
+        );
+        if (temperature != 0) {
+            return temperature > 0;
+        }
+
+        return Long.compare(
+                candidate.sourcePosition().asLong(),
+                selected.sourcePosition().asLong()
+        ) < 0;
     }
 
     public static @Nullable InheritedBeltSource
@@ -1076,6 +1182,13 @@ public final class ThermochemicalHeatResolver {
             BlockPos position,
             List<BlockPos> pathFromController,
             int distanceFromController
+    ) {
+    }
+
+    private record DirectSteamSource(
+            BlockPos sourcePosition,
+            MoltenRotorBlockEntity.RotorHeatLevel heatTier,
+            int temperature
     ) {
     }
 
