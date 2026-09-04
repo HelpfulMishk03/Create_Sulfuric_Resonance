@@ -6,8 +6,9 @@ Create: Sulfuric Resonance is currently in beta development.
 
 | Version | Supported |
 | --- | --- |
+| 0.4.1 | ✅ |
 | 0.4.0 | ✅ |
-| 0.3.1 | ✅ |
+| 0.3.1 | ❌ |
 | 0.3.0 | ❌ |
 | 0.2.9-beta | ❌ |
 | 0.2.8-beta and older | ❌ |
