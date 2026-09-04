@@ -10,17 +10,58 @@ Not every recipe or progression step is documented here. JEI/EMI, advancements, 
 
 ## Current Version
 
-### **0.4.0 — Reactive Tools**
+### **0.4.1 — Adjusted Equilibrium**
 
-0.4.0 adds new field tools and a physical upgrade for the Sulfuric Resonance Chamber.
+0.4.1 builds on Reactive Tools with additional automation support and final Cinder Flare polish.
 
-The main addition is the **Catalyst Bed**, placed directly beneath a Chamber to speed up active processing by **1.5×** without changing recipes, ingredients, heat, RPM, acid use, automation, or operating modes.
+Cinder Flares can now be ignited automatically on moving belts using a **Deployer holding Flint and Steel**.
 
-The update also completes the **Cinder Flare**, **Sulfuric Acid Flask**, and **Pyroclast Bomb**.
+Dispensers can also launch **Lit Cinder Flares**, **Sulfuric Acid Flasks**, and **Pyroclast Bombs**, allowing the Reactive Tools introduced in 0.4.0 to be incorporated directly into automated Create factories.
+
+The update also adds dedicated Ponder scenes for Reactive Tool automation, localized automation hints, an updated Cinder Flare recipe, and improved Cinder Flare ignition presentation.
 
 ---
 
-## 0.4.0 Highlights
+## 0.4.1 Highlights
+
+### Cinder Flare Automation
+
+Cinder Flares can now be ignited automatically while moving on belts.
+
+A **Deployer holding Flint and Steel** can strike and ignite an unlit Cinder Flare as part of a production line.
+
+### Reactive Tool Dispenser Support
+
+Dispensers can now launch:
+
+* Lit Cinder Flares
+* Sulfuric Acid Flasks
+* Pyroclast Bombs
+
+This allows Reactive Tools to be triggered using ordinary redstone and factory automation.
+
+### Cinder Flare Recipe
+
+The Cinder Flare recipe has been updated to include a **Slimeball** and use a more coherent crafting layout.
+
+### Cinder Flare Polish
+
+The Cinder Flare ignition animation has been corrected so the flare is presented and struck at the proper end.
+
+Third-person presentation has also been adjusted to better match the intended ignition sequence.
+
+### Ponder and Tooltips
+
+0.4.1 adds dedicated Ponder scenes covering:
+
+* Cinder Flare ignition automation
+* Reactive Tool launching
+
+Reactive Tools also include localized automation hints across CSR's supported languages.
+
+---
+
+## Reactive Tools
 
 ### Catalyst Bed
 
@@ -36,6 +77,8 @@ Cinder Flares are lit with Flint and Steel in the off hand through a staged stri
 
 Once lit, they can be thrown and continue burning where they land.
 
+Cinder Flares can also be ignited automatically on moving belts using a Deployer holding Flint and Steel.
+
 ### Sulfuric Acid Flask
 
 Sulfuric Acid Flasks are filled with **250 mB** of Sulfuric Acid and thrown to create a localized corrosive impact.
@@ -48,7 +91,9 @@ The Pyroclast Bomb has a short wind-up and an arcing throw.
 
 On impact, it deals controlled damage, restrained knockback, limited ignition, and can destroy up to five eligible blocks.
 
-Water extinguishes the Bomb before detonation, allowing it to be recovered. Pyroclast Bombs can also be fired from Create's Potato Cannon.
+Water extinguishes the Bomb before detonation, allowing it to be recovered.
+
+Pyroclast Bombs can also be fired from Create's Potato Cannon or launched from Dispensers.
 
 ---
 
@@ -56,15 +101,15 @@ Water extinguishes the Bomb before detonation, allowing it to be recovered. Pyro
 
 ### Required
 
-- Minecraft **1.21.1**
-- NeoForge **21.1.238+**
-- Create **6.0.7+**
-- Java **21**
+* Minecraft **1.21.1**
+* NeoForge **21.1.238+**
+* Create **6.0.7+**
+* Java **21**
 
 ### Optional
 
-- JEI **19.42.0.387+**
-- EMI **1.1.24+**
+* JEI **19.42.0.387+**
+* EMI **1.1.24+**
 
 ---
 
@@ -84,13 +129,13 @@ Sulfur is used throughout CSR for fuels, chemical processing, machine components
 
 Current sulfur-related processing includes:
 
-- Sulfur
-- Sulfuric Acid
-- Sulfur-based fuels
-- High-temperature processing
-- Acid treatment
-- Fertilizer production
-- Resonant materials
+* Sulfur
+* Sulfuric Acid
+* Sulfur-based fuels
+* High-temperature processing
+* Acid treatment
+* Fertilizer production
+* Resonant materials
 
 ### Sulfuric Resonance Chamber
 
@@ -98,12 +143,12 @@ The **Sulfuric Resonance Chamber** is one of CSR's main processing machines.
 
 Recipes can require a combination of:
 
-- Sulfuric Acid
-- Thermochemical heat
-- Rotational speed
-- Input materials
-- Catalysts
-- Auxiliary ingredients
+* Sulfuric Acid
+* Thermochemical heat
+* Rotational speed
+* Input materials
+* Catalysts
+* Auxiliary ingredients
 
 The Chamber has its own recipe type and recipe-viewer integration.
 
@@ -111,10 +156,10 @@ The Chamber has its own recipe type and recipe-viewer integration.
 
 CSR machines can expose process states such as:
 
-- Idle
-- Ready
-- Processing
-- Blocked
+* Idle
+* Ready
+* Processing
+* Blocked
 
 Those states can be used by monitoring equipment, gauges, alarms, and redstone systems.
 
@@ -126,23 +171,23 @@ Current automation equipment includes the **Process Monitor**, **Process Gauge**
 
 CSR currently includes systems such as:
 
-- Sulfur Burner
-- Catalyst Bed
-- Thermochemical Shaft
-- Thermochemical Cogwheel
-- Large Thermochemical Cogwheel
-- Parallel Thermochemical Gearbox
-- Thermochemical Link Drive
-- Thermochemical Clutch
-- Thermochemical Boiler Interface
-- Thermal Gauge
-- Process Monitor
-- Thermal Warning Alarm
-- Resonant Heat Injector
-- Relay Switch
-- Cinder Flare
-- Sulfuric Acid Flask
-- Pyroclast Bomb
+* Sulfur Burner
+* Catalyst Bed
+* Thermochemical Shaft
+* Thermochemical Cogwheel
+* Large Thermochemical Cogwheel
+* Parallel Thermochemical Gearbox
+* Thermochemical Link Drive
+* Thermochemical Clutch
+* Thermochemical Boiler Interface
+* Thermal Gauge
+* Process Monitor
+* Thermal Warning Alarm
+* Resonant Heat Injector
+* Relay Switch
+* Cinder Flare
+* Sulfuric Acid Flask
+* Pyroclast Bomb
 
 Along with additional materials, components, fuels, tools, and processing items, plus more not mentioned here.
 
@@ -154,18 +199,21 @@ CSR machinery is intended to work inside normal Create factories.
 
 Depending on the machine, CSR supports interaction with systems including:
 
-- Funnels
-- Mechanical Arms
-- Fluid Pipes
-- Spouts
-- Basins
-- Steam Boilers
-- Steam Engines
-- Potato Cannons
-- Redstone
-- Wrenches
-- Engineer's Goggles
-- Kinetic networks
+* Funnels
+* Belts
+* Deployers
+* Mechanical Arms
+* Fluid Pipes
+* Spouts
+* Basins
+* Steam Boilers
+* Steam Engines
+* Potato Cannons
+* Dispensers
+* Redstone
+* Wrenches
+* Engineer's Goggles
+* Kinetic networks
 
 CSR's thermochemical heat network remains separate from Create's kinetic network unless a specific machine provides an interaction between the two systems.
 
@@ -177,7 +225,12 @@ CSR includes custom **Ponder** scenes for its major machines and systems.
 
 These cover machine setup, thermochemical connections, processing requirements, automation, controls, and other important behavior.
 
-0.4.0 also includes Ponder documentation for the Catalyst Bed.
+Current Ponder documentation also includes:
+
+* Catalyst Bed operation
+* Cinder Flare ignition
+* Deployer-based Cinder Flare automation
+* Reactive Tool launching
 
 ---
 
@@ -185,8 +238,8 @@ These cover machine setup, thermochemical connections, processing requirements, 
 
 CSR supports:
 
-- **JEI**
-- **EMI**
+* **JEI**
+* **EMI**
 
 Both are optional.
 
@@ -202,16 +255,18 @@ CSR includes its own advancement tree covering machinery, processing, materials,
 
 ## Localization
 
-0.4.0 includes localization for:
+0.4.1 includes localization for:
 
-- English (US)
-- English (UK)
-- German
-- Spanish
-- French
-- Portuguese (Brazil)
-- Russian
-- Simplified Chinese
+* English (US)
+* English (UK)
+* German
+* Spanish
+* French
+* Portuguese (Brazil)
+* Russian
+* Simplified Chinese
+
+Localization covers major machinery, items, tooltips, GUIs, subtitles, advancements, Ponder scenes, and automation hints.
 
 ---
 
@@ -225,3 +280,5 @@ Java 21
 
 JEI 19.42.0.387+ (optional)
 EMI 1.1.24+ (optional)
+```
+
