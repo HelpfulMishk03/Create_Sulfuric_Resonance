@@ -55,6 +55,14 @@ public final class RubberPaddingScenes {
         scene.idle(100);
 
         scene.overlay().showText(95)
+                .text("Dropped item stacks use a damped bounce, retain most horizontal motion, and settle after repeated impacts")
+                .attachKeyFrame()
+                .colored(PonderPalette.GREEN)
+                .pointAt(util.vector().topOf(paddingPos))
+                .placeNearTarget();
+        scene.idle(105);
+
+        scene.overlay().showText(95)
                 .text("Living entities bounce from their incoming fall speed; suppressing bounce restores a normal landing")
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)

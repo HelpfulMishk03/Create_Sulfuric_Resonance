@@ -29,7 +29,7 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 ### Cinder Flare
 
-* Added a staged two-second ignition action using Flint and Steel in the off hand.
+* Added a staged 1.5-second ignition action using Flint and Steel in the off hand.
 * Added synchronized ignition sounds, sparks, flame feedback, and dedicated lit and unlit item states.
 * Added throwable lit flares with persistent flame presentation and multiplayer-aware entity behavior.
 
