@@ -72,6 +72,7 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
               overlay,
               facing
       );
+      MoltenRotorAfterburnRenderer.render(furnace, ms, buffer, facing);
 
       this.renderRotatingShafts(
               furnace,

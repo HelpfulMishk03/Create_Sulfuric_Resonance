@@ -11,6 +11,7 @@ import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
+import io.hxneyw.repo.content.recipes.moltenrotorfuel.MoltenRotorFuelRecipeRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import io.hxneyw.repo.content.process.ProcessMonitorArmPayload;
 import io.hxneyw.repo.content.registry.*;
@@ -25,8 +26,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
 @Mod("sulfuricresonance")
@@ -42,6 +41,7 @@ public class CreateSulfuricResonance {
       AllBlockEntities.register(modEventBus);
       ModRecipeTypes.register(modEventBus);
       CombustionBeltRecipeRegistry.register(modEventBus);
+      MoltenRotorFuelRecipeRegistry.register(modEventBus);
       SulfuricResonanceChamberRecipeRegistry.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);
       AllModMenus.register(modEventBus);
@@ -57,7 +57,6 @@ public class CreateSulfuricResonance {
               CinderSandpaperComponents::modifyDefaultComponents
       );
       AllModEffects.register(modEventBus);
-      NeoForge.EVENT_BUS.register(this);
       modContainer.registerConfig(Type.COMMON, Config.SPEC);
    }
 
@@ -68,14 +67,11 @@ public class CreateSulfuricResonance {
       });
    }
 
-   @SubscribeEvent
-   public void onServerStarting(ServerStartingEvent event) {
-   }
-
    @EventBusSubscriber(
       modid = "sulfuricresonance",
       value = {Dist.CLIENT}
    )
+   @SuppressWarnings("unused")
    public static class ClientModEvents {
       @SubscribeEvent
       public static void onClientSetup(FMLClientSetupEvent event) {

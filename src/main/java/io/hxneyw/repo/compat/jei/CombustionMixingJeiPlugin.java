@@ -281,6 +281,8 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
 
     private static List<MoltenRotorFuelDisplay>
     getAllMoltenRotorFuels() {
-        return MoltenRotorFuelDisplayRegistry.createDisplays();
+        return MoltenRotorFuelDisplayRegistry.createDisplays(
+                Minecraft.getInstance().level
+        );
     }
 }

@@ -1,5 +1,12 @@
 # Create: Sulfuric Resonance
 
+Curseforge [https://www.curseforge.com/minecraft/mc-mods/create-sulfuric-resonance]
+
+Modrinth[https://modrinth.com/mod/create-sulfuric-resonance]
+
+Issue Tracker[https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/issues]
+
+
 **Create: Sulfuric Resonance**, or **CSR**, is a NeoForge addon for [Create](https://github.com/Creators-of-Create/Create) built around sulfur chemistry, thermochemical heat, advanced materials, and factory automation.
 
 It adds another side to Create's progression: furnaces that need more than rotational power, heat networks that run through the factory, sulfuric acid production, reactive materials, and machinery that can report what it is doing.

@@ -1,10 +1,38 @@
 # Changelog
-**Copyright © 2026 Hxney, Ł. All Rights Reserved.**
 Hxney and Ł are separate public creator identities used by the same developer and copyright owner.
 
 All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+## 0.5.0 - Afterburn
+
+### Added
+
+* Added the Thermite Charge, a new high-temperature fuel crafted from Reinforced Cinder Compound, Sulfur, and an Iron Sheet.
+* Thermite Charges allow the Molten Rotor Furnace to enter Afterburn and reach up to 2000 C.
+* Added a dedicated Afterburn combustion presentation using Minecraft's built-in animated fire sprites.
+* Furnace combustion visuals now build continuously with temperature instead of appearing suddenly at the Afterburn threshold.
+* Added deeper Afterburn furnace audio while operating above the normal Radiant temperature ceiling.
+* Added Brimstone Briquette- A new molten rotor furnace fuel that reaches radiant tier(1599c)
+### Changed
+
+* Radiant remains the highest normal heat tier at 1599 C; Afterburn is a furnace state rather than a new heat tier.
+* Afterburn increases Molten Rotor Furnace stress capacity to 1.5x without increasing RPM or processing speed.
+* Cooling is slower while the furnace remains above 1599 C, with normal cooling behavior resuming at or below the Radiant ceiling.
+* Existing fuels retain their previous maximum temperatures and normal furnace behavior.
+* Polished Molten Rotor Furnace combustion with stronger rear and side fire, a thin intersecting interior flame layer, and a clear center gap so the impeller support pin remains visible.
+* Removed the experimental front-exhaust and ceiling-fire effects from the final furnace visual pass.
+
+### Fixed
+
+* Fixed missing pixel texture on 3x3 boiler interface array
+
+**Copyright © 2026 Hxney, Ł. All Rights Reserved.**
+
+
+----------
+
+
 # Create: Sulfuric Resonance 0.4.1 -- Adjusted Equilibrium
 
 ### Added

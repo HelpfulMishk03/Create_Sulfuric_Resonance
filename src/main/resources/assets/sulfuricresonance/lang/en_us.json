@@ -808,8 +808,7 @@
   "tooltip.sulfuricresonance.steam_engine.su": "Generated Capacity: %s SU",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Adding a Shaft creates Create's Powered Shaft and the complete moving engine assembly",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "A Thermochemical Shaft on the Powered Shaft carries the boiler's heat tier; its RPM and SU come only from the boiler",
-  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "The input and output networks stay separate; Engineer's Goggles report the boiler-fed heat and Steam Engine output"
-,
+  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "The input and output networks stay separate; Engineer's Goggles report the boiler-fed heat and Steam Engine output",
   "item.sulfuricresonance.cinder_flare": "Cinder Flare",
   "item.sulfuricresonance.lit_cinder_flare": "Lit Cinder Flare",
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Hold Flint and Steel in your offhand, then hold Right Click to light.",
@@ -847,5 +846,19 @@
   "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "A Deployer holding Flint and Steel ignites an unlit Cinder Flare on a moving Belt",
   "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "The Lit Cinder Flare continues down the Belt for collection",
   "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Launching Reactive Tools",
-  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Dispensers launch Lit Cinder Flares, Sulfuric Acid Flasks, and Pyroclast Bombs"
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Dispensers launch Lit Cinder Flares, Sulfuric Acid Flasks, and Pyroclast Bombs",
+  "item.sulfuricresonance.thermite_charge": "Thermite Charge",
+  "item.sulfuricresonance.brimstone_briquette": "Brimstone Briquette",
+  "block.sulfuricresonance.thermal_battery": "Thermal Battery",
+  "tooltip.sulfuricresonance.thermal_battery.stored_heat": "Stored Heat: %s%%",
+  "item.sulfuricresonance.thermal_battery.fully_charged": "Thermal Battery (Fully Charged)",
+  "tooltip.sulfuricresonance.thermal_battery.redstone_output": "Redstone signal enables heat output.",
+  "gui.sulfuricresonance.thermal_battery.stored": "Stored Heat: %s%%",
+  "gui.sulfuricresonance.thermal_battery.input": "Input: %s °C",
+  "gui.sulfuricresonance.thermal_battery.runtime": "Estimated Runtime: %s",
+  "gui.sulfuricresonance.thermal_battery.heated": "Heated",
+  "gui.sulfuricresonance.thermal_battery.superheated": "Superheated",
+  "gui.sulfuricresonance.thermal_battery.status.heated": "Heated",
+  "gui.sulfuricresonance.thermal_battery.status.superheated": "Superheated",
+  "gui.sulfuricresonance.thermal_battery.status.fault": "Fault"
 }

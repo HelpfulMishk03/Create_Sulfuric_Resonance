@@ -808,8 +808,7 @@
   "tooltip.sulfuricresonance.steam_engine.su": "Capacidade gerada: %s SU",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Adicionar um Eixo cria o Eixo Motriz do Create e o conjunto móvel completo do motor",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Um Eixo Termoquímico no Eixo Motriz transporta o nível de calor da caldeira; sua RPM e seus SU vêm apenas da caldeira",
-  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "As redes de entrada e saída permanecem separadas; os Óculos de Engenheiro mostram o calor da caldeira e a saída do Motor a Vapor"
-,
+  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "As redes de entrada e saída permanecem separadas; os Óculos de Engenheiro mostram o calor da caldeira e a saída do Motor a Vapor",
   "item.sulfuricresonance.cinder_flare": "Sinalizador de Brasa",
   "item.sulfuricresonance.lit_cinder_flare": "Sinalizador de Brasa Aceso",
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Segure Pederneira e Aço na mão secundária e mantenha o botão direito pressionado para acender.",
@@ -847,5 +846,19 @@
   "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Um Aplicador com Pederneira e Aço acende um Sinalizador de Brasa apagado sobre uma Correia em movimento",
   "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "O Sinalizador aceso continua pela Correia para ser coletado",
   "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Lançamento de Ferramentas Reativas",
-  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Ejetores lançam Sinalizadores de Brasa Acesos, Frascos de Ácido Sulfúrico e Bombas Piroclásticas"
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Ejetores lançam Sinalizadores de Brasa Acesos, Frascos de Ácido Sulfúrico e Bombas Piroclásticas",
+  "item.sulfuricresonance.thermite_charge": "Carga de termita",
+  "item.sulfuricresonance.brimstone_briquette": "Briquete de Enxofre Infernal",
+  "block.sulfuricresonance.thermal_battery": "Bateria térmica",
+  "tooltip.sulfuricresonance.thermal_battery.stored_heat": "Calor armazenado: %s%%",
+  "item.sulfuricresonance.thermal_battery.fully_charged": "Bateria térmica (Carga completa)",
+  "tooltip.sulfuricresonance.thermal_battery.redstone_output": "Um sinal de redstone ativa a saída de calor.",
+  "gui.sulfuricresonance.thermal_battery.stored": "Calor armazenado: %s%%",
+  "gui.sulfuricresonance.thermal_battery.input": "Entrada: %s °C",
+  "gui.sulfuricresonance.thermal_battery.runtime": "Autonomia estimada: %s",
+  "gui.sulfuricresonance.thermal_battery.heated": "Aquecido",
+  "gui.sulfuricresonance.thermal_battery.superheated": "Superaquecido",
+  "gui.sulfuricresonance.thermal_battery.status.heated": "Aquecido",
+  "gui.sulfuricresonance.thermal_battery.status.superheated": "Superaquecido",
+  "gui.sulfuricresonance.thermal_battery.status.fault": "Falha"
 }

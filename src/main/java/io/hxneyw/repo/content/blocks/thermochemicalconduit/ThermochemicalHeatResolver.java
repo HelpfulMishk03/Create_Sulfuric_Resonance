@@ -11,6 +11,7 @@ import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
+import io.hxneyw.repo.content.blocks.thermalbattery.ThermalBatteryBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlock;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
@@ -45,10 +46,30 @@ public final class ThermochemicalHeatResolver {
         if (target == null) {
             return Result.NONE;
         }
-        return resolve(
+
+        Result live = resolve(
                 target.getLevel(),
                 target.getBlockPos(),
                 true
+        );
+        if (live.heatTier()
+                != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+            return live;
+        }
+
+        live = resolvePhysicalLiveSource(
+                target.getLevel(),
+                target.getBlockPos(),
+                true
+        );
+        if (live.heatTier()
+                != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+            return live;
+        }
+
+        return resolveBatteryFallback(
+                target.getLevel(),
+                target.getBlockPos()
         );
     }
 
@@ -56,7 +77,17 @@ public final class ThermochemicalHeatResolver {
             @Nullable Level level,
             @Nullable BlockPos startPosition
     ) {
-        return resolve(
+        Result live = resolve(
+                level,
+                startPosition,
+                false
+        );
+        if (live.heatTier()
+                != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+            return live;
+        }
+
+        return resolvePhysicalLiveSource(
                 level,
                 startPosition,
                 false
@@ -282,6 +313,342 @@ public final class ThermochemicalHeatResolver {
         return Result.NONE;
     }
 
+    private static Result resolvePhysicalLiveSource(
+            @Nullable Level level,
+            @Nullable BlockPos startPosition,
+            boolean allowDirectBeltSource
+    ) {
+        if (level == null
+                || level.isClientSide
+                || startPosition == null
+                || !level.isLoaded(startPosition)) {
+            return Result.NONE;
+        }
+
+        BlockState startState = level.getBlockState(startPosition);
+        if (!isAllowedNode(startState)
+                || !(level.getBlockEntity(startPosition)
+                instanceof KineticBlockEntity)) {
+            return Result.NONE;
+        }
+
+        Queue<BatterySearchStep> pending = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
+        pending.add(new BatterySearchStep(
+                startPosition.immutable(),
+                List.of(startPosition.immutable()),
+                0
+        ));
+
+        for (int steps = 0;
+             steps < MAX_INHERITED_STEPS && !pending.isEmpty();
+             steps++) {
+            BatterySearchStep step = pending.remove();
+            BlockPos position = step.position();
+            if (!level.isLoaded(position) || !visited.add(position)) {
+                continue;
+            }
+
+            BlockState state = level.getBlockState(position);
+            if (!isAllowedNode(state)) {
+                continue;
+            }
+
+            DirectSteamSource directSteamSource =
+                    findDirectLinkDriveSteamSource(level, position, state);
+            if (directSteamSource != null) {
+                Result directResult = buildResult(
+                        level,
+                        step.pathTargetToHere(),
+                        directSteamSource.heatTier(),
+                        directSteamSource.sourcePosition(),
+                        directSteamSource.temperature(),
+                        step.distance() + 1
+                );
+                if (directResult.heatTier()
+                        != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                    return directResult;
+                }
+            }
+
+            for (BlockPos neighbour : connectedNetworkNeighbours(
+                    level,
+                    position
+            )) {
+                if (visited.contains(neighbour) || !level.isLoaded(neighbour)) {
+                    continue;
+                }
+
+                BlockEntity neighbourEntity = level.getBlockEntity(neighbour);
+
+                if (neighbourEntity instanceof MoltenRotorBlockEntity furnace) {
+                    Result result = buildResult(
+                            level,
+                            step.pathTargetToHere(),
+                            furnace.getCurrentHeatTier(),
+                            neighbour,
+                            furnace.getDisplayTemperature(),
+                            step.distance() + 1
+                    );
+                    if (result.heatTier()
+                            != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                        return result;
+                    }
+                    continue;
+                }
+
+                if (neighbourEntity instanceof PoweredShaftBlockEntity poweredShaft) {
+                    ThermochemicalBoilerInterfaceCompat.SteamSource steamSource =
+                            ThermochemicalBoilerInterfaceCompat.resolveSteamSource(
+                                    poweredShaft
+                            );
+                    if (steamSource.active()) {
+                        Result result = buildResult(
+                                level,
+                                step.pathTargetToHere(),
+                                steamSource.heatTier(),
+                                neighbour,
+                                steamSource.temperature(),
+                                step.distance() + 1
+                        );
+                        if (result.heatTier()
+                                != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                            return result;
+                        }
+                    }
+                    continue;
+                }
+
+                if (neighbourEntity instanceof BeltBlockEntity belt) {
+                    if (allowDirectBeltSource && isMarkedPulley(belt)) {
+                        Result result = resolvePhysicalBeltSource(
+                                level,
+                                belt,
+                                position,
+                                step.pathTargetToHere(),
+                                step.distance() + 1
+                        );
+                        if (result.heatTier()
+                                != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                            return result;
+                        }
+                    }
+                    continue;
+                }
+
+                if (neighbourEntity instanceof ThermalBatteryBlockEntity) {
+                    continue;
+                }
+
+                BlockState neighbourState = level.getBlockState(neighbour);
+                if (!isAllowedNode(neighbourState)) {
+                    continue;
+                }
+
+                if (requiresImmediateConduit(neighbourState)
+                        && !(state.getBlock()
+                        instanceof ThermochemicalConduitBlock)) {
+                    continue;
+                }
+
+                List<BlockPos> nextPath =
+                        new ArrayList<>(step.pathTargetToHere());
+                nextPath.add(neighbour.immutable());
+                pending.add(new BatterySearchStep(
+                        neighbour.immutable(),
+                        List.copyOf(nextPath),
+                        step.distance() + 1
+                ));
+            }
+        }
+
+        return Result.NONE;
+    }
+
+    private static Result resolvePhysicalBeltSource(
+            Level level,
+            BeltBlockEntity belt,
+            BlockPos networkPosition,
+            List<BlockPos> targetToNetwork,
+            int baseDistance
+    ) {
+        BeltBlockEntity controller = BeltHelper.getControllerBE(
+                level,
+                belt.getBlockPos()
+        );
+        if (controller == null
+                || !controller.isController()
+                || controller.beltLength <= 0) {
+            return Result.NONE;
+        }
+
+        CombustionBeltHeatResolver.Result beltResult =
+                CombustionBeltHeatResolver.resolveRelaySource(
+                        level,
+                        controller,
+                        networkPosition
+                );
+        if (beltResult.heatTier()
+                == MoltenRotorBlockEntity.RotorHeatLevel.NONE
+                || beltResult.sourcePosition() == null) {
+            return Result.NONE;
+        }
+
+        int temperature = 0;
+        BlockEntity sourceEntity = level.getBlockEntity(
+                beltResult.sourcePosition()
+        );
+        if (sourceEntity instanceof MoltenRotorBlockEntity furnace) {
+            temperature = furnace.getDisplayTemperature();
+        }
+
+        long combinedDistance = (long) baseDistance
+                + beltResult.distanceSquared();
+        int resolvedDistance = combinedDistance >= Integer.MAX_VALUE
+                ? Integer.MAX_VALUE
+                : (int) combinedDistance;
+
+        return buildResult(
+                level,
+                targetToNetwork,
+                beltResult.heatTier(),
+                beltResult.sourcePosition(),
+                temperature,
+                resolvedDistance
+        );
+    }
+
+    private static Result resolveBatteryFallback(
+            @Nullable Level level,
+            @Nullable BlockPos startPosition
+    ) {
+        if (level == null
+                || level.isClientSide
+                || startPosition == null
+                || !level.isLoaded(startPosition)) {
+            return Result.NONE;
+        }
+
+        BlockState startState = level.getBlockState(startPosition);
+        if (!isAllowedNode(startState)
+                || !(level.getBlockEntity(startPosition)
+                instanceof KineticBlockEntity)) {
+            return Result.NONE;
+        }
+
+        Queue<BatterySearchStep> pending = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
+        pending.add(new BatterySearchStep(
+                startPosition.immutable(),
+                List.of(startPosition.immutable()),
+                0
+        ));
+
+        for (int steps = 0;
+             steps < MAX_INHERITED_STEPS && !pending.isEmpty();
+             steps++) {
+            BatterySearchStep step = pending.remove();
+            BlockPos position = step.position();
+            if (!level.isLoaded(position) || !visited.add(position)) {
+                continue;
+            }
+
+            BlockState state = level.getBlockState(position);
+            if (!isAllowedNode(state)) {
+                continue;
+            }
+
+            for (BlockPos neighbour : connectedNetworkNeighbours(
+                    level,
+                    position
+            )) {
+                if (visited.contains(neighbour) || !level.isLoaded(neighbour)) {
+                    continue;
+                }
+
+                BlockEntity neighbourEntity = level.getBlockEntity(neighbour);
+                if (neighbourEntity instanceof ThermalBatteryBlockEntity battery) {
+                    if (!battery.canSupply()) {
+                        continue;
+                    }
+
+                    Result result = buildResult(
+                            level,
+                            step.pathTargetToHere(),
+                            battery.getOutputHeatTier(),
+                            neighbour,
+                            battery.getOutputTemperature(),
+                            step.distance() + 1
+                    );
+                    if (result.heatTier()
+                            != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                        battery.markNetworkDemand();
+                        return result;
+                    }
+                    continue;
+                }
+
+                BlockState neighbourState = level.getBlockState(neighbour);
+                if (!isAllowedNode(neighbourState)) {
+                    continue;
+                }
+
+                if (requiresImmediateConduit(neighbourState)
+                        && !(state.getBlock()
+                        instanceof ThermochemicalConduitBlock)) {
+                    continue;
+                }
+
+                List<BlockPos> nextPath =
+                        new ArrayList<>(step.pathTargetToHere());
+                nextPath.add(neighbour.immutable());
+                pending.add(new BatterySearchStep(
+                        neighbour.immutable(),
+                        List.copyOf(nextPath),
+                        step.distance() + 1
+                ));
+            }
+        }
+
+        return Result.NONE;
+    }
+
+    private static List<BlockPos> connectedNetworkNeighbours(
+            Level level,
+            BlockPos position
+    ) {
+        BlockState state = level.getBlockState(position);
+        BlockEntity entity = level.getBlockEntity(position);
+        if (!(entity instanceof KineticBlockEntity kinetic)
+                || !(state.getBlock() instanceof IRotate rotate)) {
+            return List.of();
+        }
+
+        Set<BlockPos> potential = new LinkedHashSet<>();
+        for (Direction direction : Direction.values()) {
+            BlockPos neighbour = position.relative(direction);
+            if (level.isLoaded(neighbour)) {
+                potential.add(neighbour.immutable());
+            }
+        }
+
+        potential.addAll(kinetic.addPropagationLocations(
+                rotate,
+                state,
+                new ArrayList<>(potential)
+        ));
+
+        List<BlockPos> connected = new ArrayList<>();
+        for (BlockPos neighbour : potential) {
+            if (!neighbour.equals(position)
+                    && level.isLoaded(neighbour)
+                    && hasPhysicalConnection(level, position, neighbour)) {
+                connected.add(neighbour.immutable());
+            }
+        }
+        return connected;
+    }
+
     private static @Nullable DirectSteamSource
     findDirectLinkDriveSteamSource(
             Level level,
@@ -361,10 +728,8 @@ public final class ThermochemicalHeatResolver {
             return temperature > 0;
         }
 
-        return Long.compare(
-                candidate.sourcePosition().asLong(),
-                selected.sourcePosition().asLong()
-        ) < 0;
+        return candidate.sourcePosition().asLong()
+                < selected.sourcePosition().asLong();
     }
 
     public static @Nullable InheritedBeltSource
@@ -1176,6 +1541,13 @@ public final class ThermochemicalHeatResolver {
     ) {
         public static final LinkDriveConnectionStats NONE =
                 new LinkDriveConnectionStats(0, 0);
+    }
+
+    private record BatterySearchStep(
+            BlockPos position,
+            List<BlockPos> pathTargetToHere,
+            int distance
+    ) {
     }
 
     private record PhysicalStep(

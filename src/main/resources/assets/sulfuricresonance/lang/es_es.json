@@ -808,8 +808,7 @@
   "tooltip.sulfuricresonance.steam_engine.su": "Capacidad generada: %s SU",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Añadir un eje crea el eje motriz de Create y el conjunto móvil completo del motor",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Un eje termoquímico conectado al eje motriz transporta el nivel de calor de la caldera; sus RPM y SU proceden solo de la caldera",
-  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Las redes de entrada y salida permanecen separadas; las gafas de ingeniero muestran el calor de la caldera y la salida del motor de vapor"
-,
+  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Las redes de entrada y salida permanecen separadas; las gafas de ingeniero muestran el calor de la caldera y la salida del motor de vapor",
   "item.sulfuricresonance.cinder_flare": "Bengala de brasa",
   "item.sulfuricresonance.lit_cinder_flare": "Bengala de brasa encendida",
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Sostén un mechero en la mano secundaria y mantén pulsado clic derecho para encenderla.",
@@ -847,5 +846,19 @@
   "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Un desplegador con un mechero enciende una bengala de brasa sobre una cinta en movimiento",
   "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "La bengala encendida continúa por la cinta para su recogida",
   "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Lanzamiento de herramientas reactivas",
-  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Los dispensadores lanzan bengalas de brasa encendidas, frascos de ácido sulfúrico y bombas piroclásticas"
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Los dispensadores lanzan bengalas de brasa encendidas, frascos de ácido sulfúrico y bombas piroclásticas",
+  "item.sulfuricresonance.thermite_charge": "Carga de termita",
+  "item.sulfuricresonance.brimstone_briquette": "Briqueta de azufre infernal",
+  "block.sulfuricresonance.thermal_battery": "Batería térmica",
+  "tooltip.sulfuricresonance.thermal_battery.stored_heat": "Calor almacenado: %s%%",
+  "item.sulfuricresonance.thermal_battery.fully_charged": "Batería térmica (Carga completa)",
+  "tooltip.sulfuricresonance.thermal_battery.redstone_output": "Una señal de redstone activa la salida de calor.",
+  "gui.sulfuricresonance.thermal_battery.stored": "Calor almacenado: %s%%",
+  "gui.sulfuricresonance.thermal_battery.input": "Entrada: %s °C",
+  "gui.sulfuricresonance.thermal_battery.runtime": "Autonomía estimada: %s",
+  "gui.sulfuricresonance.thermal_battery.heated": "Calentado",
+  "gui.sulfuricresonance.thermal_battery.superheated": "Supercalentado",
+  "gui.sulfuricresonance.thermal_battery.status.heated": "Calentado",
+  "gui.sulfuricresonance.thermal_battery.status.superheated": "Supercalentado",
+  "gui.sulfuricresonance.thermal_battery.status.fault": "Fallo"
 }

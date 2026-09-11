@@ -846,5 +846,19 @@
   "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Развёртыватель с огнивом поджигает угольный фальшфейер на движущемся конвейере",
   "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "Горящий фальшфейер продолжает движение по конвейеру для последующего сбора",
   "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Запуск реактивных инструментов",
-  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Раздатчики запускают горящие угольные фальшфейеры, колбы с серной кислотой и пирокластовые бомбы"
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Раздатчики запускают горящие угольные фальшфейеры, колбы с серной кислотой и пирокластовые бомбы",
+  "item.sulfuricresonance.thermite_charge": "Термитный заряд",
+  "item.sulfuricresonance.brimstone_briquette": "Адская серная брикетка",
+  "block.sulfuricresonance.thermal_battery": "Термический аккумулятор",
+  "tooltip.sulfuricresonance.thermal_battery.stored_heat": "Накопленное тепло: %s%%",
+  "item.sulfuricresonance.thermal_battery.fully_charged": "Термический аккумулятор (Полностью заряжен)",
+  "tooltip.sulfuricresonance.thermal_battery.redstone_output": "Сигнал редстоуна включает отдачу тепла.",
+  "gui.sulfuricresonance.thermal_battery.stored": "Накопленное тепло: %s%%",
+  "gui.sulfuricresonance.thermal_battery.input": "Вход: %s °C",
+  "gui.sulfuricresonance.thermal_battery.runtime": "Расчётное время работы: %s",
+  "gui.sulfuricresonance.thermal_battery.heated": "Нагретый",
+  "gui.sulfuricresonance.thermal_battery.superheated": "Перегретый",
+  "gui.sulfuricresonance.thermal_battery.status.heated": "Нагретый",
+  "gui.sulfuricresonance.thermal_battery.status.superheated": "Перегретый",
+  "gui.sulfuricresonance.thermal_battery.status.fault": "Ошибка"
 }

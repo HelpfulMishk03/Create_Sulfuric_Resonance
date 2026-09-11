@@ -808,8 +808,7 @@
   "tooltip.sulfuricresonance.steam_engine.su": "Erzeugte Kapazität: %s SU",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_8": "Das Hinzufügen einer Welle erzeugt Creates angetriebene Welle und die vollständige bewegliche Dampfmaschinenmechanik",
   "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_9": "Eine Thermochemische Welle an der angetriebenen Welle führt die Wärmestufe des Kessels; ihre Drehzahl und SU stammen nur vom Kessel",
-  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Eingangs- und Ausgangsnetz bleiben getrennt; die Ingenieursbrille zeigt kesselgespeiste Wärme und Dampfmaschinenleistung"
-,
+  "sulfuricresonance.ponder.thermochemical_boiler_interface.operation.text_10": "Eingangs- und Ausgangsnetz bleiben getrennt; die Ingenieursbrille zeigt kesselgespeiste Wärme und Dampfmaschinenleistung",
   "item.sulfuricresonance.cinder_flare": "Glutfackel",
   "item.sulfuricresonance.lit_cinder_flare": "Entzündete Glutfackel",
   "tooltip.sulfuricresonance.cinder_flare.unlit": "Feuerzeug in der Nebenhand halten und Rechtsklick gedrückt halten, um sie zu entzünden.",
@@ -847,5 +846,19 @@
   "sulfuricresonance.ponder.reactive_tools.deployer.text_1": "Ein Deployer mit Feuerzeug entzündet eine unentzündete Glutfackel auf einem laufenden Förderband",
   "sulfuricresonance.ponder.reactive_tools.deployer.text_2": "Die entzündete Glutfackel läuft zur Abholung auf dem Förderband weiter",
   "sulfuricresonance.ponder.reactive_tools.dispensers.header": "Reaktive Werkzeuge abschießen",
-  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Spender können entzündete Glutfackeln, Schwefelsäurekolben und Pyroklastbomben abschießen"
+  "sulfuricresonance.ponder.reactive_tools.dispensers.text_1": "Spender können entzündete Glutfackeln, Schwefelsäurekolben und Pyroklastbomben abschießen",
+  "item.sulfuricresonance.thermite_charge": "Thermitladung",
+  "item.sulfuricresonance.brimstone_briquette": "Schwefelglutbrikett",
+  "block.sulfuricresonance.thermal_battery": "Wärmespeicher",
+  "tooltip.sulfuricresonance.thermal_battery.stored_heat": "Gespeicherte Wärme: %s%%",
+  "item.sulfuricresonance.thermal_battery.fully_charged": "Wärmespeicher (Voll geladen)",
+  "tooltip.sulfuricresonance.thermal_battery.redstone_output": "Ein Redstone-Signal aktiviert die Wärmeabgabe.",
+  "gui.sulfuricresonance.thermal_battery.stored": "Gespeicherte Wärme: %s%%",
+  "gui.sulfuricresonance.thermal_battery.input": "Eingang: %s °C",
+  "gui.sulfuricresonance.thermal_battery.runtime": "Geschätzte Laufzeit: %s",
+  "gui.sulfuricresonance.thermal_battery.heated": "Beheizt",
+  "gui.sulfuricresonance.thermal_battery.superheated": "Überhitzt",
+  "gui.sulfuricresonance.thermal_battery.status.heated": "Beheizt",
+  "gui.sulfuricresonance.thermal_battery.status.superheated": "Überhitzt",
+  "gui.sulfuricresonance.thermal_battery.status.fault": "Fehler"
 }

@@ -1,0 +1,40 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "red": "sulfuricresonance:block/thermal_battery/indicator_red",
+    "particle": "sulfuricresonance:block/thermal_battery/indicator_red"
+  },
+  "elements": [
+    {
+      "from": [5.5, 4.9, 15.001],
+      "to": [6.5, 5.35, 15.02],
+      "shade": false,
+      "faces": {
+        "south": {
+          "uv": [0, 0, 1, 1],
+          "texture": "#red",
+          "neoforge_data": {
+            "block_light": 10,
+            "sky_light": 15
+          }
+        }
+      }
+    },
+    {
+      "from": [9.5, 4.9, 15.001],
+      "to": [10.5, 5.35, 15.02],
+      "shade": false,
+      "faces": {
+        "south": {
+          "uv": [0, 0, 1, 1],
+          "texture": "#red",
+          "neoforge_data": {
+            "block_light": 10,
+            "sky_light": 15
+          }
+        }
+      }
+    }
+  ]
+}

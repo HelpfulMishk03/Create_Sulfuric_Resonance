@@ -1,0 +1,20 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:reinforced_cinder_compound"
+    },
+    {
+      "tag": "c:sulfur"
+    },
+    {
+      "item": "create:iron_sheet"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:thermite_charge",
+      "count": 1
+    }
+  ]
+}

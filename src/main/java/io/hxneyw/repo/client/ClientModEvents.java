@@ -12,6 +12,7 @@ import io.hxneyw.repo.client.gui.SulfuricResonanceChamberScreen;
 import io.hxneyw.repo.client.animation.CinderFlareAnimationHandler;
 import io.hxneyw.repo.client.animation.CinderFlareClientEnumParams;
 import io.hxneyw.repo.client.screen.PrecisionSpritzerScreen;
+import io.hxneyw.repo.client.screen.ThermalBatteryScreen;
 import io.hxneyw.repo.client.renderer.CinderFlareRenderer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
@@ -55,6 +56,7 @@ import org.jetbrains.annotations.NotNull;
         modid = "sulfuricresonance",
         value = {Dist.CLIENT}
 )
+@SuppressWarnings("unused")
 public class ClientModEvents {
 
     public static final PartialModel ROTOR_SHAFT_LEFT =
@@ -108,6 +110,12 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
 
     public static final PartialModel RESONANT_HEAT_INJECTOR_SHAFT =
             partial("block/resonant_heat_injector_shaft");
+
+    public static final PartialModel THERMAL_BATTERY_SHAFT =
+            partial("block/thermal_battery_shaft");
+
+    public static final PartialModel THERMAL_BATTERY_CORE_GLOW =
+            partial("block/thermal_battery_core_glow");
 
     public static final PartialModel RESONANCE_CHAMBER_WINDOW =
             partial("block/sulfuric_resonance_chamber_window");
@@ -225,6 +233,10 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.register(
                 AllModMenus.PRECISION_SPRITZER.get(),
                 PrecisionSpritzerScreen::new
+        );
+        event.register(
+                AllModMenus.THERMAL_BATTERY.get(),
+                ThermalBatteryScreen::new
         );
     }
 
@@ -425,6 +437,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         );
 
         event.registerBlockEntityRenderer(
+                AllBlockEntities.THERMAL_BATTERY.get(),
+                ThermalBatteryRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.PROCESS_MONITOR.get(),
                 ProcessMonitorRenderer::new
         );
@@ -474,8 +491,7 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         arm,
                         itemInHand,
                         partialTick,
-                        equipProcess,
-                        swingProcess
+                        equipProcess
                 );
             }
 
@@ -536,9 +552,7 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
 
                         partialTick,
 
-                        equipProcess,
-
-                        swingProcess
+                        equipProcess
 
                 );
 
@@ -562,7 +576,7 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
 
                         || !stack.is(Items.LIT_CINDER_FLARE.get())
 
-                        || !CinderFlareAnimationHandler.isThrowing(entity, 0.0F)) {
+                        || !CinderFlareAnimationHandler.isThrowing(entity)) {
 
                     return null;
 
@@ -600,8 +614,7 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                         arm,
                         itemInHand,
                         partialTick,
-                        equipProcess,
-                        swingProcess
+                        equipProcess
                 );
             }
         };

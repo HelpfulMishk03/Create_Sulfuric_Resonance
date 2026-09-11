@@ -10,6 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -22,10 +23,13 @@ public final class MoltenRotorFuelController {
     private int remainingBurnTime = 0;
     private int activeFuelCount = 0;
     private int activeLogStickCount = 0;
+    private float activeStickBoostMaxTemp = 0.0F;
     private final List<ItemStack> activeLogStickStacks = new ArrayList<>();
     private int renderedFuelUnitCount = 0;
     private MoltenRotorBlockEntity.FuelType activeFuelType =
             MoltenRotorBlockEntity.FuelType.NONE;
+    private ResourceLocation activeFuelKey =
+            ResolvedFuel.builtinKey(MoltenRotorBlockEntity.FuelType.NONE);
     private ItemStack activeFuelStack = ItemStack.EMPTY;
     private boolean hasLavaInStack = false;
     private boolean hasSulfurInStack = false;
@@ -38,8 +42,12 @@ public final class MoltenRotorFuelController {
         this.furnace = furnace;
     }
 
+    private ResolvedFuel resolveFuel(ItemStack stack) {
+        return FuelCompatibility.resolve(stack, this.furnace.getLevel());
+    }
+
     private MoltenRotorBlockEntity.FuelType getFuelTypeFromItem(ItemStack stack) {
-        ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
+        ResolvedFuel resolvedFuel = this.resolveFuel(stack);
 
         if (resolvedFuel == null || resolvedFuel.isInvalid()) {
             return null;
@@ -57,8 +65,11 @@ public final class MoltenRotorFuelController {
             return false;
         }
 
+        ResolvedFuel resolvedFuel = this.resolveFuel(stack);
         MoltenRotorBlockEntity.FuelType fuelType =
-                this.getFuelTypeFromItem(stack);
+                resolvedFuel == null || resolvedFuel.isInvalid()
+                        ? null
+                        : resolvedFuel.type();
 
         if (fuelType == null
                 || fuelType == MoltenRotorBlockEntity.FuelType.NONE) {
@@ -74,7 +85,11 @@ public final class MoltenRotorFuelController {
         }
 
         if (fuelType == MoltenRotorBlockEntity.FuelType.STICK) {
-            return this.insertLogBoostStick(stack, simulate);
+            return this.insertLogBoostStick(
+                    stack,
+                    resolvedFuel,
+                    simulate
+            );
         }
 
         if (!this.hasActiveOrPendingFuel()) {
@@ -118,19 +133,9 @@ public final class MoltenRotorFuelController {
             return false;
         }
 
-        ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
-
-        if (resolvedFuel == null || resolvedFuel.isInvalid()) {
-            return false;
-        }
-
         int maximumUnits = resolvedFuel.maximumUnits();
 
-        if (this.getFuelUnitCount(fuelType) >= maximumUnits) {
-            return false;
-        }
-
-        if (this.getFuelUnitCount(fuelType) >= fuelType.maxStackSize) {
+        if (this.getFuelUnitCount(resolvedFuel.key()) >= maximumUnits) {
             return false;
         }
 
@@ -166,24 +171,40 @@ public final class MoltenRotorFuelController {
         return true;
     }
 
-    private boolean insertLogBoostStick(ItemStack stack, boolean simulate) {
+    private boolean insertLogBoostStick(
+            ItemStack stack,
+            ResolvedFuel resolvedFuel,
+            boolean simulate
+    ) {
         if (this.activeFuelType != MoltenRotorBlockEntity.FuelType.LOG
-                || this.remainingBurnTime <= 0) {
+                || this.remainingBurnTime <= 0
+                || resolvedFuel == null
+                || resolvedFuel.isInvalid()) {
             return false;
         }
 
-        int logUnits = this.getFuelUnitCount(
-                MoltenRotorBlockEntity.FuelType.LOG
-        );
+        int logUnits = this.getFuelUnitCount(this.activeFuelKey);
+        int maximumStickUnits = Math.max(1, resolvedFuel.maximumUnits());
 
-        if (logUnits + this.activeLogStickCount >= 32) {
+        if (logUnits + this.activeLogStickCount >= maximumStickUnits) {
             return false;
         }
 
         if (!simulate) {
-            this.remainingBurnTime +=
-                    (int) MoltenRotorBlockEntity.FuelType.STICK.baseBurnTimeTicks;
+            this.remainingBurnTime += Math.max(
+                    1,
+                    (int) resolvedFuel.burnTimeTicks()
+            );
             this.activeLogStickCount++;
+            float stickMaximum = ResolvedFuel.builtinKey(
+                    MoltenRotorBlockEntity.FuelType.STICK
+            ).equals(resolvedFuel.key())
+                    ? 550.0F
+                    : resolvedFuel.maximumTemperature();
+            this.activeStickBoostMaxTemp = Math.max(
+                    this.activeStickBoostMaxTemp,
+                    stickMaximum
+            );
             this.activeLogStickStacks.add(stack.copyWithCount(1));
             this.activeFuelCount = logUnits + this.activeLogStickCount;
             this.updateFuelStackFlags(
@@ -223,14 +244,19 @@ public final class MoltenRotorFuelController {
         return false;
     }
 
-    private int getFuelUnitCount(
-            MoltenRotorBlockEntity.FuelType fuelType
-    ) {
-        int count = this.activeFuelType == fuelType
+    private int getFuelUnitCount(ResourceLocation fuelKey) {
+        if (fuelKey == null) {
+            return 0;
+        }
+
+        int count = fuelKey.equals(this.activeFuelKey)
                 && this.remainingBurnTime > 0 ? 1 : 0;
 
         for (ItemStack queuedStack : this.pendingFuel) {
-            if (this.getFuelTypeFromItem(queuedStack) == fuelType) {
+            ResolvedFuel queued = this.resolveFuel(queuedStack);
+            if (queued != null
+                    && !queued.isInvalid()
+                    && fuelKey.equals(queued.key())) {
                 count += queuedStack.getCount();
             }
         }
@@ -254,7 +280,7 @@ public final class MoltenRotorFuelController {
     }
 
     private void startFuel(ItemStack fuelStack) {
-        ResolvedFuel resolvedFuel = FuelCompatibility.resolve(fuelStack);
+        ResolvedFuel resolvedFuel = this.resolveFuel(fuelStack);
 
         if (resolvedFuel == null || resolvedFuel.isInvalid()) {
             return;
@@ -264,8 +290,10 @@ public final class MoltenRotorFuelController {
 
         this.activeFuelStack = fuelStack.copyWithCount(1);
         this.activeFuelType = fuelType;
+        this.activeFuelKey = resolvedFuel.key();
         this.activeFuelCount = 1;
         this.activeLogStickCount = 0;
+        this.activeStickBoostMaxTemp = 0.0F;
         this.activeLogStickStacks.clear();
         this.remainingBurnTime = (int) resolvedFuel.burnTimeTicks();
         this.baseHeatingRate = resolvedFuel.heatingRate();
@@ -276,27 +304,43 @@ public final class MoltenRotorFuelController {
     }
 
     private void startNextPendingFuel() {
-        if (this.pendingFuel.isEmpty()) {
-            return;
+        while (!this.pendingFuel.isEmpty()) {
+            ItemStack queuedStack = this.pendingFuel.getFirst();
+            ItemStack nextFuel = queuedStack.copyWithCount(1);
+
+            queuedStack.shrink(1);
+            if (queuedStack.isEmpty()) {
+                this.pendingFuel.removeFirst();
+            }
+
+            ResolvedFuel resolved = this.resolveFuel(nextFuel);
+            if (resolved != null && !resolved.isInvalid()) {
+                this.startFuel(nextFuel);
+                return;
+            }
+
+            Level level = this.furnace.getLevel();
+            if (level != null && !level.isClientSide) {
+                net.minecraft.world.Containers.dropItemStack(
+                        level,
+                        this.furnace.getBlockPos().getX() + 0.5D,
+                        this.furnace.getBlockPos().getY() + 0.75D,
+                        this.furnace.getBlockPos().getZ() + 0.5D,
+                        nextFuel
+                );
+            }
         }
-
-        ItemStack queuedStack = this.pendingFuel.getFirst();
-        ItemStack nextFuel = queuedStack.copyWithCount(1);
-
-        queuedStack.shrink(1);
-
-        if (queuedStack.isEmpty()) {
-            this.pendingFuel.removeFirst();
-        }
-
-        this.startFuel(nextFuel);
     }
 
     private void clearActiveFuel() {
         this.activeFuelStack = ItemStack.EMPTY;
         this.activeFuelType = MoltenRotorBlockEntity.FuelType.NONE;
+        this.activeFuelKey = ResolvedFuel.builtinKey(
+                MoltenRotorBlockEntity.FuelType.NONE
+        );
         this.activeFuelCount = 0;
         this.activeLogStickCount = 0;
+        this.activeStickBoostMaxTemp = 0.0F;
         this.activeLogStickStacks.clear();
         this.baseHeatingRate = 0.0F;
         this.currentMaxTemp = 0.0F;
@@ -346,10 +390,14 @@ public final class MoltenRotorFuelController {
     }
 
     private float calculateMaxStackedTemp() {
-        return this.hasStickInStack
-                && this.activeFuelType == MoltenRotorBlockEntity.FuelType.LOG
-                ? 550.0F
-                : this.currentMaxTemp;
+        if (this.hasStickInStack
+                && this.activeFuelType == MoltenRotorBlockEntity.FuelType.LOG) {
+            float boost = this.activeStickBoostMaxTemp > 0.0F
+                    ? this.activeStickBoostMaxTemp
+                    : 550.0F;
+            return Math.max(this.currentMaxTemp, boost);
+        }
+        return this.currentMaxTemp;
     }
 
     public boolean hasFuelRemaining() {
@@ -411,7 +459,7 @@ public final class MoltenRotorFuelController {
             return this.renderedFuelUnitCount;
         }
 
-        return this.getFuelUnitCount(this.activeFuelType);
+        return this.getFuelUnitCount(this.activeFuelKey);
     }
 
     public Component getActiveFuelDisplayName() {
@@ -463,6 +511,7 @@ public final class MoltenRotorFuelController {
     ) {
         tag.putInt("FuelTime", this.remainingBurnTime);
         tag.putString("ActiveFuelType", this.activeFuelType.serializedId);
+        tag.putString("ActiveFuelKey", this.activeFuelKey.toString());
 
         if (!this.activeFuelStack.isEmpty()) {
             tag.put(
@@ -473,6 +522,7 @@ public final class MoltenRotorFuelController {
 
         tag.putInt("FuelCount", this.activeFuelCount);
         tag.putInt("ActiveLogStickCount", this.activeLogStickCount);
+        tag.putFloat("ActiveStickBoostMaxTemp", this.activeStickBoostMaxTemp);
 
         ListTag activeLogStickTag = new ListTag();
 
@@ -485,7 +535,7 @@ public final class MoltenRotorFuelController {
                 "RenderedFuelUnits",
                 this.activeFuelType != MoltenRotorBlockEntity.FuelType.NONE
                         && this.remainingBurnTime > 0
-                        ? this.getFuelUnitCount(this.activeFuelType)
+                        ? this.getFuelUnitCount(this.activeFuelKey)
                         : 0
         );
 
@@ -512,6 +562,10 @@ public final class MoltenRotorFuelController {
         this.remainingBurnTime = tag.getInt("FuelTime");
         this.activeFuelCount = tag.getInt("FuelCount");
         this.activeLogStickCount = tag.getInt("ActiveLogStickCount");
+        this.activeStickBoostMaxTemp = tag.contains(
+                "ActiveStickBoostMaxTemp",
+                Tag.TAG_FLOAT
+        ) ? tag.getFloat("ActiveStickBoostMaxTemp") : 0.0F;
         this.activeLogStickStacks.clear();
 
         if (tag.contains("ActiveLogStickStacks", Tag.TAG_LIST)) {
@@ -579,6 +633,17 @@ public final class MoltenRotorFuelController {
                     ? MoltenRotorBlockEntity.FuelType.values()[fuelIndex]
                     : MoltenRotorBlockEntity.FuelType.NONE;
             this.pendingFuel.clear();
+        }
+
+        if (tag.contains("ActiveFuelKey", Tag.TAG_STRING)) {
+            ResourceLocation parsed = ResourceLocation.tryParse(
+                    tag.getString("ActiveFuelKey")
+            );
+            this.activeFuelKey = parsed != null
+                    ? parsed
+                    : ResolvedFuel.builtinKey(this.activeFuelType);
+        } else {
+            this.activeFuelKey = ResolvedFuel.builtinKey(this.activeFuelType);
         }
     }
 }

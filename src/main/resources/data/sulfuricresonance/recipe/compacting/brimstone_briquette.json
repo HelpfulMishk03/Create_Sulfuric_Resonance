@@ -1,0 +1,17 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:infernal_coke"
+    },
+    {
+      "item": "sulfuricresonance:infernal_coke"
+    }
+  ],
+  "results": [
+    {
+      "id": "sulfuricresonance:brimstone_briquette",
+      "count": 1
+    }
+  ]
+}
