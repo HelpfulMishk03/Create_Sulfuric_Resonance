@@ -9,6 +9,7 @@ import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBl
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermalbattery.ThermalBatteryBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalwarningalarm.ThermalWarningAlarmBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelBlockEntity;
@@ -164,6 +165,17 @@ public class AllBlockEntities {
                    AllModBlocks.LIVING_EMBER_LAMP.get()
            ).build(null)
    );
+
+    public static final DeferredHolder<
+            BlockEntityType<?>,
+            BlockEntityType<ThermalBatteryBlockEntity>
+            > THERMAL_BATTERY = BLOCK_ENTITIES.register(
+            "thermal_battery",
+            () -> Builder.of(
+                    ThermalBatteryBlockEntity::new,
+                    AllModBlocks.THERMAL_BATTERY.get()
+            ).build(null)
+    );
 
    public static final DeferredHolder<
            BlockEntityType<?>,

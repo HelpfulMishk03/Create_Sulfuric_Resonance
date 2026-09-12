@@ -12,6 +12,8 @@ public class Config {
    public static final DoubleValue ENTITY_BOUNCE_MULTIPLIER;
    public static final BooleanValue RAIN_AFFECTS_MOLTEN_ROTOR;
    public static final BooleanValue TNT_CAN_EXPLODE;
+   public static final BooleanValue AFTERBURN_FLAMES_ENABLED;
+   public static final BooleanValue AFTERBURN_RUMBLE_ENABLED;
    public static final BooleanValue PYROCLAST_BOMB_BLOCK_DAMAGE;
    static final ModConfigSpec SPEC;
 
@@ -34,6 +36,10 @@ public class Config {
               .define("rainAffectsMoltenRotor", true);
       TNT_CAN_EXPLODE = BUILDER.comment("Allow TNT to explode the Molten Rotor (disable for safe TNT usage)")
               .define("tntCanExplode", true);
+      AFTERBURN_FLAMES_ENABLED = BUILDER.comment("Enable Molten Rotor Furnace internal combustion flame visuals")
+              .define("afterburnFlames", true);
+      AFTERBURN_RUMBLE_ENABLED = BUILDER.comment("Enable the additional Molten Rotor Furnace Afterburn rumble")
+              .define("afterburnRumble", true);
       BUILDER.pop();
 
       BUILDER.push("pyroclast_bomb");

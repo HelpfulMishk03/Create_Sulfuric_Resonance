@@ -9,7 +9,7 @@ issueTrackerURL = "https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/i
 
 [[mods]]
 modId = "sulfuricresonance"
-version = "0.4.1"
+version = "0.5.0"
 displayName = "Create: Sulfuric Resonance"
 enumExtensions = "META-INF/enumextensions.json"
 
@@ -26,8 +26,8 @@ displayURL = "https://modrinth.com/mod/create-sulfuric-resonance"
 
 description = '''
 Create: Sulfuric Resonance is an independently developed Create addon
-expanding combustion, heat generation, sulfur chemistry, sulfuric acid,
-rubber processing, automation, and industrial machinery.
+expanding thermochemical heat, combustion, sulfur chemistry, sulfuric acid,
+heat storage, advanced materials, automation, and industrial machinery.
 
 Copyright © Hxney (Ł). All Rights Reserved.
 

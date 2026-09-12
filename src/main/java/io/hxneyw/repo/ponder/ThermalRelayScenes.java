@@ -1,11 +1,12 @@
 package io.hxneyw.repo.ponder;
 
-import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.kinetics.simpleRelays.ShaftBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
+import io.hxneyw.repo.content.blocks.thermochemicalclutch.ThermochemicalClutchBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
@@ -129,7 +130,9 @@ public final class ThermalRelayScenes {
 
         scene.world().setBlocks(
                 util.select().position(clutchPos),
-                AllBlocks.CLUTCH.getDefaultState(),
+                AllModBlocks.THERMOCHEMICAL_CLUTCH.get()
+                        .defaultBlockState()
+                        .setValue(ShaftBlock.AXIS, Direction.Axis.X),
                 false
         );
 
@@ -666,6 +669,16 @@ public final class ThermalRelayScenes {
                         RedStoneWireBlock.POWER,
                         power
                 ),
+                false
+        );
+        scene.world().modifyBlock(
+                wirePos.east(),
+                state -> state.hasProperty(ThermochemicalClutchBlock.POWERED)
+                        ? state.setValue(
+                                ThermochemicalClutchBlock.POWERED,
+                                power > 0
+                        )
+                        : state,
                 false
         );
     }

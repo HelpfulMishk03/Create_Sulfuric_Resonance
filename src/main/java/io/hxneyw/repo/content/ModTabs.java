@@ -37,6 +37,8 @@ public class ModTabs {
                   output.accept(Items.PARALLEL_THERMOCHEMICAL_GEARBOX_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_LINK_DRIVE_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_CLUTCH_ITEM.get());
+                  output.accept(Items.THERMAL_BATTERY_ITEM.get());
+                  output.accept(io.hxneyw.repo.content.items.ThermalBatteryItem.createFullyChargedStack());
                   output.accept(Items.THERMAL_RELAY_SWITCH_ITEM.get());
                   output.accept(Items.THERMAL_GAUGE_ITEM.get());
                   output.accept(Items.LIVING_EMBER_LAMP_ITEM.get());
@@ -66,10 +68,12 @@ public class ModTabs {
                   output.accept(Items.SULFUR_FUEL_BRIQUETTE.get());
                   output.accept(Items.COKE.get());
                   output.accept(Items.CARBON_DEPOSIT_BLOCK_ITEM);
-                  output.accept(Items.INFERNAL_COKE.get());
+                  output.accept(Items.INFERNAL_COKE.get());
+                  output.accept(Items.BRIMSTONE_BRIQUETTE.get());
                   output.accept(Items.INFERNAL_CARBON_DEPOSIT_BLOCK_ITEM);
                   output.accept(Items.MOLTEN_EMBER_PELLET.get());
-                  output.accept(Items.CINDER_FUEL_BRIQUETTE.get());
+                  output.accept(Items.CINDER_FUEL_BRIQUETTE.get());
+                  output.accept(Items.THERMITE_CHARGE.get());
                   output.accept(Items.CORRUPT_BLAZE_CAKE.get());
                   output.accept(Items.SOUL_FIRED_BLAZE_CAKE.get());
 

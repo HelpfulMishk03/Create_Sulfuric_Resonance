@@ -74,7 +74,8 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.LIVING_EMBER_LAMP.get()))
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()))
                 .add(blockKey(AllModBlocks.CATALYST_BED.get()))
-                .add(blockKey(AllModBlocks.THERMAL_WARNING_ALARM.get()));
+                .add(blockKey(AllModBlocks.THERMAL_WARNING_ALARM.get()))
+                .add(blockKey(AllModBlocks.THERMAL_BATTERY.get()));
 
         helper.addToTag(SULFUR_CHEMISTRY)
                 .add(itemKey(Items.SULFUR.get()))

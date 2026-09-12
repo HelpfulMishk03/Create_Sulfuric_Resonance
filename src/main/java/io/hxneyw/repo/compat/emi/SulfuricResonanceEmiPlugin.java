@@ -19,6 +19,7 @@ import io.hxneyw.repo.content.recipes.precisionspraying.PrecisionSprayingRegistr
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.List;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.slf4j.Logger;
@@ -147,7 +148,9 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
             EmiRegistry registry
     ) {
         List<MoltenRotorFuelDisplay> displays =
-                MoltenRotorFuelDisplayRegistry.createDisplays();
+                MoltenRotorFuelDisplayRegistry.createDisplays(
+                        Minecraft.getInstance().level
+                );
 
         for (int index = 0; index < displays.size(); index++) {
             registry.addRecipe(

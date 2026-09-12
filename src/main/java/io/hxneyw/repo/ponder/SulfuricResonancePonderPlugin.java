@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 30;
+    private static final int REGISTERED_SCENES = 32;
 
     @NotNull
     @Override
@@ -117,6 +117,13 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     moltenRotorId,
                     "molten_rotor/operation",
                     MoltenRotorScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            helper.addStoryBoard(
+                    moltenRotorId,
+                    "molten_rotor/operation",
+                    MoltenRotorAfterburnScenes::afterburn,
                     AllPonderTags.REACTIVE_HEAT
             );
 
@@ -236,6 +243,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     catalystBedId,
                     "sulfuric_resonance_chamber/operation",
                     CatalystBedScenes::operation,
+                    AllPonderTags.REACTIVE_HEAT
+            );
+
+            ResourceLocation thermalBatteryId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.THERMAL_BATTERY.get()
+                    );
+
+            helper.addStoryBoard(
+                    thermalBatteryId,
+                    "thermoshaft/shaft",
+                    ThermalBatteryScenes::operation,
                     AllPonderTags.REACTIVE_HEAT
             );
 

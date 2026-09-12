@@ -31,7 +31,7 @@ final class MoltenRotorInteractions {
       }
 
 
-      ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
+      ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack, level);
       MoltenRotorBlockEntity.FuelType fuelType =
               resolvedFuel == null || resolvedFuel.isInvalid()
                       ? null

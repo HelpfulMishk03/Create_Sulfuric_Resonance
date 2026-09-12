@@ -12,13 +12,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public final class MoltenRotorFuelDisplayRegistry {
 
     private MoltenRotorFuelDisplayRegistry() {
     }
 
-    public static List<MoltenRotorFuelDisplay> createDisplays() {
+    public static List<MoltenRotorFuelDisplay> createDisplays(
+            @Nullable Level level
+    ) {
         Map<DisplayKey, List<ItemStack>> groupedFuelStacks =
                 new LinkedHashMap<>();
 
@@ -28,7 +32,8 @@ public final class MoltenRotorFuelDisplayRegistry {
                 ))
                 .forEach(item -> addResolvedFuel(
                         item,
-                        groupedFuelStacks
+                        groupedFuelStacks,
+                        level
                 ));
 
         List<MoltenRotorFuelDisplay> displays = new ArrayList<>();
@@ -82,7 +87,8 @@ public final class MoltenRotorFuelDisplayRegistry {
 
     private static void addResolvedFuel(
             Item item,
-            Map<DisplayKey, List<ItemStack>> groupedFuelStacks
+            Map<DisplayKey, List<ItemStack>> groupedFuelStacks,
+            @Nullable Level level
     ) {
         if (item == Items.AIR
                 || item == AllItems.CREATIVE_BLAZE_CAKE.get()) {
@@ -90,7 +96,9 @@ public final class MoltenRotorFuelDisplayRegistry {
         }
 
         ItemStack stack = new ItemStack(item);
-        ResolvedFuel resolvedFuel = FuelCompatibility.resolve(stack);
+        ResolvedFuel resolvedFuel = level == null
+                ? FuelCompatibility.resolve(stack)
+                : FuelCompatibility.resolve(stack, level);
 
         if (resolvedFuel == null || resolvedFuel.isInvalid()) {
             return;

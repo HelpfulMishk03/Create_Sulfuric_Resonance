@@ -118,7 +118,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public float calculateAddedStressCapacity() {
       float speed = Math.abs(this.getGeneratedSpeed());
-      return speed == 0.0F ? 0.0F : (this.lastCapacityProvided = this.getCurrentHeatTier().baseStressCapacity / speed);
+      return speed == 0.0F ? 0.0F : (this.lastCapacityProvided = this.getEffectiveStressCapacity() / speed);
    }
 
    public float calculateStressApplied() {
@@ -149,8 +149,15 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.thermalNetworkId;
    }
 
+   private float getEffectiveStressCapacity() {
+
+       return getCurrentHeatTier().baseStressCapacity * (isAfterburning() ? 1.5F : 1.0F);
+
+   }
+
+
    public float getTotalStressOutput() {
-      return this.getCurrentHeatTier().baseStressCapacity;
+      return this.getEffectiveStressCapacity();
    }
 
    public RotorHeatLevel getCurrentHeatTier() {
@@ -164,6 +171,13 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
    public float getExactTemperature() {
       return this.temperatureController.getExactTemperature();
    }
+
+   public boolean isAfterburning() {
+
+       return temperatureController.isAfterburning();
+
+   }
+
 
    public int getDisplayFuelTime() {
       return this.fuelController.getDisplayFuelTime();

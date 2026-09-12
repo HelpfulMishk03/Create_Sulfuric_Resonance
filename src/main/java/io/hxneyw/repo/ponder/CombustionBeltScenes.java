@@ -1,6 +1,7 @@
 package io.hxneyw.repo.ponder;
 
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
+import com.simibubi.create.foundation.ponder.element.BeltItemElement;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import io.hxneyw.repo.content.Items;
@@ -8,6 +9,8 @@ import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.api.element.WorldSectionElement;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
@@ -45,11 +48,16 @@ public final class CombustionBeltScenes {
         BlockPos beltEnd = util.grid().at(4, 1, 2);
         BlockPos conduitPos = util.grid().at(0, 1, 3);
         BlockPos rotorPos = util.grid().at(0, 1, 4);
+        BlockPos shaftStageStart = util.grid().at(0, 4, 0);
+        BlockPos shaftStageEnd = util.grid().at(4, 4, 0);
 
         Selection beltSelection =
                 util.select().fromTo(beltStart, beltEnd);
         Selection sourceSelection =
                 util.select().fromTo(conduitPos, rotorPos);
+        Selection shaftStageSelection =
+                util.select().position(shaftStageStart)
+                        .add(util.select().position(shaftStageEnd));
 
         Vec3 beltStartTop = util.vector().topOf(beltStart);
         Vec3 beltCenterTop = util.vector().topOf(beltCenter);
@@ -96,38 +104,30 @@ public final class CombustionBeltScenes {
                                 Direction.Axis.Z
                         );
 
+        BlockState shaftAlongX =
+                AllModBlocks.THERMOCHEMICAL_SHAFT.get()
+                        .defaultBlockState()
+                        .setValue(
+                                RotatedPillarBlock.AXIS,
+                                Direction.Axis.X
+                        );
+
         scene.showBasePlate();
         scene.idle(10);
 
-        scene.world().showSection(
-                beltSelection,
-                Direction.DOWN
+        scene.world().setBlock(shaftStageStart, shaftAlongX, false);
+        scene.world().setBlock(shaftStageEnd, shaftAlongX, false);
+        ElementLink<WorldSectionElement> shaftGuide =
+                scene.world().showIndependentSection(
+                        shaftStageSelection,
+                        Direction.DOWN
+                );
+        scene.world().moveSection(
+                shaftGuide,
+                new Vec3(0.0D, -3.0D, 2.0D),
+                0
         );
-        scene.world().setKineticSpeed(
-                beltSelection,
-                BELT_SPEED
-        );
-        scene.idle(25);
-
-        scene.overlay()
-                .showControls(
-                        beltStartTop.add(0.0, 0.35, 0.0),
-                        Pointing.DOWN,
-                        45
-                )
-                .rightClick()
-                .withItem(connector);
-
-        scene.idle(20);
-
-        scene.overlay()
-                .showControls(
-                        beltEndTop.add(0.0, 0.35, 0.0),
-                        Pointing.DOWN,
-                        45
-                )
-                .rightClick()
-                .withItem(connector);
+        scene.idle(15);
 
         scene.overlay()
                 .showText(125)
@@ -138,7 +138,39 @@ public final class CombustionBeltScenes {
                 .colored(PonderPalette.INPUT)
                 .pointAt(util.vector().centerOf(beltStart))
                 .placeNearTarget();
-        scene.idle(135);
+
+        scene.overlay()
+                .showControls(
+                        beltStartTop.add(0.0, 0.35, 0.0),
+                        Pointing.DOWN,
+                        45
+                )
+                .rightClick()
+                .withItem(connector);
+        scene.idle(40);
+
+        scene.overlay()
+                .showControls(
+                        beltEndTop.add(0.0, 0.35, 0.0),
+                        Pointing.DOWN,
+                        45
+                )
+                .rightClick()
+                .withItem(connector);
+        scene.idle(45);
+
+        scene.world().hideIndependentSection(shaftGuide, Direction.UP);
+        scene.idle(8);
+        scene.world().showSection(
+                beltSelection,
+                Direction.DOWN
+        );
+        scene.world().setKineticSpeed(
+                beltSelection,
+                BELT_SPEED
+        );
+        scene.effects().indicateSuccess(beltCenter);
+        scene.idle(50);
 
         scene.overlay()
                 .showControls(
@@ -339,11 +371,12 @@ public final class CombustionBeltScenes {
 
 
         clearBeltItems(scene, beltStart);
-        scene.world().createItemOnBelt(
-                beltCenter,
-                Direction.DOWN,
-                sand.copy()
-        );
+        ElementLink<BeltItemElement> processedItem =
+                scene.world().createItemOnBelt(
+                        beltStart,
+                        Direction.DOWN,
+                        sand.copy()
+                );
 
         scene.overlay()
                 .showText(140)
@@ -355,16 +388,14 @@ public final class CombustionBeltScenes {
                 .pointAt(beltCenterTop)
                 .placeNearTarget();
 
-
+        scene.idle(48);
+        scene.world().stallBeltItem(processedItem, true);
         scene.idle(8);
-        clearBeltItems(scene, beltStart);
-        scene.world().createItemOnBelt(
-                beltCenter,
-                Direction.DOWN,
-                glass.copy()
-        );
+        scene.world().changeBeltItemTo(processedItem, glass.copy());
         scene.effects().indicateSuccess(beltCenter);
-        scene.idle(135);
+        scene.idle(12);
+        scene.world().stallBeltItem(processedItem, false);
+        scene.idle(80);
 
 
         scene.world().modifyBlock(

@@ -53,10 +53,10 @@ public final class ThermochemicalHeatData {
         return true;
     }
 
-    public boolean hasSource() {
-        return sourcePosition != null
-                && heatTier
-                != MoltenRotorBlockEntity.RotorHeatLevel.NONE;
+    private boolean lacksSource() {
+        return sourcePosition == null
+                || heatTier
+                == MoltenRotorBlockEntity.RotorHeatLevel.NONE;
     }
 
     public void addTooltip(
@@ -73,7 +73,7 @@ public final class ThermochemicalHeatData {
                         .withStyle(ChatFormatting.GOLD)
         );
 
-        if (!hasSource()) {
+        if (lacksSource()) {
             tooltip.add(
                     Component.translatable(
                             "tooltip.sulfuricresonance.thermochemical.no_source"

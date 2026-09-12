@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
 
 public final class MoltenRotorTemperatureController {
     private static final float AMBIENT_TEMPERATURE = 20.0F;
-    private static final float MAXIMUM_TEMPERATURE = 1599.0F;
+    private static final float MAXIMUM_TEMPERATURE = 2000.0F;
+    private static final float AFTERBURN_THRESHOLD = 1599.0F;
+    private static final float AFTERBURN_COOLING_MULTIPLIER = 0.8F;
     private static final float NORMAL_COOLING_PER_TICK = 0.1F;
 
     private final MoltenRotorBlockEntity furnace;
@@ -63,7 +65,7 @@ public final class MoltenRotorTemperatureController {
             }
         } else if (this.currentTemperature > AMBIENT_TEMPERATURE) {
             this.currentTemperature = this.clampTemperature(
-                    this.currentTemperature - this.getCoolingPerTick()
+                    this.currentTemperature - this.getAfterburnCoolingPerTick()
             );
             needsUpdate = true;
         }
@@ -92,6 +94,13 @@ public final class MoltenRotorTemperatureController {
         return (int) this.currentTemperature;
     }
 
+    public boolean isAfterburning() {
+
+        return currentTemperature > AFTERBURN_THRESHOLD;
+
+    }
+
+
     public float getExactTemperature() {
         return this.currentTemperature;
     }
@@ -113,9 +122,6 @@ public final class MoltenRotorTemperatureController {
         );
     }
 
-    public boolean isAboveAmbient() {
-        return this.currentTemperature > AMBIENT_TEMPERATURE;
-    }
 
     public float getImpellerRpm() {
         return Math.max(
@@ -128,10 +134,21 @@ public final class MoltenRotorTemperatureController {
         if (!creativeMode
                 && this.currentTemperature > AMBIENT_TEMPERATURE
                 && !this.fuelController.hasFuelRemaining()) {
-            return (int) Math.ceil(
-                    (this.currentTemperature - 300.0F)
-                            / this.getCoolingPerTick()
-            );
+            float cooldownTicks = 0.0F;
+            float temperature = this.currentTemperature;
+
+            if (temperature > AFTERBURN_THRESHOLD) {
+                cooldownTicks += (temperature - AFTERBURN_THRESHOLD)
+                        / (this.getCoolingPerTick() * AFTERBURN_COOLING_MULTIPLIER);
+                temperature = AFTERBURN_THRESHOLD;
+            }
+
+            if (temperature > 300.0F) {
+                cooldownTicks += (temperature - 300.0F)
+                        / this.getCoolingPerTick();
+            }
+
+            return (int) Math.ceil(cooldownTicks);
         }
 
         return 0;
@@ -177,6 +194,19 @@ public final class MoltenRotorTemperatureController {
 
         return coolingPerTick;
     }
+
+    private float getAfterburnCoolingPerTick() {
+
+        float cooling = getCoolingPerTick();
+
+        return currentTemperature > AFTERBURN_THRESHOLD
+
+            ? cooling * AFTERBURN_COOLING_MULTIPLIER
+
+            : cooling;
+
+    }
+
 
     private MoltenRotorBlockEntity.RotorHeatLevel
     calculateHeatTierFromTemperature() {

@@ -4,11 +4,13 @@ import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberMenu;
 import io.hxneyw.repo.content.menu.PrecisionSpritzerMenu;
 import io.hxneyw.repo.content.menu.ThermalRelaySwitchMenu;
+import io.hxneyw.repo.content.blocks.thermalbattery.ThermalBatteryMenu;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class AllModMenus {
@@ -25,6 +27,14 @@ public final class AllModMenus {
                     () -> new MenuType<>(
                             PrecisionSpritzerMenu::new,
                             FeatureFlags.DEFAULT_FLAGS
+                    )
+            );
+
+    public static final Supplier<MenuType<ThermalBatteryMenu>>
+            THERMAL_BATTERY = MENUS.register(
+                    "thermal_battery",
+                    () -> IMenuTypeExtension.create(
+                            ThermalBatteryMenu::new
                     )
             );
 

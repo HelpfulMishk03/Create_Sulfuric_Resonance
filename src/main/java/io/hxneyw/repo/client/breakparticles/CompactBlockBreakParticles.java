@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
         modid = CreateSulfuricResonance.MODID,
         value = Dist.CLIENT
 )
+@SuppressWarnings("unused")
 public final class CompactBlockBreakParticles {
 
     private static final int DESTROY_PARTICLE_COUNT = 13;
@@ -67,7 +68,8 @@ public final class CompactBlockBreakParticles {
                 AllModBlocks.PROCESS_GAUGE.get(),
                 AllModBlocks.PROCESS_MONITOR.get(),
                 AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get(),
-                AllModBlocks.CATALYST_BED.get()
+                AllModBlocks.CATALYST_BED.get(),
+                AllModBlocks.THERMAL_BATTERY.get()
         );
     }
 

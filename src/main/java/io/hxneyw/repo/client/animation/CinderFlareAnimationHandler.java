@@ -23,8 +23,7 @@ public final class CinderFlareAnimationHandler {
             HumanoidArm arm,
             ItemStack itemInHand,
             float partialTick,
-            float equipProcess,
-            float swingProcess
+            float equipProcess
     ) {
         if (isLighting(player)) {
             boolean flare = itemInHand.is(Items.CINDER_FLARE.get())
@@ -47,7 +46,7 @@ public final class CinderFlareAnimationHandler {
 
         if (itemInHand.is(Items.LIT_CINDER_FLARE.get())
                 && arm == player.getMainArm()
-                && isThrowing(player, partialTick)) {
+                && isThrowing(player)) {
             transformThrownFlare(
                     poseStack,
                     player,
@@ -102,7 +101,7 @@ public final class CinderFlareAnimationHandler {
 
         poseStack.mulPose(Axis.XP.rotationDegrees(
                 -6.0F * held
-                        + 1.0F * strike
+                        + strike
                         - 2.0F * presentationArc
                         + 1.2F * withdrawalArc
                         - 0.8F * response
@@ -172,7 +171,7 @@ public final class CinderFlareAnimationHandler {
                         + 10.0F * force
                         - 2.0F * state.reset()
                         - 6.0F * swingArc
-                        - 1.0F * response
+                        - response
         ));
         poseStack.mulPose(Axis.YP.rotationDegrees(
                 2.0F * offSide * held
@@ -229,7 +228,7 @@ public final class CinderFlareAnimationHandler {
             ModelPart leftArm,
             LivingEntity entity
     ) {
-        if (isThrowing(entity, 0.0F)) {
+        if (isThrowing(entity)) {
             applyThirdPersonThrowPose(rightArm, leftArm, entity);
             return;
         }
@@ -243,8 +242,6 @@ public final class CinderFlareAnimationHandler {
         float force = state.firstStrike() * 0.68F + state.secondStrike();
         float flareTransitionArc = state.flarePresentationArc()
                 - state.flareWithdrawalArc();
-        float flintTransitionArc = state.flintPresentationArc()
-                - state.flintWithdrawalArc();
 
         boolean rightHanded = entity.getMainArm() == HumanoidArm.RIGHT;
         float mainSide = rightHanded ? 1.0F : -1.0F;
@@ -323,7 +320,7 @@ public final class CinderFlareAnimationHandler {
         throwArm.zRot = Mth.lerp(blend, throwArm.zRot, targetZ);
     }
 
-    public static boolean isThrowing(LivingEntity entity, float partialTick) {
+    public static boolean isThrowing(LivingEntity entity) {
         return entity.isUsingItem()
                 && entity.getUsedItemHand() == InteractionHand.MAIN_HAND
                 && entity.getUseItem().is(Items.LIT_CINDER_FLARE.get());

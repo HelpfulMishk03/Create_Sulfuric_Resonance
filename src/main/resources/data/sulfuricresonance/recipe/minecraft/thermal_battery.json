@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TRT",
+    "BCS",
+    "TRT"
+  ],
+  "key": {
+    "T": { "item": "sulfuricresonance:thermochemical_casing" },
+    "R": { "item": "sulfuricresonance:resonant_copper_sheet" },
+    "B": { "item": "create:brass_sheet" },
+    "C": { "item": "sulfuricresonance:infernal_carbon_deposit_block" },
+    "S": { "item": "sulfuricresonance:thermochemical_shaft" }
+  },
+  "result": {
+    "id": "sulfuricresonance:thermal_battery",
+    "count": 1
+  }
+}

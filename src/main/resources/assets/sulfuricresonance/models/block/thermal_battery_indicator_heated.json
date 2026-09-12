@@ -1,0 +1,8 @@
+{
+  "parent": "sulfuricresonance:block/thermal_battery",
+  "textures": {
+    "1": "sulfuricresonance:block/thermal_battery/thermal_battery_heated",
+    "indicator_left": "sulfuricresonance:block/thermal_battery/indicator_off",
+    "indicator_right": "sulfuricresonance:block/thermal_battery/indicator_off"
+  }
+}

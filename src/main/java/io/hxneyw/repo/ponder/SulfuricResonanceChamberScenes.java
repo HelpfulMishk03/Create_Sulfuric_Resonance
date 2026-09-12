@@ -53,7 +53,7 @@ public final class SulfuricResonanceChamberScenes {
         scene.idle(130);
 
         scene.world().showSection(shaft, Direction.WEST);
-        scene.world().setKineticSpeed(shaft.add(chamber), SPEED);
+        scene.world().setKineticSpeed(shaft, SPEED);
         scene.overlay().showOutline(
                 PonderPalette.RED,
                 "chamber_thermochemical_input",
@@ -131,30 +131,30 @@ public final class SulfuricResonanceChamberScenes {
                         55
                 )
                 .rightClick();
-        scene.overlay().showText(130)
+        scene.overlay().showText(175)
                 .text("The GUI has Automatic and Manual operating modes: Automatic starts a READY recipe immediately, while Manual waits for the player to press Start")
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)
                 .pointAt(util.vector().centerOf(chamberPos))
                 .placeNearTarget();
-        scene.idle(140);
+        scene.idle(190);
 
-        scene.overlay().showText(120)
+        scene.overlay().showText(165)
                 .text("While processing, the input batch is locked against new insertion, but manually removing an input safely aborts and resets the reaction")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
                 .pointAt(util.vector().centerOf(chamberPos))
                 .placeNearTarget();
-        scene.idle(130);
+        scene.idle(180);
 
         scene.effects().indicateSuccess(chamberPos);
-        scene.overlay().showText(120)
+        scene.overlay().showText(160)
                 .text("The rings build visual intensity during processing and now cool down smoothly after completion instead of snapping instantly dark")
                 .attachKeyFrame()
                 .colored(PonderPalette.GREEN)
                 .pointAt(util.vector().centerOf(chamberPos))
                 .placeNearTarget();
-        scene.idle(130);
+        scene.idle(175);
         scene.markAsFinished();
     }
 }

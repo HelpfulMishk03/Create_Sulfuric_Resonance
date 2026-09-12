@@ -4,12 +4,15 @@ import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import io.hxneyw.repo.content.blocks.catalystbed.CatalystBedBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.api.element.ElementLink;
+import net.createmod.ponder.api.element.WorldSectionElement;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
 import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public final class CatalystBedScenes {
 
@@ -29,7 +32,8 @@ public final class CatalystBedScenes {
         scene.scaleSceneView(0.86F);
         scene.setSceneOffsetY(-0.45F);
 
-        BlockPos bedPos = util.grid().at(2, 1, 2);
+        BlockPos chamberSourcePos = util.grid().at(2, 1, 2);
+        BlockPos bedPos = util.grid().at(2, 1, 3);
         BlockPos chamberPos = bedPos.above();
 
         BlockState disconnectedBed = AllModBlocks.CATALYST_BED.get()
@@ -39,18 +43,24 @@ public final class CatalystBedScenes {
                 CatalystBedBlock.CONNECTED,
                 true
         );
-        BlockState chamberState =
-                AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
-                        .defaultBlockState();
 
-        scene.world().setBlock(bedPos, disconnectedBed, false);
-
-        Selection bed = util.select().position(bedPos);
-        Selection chamber = util.select().position(chamberPos);
+        Selection chamberSource =
+                util.select().position(chamberSourcePos);
+        Selection bed =
+                util.select().position(bedPos);
 
         scene.showBasePlate();
         scene.idle(10);
-        scene.world().showSection(bed, Direction.DOWN);
+
+        scene.world().setBlock(
+                bedPos,
+                disconnectedBed,
+                false
+        );
+        scene.world().showSection(
+                bed,
+                Direction.DOWN
+        );
         scene.idle(20);
 
         scene.overlay().showText(100)
@@ -61,16 +71,31 @@ public final class CatalystBedScenes {
                 .placeNearTarget();
         scene.idle(110);
 
-        scene.world().setBlock(chamberPos, chamberState, false);
-        scene.world().setBlock(bedPos, connectedBed, false);
-        scene.world().showSection(chamber, Direction.DOWN);
+        scene.world().setBlock(
+                bedPos,
+                connectedBed,
+                false
+        );
+
+        ElementLink<WorldSectionElement> chamberElement =
+                scene.world().showIndependentSection(
+                        chamberSource,
+                        Direction.DOWN
+                );
+
+        scene.world().moveSection(
+                chamberElement,
+                new Vec3(0.0D, 1.0D, 1.0D),
+                0
+        );
+
         scene.effects().indicateSuccess(bedPos);
         scene.idle(25);
 
         scene.overlay().showOutline(
                 PonderPalette.GREEN,
                 "catalyst_bed_connection",
-                bed.add(chamber),
+                bed,
                 110
         );
         scene.overlay().showText(105)

@@ -125,7 +125,11 @@ public final class ThermochemicalBoilerInterfaceScenes {
                         .setValue(ThermochemicalBoilerInterfaceBlock.NORTH, z > 2)
                         .setValue(ThermochemicalBoilerInterfaceBlock.EAST, x < 4)
                         .setValue(ThermochemicalBoilerInterfaceBlock.SOUTH, z < 4)
-                        .setValue(ThermochemicalBoilerInterfaceBlock.WEST, x > 2);
+                        .setValue(ThermochemicalBoilerInterfaceBlock.WEST, x > 2)
+                        .setValue(ThermochemicalBoilerInterfaceBlock.PORT_NORTH, false)
+                        .setValue(ThermochemicalBoilerInterfaceBlock.PORT_EAST, false)
+                        .setValue(ThermochemicalBoilerInterfaceBlock.PORT_SOUTH, false)
+                        .setValue(ThermochemicalBoilerInterfaceBlock.PORT_WEST, false);
 
                 if (pos.equals(westCenter)) {
                     state = state

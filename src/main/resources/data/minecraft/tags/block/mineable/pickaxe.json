@@ -35,6 +35,7 @@
     "sulfuricresonance:resonant_heat_injector",
     "sulfuricresonance:process_monitor",
     "sulfuricresonance:process_gauge",
-    "sulfuricresonance:thermochemical_boiler_interface"
+    "sulfuricresonance:thermochemical_boiler_interface",
+    "sulfuricresonance:thermal_battery"
   ]
 }

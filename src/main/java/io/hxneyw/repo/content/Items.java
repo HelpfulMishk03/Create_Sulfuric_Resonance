@@ -88,6 +88,7 @@ public class Items {
    public static final DeferredItem<Item> THERMOCHEMICAL_CASING = ITEMS.register("thermochemical_casing", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> LATEX_CLUMP = ITEMS.register("latex_clump", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<ThermalRelaySwitchItem> THERMAL_RELAY_SWITCH_ITEM = ITEMS.register("thermal_relay_switch", () -> new ThermalRelaySwitchItem(AllModBlocks.THERMAL_RELAY_SWITCH.get(), new Properties()));
+   public static final DeferredItem<ThermalBatteryItem> THERMAL_BATTERY_ITEM = ITEMS.register("thermal_battery", () -> new ThermalBatteryItem(AllModBlocks.THERMAL_BATTERY.get(), new Properties().stacksTo(1)));
    public static final DeferredItem<ThermalGaugeItem> THERMAL_GAUGE_ITEM = ITEMS.register("thermal_gauge", () -> new ThermalGaugeItem(AllModBlocks.THERMAL_GAUGE.get(), new Properties()));
    public static final DeferredItem<ThermalWarningAlarmItem> THERMAL_WARNING_ALARM_ITEM = ITEMS.register("thermal_warning_alarm", () -> new ThermalWarningAlarmItem(AllModBlocks.THERMAL_WARNING_ALARM.get(), new Properties()));
    public static final DeferredItem<BlockItem> PROCESS_MONITOR_ITEM = ITEMS.register("process_monitor", () -> new BlockItem(AllModBlocks.PROCESS_MONITOR.get(), new Properties()));
@@ -116,6 +117,13 @@ public class Items {
    public static final DeferredItem<BlockItem> SULFUR_BLOCK = ITEMS.register("sulfur_block", () -> new BlockItem(AllModBlocks.SULFUR_BLOCK.get(), new Properties()));
    public static final DeferredItem<BucketItem> SULFURIC_ACID_BUCKET = ITEMS.register("sulfuric_acid_bucket", () -> new BucketItem(AllModFluids.SULFURIC_ACID.get(), new Properties().craftRemainder(net.minecraft.world.item.Items.BUCKET).stacksTo(1)));
    public static final DeferredItem<SuperphosphateFertilizerItem> SUPERPHOSPHATE_FERTILIZER = ITEMS.register("superphosphate_fertilizer", () -> new SuperphosphateFertilizerItem(new Properties().stacksTo(64)));
+
+   public static final DeferredItem<Item> THERMITE_CHARGE = ITEMS.register("thermite_charge", () -> new Item(new Item.Properties().stacksTo(64).fireResistant()));
+
+
+   public static final DeferredItem<Item> BRIMSTONE_BRIQUETTE = ITEMS.register("brimstone_briquette", () -> new Item(new Item.Properties().stacksTo(64).fireResistant()));
+
+
 
    public static void register(IEventBus eventBus) {
       LOGGER.info("Registering Sulfuric Resonance items");

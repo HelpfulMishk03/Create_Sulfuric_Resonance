@@ -1,7 +1,9 @@
 package io.hxneyw.repo.ponder;
 
 import com.simibubi.create.AllItems;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
@@ -11,6 +13,8 @@ import net.createmod.ponder.api.scene.Selection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public final class ThermochemicalShaftScenes {
@@ -32,22 +36,41 @@ public final class ThermochemicalShaftScenes {
         scene.scaleSceneView(0.9F);
         scene.setSceneOffsetY(-0.5F);
 
+        BlockPos sourcePos = util.grid().at(1, 1, 2);
         BlockPos shaftPos = util.grid().at(2, 1, 2);
+        Selection sourceSelection =
+                util.select().position(sourcePos);
         Selection shaftSelection =
                 util.select().position(shaftPos);
         Vec3 shaftCenter = util.vector().centerOf(shaftPos);
         Vec3 shaftTop = util.vector().topOf(shaftPos);
 
+        BlockState furnaceState =
+                AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+                        .defaultBlockState()
+                        .setValue(MoltenRotorBlock.FACING, Direction.NORTH)
+                        .setValue(MoltenRotorBlock.HEAT_LEVEL, HeatLevel.KINDLED);
+        BlockState shaftState =
+                AllModBlocks.THERMOCHEMICAL_SHAFT.get()
+                        .defaultBlockState()
+                        .setValue(RotatedPillarBlock.AXIS, Direction.Axis.X);
+
         scene.showBasePlate();
         scene.idle(10);
 
-        scene.world().showSection(
-                shaftSelection,
+        scene.world().setBlock(sourcePos, furnaceState, false);
+        scene.world().setBlock(shaftPos, shaftState, false);
+        scene.world().showIndependentSection(
+                sourceSelection,
                 Direction.DOWN
         );
-        scene.world().setKineticSpeed(
+        scene.world().showSection(
                 shaftSelection,
-                32.0F
+                Direction.WEST
+        );
+        scene.world().setKineticSpeed(
+                sourceSelection.add(shaftSelection),
+                -64.0F
         );
         scene.idle(20);
 
