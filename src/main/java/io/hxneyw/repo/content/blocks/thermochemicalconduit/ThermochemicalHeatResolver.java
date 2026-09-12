@@ -67,6 +67,15 @@ public final class ThermochemicalHeatResolver {
             return live;
         }
 
+        Result inheritedBattery = resolveInheritedBatterySource(
+                target.getLevel(),
+                target.getBlockPos()
+        );
+        if (inheritedBattery.heatTier()
+                != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+            return inheritedBattery;
+        }
+
         return resolveBatteryFallback(
                 target.getLevel(),
                 target.getBlockPos()
@@ -516,6 +525,103 @@ public final class ThermochemicalHeatResolver {
                 temperature,
                 resolvedDistance
         );
+    }
+
+    private static Result resolveInheritedBatterySource(
+            @Nullable Level level,
+            @Nullable BlockPos startPosition
+    ) {
+        if (level == null
+                || level.isClientSide
+                || startPosition == null
+                || !level.isLoaded(startPosition)) {
+            return Result.NONE;
+        }
+
+        BlockState startState = level.getBlockState(startPosition);
+        if (!isAllowedNode(startState)
+                || !(level.getBlockEntity(startPosition)
+                instanceof KineticBlockEntity)) {
+            return Result.NONE;
+        }
+
+        List<BlockPos> targetToSource = new ArrayList<>();
+        Set<BlockPos> visited = new HashSet<>();
+        BlockPos currentPosition = startPosition.immutable();
+        int totalDistance = 0;
+
+        for (int step = 0; step < MAX_INHERITED_STEPS; step++) {
+            if (!level.isLoaded(currentPosition)
+                    || !visited.add(currentPosition)) {
+                return Result.NONE;
+            }
+
+            BlockState currentState = level.getBlockState(currentPosition);
+            BlockEntity currentEntity = level.getBlockEntity(currentPosition);
+            if (!isAllowedNode(currentState)
+                    || !(currentEntity
+                    instanceof KineticBlockEntity currentKinetic)) {
+                return Result.NONE;
+            }
+
+            targetToSource.add(currentPosition.immutable());
+
+            BlockPos sourcePosition = currentKinetic.source;
+            if (sourcePosition == null
+                    || !level.isLoaded(sourcePosition)) {
+                return Result.NONE;
+            }
+
+            BlockEntity sourceEntity = level.getBlockEntity(sourcePosition);
+            totalDistance++;
+
+            if (sourceEntity instanceof ThermalBatteryBlockEntity battery) {
+                if (!battery.canSupply()
+                        || lacksInheritedConnection(
+                        level,
+                        sourcePosition,
+                        currentPosition
+                )) {
+                    return Result.NONE;
+                }
+
+                Result result = buildResult(
+                        level,
+                        targetToSource,
+                        battery.getOutputHeatTier(),
+                        sourcePosition,
+                        battery.getOutputTemperature(),
+                        totalDistance
+                );
+                if (result.heatTier()
+                        != MoltenRotorBlockEntity.RotorHeatLevel.NONE) {
+                    battery.markNetworkDemand();
+                }
+                return result;
+            }
+
+            BlockState sourceState = level.getBlockState(sourcePosition);
+
+            if (requiresImmediateConduit(sourceState)
+                    && !(currentState.getBlock()
+                    instanceof ThermochemicalConduitBlock)) {
+                return Result.NONE;
+            }
+
+            if (!(sourceEntity instanceof KineticBlockEntity)
+                    || !isAllowedNode(sourceState)
+                    || lacksInheritedConnection(
+                    level,
+                    sourcePosition,
+                    currentPosition
+            )) {
+                return Result.NONE;
+            }
+
+            currentPosition = sourcePosition.immutable();
+        }
+
+        return Result.NONE;
     }
 
     private static Result resolveBatteryFallback(

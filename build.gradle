@@ -2,7 +2,7 @@ import net.neoforged.moddevgradle.dsl.ModModel
 
 plugins {
     id 'java-library'
-    id 'net.neoforged.moddev' version '2.0.142'
+    id 'net.neoforged.moddev' version '2.0.146'
 }
 
 version = mod_version
@@ -54,6 +54,31 @@ repositories {
     }
 
     mavenCentral()
+}
+
+configurations.configureEach { Configuration configuration ->
+    configuration.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'org.apache.logging.log4j') {
+            details.useVersion(log4j_security_version.toString())
+        } else if (details.requested.group == 'org.apache.commons'
+                && details.requested.name == 'commons-compress') {
+            details.useVersion(commons_compress_security_version.toString())
+        } else if (details.requested.group == 'org.apache.commons'
+                && details.requested.name == 'commons-lang3') {
+            details.useVersion(commons_lang_security_version.toString())
+        } else if (details.requested.group == 'org.codehaus.plexus'
+                && details.requested.name == 'plexus-utils') {
+            details.useVersion(plexus_utils_security_version.toString())
+        } else if (details.requested.group == 'at.yawk.lz4'
+                && details.requested.name == 'lz4-java') {
+            details.useVersion(lz4_java_security_version.toString())
+        }
+    }
+
+    configuration.resolutionStrategy.dependencySubstitution {
+        substitute(module('org.lz4:lz4-java'))
+                .using(module("at.yawk.lz4:lz4-java:${lz4_java_security_version}"))
+    }
 }
 
 neoForge {

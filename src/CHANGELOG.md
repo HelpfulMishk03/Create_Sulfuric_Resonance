@@ -9,25 +9,37 @@ Older entries are reconstructed from surviving builds, development notes, testin
 ### Added
 
 * Added the Thermite Charge, a new high-temperature fuel crafted from Reinforced Cinder Compound, Sulfur, and an Iron Sheet.
-* Thermite Charges allow the Molten Rotor Furnace to enter Afterburn and reach up to 2000 C.
+* Thermite Charges allow the Molten Rotor Furnace to enter Afterburn and reach temperatures up to 2000 °C.
+* Added Brimstone Briquettes, a new Molten Rotor Furnace fuel capable of reaching the normal Radiant ceiling of 1599 °C.
+* Added data-driven Molten Rotor Furnace fuels through the `sulfuricresonance:molten_rotor_fuel` recipe type.
+* Added datapack and KubeJS support for defining custom Molten Rotor fuels, including burn time, heating rate, maximum temperature, maximum units, behavior, and priority.
+* Added the Thermal Battery, a persistent thermochemical heat reservoir.
+* Thermal Batteries store approximately five times the thermal capacity of a fully heated Molten Rotor Furnace.
+* Thermal Batteries can independently store and output Heated and Superheated heat, but never Radiant heat.
+* Thermal Batteries use a single directional thermochemical shaft interface and can provide both thermochemical heat and kinetic output when enabled by redstone.
+* Added a Thermal Battery GUI for viewing stored heat, input temperature, output mode, runtime, and machine status.
+* Thermal Batteries retain their stored heat when broken and placed again.
+* Added a fully charged Thermal Battery variant to the Creative inventory for testing.
+* Added a dedicated Thermal Battery Ponder walkthrough.
 * Added a dedicated Afterburn combustion presentation using Minecraft's built-in animated fire sprites.
 * Furnace combustion visuals now build continuously with temperature instead of appearing suddenly at the Afterburn threshold.
 * Added deeper Afterburn furnace audio while operating above the normal Radiant temperature ceiling.
-* Added Brimstone Briquette- A new molten rotor furnace fuel that reaches radiant tier(1599c)
+
 ### Changed
 
-* Radiant remains the highest normal heat tier at 1599 C; Afterburn is a furnace state rather than a new heat tier.
+* Radiant remains the highest normal heat tier at 1599 °C; Afterburn is a Molten Rotor Furnace operating state rather than a new heat tier.
+* Afterburn extends Molten Rotor Furnace operation from 1600 °C up to a maximum of 2000 °C.
 * Afterburn increases Molten Rotor Furnace stress capacity to 1.5x without increasing RPM or processing speed.
-* Cooling is slower while the furnace remains above 1599 C, with normal cooling behavior resuming at or below the Radiant ceiling.
-* Existing fuels retain their previous maximum temperatures and normal furnace behavior.
-* Polished Molten Rotor Furnace combustion with stronger rear and side fire, a thin intersecting interior flame layer, and a clear center gap so the impeller support pin remains visible.
-* Removed the experimental front-exhaust and ceiling-fire effects from the final furnace visual pass.
+* Cooling is reduced while the Furnace remains above 1599 °C, with normal cooling behavior resuming at or below the Radiant ceiling.
+* Existing fuels retain their previous maximum temperatures and normal Furnace behavior.
+* Molten Rotor Furnace combustion visuals were polished with stronger rear and side fire, a thin intersecting interior flame layer, and a clear center gap so the impeller support pin remains visible.
+* Removed the experimental front-exhaust and ceiling-fire effects from the final Furnace visual pass.
+* Overall mod description updated
+* New mod logo
 
 ### Fixed
 
-* Fixed missing pixel texture on 3x3 boiler interface array
-
-**Copyright © 2026 Hxney, Ł. All Rights Reserved.**
+* Fixed missing pixel textures on 3x3 Boiler Interface arrays.
 
 
 ----------
