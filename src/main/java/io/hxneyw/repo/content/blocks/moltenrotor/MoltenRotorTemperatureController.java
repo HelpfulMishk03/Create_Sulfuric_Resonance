@@ -11,7 +11,7 @@ public final class MoltenRotorTemperatureController {
     private static final float AMBIENT_TEMPERATURE = 20.0F;
     private static final float MAXIMUM_TEMPERATURE = 2000.0F;
     private static final float AFTERBURN_THRESHOLD = 1599.0F;
-    private static final float AFTERBURN_COOLING_MULTIPLIER = 0.5F;
+    private static final float AFTERBURN_COOLING_MULTIPLIER = 0.8F;
     private static final float NORMAL_COOLING_PER_TICK = 0.1F;
 
     private final MoltenRotorBlockEntity furnace;
@@ -134,10 +134,21 @@ public final class MoltenRotorTemperatureController {
         if (!creativeMode
                 && this.currentTemperature > AMBIENT_TEMPERATURE
                 && !this.fuelController.hasFuelRemaining()) {
-            return (int) Math.ceil(
-                    (this.currentTemperature - 300.0F)
-                            / this.getAfterburnCoolingPerTick()
-            );
+            float cooldownTicks = 0.0F;
+            float temperature = this.currentTemperature;
+
+            if (temperature > AFTERBURN_THRESHOLD) {
+                cooldownTicks += (temperature - AFTERBURN_THRESHOLD)
+                        / (this.getCoolingPerTick() * AFTERBURN_COOLING_MULTIPLIER);
+                temperature = AFTERBURN_THRESHOLD;
+            }
+
+            if (temperature > 300.0F) {
+                cooldownTicks += (temperature - 300.0F)
+                        / this.getCoolingPerTick();
+            }
+
+            return (int) Math.ceil(cooldownTicks);
         }
 
         return 0;

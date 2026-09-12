@@ -34,8 +34,9 @@ public class PerforatedSpritzerScenes {
       CreateSceneBuilder scene = new CreateSceneBuilder(builder);
       scene.title("perforated_spritzer.intro", "Using the Perforated Spritzer");
       BlockPos middleBasePlate = util.grid().at(2, -1, 2);
-      scene.world().setBlock(middleBasePlate, Blocks.WHITE_CONCRETE.defaultBlockState(), false);
+      scene.world().setBlock(middleBasePlate, Blocks.POLISHED_BLACKSTONE.defaultBlockState(), false);
       scene.configureBasePlate(0, 0, 5);
+      applyDarkFloor(scene, util, false);
       scene.showBasePlate();
       scene.world().showSection(util.select().position(middleBasePlate), Direction.DOWN);
       scene.idle(10);
@@ -312,6 +313,7 @@ public class PerforatedSpritzerScenes {
       BlockPos fanMotorPos = util.grid().at(4, 1, 2);
 
       scene.configureBasePlate(0, 0, 5);
+      applyDarkFloor(scene, util, true);
       scene.showBasePlate();
       scene.idle(10);
 
@@ -723,6 +725,27 @@ public class PerforatedSpritzerScenes {
                  1.0F,
                  2
          );
+      }
+   }
+
+   private static void applyDarkFloor(
+           CreateSceneBuilder scene,
+           SceneBuildingUtil util,
+           boolean preserveCenter
+   ) {
+      for (int x = 0; x < 5; x++) {
+         for (int z = 0; z < 5; z++) {
+            if (preserveCenter && x > 0 && x < 4 && z > 0 && z < 4) {
+               continue;
+            }
+            scene.world().setBlock(
+                    util.grid().at(x, 0, z),
+                    ((x + z) & 1) == 0
+                            ? Blocks.POLISHED_BLACKSTONE.defaultBlockState()
+                            : Blocks.BLACKSTONE.defaultBlockState(),
+                    false
+            );
+         }
       }
    }
 

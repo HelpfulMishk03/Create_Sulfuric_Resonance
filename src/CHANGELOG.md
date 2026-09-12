@@ -8,41 +8,67 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 ### Added
 
-* Added the Thermite Charge, a new high-temperature fuel crafted from Reinforced Cinder Compound, Sulfur, and an Iron Sheet.
-* Thermite Charges allow the Molten Rotor Furnace to enter Afterburn and reach temperatures up to 2000 °C.
-* Added Brimstone Briquettes, a new Molten Rotor Furnace fuel capable of reaching the normal Radiant ceiling of 1599 °C.
+* Added the **Thermite Charge**, a new high-temperature fuel crafted from Reinforced Cinder Compound, Sulfur, and an Iron Sheet.
+* Thermite Charges allow the Molten Rotor Furnace to enter **Afterburn** and reach temperatures up to **2000 °C**.
+* Added **Brimstone Briquettes**, a new Molten Rotor Furnace fuel capable of reaching the normal Radiant ceiling of **1599 °C**.
 * Added data-driven Molten Rotor Furnace fuels through the `sulfuricresonance:molten_rotor_fuel` recipe type.
 * Added datapack and KubeJS support for defining custom Molten Rotor fuels, including burn time, heating rate, maximum temperature, maximum units, behavior, and priority.
-* Added the Thermal Battery, a persistent thermochemical heat reservoir.
+* Added the **Thermal Battery**, a persistent thermochemical heat reservoir.
 * Thermal Batteries store approximately five times the thermal capacity of a fully heated Molten Rotor Furnace.
-* Thermal Batteries can independently store and output Heated and Superheated heat, but never Radiant heat.
-* Thermal Batteries use a single directional thermochemical shaft interface and can provide both thermochemical heat and kinetic output when enabled by redstone.
+* Thermal Batteries independently store Heated and Superheated reserves and can output either state, but never Radiant heat.
+* Thermal Batteries use a single directional thermochemical shaft interface and can provide thermochemical and kinetic output while enabled by redstone.
 * Added a Thermal Battery GUI for viewing stored heat, input temperature, output mode, runtime, and machine status.
 * Thermal Batteries retain their stored heat when broken and placed again.
 * Added a fully charged Thermal Battery variant to the Creative inventory for testing.
-* Added a dedicated Thermal Battery Ponder walkthrough.
+* Added Engineer's Goggle information for the Thermal Battery showing its current stored charge.
+* Added a dedicated **Thermal Battery Ponder** walkthrough.
+* Added a dedicated **Afterburn Ponder** walkthrough covering the Radiant ceiling, Afterburn temperatures, stress capacity, RPM, processing speed, fuels, and cooling behavior.
 * Added a dedicated Afterburn combustion presentation using Minecraft's built-in animated fire sprites.
 * Furnace combustion visuals now build continuously with temperature instead of appearing suddenly at the Afterburn threshold.
 * Added deeper Afterburn furnace audio while operating above the normal Radiant temperature ceiling.
 
 ### Changed
 
-* Radiant remains the highest normal heat tier at 1599 °C; Afterburn is a Molten Rotor Furnace operating state rather than a new heat tier.
-* Afterburn extends Molten Rotor Furnace operation from 1600 °C up to a maximum of 2000 °C.
-* Afterburn increases Molten Rotor Furnace stress capacity to 1.5x without increasing RPM or processing speed.
+* Radiant remains the highest normal heat tier at **1599 °C**; Afterburn is a Molten Rotor Furnace operating state rather than a new heat tier.
+* Afterburn extends Molten Rotor Furnace operation from **1600 °C to 2000 °C**.
+* Afterburn increases Molten Rotor Furnace stress capacity to **1.5×** without increasing RPM or processing speed.
 * Cooling is reduced while the Furnace remains above 1599 °C, with normal cooling behavior resuming at or below the Radiant ceiling.
 * Existing fuels retain their previous maximum temperatures and normal Furnace behavior.
 * Molten Rotor Furnace combustion visuals were polished with stronger rear and side fire, a thin intersecting interior flame layer, and a clear center gap so the impeller support pin remains visible.
 * Removed the experimental front-exhaust and ceiling-fire effects from the final Furnace visual pass.
-* Overall mod description updated
-* New mod logo
+* Updated the Thermal Battery model and texture with a finished CSR/Create-style industrial visual pass.
+* Updated Thermal Battery Fault, Heated, and Superheated state textures to match the finished base texture.
+* Updated the mod description to better represent CSR's thermochemical heat networks, combustion, sulfur chemistry, heat storage, automation, and industrial machinery.
+* Replaced the previous project logo with the new **Afterburn** logo.
+* Updated the Sulfuric Resonance Chamber Ponder to hide internal shaft rotation that should not be visible.
+* Increased the display time of the final Sulfuric Resonance Chamber Ponder explanations.
+* Updated the Catalyst Bed Ponder so the Sulfuric Resonance Chamber is properly shown above the bed.
+* Reworked the Ash Ceramic Crucible Ponder so the **Molten Rotor Furnace** is presented as the primary combustion heat source, with the Resonant Heat Injector shown as an alternative method of transmitting that heat.
+* Updated Perforated Spritzer and Precision Spritzer Ponder scenes to use CSR's darker Ponder floor palette.
+* Reworked the beginning of the Combustion Belt Ponder so connection instructions are presented before the completed Belt assembly is shown.
+* Updated the Combustion Belt processing demonstration so items visibly travel along the Belt and transform during processing.
+* Updated Thermochemical Shaft and Thermochemical Conduit Ponders to show the Molten Rotor Furnace as their heat and kinetic source.
+* Corrected demonstrated shaft and conduit rotation to match actual Molten Rotor Furnace operating direction and speed.
+* Updated the Thermal Relay Switch Ponder to demonstrate the **Thermochemical Clutch** instead of a standard Create clutch.
+* Polished multiple Ponder scene timings and transitions for clearer player onboarding.
 
 ### Fixed
 
-* Fixed missing pixel textures on 3x3 Boiler Interface arrays.
+* Fixed missing pixel textures on 3×3 Boiler Interface arrays.
+* Fixed the Thermal Battery appearing twice during its Ponder entrance animation.
+* Fixed the Catalyst Bed Ponder failing to visibly place a Sulfuric Resonance Chamber above the bed.
+* Fixed an internal rotating shaft being visible through the Sulfuric Resonance Chamber during its Ponder scene.
+* Fixed several Sulfuric Resonance Chamber Ponder messages disappearing too quickly to comfortably read.
+* Fixed Ash Ceramic Crucible Ponder presentation placing the Resonant Heat Injector as the primary heat source instead of the Molten Rotor Furnace.
+* Fixed Perforated Spritzer and Precision Spritzer Ponder scenes using the standard Create floor instead of CSR's dark scene palette.
+* Fixed Combustion Belt Ponder instructions being presented in a reversed order.
+* Fixed the Combustion Belt Ponder sand demonstration despawning mid-Belt instead of visibly transforming into glass.
+* Fixed a minor text transition overlap in the Combustion Belt Ponder.
+* Fixed incorrect rotation direction shown in Thermochemical Shaft and Thermochemical Conduit Ponder demonstrations.
+* Fixed the 3×3 Boiler Interface Ponder showing multiple shaft faces when only the center side connection should be visible.
 
 
-----------
+--------
 
 
 # Create: Sulfuric Resonance 0.4.1 -- Adjusted Equilibrium

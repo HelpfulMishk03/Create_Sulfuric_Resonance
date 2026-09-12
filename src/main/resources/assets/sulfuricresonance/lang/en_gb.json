@@ -877,6 +877,6 @@
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_5": "Afterburn is a Molten Rotor Furnace operating state, not a new thermochemical heat tier",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_6": "While Afterburning, generated stress capacity increases to 1.5x its normal Radiant value",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_7": "RPM does not increase, and Afterburn does not make processing recipes run faster",
-  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "When fuel ends above 1599°C, the Furnace cools at half its normal rate, holding the Afterburn range longer",
+  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "When fuel ends above 1599°C, the Furnace cools at 80% of its normal rate, holding the Afterburn range longer",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_9": "At 1599°C and below, Afterburn ends and normal Radiant cooling behaviour resumes"
 }

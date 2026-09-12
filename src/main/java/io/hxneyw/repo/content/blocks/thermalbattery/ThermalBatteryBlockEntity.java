@@ -1,5 +1,6 @@
 package io.hxneyw.repo.content.blocks.thermalbattery;
 
+import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalHeatResolver;
@@ -9,7 +10,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
@@ -19,10 +22,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 
-public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntity {
 
-    public static final float MAX_STORED_HEAT = 1599.0F * 5.0F;
+public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
+
+    public static final float MAX_STORED_HEAT = 2000.0F * 5.0F;
     public static final float MAX_CHARGE_PER_TICK = 1.0F;
     public static final float HEATED_DRAIN_PER_TICK = 0.25F;
     public static final float SUPERHEATED_DRAIN_PER_TICK = 0.50F;
@@ -351,6 +356,29 @@ public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntit
 
     public float getStoredHeat() {
         return heatedHeat + superheatedHeat;
+    }
+
+    @Override
+    public boolean addToGoggleTooltip(
+            List<Component> tooltip,
+            boolean isPlayerSneaking
+    ) {
+        tooltip.add(Component.empty());
+        int charge = Math.round(
+                Mth.clamp(
+                        getStoredHeat() / MAX_STORED_HEAT,
+                        0.0F,
+                        1.0F
+                ) * 100.0F
+        );
+        tooltip.add(
+                Component.translatable(
+                                "tooltip.sulfuricresonance.thermal_battery.stored_heat",
+                                charge
+                        )
+                        .withStyle(ChatFormatting.GOLD)
+        );
+        return true;
     }
 
     public float getHeatedHeat() {

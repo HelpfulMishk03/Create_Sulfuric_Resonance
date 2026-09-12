@@ -1,5 +1,7 @@
 package io.hxneyw.repo.client.sound;
 
+
+import io.hxneyw.repo.Config;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.registry.AllModSounds;
 import java.util.Map;
@@ -31,7 +33,8 @@ public final class MoltenRotorAfterburnSound extends AbstractTickableSoundInstan
     }
 
     public static void ensurePlaying(MoltenRotorBlockEntity blockEntity) {
-        if (!blockEntity.isAfterburning()) {
+        if (!Config.AFTERBURN_RUMBLE_ENABLED.get()
+                || !blockEntity.isAfterburning()) {
             return;
         }
 
@@ -47,7 +50,9 @@ public final class MoltenRotorAfterburnSound extends AbstractTickableSoundInstan
 
     @Override
     public void tick() {
-        if (!isFurnaceStillPresent() || !blockEntity.isAfterburning()) {
+        if (!Config.AFTERBURN_RUMBLE_ENABLED.get()
+                || !isFurnaceStillPresent()
+                || !blockEntity.isAfterburning()) {
             this.volume = Mth.lerp(0.18F, this.volume, 0.0F);
             if (this.volume <= 0.01F) {
                 stop();

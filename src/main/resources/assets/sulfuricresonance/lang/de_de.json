@@ -877,6 +877,6 @@
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_5": "Nachbrenner ist ein Betriebszustand des Schmelzrotorofens und keine neue thermochemische Wärmestufe",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_6": "Während Nachbrenner steigt die erzeugte Belastungskapazität auf das 1,5-Fache des normalen Radiant-Werts",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_7": "Die Drehzahl steigt nicht, und Nachbrenner beschleunigt keine Verarbeitungsrezepte",
-  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Endet der Brennstoff über 1599 °C, kühlt der Ofen nur halb so schnell ab und hält den Nachbrennerbereich länger",
+  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Endet der Brennstoff über 1599 °C, kühlt der Ofen mit 80 % der normalen Rate ab und hält den Nachbrennerbereich länger",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_9": "Bei 1599 °C oder darunter endet Nachbrenner und das normale Radiant-Abkühlen setzt wieder ein"
 }

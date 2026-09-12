@@ -3,7 +3,9 @@ package io.hxneyw.repo.content.blocks.thermalbattery;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.foundation.block.IBE;
+import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.thermochemical.ThermochemicalConnection;
 import io.hxneyw.repo.content.items.ThermalBatteryItem;
@@ -93,33 +95,37 @@ public final class ThermalBatteryBlock
     public @NotNull BlockState getStateForPlacement(
             @NotNull BlockPlaceContext context
     ) {
-        Direction preferredInterface = findPreferredInterfaceSide(context);
+        Direction playerFacing = context.getNearestLookingDirection().getOpposite();
+        Direction preferredInterface = getPreferredFacing(context);
+
         Direction selected = preferredInterface != null
                 ? preferredInterface
-                : context.getHorizontalDirection().getOpposite();
+                : playerFacing;
+
         return stateForInterfaceSide(selected).setValue(
                 POWERED,
                 context.getLevel().hasNeighborSignal(context.getClickedPos())
         );
     }
 
-    private @Nullable Direction findPreferredInterfaceSide(
+    @Override
+    public @Nullable Direction getPreferredFacing(
             BlockPlaceContext context
     ) {
         BlockPos placementPos = context.getClickedPos();
-        Direction clickedInterface = context.getClickedFace().getOpposite();
+        Direction nearest = context.getNearestLookingDirection();
 
-        if (clickedInterface.getAxis() != Axis.Y
-                && hasValidInterfaceNeighbour(
+        if (hasValidInterfaceNeighbour(
                 context.getLevel(),
                 placementPos,
-                clickedInterface
+                nearest
         )) {
-            return clickedInterface;
+            return nearest;
         }
 
         Direction preferred = null;
-        for (Direction side : Direction.Plane.HORIZONTAL) {
+
+        for (Direction side : Direction.values()) {
             if (!hasValidInterfaceNeighbour(
                     context.getLevel(),
                     placementPos,
@@ -128,15 +134,28 @@ public final class ThermalBatteryBlock
                 continue;
             }
 
-            if (preferred != null
-                    && preferred.getAxis() != side.getAxis()) {
+            if (preferred != null) {
                 return null;
             }
 
             preferred = side;
         }
 
-        return preferred;
+        if (preferred != null) {
+            return preferred;
+        }
+
+        Direction createPreferred = super.getPreferredFacing(context);
+        if (createPreferred != null
+                && hasValidInterfaceNeighbour(
+                context.getLevel(),
+                placementPos,
+                createPreferred
+        )) {
+            return createPreferred;
+        }
+
+        return null;
     }
 
     private boolean hasValidInterfaceNeighbour(
@@ -178,7 +197,14 @@ public final class ThermalBatteryBlock
             );
         }
 
-        return level.getBlockEntity(position)
+                if (level.getBlockEntity(position) instanceof BeltBlockEntity belt
+                && belt.hasPulley()
+                && belt instanceof CombustionBeltAccessor accessor
+                && accessor.sulfuricresonance$isCombustionBelt()
+                && accessor.sulfuricresonance$isThermochemicalPulley()) {
+            return true;
+        }
+return level.getBlockEntity(position)
                 instanceof MoltenRotorBlockEntity;
     }
 
@@ -226,10 +252,15 @@ public final class ThermalBatteryBlock
             BlockState originalState,
             Direction targetedFace
     ) {
-        return originalState.setValue(
-                FACING,
-                originalState.getValue(FACING).getClockWise()
-        );
+        Direction next = switch (originalState.getValue(FACING)) {
+            case NORTH -> Direction.EAST;
+            case EAST -> Direction.SOUTH;
+            case SOUTH -> Direction.WEST;
+            case WEST -> Direction.UP;
+            case UP -> Direction.DOWN;
+            case DOWN -> Direction.NORTH;
+        };
+        return originalState.setValue(FACING, next);
     }
 
     @Override

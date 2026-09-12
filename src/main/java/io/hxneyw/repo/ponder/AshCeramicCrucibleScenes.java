@@ -1,6 +1,10 @@
 package io.hxneyw.repo.ponder;
 
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
+import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlock;
+import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
 import net.createmod.ponder.api.scene.SceneBuildingUtil;
@@ -26,10 +30,12 @@ public final class AshCeramicCrucibleScenes {
         scene.scaleSceneView(0.86F);
         scene.setSceneOffsetY(-0.55F);
 
-        BlockPos injectorPos = util.grid().at(2, 1, 2);
+        BlockPos furnacePos = util.grid().at(2, 1, 2);
+        BlockPos injectorPos = util.grid().at(1, 1, 2);
         BlockPos cruciblePos = util.grid().at(2, 2, 2);
         BlockPos mixerPos = util.grid().at(2, 4, 2);
 
+        Selection furnace = util.select().position(furnacePos);
         Selection injector = util.select().position(injectorPos);
         Selection crucible = util.select().position(cruciblePos);
         Selection mixer = util.select().position(mixerPos);
@@ -65,15 +71,32 @@ public final class AshCeramicCrucibleScenes {
                 .placeNearTarget();
         scene.idle(135);
 
-        scene.world().showSection(injector, Direction.UP);
+        scene.world().setBlock(
+                furnacePos,
+                AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
+                        .defaultBlockState()
+                        .setValue(MoltenRotorBlock.FACING, Direction.NORTH)
+                        .setValue(MoltenRotorBlock.HEAT_LEVEL, HeatLevel.SEETHING),
+                false
+        );
+        scene.world().showSection(furnace, Direction.UP);
+        scene.world().setKineticSpeed(furnace, -128.0F);
         scene.overlay().showText(120)
                 .text("CSR Combustion Mixing is stricter: it requires the Ceramic Crucible and sufficient Combustion heat beneath it")
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
-                .pointAt(util.vector().centerOf(injectorPos))
+                .pointAt(util.vector().centerOf(furnacePos))
                 .placeNearTarget();
         scene.idle(130);
 
+        scene.world().setBlock(
+                injectorPos,
+                AllModBlocks.RESONANT_HEAT_INJECTOR.get()
+                        .defaultBlockState()
+                        .setValue(ResonantHeatInjectorBlock.FACING, Direction.NORTH),
+                false
+        );
+        scene.world().showIndependentSection(injector, Direction.UP);
         scene.overlay().showText(120)
                 .text("A Molten Rotor Furnace or Resonant Heat Injector can provide that heat when the connected system reaches the required tier")
                 .attachKeyFrame()

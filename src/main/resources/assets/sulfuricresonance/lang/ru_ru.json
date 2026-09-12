@@ -877,6 +877,6 @@
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_5": "Форсаж — это рабочее состояние печи с расплавленным ротором, а не новый уровень термохимического нагрева",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_6": "Во время форсажа создаваемая стрессовая мощность увеличивается до 1,5 от обычного значения Radiant",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_7": "Обороты не увеличиваются, и форсаж не ускоряет рецепты обработки",
-  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Если топливо заканчивается выше 1599 °C, печь остывает вдвое медленнее",
+  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Если топливо заканчивается выше 1599 °C, печь остывает со скоростью 80 % от обычной",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_9": "При 1599 °C и ниже форсаж заканчивается и возвращается обычное охлаждение Radiant"
 }

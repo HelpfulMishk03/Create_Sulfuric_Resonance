@@ -88,16 +88,15 @@ public final class ThermalBatteryScenes {
                 shaftState,
                 false
         );
+        scene.showBasePlate();
+        scene.idle(10);
+
         scene.world().setBlock(
                 batteryPos,
                 heatedBattery,
                 false
         );
-
-        scene.showBasePlate();
-        scene.idle(10);
-
-        scene.world().showSection(
+        scene.world().showIndependentSection(
                 battery,
                 Direction.DOWN
         );

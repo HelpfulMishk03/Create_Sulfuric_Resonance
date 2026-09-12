@@ -50,9 +50,10 @@ public final class MoltenRotorRumbleSound
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() ->
-                MoltenRotorBlockEntity.setClientSoundTick(
-                        MoltenRotorRumbleSound::ensurePlaying
-                )
+                MoltenRotorBlockEntity.setClientSoundTick(blockEntity -> {
+                    MoltenRotorRumbleSound.ensurePlaying(blockEntity);
+                    MoltenRotorAfterburnSound.ensurePlaying(blockEntity);
+                })
         );
     }
 

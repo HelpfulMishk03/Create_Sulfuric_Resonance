@@ -877,6 +877,6 @@
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_5": "后燃是熔融转子炉的运行状态，而不是新的热化学热量等级",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_6": "后燃期间，产生的应力容量提高到正常辐射热状态的 1.5 倍",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_7": "RPM 不会增加，后燃也不会加快加工配方",
-  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "当温度高于 1599 °C 且燃料耗尽时，熔融转子炉的冷却速度只有正常的一半",
+  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "当温度高于 1599 °C 且燃料耗尽时，熔融转子炉的冷却速度为正常的 80%",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_9": "降到 1599 °C 或以下后，后燃结束，恢复正常的辐射热冷却"
 }

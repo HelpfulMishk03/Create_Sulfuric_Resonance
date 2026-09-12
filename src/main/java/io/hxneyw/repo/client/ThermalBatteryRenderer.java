@@ -49,13 +49,15 @@ public final class ThermalBatteryRenderer
                     facing.getAxis()
             );
 
-            if (facing == Direction.SOUTH || facing == Direction.EAST) {
+            if (facing == Direction.SOUTH
+                    || facing == Direction.EAST
+                    || facing == Direction.UP) {
                 angle = -angle;
             }
 
             poseStack.pushPose();
             poseStack.translate(0.5D, 0.5D, 0.5D);
-            rotateToFacing(poseStack, facing);
+            rotateShaftToFacing(poseStack, facing);
             poseStack.mulPose(Axis.ZP.rotation(angle));
             poseStack.translate(-0.5D, -0.5D, -0.5D);
             renderModel(
@@ -80,11 +82,24 @@ public final class ThermalBatteryRenderer
         );
     }
 
+    private static void rotateShaftToFacing(PoseStack poseStack, Direction facing) {
+        switch (facing) {
+            case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+            case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
+            case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            case UP -> poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+            case DOWN -> poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+            default -> {
+            }
+        }
+    }
     private static void rotateToFacing(PoseStack poseStack, Direction facing) {
         switch (facing) {
             case SOUTH -> poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
             case EAST -> poseStack.mulPose(Axis.YP.rotationDegrees(-90.0F));
             case WEST -> poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            case UP -> poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+            case DOWN -> poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
             default -> {
             }
         }

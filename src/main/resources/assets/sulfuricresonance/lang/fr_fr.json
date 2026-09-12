@@ -877,6 +877,6 @@
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_5": "La Postcombustion est un état de fonctionnement du Four à rotor fondu, pas un nouveau niveau de chaleur thermochimique",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_6": "En Postcombustion, la capacité de contrainte générée passe à 1,5 fois sa valeur Radiante normale",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_7": "Les tr/min n'augmentent pas et la Postcombustion n'accélère pas les recettes de traitement",
-  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Si le combustible s'épuise au-dessus de 1599 °C, le Four refroidit deux fois moins vite",
+  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Si le combustible s'épuise au-dessus de 1599 °C, le Four refroidit à 80 % de sa vitesse normale",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_9": "À 1599 °C ou moins, la Postcombustion prend fin et le refroidissement Radiante normal reprend"
 }

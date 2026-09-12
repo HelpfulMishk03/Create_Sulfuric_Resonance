@@ -877,6 +877,6 @@
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_5": "Poscombustión es un estado operativo del Horno de Rotor Fundido, no un nuevo nivel de calor termoquímico",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_6": "Durante Poscombustión, la capacidad de estrés generada aumenta a 1,5 veces su valor Radiante normal",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_7": "Las RPM no aumentan y Poscombustión no acelera las recetas de procesamiento",
-  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Si el combustible se agota por encima de 1599 °C, el Horno se enfría a la mitad de la velocidad normal",
+  "sulfuricresonance.ponder.molten_rotor.afterburn.text_8": "Si el combustible se agota por encima de 1599 °C, el Horno se enfría al 80 % de la velocidad normal",
   "sulfuricresonance.ponder.molten_rotor.afterburn.text_9": "A 1599 °C o menos, Poscombustión termina y vuelve el enfriamiento Radiante normal"
 }

@@ -1,68 +1,240 @@
 {
-  "multipart": [
-    {
-      "when": {"facing": "north", "indicator": "heated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_heated"}
-    },
-    {
-      "when": {"facing": "north", "indicator": "superheated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_superheated"}
-    },
-    {
-      "when": {"facing": "north", "indicator": "fault"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_fault"}
-    },
-    {
-      "when": {"facing": "east", "indicator": "heated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_heated", "y": 90}
-    },
-    {
-      "when": {"facing": "east", "indicator": "superheated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_superheated", "y": 90}
-    },
-    {
-      "when": {"facing": "east", "indicator": "fault"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_fault", "y": 90}
-    },
-    {
-      "when": {"facing": "south", "indicator": "heated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_heated", "y": 180}
-    },
-    {
-      "when": {"facing": "south", "indicator": "superheated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_superheated", "y": 180}
-    },
-    {
-      "when": {"facing": "south", "indicator": "fault"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_fault", "y": 180}
-    },
-    {
-      "when": {"facing": "west", "indicator": "heated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_heated", "y": 270}
-    },
-    {
-      "when": {"facing": "west", "indicator": "superheated"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_superheated", "y": 270}
-    },
-    {
-      "when": {"facing": "west", "indicator": "fault"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_indicator_fault", "y": 270}
-    },
-    {
-      "when": {"facing": "north", "powered": "true"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_redstone_overlay"}
-    },
-    {
-      "when": {"facing": "east", "powered": "true"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_redstone_overlay", "y": 90}
-    },
-    {
-      "when": {"facing": "south", "powered": "true"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_redstone_overlay", "y": 180}
-    },
-    {
-      "when": {"facing": "west", "powered": "true"},
-      "apply": {"model": "sulfuricresonance:block/thermal_battery_redstone_overlay", "y": 270}
-    }
-  ]
+    "multipart":  [
+                      {
+                          "when":  {
+                                       "facing":  "north",
+                                       "indicator":  "heated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_heated"
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "north",
+                                       "indicator":  "superheated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_superheated"
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "north",
+                                       "indicator":  "fault"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_fault"
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "east",
+                                       "indicator":  "heated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_heated",
+                                        "y":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "east",
+                                       "indicator":  "superheated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_superheated",
+                                        "y":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "east",
+                                       "indicator":  "fault"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_fault",
+                                        "y":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "south",
+                                       "indicator":  "heated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_heated",
+                                        "y":  180
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "south",
+                                       "indicator":  "superheated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_superheated",
+                                        "y":  180
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "south",
+                                       "indicator":  "fault"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_fault",
+                                        "y":  180
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "west",
+                                       "indicator":  "heated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_heated",
+                                        "y":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "west",
+                                       "indicator":  "superheated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_superheated",
+                                        "y":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "west",
+                                       "indicator":  "fault"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_fault",
+                                        "y":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "north",
+                                       "powered":  "true"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_redstone_overlay"
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "east",
+                                       "powered":  "true"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_redstone_overlay",
+                                        "y":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "south",
+                                       "powered":  "true"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_redstone_overlay",
+                                        "y":  180
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "west",
+                                       "powered":  "true"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_redstone_overlay",
+                                        "y":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "up",
+                                       "indicator":  "heated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_heated",
+                                        "x":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "up",
+                                       "indicator":  "superheated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_superheated",
+                                        "x":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "up",
+                                       "indicator":  "fault"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_fault",
+                                        "x":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "up",
+                                       "powered":  "true"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_redstone_overlay",
+                                        "x":  270
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "down",
+                                       "indicator":  "heated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_heated",
+                                        "x":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "down",
+                                       "indicator":  "superheated"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_superheated",
+                                        "x":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "down",
+                                       "indicator":  "fault"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_indicator_fault",
+                                        "x":  90
+                                    }
+                      },
+                      {
+                          "when":  {
+                                       "facing":  "down",
+                                       "powered":  "true"
+                                   },
+                          "apply":  {
+                                        "model":  "sulfuricresonance:block/thermal_battery_redstone_overlay",
+                                        "x":  90
+                                    }
+                      }
+                  ]
 }

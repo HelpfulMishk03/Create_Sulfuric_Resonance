@@ -199,7 +199,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(140)
                 .text(
-                        "When fuel ends above 1599\u00b0C, the Furnace cools at half its normal rate, holding the Afterburn range longer"
+                        "When fuel ends above 1599\u00b0C, the Furnace cools at 80% of its normal rate, holding the Afterburn range longer"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)

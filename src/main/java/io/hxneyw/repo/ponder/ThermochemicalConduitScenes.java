@@ -161,7 +161,7 @@ public final class ThermochemicalConduitScenes {
                         sourcePos,
                         conduitPos
                 ),
-                32.0F
+                -128.0F
         );
         scene.idle(25);
 
@@ -192,7 +192,7 @@ public final class ThermochemicalConduitScenes {
         );
         scene.world().setKineticSpeed(
                 fullRouteSelection,
-                32.0F
+                -128.0F
         );
         scene.idle(25);
 
@@ -277,11 +277,11 @@ public final class ThermochemicalConduitScenes {
         );
         scene.world().setKineticSpeed(
                 conduitSelection,
-                32.0F
+                -128.0F
         );
         scene.world().setKineticSpeed(
                 downstreamSelection,
-                32.0F
+                -128.0F
         );
         scene.idle(20);
 
@@ -348,7 +348,7 @@ public final class ThermochemicalConduitScenes {
         );
         scene.world().setKineticSpeed(
                 downstreamSelection,
-                32.0F
+                -128.0F
         );
         scene.idle(25);
 

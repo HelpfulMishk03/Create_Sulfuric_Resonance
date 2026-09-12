@@ -2,7 +2,7 @@ package io.hxneyw.repo.content.blocks.moltenrotor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.hxneyw.repo.client.sound.MoltenRotorAfterburnSound;
+import io.hxneyw.repo.Config;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -43,9 +43,8 @@ final class MoltenRotorAfterburnRenderer {
 
         float sideFire = smoothstep(560.0F, 1500.0F, temperature);
         float afterburnExpansion = smoothstep(1400.0F, 2000.0F, temperature);
-
-        if (blockEntity.isAfterburning()) {
-            MoltenRotorAfterburnSound.ensurePlaying(blockEntity);
+if (!Config.AFTERBURN_FLAMES_ENABLED.get()) {
+            return;
         }
 
         FireSprite fire0 = FireSprite.of(ModelBakery.FIRE_0, bufferSource);
