@@ -1,101 +1,33 @@
 # Create: Sulfuric Resonance
 
-**Create: Sulfuric Resonance** is a NeoForge addon for [Create](https://github.com/Creators-of-Create/Create) centered around thermochemical heat, sulfur chemistry, industrial processing, and factory automation.
+[CurseForge](https://www.curseforge.com/minecraft/mc-mods/create-sulfuric-resonance)
 
-CSR adds its own heat network, machines, materials, sulfur processing, sulfuric acid production, resonance processing, and automation systems while keeping Create's mechanical factory style at the center of progression.
+[Modrinth](https://modrinth.com/mod/create-sulfuric-resonance)
 
-Not every recipe or progression step is documented here. JEI/EMI, advancements, tooltips, and Ponder are intended to handle most in-game documentation.
+[Issue Tracker](https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/issues)
 
----
+**Create: Sulfuric Resonance**, or **CSR**, is a NeoForge addon for [Create](https://github.com/Creators-of-Create/Create) built around sulfur chemistry, thermochemical heat, advanced materials, and factory automation.
 
-## Current Version
+It adds another side to Create's progression: furnaces that need more than rotational power, heat networks that run through the factory, sulfuric acid production, reactive materials, and machinery that can report what it is doing.
 
-### **0.4.1 — Adjusted Equilibrium**
+CSR is meant to feel Industrial, with a chemical appeal. All automatable, extensible AND extending a Create factory. Most machines use physical inputs, shafts, pipes, funnels, Mechanical Arms, redstone, and Engineer's Goggles instead of existing as isolated menu blocks, or guis.
 
-0.4.1 builds on Reactive Tools with additional automation support and final Cinder Flare polish.
+## Current release: 0.5.0 - Afterburn
 
-Cinder Flares can now be ignited automatically on moving belts using a **Deployer holding Flint and Steel**.
+0.5.0 expands the Molten Rotor Furnace and adds a way to store thermochemical heat for later use.
 
-Dispensers can also launch **Lit Cinder Flares**, **Sulfuric Acid Flasks**, and **Pyroclast Bombs**, allowing the Reactive Tools introduced in 0.4.0 to be incorporated directly into automated Create factories.
+### What's new
 
-The update also adds dedicated Ponder scenes for Reactive Tool automation, localized automation hints, an updated Cinder Flare recipe, and improved Cinder Flare ignition presentation.
+* **Afterburn** — push the Molten Rotor Furnace beyond the normal Radiant ceiling of 1599 °C and up to 2000 °C with compatible fuels.
+* **Thermite Charge** — a high-temperature fuel made for driving the Molten Rotor Furnace into Afterburn.
+* **Brimstone Briquette** — a new Molten Rotor Furnace fuel capable of reaching Radiant heat.
+* **Thermal Battery** — stores Heated and Superheated thermochemical energy and releases it back into the network when needed.
+* **Custom Molten Rotor fuels** — datapacks and KubeJS can add new fuels with their own burn time, heating rate, maximum temperature, and behavior.
+* Expanded Molten Rotor Furnace fire effects, sound, Ponder scenes, tooltips, localization, and general polish.
 
----
+Afterburn is a Molten Rotor Furnace state, not a new thermochemical heat tier. Radiant remains the highest normal network tier.
 
-## 0.4.1 Highlights
-
-### Cinder Flare Automation
-
-Cinder Flares can now be ignited automatically while moving on belts.
-
-A **Deployer holding Flint and Steel** can strike and ignite an unlit Cinder Flare as part of a production line.
-
-### Reactive Tool Dispenser Support
-
-Dispensers can now launch:
-
-* Lit Cinder Flares
-* Sulfuric Acid Flasks
-* Pyroclast Bombs
-
-This allows Reactive Tools to be triggered using ordinary redstone and factory automation.
-
-### Cinder Flare Recipe
-
-The Cinder Flare recipe has been updated to include a **Slimeball** and use a more coherent crafting layout.
-
-### Cinder Flare Polish
-
-The Cinder Flare ignition animation has been corrected so the flare is presented and struck at the proper end.
-
-Third-person presentation has also been adjusted to better match the intended ignition sequence.
-
-### Ponder and Tooltips
-
-0.4.1 adds dedicated Ponder scenes covering:
-
-* Cinder Flare ignition automation
-* Reactive Tool launching
-
-Reactive Tools also include localized automation hints across CSR's supported languages.
-
----
-
-## Reactive Tools
-
-### Catalyst Bed
-
-The Catalyst Bed is a physical Chamber upgrade.
-
-It accelerates active Chamber recipes by **1.5×** when placed directly underneath the machine.
-
-The effect changes live if the Bed is added or removed during processing, does not reset progress, and cannot stack with additional Beds.
-
-### Cinder Flare
-
-Cinder Flares are lit with Flint and Steel in the off hand through a staged striking sequence.
-
-Once lit, they can be thrown and continue burning where they land.
-
-Cinder Flares can also be ignited automatically on moving belts using a Deployer holding Flint and Steel.
-
-### Sulfuric Acid Flask
-
-Sulfuric Acid Flasks are filled with **250 mB** of Sulfuric Acid and thrown to create a localized corrosive impact.
-
-They apply Acid Burn and can remove one oxidation stage from nearby copper blocks.
-
-### Pyroclast Bomb
-
-The Pyroclast Bomb has a short wind-up and an arcing throw.
-
-On impact, it deals controlled damage, restrained knockback, limited ignition, and can destroy up to five eligible blocks.
-
-Water extinguishes the Bomb before detonation, allowing it to be recovered.
-
-Pyroclast Bombs can also be fired from Create's Potato Cannon or launched from Dispensers.
-
----
+While above 1599 °C, the Furnace gains additional stress capacity and cools more slowly, but does not gain extra RPM or processing speed.
 
 ## Requirements
 
@@ -111,174 +43,97 @@ Pyroclast Bombs can also be fired from Create's Potato Cannon or launched from D
 * JEI **19.42.0.387+**
 * EMI **1.1.24+**
 
----
+JEI and EMI can be used separately or together.
 
-## Main Systems
+## What you can build
 
-### Thermochemical Heat
+### Thermochemical heat networks
 
-CSR has its own heat network separate from Create's kinetic network.
+Generate heat, move it through dedicated shafts and conduits, split or interrupt it, store it, monitor it, and use it alongside Create's kinetic network.
 
-Thermochemical heat can be generated, transmitted, redirected, monitored, and consumed by CSR machinery.
+Thermochemical heat is part of the factory layout. Where it comes from and how it reaches a machine matters.
 
-The network includes dedicated shafts, cogwheels, gearboxes, control blocks, gauges, alarms, and other components.
+### Sulfur processing
 
-### Sulfur Chemistry
+Sulfur runs through much of CSR's progression: specialized fuels, Sulfuric Acid, high-temperature processing, ceramics, rubber, machine components, and advanced materials.
 
-Sulfur is used throughout CSR for fuels, chemical processing, machine components, and advanced materials.
+### Molten Rotor Furnace
 
-Current sulfur-related processing includes:
+The **Molten Rotor Furnace** acts as CSR's main thermochemical heat source.
 
-* Sulfur
-* Sulfuric Acid
-* Sulfur-based fuels
-* High-temperature processing
-* Acid treatment
-* Fertilizer production
-* Resonant materials
+Different fuels determine how hot it can run, from lower thermochemical temperatures through Radiant and, with compatible fuels, into Afterburn.
 
-### Sulfuric Resonance Chamber
+### Thermal storage
 
-The **Sulfuric Resonance Chamber** is one of CSR's main processing machines.
+The **Thermal Battery** stores thermochemical heat instead of requiring every machine to remain connected to a live source at all times.
 
-Recipes can require a combination of:
+It connects through a single thermochemical shaft interface, stores Heated and Superheated reserves, responds to redstone, and keeps its stored heat when moved.
 
-* Sulfuric Acid
-* Thermochemical heat
-* Rotational speed
-* Input materials
-* Catalysts
-* Auxiliary ingredients
+### Resonance machinery
 
-The Chamber has its own recipe type and recipe-viewer integration.
+The **Sulfuric Resonance Chamber** combines heat, rotation, Sulfuric Acid, and specialized materials in one processing system.
 
-### Intelligent Industry
+The **Catalyst Bed** installs directly beneath the Chamber and speeds up live processing by 1.5× without replacing its existing recipes or automation.
 
-CSR machines can expose process states such as:
+### Reactive equipment
 
-* Idle
-* Ready
-* Processing
-* Blocked
+CSR includes several tools and materials that can be used directly or worked into Create automation.
 
-Those states can be used by monitoring equipment, gauges, alarms, and redstone systems.
+* **Cinder Flare**
+* **Sulfuric Acid Flask**
+* **Pyroclast Bomb**
+* **Thermite Charge**
 
-Current automation equipment includes the **Process Monitor**, **Process Gauge**, **Thermal Warning Alarm**, **Thermochemical Clutch**, and related network systems.
+### Smarter factories
 
----
+Process Monitors, Process Gauges, Thermal Warning Alarms, Thermochemical Clutches, linked displays, and redstone output let a factory react to machine state instead of relying only on timers.
 
-## Other Machinery and Components
+### Steam boiler integration
 
-CSR currently includes systems such as:
+The Thermochemical Boiler Interface lets CSR heat feed Create steam boilers through connected heater arrays.
 
-* Sulfur Burner
-* Catalyst Bed
-* Thermochemical Shaft
-* Thermochemical Cogwheel
-* Large Thermochemical Cogwheel
-* Parallel Thermochemical Gearbox
-* Thermochemical Link Drive
-* Thermochemical Clutch
-* Thermochemical Boiler Interface
-* Thermal Gauge
-* Process Monitor
-* Thermal Warning Alarm
-* Resonant Heat Injector
-* Relay Switch
-* Cinder Flare
-* Sulfuric Acid Flask
-* Pyroclast Bomb
+Steam Engine outputs can also act as local thermochemical sources through directly connected Link Drives.
 
-Along with additional materials, components, fuels, tools, and processing items, plus more not mentioned here.
+## Automation
 
----
+CSR machinery works with the tools already used in Create builds, including:
 
-## Create Integration
-
-CSR machinery is intended to work inside normal Create factories.
-
-Depending on the machine, CSR supports interaction with systems including:
-
-* Funnels
-* Belts
+* Funnels and belts
 * Deployers
 * Mechanical Arms
-* Fluid Pipes
-* Spouts
-* Basins
-* Steam Boilers
-* Steam Engines
-* Potato Cannons
-* Dispensers
+* Fluid pipes and tanks
 * Redstone
 * Wrenches
 * Engineer's Goggles
-* Kinetic networks
+* Linked monitoring equipment
+* Dispensers
+* Potato Cannons where supported
 
-CSR's thermochemical heat network remains separate from Create's kinetic network unless a specific machine provides an interaction between the two systems.
+The machines are made to sit inside real production lines, not beside a manual crafting station.
 
----
+## Learning the mod
 
-## Ponder
+Major machines and systems have in-game **Ponder** scenes covering setup, heat flow, controls, and automation.
 
-CSR includes custom **Ponder** scenes for its major machines and systems.
+Advancements provide a loose progression path, while Engineer's Goggles expose useful machine and network information. JEI and EMI include CSR's custom processing categories and animated machinery where appropriate.
 
-These cover machine setup, thermochemical connections, processing requirements, automation, controls, and other important behavior.
+Not every recipe or material chain is listed here on purpose. Some of CSR is better discovered by building it.
 
-Current Ponder documentation also includes:
+## Languages
 
-* Catalyst Bed operation
-* Cinder Flare ignition
-* Deployer-based Cinder Flare automation
-* Reactive Tool launching
-
----
-
-## Recipe Viewer Support
-
-CSR supports:
-
-* **JEI**
-* **EMI**
-
-Both are optional.
-
-CSR includes custom recipe categories for its processing systems, including the Sulfuric Resonance Chamber.
-
----
-
-## Advancements
-
-CSR includes its own advancement tree covering machinery, processing, materials, progression, and selected challenges.
-
----
-
-## Localization
-
-0.4.1 includes localization for:
+CSR currently includes:
 
 * English (US)
 * English (UK)
-* German
 * Spanish
 * French
+* German
 * Portuguese (Brazil)
 * Russian
 * Simplified Chinese
 
-Localization covers major machinery, items, tooltips, GUIs, subtitles, advancements, Ponder scenes, and automation hints.
+Localization covers major machinery, tooltips, GUIs, advancements, Ponder scenes, and recipe-viewer text.
 
 ---
 
-## Compatibility
-
-```text
-Minecraft 1.21.1
-NeoForge 21.1.238+
-Create 6.0.7+
-Java 21
-
-JEI 19.42.0.387+ (optional)
-EMI 1.1.24+ (optional)
-```
-
+Create: Sulfuric Resonance is independently developed and is not an official Create project.
