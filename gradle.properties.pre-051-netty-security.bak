@@ -25,4 +25,3 @@ commons_lang_security_version=3.20.0
 log4j_security_version=2.26.1
 plexus_utils_security_version=3.6.1
 lz4_java_security_version=1.11.2
-netty_security_version=4.1.138.Final

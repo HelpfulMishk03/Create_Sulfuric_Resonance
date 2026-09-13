@@ -56,22 +56,7 @@ repositories {
     mavenCentral()
 }
 
-final List<String> nettySecurityModules = [
-        'netty-buffer',
-        'netty-codec',
-        'netty-common',
-        'netty-handler',
-        'netty-resolver',
-        'netty-transport',
-        'netty-transport-classes-epoll',
-        'netty-transport-native-unix-common'
-]
 configurations.configureEach { Configuration configuration ->
-    nettySecurityModules.each { String moduleName ->
-        configuration.resolutionStrategy.force(
-                "io.netty:${moduleName}:${netty_security_version}"
-        )
-    }
     configuration.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
         if (details.requested.group == 'org.apache.logging.log4j') {
             details.useVersion(log4j_security_version.toString())
