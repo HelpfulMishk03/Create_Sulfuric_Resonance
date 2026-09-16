@@ -40,11 +40,11 @@ public final class MoltenRotorFuelHandler implements IItemHandler {
 
         if (stack.isEmpty()
                 || !this.furnace.canAutomationInsertFrom(this.side)
-                || !this.furnace.insertFuel(stack, true)) {
+                || !this.furnace.insertAutomationFuel(stack, true)) {
             return stack;
         }
 
-        if (!simulate && !this.furnace.insertFuel(stack, false)) {
+        if (!simulate && !this.furnace.insertAutomationFuel(stack, false)) {
             return stack;
         }
 
@@ -74,7 +74,7 @@ public final class MoltenRotorFuelHandler implements IItemHandler {
         this.validateSlot(slot);
         return !stack.isEmpty()
                 && this.furnace.canAutomationInsertFrom(this.side)
-                && this.furnace.insertFuel(stack, true);
+                && this.furnace.insertAutomationFuel(stack, true);
     }
 
     private void validateSlot(int slot) {

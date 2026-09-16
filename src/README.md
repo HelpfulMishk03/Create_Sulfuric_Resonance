@@ -10,24 +10,43 @@
 
 It adds another side to Create's progression: furnaces that need more than rotational power, heat networks that run through the factory, sulfuric acid production, reactive materials, and machinery that can report what it is doing.
 
-CSR is meant to feel Industrial, with a chemical appeal. All automatable, extensible AND extending a Create factory. Most machines use physical inputs, shafts, pipes, funnels, Mechanical Arms, redstone, and Engineer's Goggles instead of existing as isolated menu blocks, or guis.
+CSR is meant to feel industrial, with a chemical appeal. Everything is designed around automation, extensibility, and extending an existing Create factory. Most machines use physical inputs, shafts, pipes, funnels, Mechanical Arms, redstone, and Engineer's Goggles rather than existing as isolated menu blocks or GUIs.
 
-## Current release: 0.5.0 - Afterburn
+## Current release: 0.5.1
 
-0.5.0 expands the Molten Rotor Furnace and adds a way to store thermochemical heat for later use.
+0.5.1 is a stabilization and balance update for **0.5.0 — Afterburn**.
 
-### What's new
+It keeps the systems introduced in Afterburn while correcting several issues found through extended gameplay and compatibility testing.
+
+### 0.5.1 changes
+
+* Fixed the **Thermal Battery** being able to provide effectively unlimited Stress Units while generating rotation.
+* Thermal Battery rotational output now has finite stress capacity:
+    * **Heated:** 64 RPM / 2048 SU.
+    * **Superheated:** 128 RPM / 4098 SU.
+* Added Thermal Battery Engineer's Goggle information for generated RPM and stress capacity.
+* Fixed missing Thermal Battery goggle translations across all supported languages.
+* Fixed **Thermochemical Clutch** shaft lighting appearing excessively bright in some environments.
+* Thermochemical Clutch shaft halves now use local world lighting instead of full-bright rendering.
+* Changed the **Thermal Warning Alarm** recipe to use regular Minecraft Glass instead of Ashesil Glass.
+* Continued dependency, compatibility, and general release cleanup.
+
+## 0.5.0 — Afterburn
+
+0.5.0 expanded the Molten Rotor Furnace and introduced a way to store thermochemical heat for later use.
+
+### Afterburn highlights
 
 * **Afterburn** — push the Molten Rotor Furnace beyond the normal Radiant ceiling of 1599 °C and up to 2000 °C with compatible fuels.
 * **Thermite Charge** — a high-temperature fuel made for driving the Molten Rotor Furnace into Afterburn.
-* **Brimstone Briquette** — a new Molten Rotor Furnace fuel capable of reaching Radiant heat.
+* **Brimstone Briquette** — a Molten Rotor Furnace fuel capable of reaching Radiant heat.
 * **Thermal Battery** — stores Heated and Superheated thermochemical energy and releases it back into the network when needed.
-* **Custom Molten Rotor fuels** — datapacks and KubeJS can add new fuels with their own burn time, heating rate, maximum temperature, and behavior.
+* **Custom Molten Rotor fuels** — datapacks and KubeJS can add fuels with their own burn time, heating rate, maximum temperature, behavior, and priority.
 * Expanded Molten Rotor Furnace fire effects, sound, Ponder scenes, tooltips, localization, and general polish.
 
 Afterburn is a Molten Rotor Furnace state, not a new thermochemical heat tier. Radiant remains the highest normal network tier.
 
-While above 1599 °C, the Furnace gains additional stress capacity and cools more slowly, but does not gain extra RPM or processing speed.
+While above 1599 °C, the Furnace gains additional stress capacity and cools more slowly, but does not gain additional RPM or processing speed.
 
 ## Requirements
 
@@ -59,15 +78,24 @@ Sulfur runs through much of CSR's progression: specialized fuels, Sulfuric Acid,
 
 ### Molten Rotor Furnace
 
-The **Molten Rotor Furnace** acts as CSR's main thermochemical heat source.
+The **Molten Rotor Furnace** acts as CSR's main thermochemical heat and rotational power source.
 
 Different fuels determine how hot it can run, from lower thermochemical temperatures through Radiant and, with compatible fuels, into Afterburn.
+
+As temperature rises, the Furnace produces progressively higher rotational output and stress capacity.
 
 ### Thermal storage
 
 The **Thermal Battery** stores thermochemical heat instead of requiring every machine to remain connected to a live source at all times.
 
 It connects through a single thermochemical shaft interface, stores Heated and Superheated reserves, responds to redstone, and keeps its stored heat when moved.
+
+When powered and sufficiently charged, the Thermal Battery can also temporarily act as a kinetic source:
+
+* **Heated:** 64 RPM / 2048 SU.
+* **Superheated:** 128 RPM / 4098 SU.
+
+The Battery only outputs Heated or Superheated thermochemical heat. It does not output Radiant or Afterburn heat.
 
 ### Resonance machinery
 
@@ -111,6 +139,23 @@ CSR machinery works with the tools already used in Create builds, including:
 
 The machines are made to sit inside real production lines, not beside a manual crafting station.
 
+## Custom Molten Rotor fuels
+
+Molten Rotor Furnace fuels can be extended through datapacks or KubeJS using CSR's:
+
+`sulfuricresonance:molten_rotor_fuel`
+
+Fuel definitions can control:
+
+* Burn time
+* Heating rate
+* Maximum temperature
+* Maximum queued units
+* Fuel behavior
+* Priority
+
+This allows modpacks and custom datapacks to integrate their own materials into CSR without requiring direct code support.
+
 ## Learning the mod
 
 Major machines and systems have in-game **Ponder** scenes covering setup, heat flow, controls, and automation.
@@ -133,6 +178,20 @@ CSR currently includes:
 * Simplified Chinese
 
 Localization covers major machinery, tooltips, GUIs, advancements, Ponder scenes, and recipe-viewer text.
+
+## Reporting issues
+
+Reproducible bugs and compatibility problems can be reported through the [Issue Tracker](https://github.com/HelpfulMishk03/Create_Sulfuric_Resonance/issues).
+
+When reporting an issue, include:
+
+* CSR version
+* Minecraft version
+* NeoForge version
+* Create version
+* JEI or EMI version if relevant
+* Relevant logs or crash reports
+* Steps to reproduce the problem
 
 ---
 

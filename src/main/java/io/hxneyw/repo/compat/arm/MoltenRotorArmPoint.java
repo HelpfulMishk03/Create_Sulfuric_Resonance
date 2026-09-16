@@ -62,11 +62,11 @@ public final class MoltenRotorArmPoint extends ArmInteractionPoint {
          return stack;
       }
 
-      if (stack.isEmpty() || !furnace.insertFuel(stack, true)) {
+      if (stack.isEmpty() || !furnace.insertAutomationFuel(stack, true)) {
          return stack;
       }
 
-      if (!simulate && !furnace.insertFuel(stack, false)) {
+      if (!simulate && !furnace.insertAutomationFuel(stack, false)) {
          return stack;
       }
 
