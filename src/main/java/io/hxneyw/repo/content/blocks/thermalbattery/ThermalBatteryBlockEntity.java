@@ -243,6 +243,19 @@ public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntit
                 : -baseSpeed;
     }
 
+    public float getTotalStressOutput() {
+        if (Math.abs(getGeneratedSpeed()) <= 0.0F) {
+            return 0.0F;
+        }
+
+        float capacity = outputMode.heatTier().baseStressCapacity;
+        if (outputMode == OutputMode.SUPERHEATED) {
+            capacity *= 0.5F;
+        }
+
+        return capacity;
+    }
+
     @Override
     public float calculateAddedStressCapacity() {
         float speed = Math.abs(getGeneratedSpeed());
@@ -250,8 +263,12 @@ public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntit
             return lastCapacityProvided = 0.0F;
         }
 
-        return lastCapacityProvided =
-                outputMode.heatTier().baseStressCapacity / speed;
+        float totalCapacity = outputMode.heatTier().baseStressCapacity;
+        if (outputMode == OutputMode.SUPERHEATED) {
+            totalCapacity *= 0.5F;
+        }
+
+        return lastCapacityProvided = totalCapacity / speed;
     }
 
     @Override
@@ -377,6 +394,32 @@ public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntit
                                 charge
                         )
                         .withStyle(ChatFormatting.GOLD)
+        );
+        int displayedStress = Math.round(getTotalStressOutput());
+        int generatedRpm = Math.round(Math.abs(getGeneratedSpeed()));
+
+        tooltip.add(
+                Component.translatable(
+                                "tooltip.sulfuricresonance.thermal_battery.stress_capacity",
+                                displayedStress
+                        )
+                        .withStyle(
+                                displayedStress > 0
+                                        ? ChatFormatting.GOLD
+                                        : ChatFormatting.GRAY
+                        )
+        );
+
+        tooltip.add(
+                Component.translatable(
+                                "tooltip.sulfuricresonance.thermal_battery.generated_speed",
+                                generatedRpm
+                        )
+                        .withStyle(
+                                generatedRpm > 0
+                                        ? ChatFormatting.AQUA
+                                        : ChatFormatting.GRAY
+                        )
         );
         return true;
     }

@@ -1,9 +1,43 @@
 # Changelog
+
 Hxney and Ł are separate public creator identities used by the same developer and copyright owner.
 
 All notable changes to **Create: Sulfuric Resonance** are documented here.
 
-Older entries are reconstructed from surviving builds, development notes, testing records, and the restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+Older entries are reconstructed from surviving builds, development notes, testing records, and restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
+
+## 0.5.1
+
+### Changed
+
+* Changed the Thermal Warning Alarm recipe to use regular Minecraft Glass instead of Ashesil Glass.
+* Improved Thermochemical Clutch shaft lighting so the rendered shaft better matches surrounding world lighting.
+* Nether Stars and Dragon's Breath can now be inserted into the Molten Rotor Furnace through automation, including item handlers and Mechanical Arms.
+* Updated Molten Rotor fuel display text so these heat boosts are no longer described as manual-only.
+
+### Fixed
+
+* Fixed the Thermal Battery generating effectively unlimited Stress Units while providing rotational output.
+* Thermal Battery output now has finite stress capacity:
+  * Heated: 2048 SU at 64 RPM.
+  * Superheated: 4098 SU at 128 RPM.
+* Fixed Thermochemical Clutch shaft lighting being excessively bright or visually flat in some environments.
+* Thermochemical Clutch shaft halves now use local world lighting with normal face shading instead of full-bright rendering.
+* Fixed missing Thermal Battery Engineer's Goggle translations for Stress Capacity and Generated Speed.
+* Fixed release packaging accidentally including temporary backup localization files.
+
+### Technical
+
+* Bumped the project version to 0.5.1.
+* Continued dependency and compatibility cleanup for the 0.5.x release line.
+* Cleaned up Thermal Battery source formatting and release resources.
+* Corrected the documented custom Molten Rotor fuel recipe type to `sulfuricresonance:molten_rotor_fuel`.
+
+-----------------
+
+
+
+
 ## 0.5.0 - Afterburn
 
 ### Added

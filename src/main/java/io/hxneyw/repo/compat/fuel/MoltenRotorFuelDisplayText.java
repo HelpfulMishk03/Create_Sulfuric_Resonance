@@ -59,7 +59,7 @@ public final class MoltenRotorFuelDisplayText {
                     new Metric(
                             label("insertion"),
                             Component.translatable(
-                                    "jei.sulfuricresonance.molten_rotor_fuels.value.manual_only"
+                                    "jei.sulfuricresonance.molten_rotor_fuels.note.standard"
                             )
                     )
             );

@@ -20,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -397,6 +398,28 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public boolean insertFuel(ItemStack stack, boolean simulate) {
       return this.fuelController.insertFuel(stack, simulate);
+   }
+
+   public boolean insertAutomationFuel(ItemStack stack, boolean simulate) {
+      if (this.creativeMode || this.level == null || stack.isEmpty()) {
+         return false;
+      }
+
+      if (stack.is(Items.NETHER_STAR)) {
+         if (!simulate) {
+            this.addUltimateFuel(6000);
+         }
+         return true;
+      }
+
+      if (stack.is(Items.DRAGON_BREATH)) {
+         if (!simulate) {
+            this.addUltimateFuel(4000);
+         }
+         return true;
+      }
+
+      return this.insertFuel(stack, simulate);
    }
 
    public List<ItemStack> drainPendingFuelForDrop() {
