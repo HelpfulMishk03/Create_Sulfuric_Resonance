@@ -4,6 +4,7 @@
     "tooltip.sulfuricresonance.thermochemical_link_drive.chain_length":  "Longitud de la cadena: %s",
     "tooltip.sulfuricresonance.thermochemical_link_drive.chain_connections":  "Conexiones: %s/%s",
     "itemGroup.sulfuricresonance.sulfuric_resonance":  "Create: Sulfuric Resonance",
+    "itemGroup.sulfuricresonance.construction_materials": "Materiales de construcción",
     "item.sulfuricresonance.acid_etched_copper_sheet":  "Lámina de cobre grabada con ácido",
     "item.sulfuricresonance.acid_resistant_ceramic":  "Cerámica resistente al ácido",
     "item.sulfuricresonance.ash_brick":  "Ladrillo de ceniza",
@@ -880,5 +881,17 @@
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_8":  "Si el combustible se agota por encima de 1599 °C, el Horno se enfría al 80 % de la velocidad normal",
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_9":  "A 1599 °C o menos, Poscombustión termina y vuelve el enfriamiento Radiante normal",
     "tooltip.sulfuricresonance.thermal_battery.stress_capacity":  "Capacidad de esfuerzo: %s SU",
-    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "Velocidad generada: %s RPM"
+    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "Velocidad generada: %s RPM",
+    "block.sulfuricresonance.mineral_concrete_mix": "Mineral Concrete Mix",
+    "block.sulfuricresonance.mineral_concrete": "Mineral Concrete",
+    "block.sulfuricresonance.mineral_concrete_stairs": "Mineral Concrete Stairs",
+    "block.sulfuricresonance.mineral_concrete_slab": "Mineral Concrete Slab",
+    "block.sulfuricresonance.mineral_concrete_pillar": "Mineral Concrete Pillar",
+    "block.sulfuricresonance.mineral_concrete_wall": "Mineral Concrete Wall",
+    "block.sulfuricresonance.weathered_mineral_concrete": "Weathered Mineral Concrete",
+    "block.sulfuricresonance.weathered_mineral_concrete_stairs": "Weathered Mineral Concrete Stairs",
+    "block.sulfuricresonance.weathered_mineral_concrete_slab": "Weathered Mineral Concrete Slab",
+    "block.sulfuricresonance.weathered_mineral_concrete_pillar": "Weathered Mineral Concrete Pillar",
+    "block.sulfuricresonance.weathered_mineral_concrete_wall": "Weathered Mineral Concrete Wall",
+    "item.sulfuricresonance.purified_iron_chunk": "Purified Iron Chunk"
 }

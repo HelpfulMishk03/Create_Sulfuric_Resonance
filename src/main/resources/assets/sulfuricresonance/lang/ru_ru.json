@@ -1,5 +1,6 @@
 {
     "itemGroup.sulfuricresonance.sulfuric_resonance":  "Create: Sulfuric Resonance",
+    "itemGroup.sulfuricresonance.construction_materials": "Строительные материалы",
     "item.sulfuricresonance.acid_etched_copper_sheet":  "Медный лист, травлёный кислотой",
     "item.sulfuricresonance.acid_resistant_ceramic":  "Кислотостойкая керамика",
     "item.sulfuricresonance.ash_brick":  "Зольный кирпич",
@@ -880,5 +881,17 @@
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_8":  "Если топливо заканчивается выше 1599 °C, печь остывает со скоростью 80 % от обычной",
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_9":  "При 1599 °C и ниже форсаж заканчивается и возвращается обычное охлаждение Radiant",
     "tooltip.sulfuricresonance.thermal_battery.stress_capacity":  "Запас нагрузки: %s SU",
-    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "Вырабатываемая скорость: %s RPM"
+    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "Вырабатываемая скорость: %s RPM",
+    "block.sulfuricresonance.mineral_concrete_mix": "Mineral Concrete Mix",
+    "block.sulfuricresonance.mineral_concrete": "Mineral Concrete",
+    "block.sulfuricresonance.mineral_concrete_stairs": "Mineral Concrete Stairs",
+    "block.sulfuricresonance.mineral_concrete_slab": "Mineral Concrete Slab",
+    "block.sulfuricresonance.mineral_concrete_pillar": "Mineral Concrete Pillar",
+    "block.sulfuricresonance.mineral_concrete_wall": "Mineral Concrete Wall",
+    "block.sulfuricresonance.weathered_mineral_concrete": "Weathered Mineral Concrete",
+    "block.sulfuricresonance.weathered_mineral_concrete_stairs": "Weathered Mineral Concrete Stairs",
+    "block.sulfuricresonance.weathered_mineral_concrete_slab": "Weathered Mineral Concrete Slab",
+    "block.sulfuricresonance.weathered_mineral_concrete_pillar": "Weathered Mineral Concrete Pillar",
+    "block.sulfuricresonance.weathered_mineral_concrete_wall": "Weathered Mineral Concrete Wall",
+    "item.sulfuricresonance.purified_iron_chunk": "Purified Iron Chunk"
 }

@@ -16,6 +16,7 @@ import io.hxneyw.repo.client.screen.ThermalBatteryScreen;
 import io.hxneyw.repo.client.renderer.CinderFlareRenderer;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampRenderer;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorRenderer;
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherRenderer;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerRenderer;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelRenderer;
 import io.hxneyw.repo.content.blocks.thermochemicalcogwheel.ThermochemicalCogwheelVisual;
@@ -104,6 +105,18 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
 
     public static final PartialModel RESONANCE_CHAMBER_BODY =
             partial("block/sulfuric_resonance_chamber");
+
+    public static final PartialModel ROTARY_LEACHER_WHISK =
+            partial("block/rotary_leacher_whisk");
+
+    public static final PartialModel ROTARY_LEACHER_GLASS =
+            partial("block/rotary_leacher_glass");
+
+    public static final PartialModel ROTARY_LEACHER_SLEEVES =
+            partial("block/rotary_leacher_sleeves");
+
+    public static final PartialModel ROTARY_LEACHER_GEAR =
+            partial("block/rotary_leacher_create_cogwheel");
 
     public static final PartialModel RESONANCE_CHAMBER_SHAFT =
             partial("block/sulfuric_resonance_chamber_shaft");
@@ -307,6 +320,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                     RenderType.cutout()
             );
 
+            ItemBlockRenderTypes.setRenderLayer(
+                    AllModBlocks.ROTARY_LEACHER.get(),
+                    RenderType.cutout()
+            );
+
             BlockEntityRenderers.register(
                     AllBlockEntities.MOLTEN_ROTOR.get(),
                     MoltenRotorRenderer::new
@@ -429,6 +447,11 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
         event.registerBlockEntityRenderer(
                 AllBlockEntities.SULFURIC_RESONANCE_CHAMBER.get(),
                 SulfuricResonanceChamberRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.ROTARY_LEACHER.get(),
+                RotaryLeacherRenderer::new
         );
 
         event.registerBlockEntityRenderer(
@@ -637,6 +660,18 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     private static void registerStandalone(
             RegisterAdditional event
     ) {
+        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                "sulfuricresonance", "block/rotary_leacher_whisk")));
+
+        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                "sulfuricresonance", "block/rotary_leacher_gear")));
+
+        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                "sulfuricresonance", "block/rotary_leacher_sleeves")));
+
+        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                "sulfuricresonance", "block/rotary_leacher_glass")));
+
         event.register(
                 ModelResourceLocation.standalone(
                         ResourceLocation.fromNamespaceAndPath(

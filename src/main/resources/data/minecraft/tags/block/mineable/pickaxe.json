@@ -36,6 +36,18 @@
     "sulfuricresonance:process_monitor",
     "sulfuricresonance:process_gauge",
     "sulfuricresonance:thermochemical_boiler_interface",
-    "sulfuricresonance:thermal_battery"
+    "sulfuricresonance:thermal_battery",
+    "sulfuricresonance:rotary_leacher",
+    "sulfuricresonance:mineral_concrete_mix",
+    "sulfuricresonance:mineral_concrete",
+    "sulfuricresonance:mineral_concrete_stairs",
+    "sulfuricresonance:mineral_concrete_slab",
+    "sulfuricresonance:mineral_concrete_pillar",
+    "sulfuricresonance:mineral_concrete_wall",
+    "sulfuricresonance:weathered_mineral_concrete",
+    "sulfuricresonance:weathered_mineral_concrete_stairs",
+    "sulfuricresonance:weathered_mineral_concrete_slab",
+    "sulfuricresonance:weathered_mineral_concrete_pillar",
+    "sulfuricresonance:weathered_mineral_concrete_wall"
   ]
 }

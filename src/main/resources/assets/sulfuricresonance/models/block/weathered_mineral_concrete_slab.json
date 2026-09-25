@@ -1,0 +1,9 @@
+{
+  "credit": "Made in Blockbench by Hxney",
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete",
+    "side": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete",
+    "top": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete"
+  }
+}

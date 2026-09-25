@@ -1,0 +1,21 @@
+{
+  "result": {
+    "id": "sulfuricresonance:weathered_mineral_concrete",
+    "count": 1
+  },
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "sulfuricresonance:mineral_concrete"
+    },
+    {
+      "item": "minecraft:vine"
+    },
+    {
+      "item": "minecraft:vine"
+    },
+    {
+      "item": "minecraft:vine"
+    }
+  ]
+}

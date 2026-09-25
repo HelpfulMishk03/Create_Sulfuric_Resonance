@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "neoforge:conditions": [
+    { "type": "neoforge:item_exists", "item": "minecraft:sulfur" }
+  ],
+  "ingredients": [
+    { "item": "minecraft:sulfur" }
+  ],
+  "result": {
+    "id": "sulfuricresonance:sulfur",
+    "count": 1
+  }
+}

@@ -40,6 +40,17 @@ public class Items {
    public static final DeferredItem<BlockItem> ASH_BRICK_SLAB_ITEM = ITEMS.register("ash_brick_slab", () -> new BlockItem(AllModBlocks.ASH_BRICK_SLAB.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASH_BRICK_STAIRS_ITEM = ITEMS.register("ash_brick_stairs", () -> new BlockItem(AllModBlocks.ASH_BRICK_STAIRS.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASH_BRICK_WALL_ITEM = ITEMS.register("ash_brick_wall", () -> new BlockItem(AllModBlocks.ASH_BRICK_WALL.get(), new Properties()));
+   public static final DeferredItem<BlockItem> MINERAL_CONCRETE_MIX = ITEMS.register("mineral_concrete_mix", () -> new BlockItem(AllModBlocks.MINERAL_CONCRETE_MIX.get(), new Properties()));
+   public static final DeferredItem<BlockItem> MINERAL_CONCRETE = ITEMS.register("mineral_concrete", () -> new BlockItem(AllModBlocks.MINERAL_CONCRETE.get(), new Properties()));
+   public static final DeferredItem<BlockItem> MINERAL_CONCRETE_SLAB = ITEMS.register("mineral_concrete_slab", () -> new BlockItem(AllModBlocks.MINERAL_CONCRETE_SLAB.get(), new Properties()));
+   public static final DeferredItem<BlockItem> MINERAL_CONCRETE_STAIRS = ITEMS.register("mineral_concrete_stairs", () -> new BlockItem(AllModBlocks.MINERAL_CONCRETE_STAIRS.get(), new Properties()));
+   public static final DeferredItem<BlockItem> MINERAL_CONCRETE_PILLAR = ITEMS.register("mineral_concrete_pillar", () -> new BlockItem(AllModBlocks.MINERAL_CONCRETE_PILLAR.get(), new Properties()));
+   public static final DeferredItem<BlockItem> MINERAL_CONCRETE_WALL = ITEMS.register("mineral_concrete_wall", () -> new BlockItem(AllModBlocks.MINERAL_CONCRETE_WALL.get(), new Properties()));
+   public static final DeferredItem<BlockItem> WEATHERED_MINERAL_CONCRETE = ITEMS.register("weathered_mineral_concrete", () -> new BlockItem(AllModBlocks.WEATHERED_MINERAL_CONCRETE.get(), new Properties()));
+   public static final DeferredItem<BlockItem> WEATHERED_MINERAL_CONCRETE_SLAB = ITEMS.register("weathered_mineral_concrete_slab", () -> new BlockItem(AllModBlocks.WEATHERED_MINERAL_CONCRETE_SLAB.get(), new Properties()));
+   public static final DeferredItem<BlockItem> WEATHERED_MINERAL_CONCRETE_STAIRS = ITEMS.register("weathered_mineral_concrete_stairs", () -> new BlockItem(AllModBlocks.WEATHERED_MINERAL_CONCRETE_STAIRS.get(), new Properties()));
+   public static final DeferredItem<BlockItem> WEATHERED_MINERAL_CONCRETE_PILLAR = ITEMS.register("weathered_mineral_concrete_pillar", () -> new BlockItem(AllModBlocks.WEATHERED_MINERAL_CONCRETE_PILLAR.get(), new Properties()));
+   public static final DeferredItem<BlockItem> WEATHERED_MINERAL_CONCRETE_WALL = ITEMS.register("weathered_mineral_concrete_wall", () -> new BlockItem(AllModBlocks.WEATHERED_MINERAL_CONCRETE_WALL.get(), new Properties()));
    public static final DeferredItem<Item> NETHERWOOD_DUST = ITEMS.register("netherwood_dust", () -> new NetherwoodDustItem(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> SPENT_ASH = ITEMS.register("spent_ash", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<Item> EMBER_CATALYST = ITEMS.register("ember_catalyst", () -> new EmberCatalystItem(new Properties().stacksTo(64)));
@@ -61,6 +72,9 @@ public class Items {
    public static final DeferredItem<CogwheelBlockItem> LARGE_THERMOCHEMICAL_COGWHEEL_ITEM = ITEMS.register("large_thermochemical_cogwheel", () -> new CogwheelBlockItem(AllModBlocks.LARGE_THERMOCHEMICAL_COGWHEEL.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFUR_BURNER_ITEM = ITEMS.register("sulfur_burner", () -> new BlockItem(AllModBlocks.SULFUR_BURNER.get(), new Properties()));
    public static final DeferredItem<BlockItem> SULFURIC_RESONANCE_CHAMBER_ITEM = ITEMS.register("sulfuric_resonance_chamber", () -> new BlockItem(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get(), new Properties()));
+   public static final DeferredItem<BlockItem> ROTARY_LEACHER_ITEM = ITEMS.register("rotary_leacher", () -> new BlockItem(AllModBlocks.ROTARY_LEACHER.get(), new Properties().stacksTo(64)));
+   public static final DeferredItem<Item> MINERAL_TAILINGS = ITEMS.register("mineral_tailings", () -> new Item(new Properties()));
+   public static final DeferredItem<Item> PURIFIED_IRON_CHUNK = ITEMS.register("purified_iron_chunk", () -> new Item(new Properties()));
    public static final DeferredItem<BlockItem> CATALYST_BED_ITEM = ITEMS.register("catalyst_bed", () -> new BlockItem(AllModBlocks.CATALYST_BED.get(), new Properties()));
    public static final DeferredItem<BlockItem> RESONANT_HEAT_INJECTOR_ITEM = ITEMS.register("resonant_heat_injector", () -> new BlockItem(AllModBlocks.RESONANT_HEAT_INJECTOR.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));

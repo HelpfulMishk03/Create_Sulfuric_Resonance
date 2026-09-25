@@ -1,0 +1,7 @@
+{
+  "credit": "Made in Blockbench by Hxney",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "sulfuricresonance:block/mineral_concrete/mineral_concrete"
+  }
+}

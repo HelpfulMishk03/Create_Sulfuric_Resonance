@@ -1,5 +1,6 @@
 {
     "itemGroup.sulfuricresonance.sulfuric_resonance":  "机械动力：硫酸共振",
+    "itemGroup.sulfuricresonance.construction_materials": "建筑材料",
     "item.sulfuricresonance.acid_etched_copper_sheet":  "酸蚀铜板",
     "item.sulfuricresonance.acid_resistant_ceramic":  "耐酸陶瓷",
     "item.sulfuricresonance.ash_brick":  "灰烬砖",
@@ -880,5 +881,17 @@
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_8":  "当温度高于 1599 °C 且燃料耗尽时，熔融转子炉的冷却速度为正常的 80%",
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_9":  "降到 1599 °C 或以下后，后燃结束，恢复正常的辐射热冷却",
     "tooltip.sulfuricresonance.thermal_battery.stress_capacity":  "应力容量：%s SU",
-    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "生成转速：%s RPM"
+    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "生成转速：%s RPM",
+    "block.sulfuricresonance.mineral_concrete_mix": "Mineral Concrete Mix",
+    "block.sulfuricresonance.mineral_concrete": "Mineral Concrete",
+    "block.sulfuricresonance.mineral_concrete_stairs": "Mineral Concrete Stairs",
+    "block.sulfuricresonance.mineral_concrete_slab": "Mineral Concrete Slab",
+    "block.sulfuricresonance.mineral_concrete_pillar": "Mineral Concrete Pillar",
+    "block.sulfuricresonance.mineral_concrete_wall": "Mineral Concrete Wall",
+    "block.sulfuricresonance.weathered_mineral_concrete": "Weathered Mineral Concrete",
+    "block.sulfuricresonance.weathered_mineral_concrete_stairs": "Weathered Mineral Concrete Stairs",
+    "block.sulfuricresonance.weathered_mineral_concrete_slab": "Weathered Mineral Concrete Slab",
+    "block.sulfuricresonance.weathered_mineral_concrete_pillar": "Weathered Mineral Concrete Pillar",
+    "block.sulfuricresonance.weathered_mineral_concrete_wall": "Weathered Mineral Concrete Wall",
+    "item.sulfuricresonance.purified_iron_chunk": "Purified Iron Chunk"
 }

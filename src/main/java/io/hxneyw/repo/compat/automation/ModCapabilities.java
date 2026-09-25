@@ -1,6 +1,7 @@
 package io.hxneyw.repo.compat.automation;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import net.minecraft.core.Direction;
@@ -21,6 +22,16 @@ public final class ModCapabilities {
               Capabilities.ItemHandler.BLOCK,
               AllBlockEntities.MOLTEN_ROTOR.get(),
               ModCapabilities::getMoltenRotorFuelHandler
+      );
+      event.registerBlockEntity(
+              Capabilities.ItemHandler.BLOCK,
+              AllBlockEntities.ROTARY_LEACHER.get(),
+              RotaryLeacherBlockEntity::getItemCapability
+      );
+      event.registerBlockEntity(
+              Capabilities.ItemHandler.BLOCK,
+              AllBlockEntities.ROTARY_LEACHER_UPPER.get(),
+              RotaryLeacherBlockEntity::getItemCapability
       );
       event.registerBlockEntity(
               Capabilities.FluidHandler.BLOCK,

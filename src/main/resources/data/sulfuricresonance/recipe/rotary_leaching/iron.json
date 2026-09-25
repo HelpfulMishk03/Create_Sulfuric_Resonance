@@ -1,0 +1,11 @@
+{
+  "type": "sulfuricresonance:rotary_leaching",
+  "ingredient": { "item": "minecraft:raw_iron" },
+  "input_count": 8,
+  "fluid": "sulfuricresonance:sulfuric_acid",
+  "fluid_amount": 1000,
+  "result": { "id": "sulfuricresonance:purified_iron_chunk", "count": 10 },
+  "byproduct": { "id": "sulfuricresonance:mineral_tailings", "count": 1 },
+  "minimum_speed": 128,
+  "processing_time": 400
+}

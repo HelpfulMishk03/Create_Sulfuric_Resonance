@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "sulfuricresonance:sulfur_block"
+    "sulfuricresonance:sulfur_block",
+    { "id": "minecraft:potent_sulfur", "required": false }
   ]
 }

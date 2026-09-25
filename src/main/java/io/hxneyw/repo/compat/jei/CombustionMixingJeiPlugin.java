@@ -12,6 +12,8 @@ import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import io.hxneyw.repo.content.recipes.precisionspraying.PrecisionSprayingRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
+import io.hxneyw.repo.content.recipes.rotaryleaching.RotaryLeachingRecipe;
+import io.hxneyw.repo.content.recipes.rotaryleaching.RotaryLeachingRecipeRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import java.util.Collections;
@@ -120,6 +122,7 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 new CombustionBeltCategory(guiHelper),
                 new MoltenRotorFuelCategory(guiHelper),
                 new SulfuricResonanceChamberCategory(guiHelper),
+                new RotaryLeacherCategory(guiHelper),
                 new PrecisionSprayingCategory(guiHelper)
         );
     }
@@ -137,6 +140,9 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 SulfuricResonanceChamberCategory.RECIPE_TYPE,
                 getAllSulfuricResonanceChamberRecipes()
         );
+
+        registration.addRecipes(RotaryLeacherCategory.RECIPE_TYPE, getAllRotaryLeacherRecipes());
+
 
         registration.addRecipes(
                 CombustionBeltCategory.RECIPE_TYPE,
@@ -166,6 +172,9 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 new ItemStack(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()),
                 SulfuricResonanceChamberCategory.RECIPE_TYPE
         );
+
+        registration.addRecipeCatalyst(new ItemStack(AllModBlocks.ROTARY_LEACHER.get()), RotaryLeacherCategory.RECIPE_TYPE);
+
 
         ItemStack moltenRotor = new ItemStack(
                 AllModBlocks.MOLTEN_ROTOR_FURNACE.get()
@@ -224,6 +233,13 @@ public class CombustionMixingJeiPlugin implements IModPlugin {
                 new ItemStack(Items.PRECISION_SPRITZER.get()),
                 PrecisionSprayingCategory.RECIPE_TYPE
         );
+    }
+
+    private static List<RotaryLeachingRecipe> getAllRotaryLeacherRecipes() {
+        if (Minecraft.getInstance().level == null) return Collections.emptyList();
+        return Minecraft.getInstance().level.getRecipeManager()
+                .getAllRecipesFor(RotaryLeachingRecipeRegistry.TYPE.get())
+                .stream().map(RecipeHolder::value).toList();
     }
 
     private static List<SulfuricResonanceChamberRecipe>

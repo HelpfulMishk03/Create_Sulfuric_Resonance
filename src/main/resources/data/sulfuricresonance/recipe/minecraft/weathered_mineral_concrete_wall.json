@@ -1,0 +1,16 @@
+{
+  "pattern": [
+    "BBB",
+    "BBB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "sulfuricresonance:weathered_mineral_concrete"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:weathered_mineral_concrete_wall",
+    "count": 6
+  }
+}

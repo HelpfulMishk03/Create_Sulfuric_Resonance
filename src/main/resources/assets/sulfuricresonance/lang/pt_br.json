@@ -1,5 +1,6 @@
 {
     "itemGroup.sulfuricresonance.sulfuric_resonance":  "Create: Sulfuric Resonance",
+    "itemGroup.sulfuricresonance.construction_materials": "Materiais de construção",
     "item.sulfuricresonance.acid_etched_copper_sheet":  "Chapa de Cobre Gravada com Ácido",
     "item.sulfuricresonance.acid_resistant_ceramic":  "Cerâmica Resistente a Ácido",
     "item.sulfuricresonance.ash_brick":  "Tijolo de Cinzas",
@@ -880,5 +881,17 @@
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_8":  "Se o combustível acabar acima de 1599 °C, a Fornalha esfria a 80% da velocidade normal",
     "sulfuricresonance.ponder.molten_rotor.afterburn.text_9":  "Em 1599 °C ou menos, a Pós-combustão termina e o resfriamento Radiante normal volta",
     "tooltip.sulfuricresonance.thermal_battery.stress_capacity":  "Capacidade de esforço: %s SU",
-    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "Velocidade gerada: %s RPM"
+    "tooltip.sulfuricresonance.thermal_battery.generated_speed":  "Velocidade gerada: %s RPM",
+    "block.sulfuricresonance.mineral_concrete_mix": "Mineral Concrete Mix",
+    "block.sulfuricresonance.mineral_concrete": "Mineral Concrete",
+    "block.sulfuricresonance.mineral_concrete_stairs": "Mineral Concrete Stairs",
+    "block.sulfuricresonance.mineral_concrete_slab": "Mineral Concrete Slab",
+    "block.sulfuricresonance.mineral_concrete_pillar": "Mineral Concrete Pillar",
+    "block.sulfuricresonance.mineral_concrete_wall": "Mineral Concrete Wall",
+    "block.sulfuricresonance.weathered_mineral_concrete": "Weathered Mineral Concrete",
+    "block.sulfuricresonance.weathered_mineral_concrete_stairs": "Weathered Mineral Concrete Stairs",
+    "block.sulfuricresonance.weathered_mineral_concrete_slab": "Weathered Mineral Concrete Slab",
+    "block.sulfuricresonance.weathered_mineral_concrete_pillar": "Weathered Mineral Concrete Pillar",
+    "block.sulfuricresonance.weathered_mineral_concrete_wall": "Weathered Mineral Concrete Wall",
+    "item.sulfuricresonance.purified_iron_chunk": "Purified Iron Chunk"
 }

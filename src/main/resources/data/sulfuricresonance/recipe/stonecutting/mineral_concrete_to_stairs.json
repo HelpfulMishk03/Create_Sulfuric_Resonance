@@ -1,0 +1,10 @@
+{
+  "result": {
+    "id": "sulfuricresonance:mineral_concrete_stairs",
+    "count": 1
+  },
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "sulfuricresonance:mineral_concrete"
+  }
+}

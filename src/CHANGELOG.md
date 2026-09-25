@@ -6,6 +6,39 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## 0.6.0 — Leaching Works and Mineral Construction
+
+### Added
+
+- Added the two-block Rotary Leacher, with a Create-compatible kinetic input, a rotating internal cogwheel, a powered whisk, sulfuric-acid storage, recipe processing, and machine status information.
+- Added raw-iron leaching into Purified Iron Chunks with Mineral Tailings as a byproduct, plus a dedicated placeholder item texture and recipe display.
+- Added bulk hand insertion and extraction, plus Create/NeoForge item-handler automation for leacher inputs; completed outputs can be removed by hand or extracted from the glass sides.
+- Added animated Rotary Leaching recipe displays with the machine, acid, required speed, stress, whisk speed, batch size, and processing time. Added Process Monitor and Process Gauge reporting for all four leacher states (processing, blocked, output ready, and idle), using one persistent identity for both halves.
+- Added Mineral Concrete Mix, water-hardening Mineral Concrete, and Weathered Mineral Concrete made with vines.
+- Added mineral and weathered concrete stairs, slabs, pillars, walls, stonecutting recipes, block drops, mining tags, and language names.
+- Added vanilla-backport Sulfur and Potent Sulfur recipe compatibility when those optional items are present.
+- Added a Sulfuric Resonance's Contruction Materials creative tab for concrete, ash-brick, and Ashesil building blocks.
+- Replaced the Sulfur Block texture with the supplied texture.
+
+### Changed
+
+- Rebuilt the leacher's static and moving model assets from the supplied Blockbench export and final texture atlases, preserving the exported UV scale.
+- Reworked the JEI leaching layout to use a smaller centered machine display with separated recipe details.
+- Moved construction-focused blocks out of the main materials and machinery creative tab.
+- Refined block item views, pillar end-grain textures, and the leached iron chunk texture; organized loose block PNGs into dedicated texture folders.
+
+### Fixed
+
+- Corrected missing double-slab model references for Mineral Concrete and Weathered Mineral Concrete.
+- Corrected the pillar models to use distinct side and end textures.
+- Prioritized valid recipe-item insertion before fluid-container interaction on the Rotary Leacher.
+- Limited automated output extraction to horizontal glass-facing sides and kept the kinetic drive face output-closed.
+- Corrected the leacher-top texture path and retained the side-aware glass render state to preserve visibility of neighboring machine ports.
+
+### Verification note
+
+- Resource validation and packaging results are reported with the delivered build. Visual appearance, kinetic behavior, interactions, and automation still require an in-game check with the packaged JAR.
+
 ## 0.5.1
 
 ### Changed

@@ -14,6 +14,7 @@ import io.hxneyw.repo.compat.fuel.MoltenRotorFuelDisplayRegistry;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipe;
+import io.hxneyw.repo.content.recipes.rotaryleaching.RotaryLeachingRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.precisionspraying.PrecisionSprayingRegistry;
 import io.hxneyw.repo.content.registry.AllModBlocks;
@@ -46,6 +47,8 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
 
     public static final EmiStack PRECISION_SPRITZER =
             EmiStack.of(Items.PRECISION_SPRITZER.get());
+
+    public static final EmiStack ROTARY_LEACHER = EmiStack.of(AllModBlocks.ROTARY_LEACHER.get());
 
     public static final EmiRecipeCategory MOLTEN_ROTOR_FUELS =
             new EmiRecipeCategory(
@@ -92,6 +95,9 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                     PRECISION_SPRITZER
             );
 
+    public static final EmiRecipeCategory ROTARY_LEACHING = new EmiRecipeCategory(
+            ResourceLocation.fromNamespaceAndPath(CreateSulfuricResonance.MODID, "rotary_leaching"), ROTARY_LEACHER);
+
     @Override
     public void register(EmiRegistry registry) {
         registerCategories(registry);
@@ -107,6 +113,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         registry.addCategory(COMBUSTION_MIXING);
         registry.addCategory(SULFURIC_RESONANCE_CHAMBER_PROCESSING);
         registry.addCategory(PRECISION_SPRAYING);
+        registry.addCategory(ROTARY_LEACHING);
     }
 
     private static void registerWorkstations(EmiRegistry registry) {
@@ -142,6 +149,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                 PRECISION_SPRAYING,
                 PRECISION_SPRITZER
         );
+        registry.addWorkstation(ROTARY_LEACHING, ROTARY_LEACHER);
     }
 
     private static void registerMoltenRotorFuels(
@@ -205,6 +213,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                     );
                     chamberRecipes++;
                 }
+                case RotaryLeachingRecipe leachingRecipe -> registry.addRecipe(new RotaryLeachingEmiRecipe(new RecipeHolder<>(holder.id(), leachingRecipe)));
                 case BasinRecipe basinRecipe -> {
                     if (recipe.getType()
                             == ModRecipeTypes.COMBUSTION_MIXING.get()) {
