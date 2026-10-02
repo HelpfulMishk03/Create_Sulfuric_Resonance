@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 32;
+    private static final int REGISTERED_SCENES = 33;
 
     @NotNull
     @Override
@@ -93,6 +93,18 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     spritzerId,
                     "perforated_spritzer/mob_automation",
                     PerforatedSpritzerScenes::mobAutomation,
+                    AllPonderTags.FLUIDS
+            );
+
+            ResourceLocation rotaryLeacherId =
+                    BuiltInRegistries.BLOCK.getKey(
+                            AllModBlocks.ROTARY_LEACHER.get()
+                    );
+
+            helper.addStoryBoard(
+                    rotaryLeacherId,
+                    "rotary_leacher/operation",
+                    RotaryLeacherScenes::operation,
                     AllPonderTags.FLUIDS
             );
 

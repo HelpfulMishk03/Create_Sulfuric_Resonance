@@ -10,6 +10,7 @@ import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeHostPayload;
 import io.hxneyw.repo.content.ModTabs;
 import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
+import io.hxneyw.repo.content.recipes.rotaryleaching.RotaryLeachingRecipeRegistry;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import io.hxneyw.repo.content.recipes.moltenrotorfuel.MoltenRotorFuelRecipeRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
@@ -40,6 +41,7 @@ public class CreateSulfuricResonance {
       AllModBlocks.register(modEventBus);
       AllBlockEntities.register(modEventBus);
       ModRecipeTypes.register(modEventBus);
+      RotaryLeachingRecipeRegistry.register(modEventBus);
       CombustionBeltRecipeRegistry.register(modEventBus);
       MoltenRotorFuelRecipeRegistry.register(modEventBus);
       SulfuricResonanceChamberRecipeRegistry.register(modEventBus);

@@ -7,8 +7,8 @@
     128
   ],
   "textures": {
-    "0": "sulfuricresonance:block/thermochemical_boiler_interface",
-    "particle": "sulfuricresonance:block/thermochemical_boiler_interface"
+    "0": "sulfuricresonance:block/thermochemical_boiler_interface/thermochemical_boiler_interface",
+    "particle": "sulfuricresonance:block/thermochemical_boiler_interface/thermochemical_boiler_interface"
   },
   "elements": [
     {

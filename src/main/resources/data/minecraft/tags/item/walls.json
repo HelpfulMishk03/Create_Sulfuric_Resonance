@@ -1,4 +1,8 @@
 {
   "replace": false,
-  "values": ["sulfuricresonance:ash_brick_wall"]
+  "values": [
+    "sulfuricresonance:ash_brick_wall",
+    "sulfuricresonance:mineral_concrete_wall",
+    "sulfuricresonance:weathered_mineral_concrete_wall"
+  ]
 }

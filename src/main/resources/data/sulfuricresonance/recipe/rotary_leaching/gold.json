@@ -1,0 +1,19 @@
+{
+  "type": "sulfuricresonance:rotary_leaching",
+  "ingredient": {
+    "item": "minecraft:raw_gold"
+  },
+  "input_count": 4,
+  "fluid": "sulfuricresonance:sulfuric_acid",
+  "fluid_amount": 750,
+  "result": {
+    "id": "sulfuricresonance:purified_gold_chunk",
+    "count": 5
+  },
+  "byproduct": {
+    "id": "sulfuricresonance:mineral_tailings",
+    "count": 1
+  },
+  "minimum_speed": 128,
+  "processing_time": 180
+}

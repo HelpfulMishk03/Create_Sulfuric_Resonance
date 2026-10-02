@@ -1,0 +1,5 @@
+{
+  "credit": "Made in Blockbench by Hxney",
+  "parent": "minecraft:block/template_wall_side",
+  "textures": { "wall": "sulfuricresonance:block/mineral_concrete/mineral_concrete" }
+}

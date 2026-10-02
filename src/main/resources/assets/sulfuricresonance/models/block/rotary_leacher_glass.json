@@ -1,0 +1,247 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "machine": "sulfuricresonance:block/rotary_leacher/rotary_leacher",
+    "top": "sulfuricresonance:block/rotary_leacher/rotary_leacher_top",
+    "particle": "sulfuricresonance:block/rotary_leacher/rotary_leacher"
+  },
+  "elements": [
+    {
+      "name": "Glass_Front",
+      "from": [
+        2,
+        2,
+        0.75
+      ],
+      "to": [
+        14,
+        13,
+        1
+      ],
+      "shade": false,
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          8,
+          7.5,
+          0.875
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            3.5,
+            1.5,
+            5,
+            2.875
+          ],
+          "texture": "#machine"
+        },
+        "east": {
+          "uv": [
+            1.375,
+            7.375,
+            1.5,
+            8.75
+          ],
+          "texture": "#machine"
+        },
+        "south": {
+          "uv": [
+            3.5,
+            2.875,
+            5,
+            4.25
+          ],
+          "texture": "#machine"
+        },
+        "west": {
+          "uv": [
+            10.75,
+            2.625,
+            10.875,
+            4
+          ],
+          "texture": "#machine"
+        },
+        "up": {
+          "uv": [
+            11.25,
+            6.75,
+            9.75,
+            6.625
+          ],
+          "texture": "#machine"
+        },
+        "down": {
+          "uv": [
+            11.25,
+            7.75,
+            9.75,
+            7.875
+          ],
+          "texture": "#machine"
+        }
+      }
+    },
+    {
+      "name": "Glass_Back",
+      "from": [
+        2,
+        2,
+        15
+      ],
+      "to": [
+        14,
+        13,
+        15.25
+      ],
+      "shade": false,
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          8,
+          7.5,
+          15.125
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            4,
+            1.5,
+            5.375
+          ],
+          "texture": "#machine"
+        },
+        "east": {
+          "uv": [
+            3,
+            10.75,
+            3.125,
+            12.125
+          ],
+          "texture": "#machine"
+        },
+        "south": {
+          "uv": [
+            3.5,
+            4.25,
+            5,
+            5.625
+          ],
+          "texture": "#machine"
+        },
+        "west": {
+          "uv": [
+            3.125,
+            10.75,
+            3.25,
+            12.125
+          ],
+          "texture": "#machine"
+        },
+        "up": {
+          "uv": [
+            11.375,
+            0.625,
+            9.875,
+            0.5
+          ],
+          "texture": "#machine"
+        },
+        "down": {
+          "uv": [
+            11.375,
+            0.625,
+            9.875,
+            0.75
+          ],
+          "texture": "#machine"
+        }
+      }
+    },
+    {
+      "name": "Glass_Right",
+      "from": [
+        15,
+        2,
+        2
+      ],
+      "to": [
+        15.25,
+        13,
+        14
+      ],
+      "shade": false,
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          15.125,
+          7.5,
+          8
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            3.25,
+            10.75,
+            3.375,
+            12.125
+          ],
+          "texture": "#machine"
+        },
+        "east": {
+          "uv": [
+            1.5,
+            4.5,
+            3,
+            5.875
+          ],
+          "texture": "#machine"
+        },
+        "south": {
+          "uv": [
+            3.875,
+            10.75,
+            4,
+            12.125
+          ],
+          "texture": "#machine"
+        },
+        "west": {
+          "uv": [
+            11.75,
+            3.875,
+            13.25,
+            5.25
+          ],
+          "texture": "#machine"
+        },
+        "up": {
+          "uv": [
+            5.75,
+            9.5,
+            5.625,
+            8
+          ],
+          "texture": "#machine"
+        },
+        "down": {
+          "uv": [
+            1.375,
+            9.625,
+            1.25,
+            11.125
+          ],
+          "texture": "#machine"
+        }
+      }
+    }
+  ]
+}

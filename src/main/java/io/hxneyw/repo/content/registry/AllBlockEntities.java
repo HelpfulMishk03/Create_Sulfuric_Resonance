@@ -7,6 +7,7 @@ import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlockEntity;
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.blocks.thermalbattery.ThermalBatteryBlockEntity;
@@ -106,6 +107,19 @@ public class AllBlockEntities {
                             AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()
                     ).build(null)
             );
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RotaryLeacherBlockEntity>> ROTARY_LEACHER =
+            BLOCK_ENTITIES.register("rotary_leacher", () -> Builder.of(
+                    RotaryLeacherBlockEntity::new,
+                    AllModBlocks.ROTARY_LEACHER.get()
+            ).build(null));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RotaryLeacherBlockEntity>> ROTARY_LEACHER_UPPER =
+            BLOCK_ENTITIES.register("rotary_leacher_upper", () -> Builder.of(
+                    (pos, state) -> new RotaryLeacherBlockEntity(AllBlockEntities.ROTARY_LEACHER_UPPER.get(), pos, state),
+                    AllModBlocks.ROTARY_LEACHER.get()
+            ).build(null));
+
     public static final DeferredHolder<
             BlockEntityType<?>,
             BlockEntityType<ThermochemicalLinkDriveBlockEntity>
@@ -327,10 +341,34 @@ public class AllBlockEntities {
                SulfuricResonanceChamberBlockEntity::getItemCapability
        );
 
+      event.registerBlockEntity(
+              FluidHandler.BLOCK,
+              SULFURIC_RESONANCE_CHAMBER.get(),
+              SulfuricResonanceChamberBlockEntity::getFluidCapability
+       );
+
+       event.registerBlockEntity(
+               Capabilities.ItemHandler.BLOCK,
+               ROTARY_LEACHER.get(),
+               RotaryLeacherBlockEntity::getItemCapability
+       );
+
+       event.registerBlockEntity(
+               Capabilities.ItemHandler.BLOCK,
+               ROTARY_LEACHER_UPPER.get(),
+               RotaryLeacherBlockEntity::getItemCapability
+       );
+
        event.registerBlockEntity(
                FluidHandler.BLOCK,
-               SULFURIC_RESONANCE_CHAMBER.get(),
-               SulfuricResonanceChamberBlockEntity::getFluidCapability
+               ROTARY_LEACHER.get(),
+               RotaryLeacherBlockEntity::getFluidCapability
+       );
+
+       event.registerBlockEntity(
+               FluidHandler.BLOCK,
+               ROTARY_LEACHER_UPPER.get(),
+               RotaryLeacherBlockEntity::getFluidCapability
        );
 
       event.registerBlockEntity(

@@ -1,0 +1,11 @@
+{
+  "result": {
+    "id": "minecraft:iron_ingot"
+  },
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "ingredient": {
+    "item": "sulfuricresonance:purified_iron_chunk"
+  },
+  "experience": 0.7
+}

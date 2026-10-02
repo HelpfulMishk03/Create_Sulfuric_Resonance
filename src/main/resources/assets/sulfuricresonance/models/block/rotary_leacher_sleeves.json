@@ -1,0 +1,88 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "machine": "sulfuricresonance:block/rotary_leacher/rotary_leacher",
+    "top": "sulfuricresonance:block/rotary_leacher/rotary_leacher_top",
+    "particle": "sulfuricresonance:block/rotary_leacher/rotary_leacher"
+  },
+  "elements": [
+    {
+      "name": "Whisk_Sliding_Sleeve",
+      "from": [
+        6.5,
+        7.800000000000001,
+        6.5
+      ],
+      "to": [
+        9.5,
+        8.649999999999999,
+        9.5
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          8,
+          6.800000000000001,
+          8
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            11.25,
+            3.625,
+            11.625,
+            3.75
+          ],
+          "texture": "#machine"
+        },
+        "east": {
+          "uv": [
+            5.625,
+            11.25,
+            6,
+            11.375
+          ],
+          "texture": "#machine"
+        },
+        "south": {
+          "uv": [
+            11.25,
+            5.875,
+            11.625,
+            6
+          ],
+          "texture": "#machine"
+        },
+        "west": {
+          "uv": [
+            6,
+            11.25,
+            6.375,
+            11.375
+          ],
+          "texture": "#machine"
+        },
+        "up": {
+          "uv": [
+            10.75,
+            11.25,
+            10.375,
+            10.875
+          ],
+          "texture": "#machine"
+        },
+        "down": {
+          "uv": [
+            11.25,
+            10.625,
+            10.875,
+            11
+          ],
+          "texture": "#machine"
+        }
+      }
+    }
+  ]
+}

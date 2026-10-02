@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["IFI", "IWI", "ICI"],
+  "key": {
+    "I": { "item": "create:iron_sheet" },
+    "F": { "item": "create:fluid_tank" },
+    "W": { "item": "create:whisk" },
+    "C": { "item": "create:cogwheel" }
+  },
+  "result": { "id": "sulfuricresonance:rotary_leacher", "count": 1 }
+}

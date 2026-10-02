@@ -1,0 +1,9 @@
+{
+  "credit": "Made in Blockbench by Hxney",
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "sulfuricresonance:block/mineral_concrete/mineral_concrete",
+    "side": "sulfuricresonance:block/mineral_concrete/mineral_concrete",
+    "top": "sulfuricresonance:block/mineral_concrete/mineral_concrete"
+  }
+}

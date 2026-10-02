@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "sulfuricresonance:sulfur"
+    "sulfuricresonance:sulfur",
+    { "id": "minecraft:sulfur", "required": false }
   ]
 }

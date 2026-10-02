@@ -1,0 +1,6 @@
+{
+  "textures": {
+    "layer0": "sulfuricresonance:item/purified_iron_chunk"
+  },
+  "parent": "minecraft:item/generated"
+}

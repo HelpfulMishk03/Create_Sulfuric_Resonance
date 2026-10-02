@@ -1,0 +1,15 @@
+{
+  "pattern": [
+    "BBB"
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "sulfuricresonance:mineral_concrete"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:mineral_concrete_slab",
+    "count": 6
+  }
+}

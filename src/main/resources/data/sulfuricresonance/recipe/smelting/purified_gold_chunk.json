@@ -1,0 +1,11 @@
+{
+  "result": {
+    "id": "minecraft:gold_ingot"
+  },
+  "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "ingredient": {
+    "item": "sulfuricresonance:purified_gold_chunk"
+  },
+  "experience": 0.7
+}

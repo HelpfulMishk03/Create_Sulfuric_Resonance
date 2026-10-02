@@ -22,6 +22,7 @@ public class ModTabs {
                   output.accept(Items.SULFUR_BURNER_ITEM.get());
                   output.accept(Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get());
                   output.accept(Items.CATALYST_BED_ITEM.get());
+                  output.accept(Items.ROTARY_LEACHER_ITEM.get());
                   output.accept(Items.RESONANT_HEAT_INJECTOR_ITEM.get());
                   output.accept(Items.ASH_CERAMIC_CRUCIBLE_ITEM.get());
                   output.accept(Items.PERFORATED_SPRITZER.get());
@@ -68,17 +69,24 @@ public class ModTabs {
                   output.accept(Items.SULFUR_FUEL_BRIQUETTE.get());
                   output.accept(Items.COKE.get());
                   output.accept(Items.CARBON_DEPOSIT_BLOCK_ITEM);
-                  output.accept(Items.INFERNAL_COKE.get());
+                  output.accept(Items.INFERNAL_COKE.get());
+
                   output.accept(Items.BRIMSTONE_BRIQUETTE.get());
                   output.accept(Items.INFERNAL_CARBON_DEPOSIT_BLOCK_ITEM);
                   output.accept(Items.MOLTEN_EMBER_PELLET.get());
-                  output.accept(Items.CINDER_FUEL_BRIQUETTE.get());
+                  output.accept(Items.CINDER_FUEL_BRIQUETTE.get());
+
                   output.accept(Items.THERMITE_CHARGE.get());
                   output.accept(Items.CORRUPT_BLAZE_CAKE.get());
                   output.accept(Items.SOUL_FIRED_BLAZE_CAKE.get());
 
                   output.accept(Items.NETHERWOOD_DUST.get());
                   output.accept(Items.REINFORCED_CINDER_COMPOUND.get());
+                  output.accept(Items.MINERAL_TAILINGS.get());
+                  output.accept(Items.PURIFIED_IRON_CHUNK.get());
+                  output.accept(Items.PURIFIED_GOLD_CHUNK.get());
+                  output.accept(Items.PURIFIED_COPPER_CHUNK.get());
+                  output.accept(Items.PURIFIED_ZINC_CHUNK.get());
                   output.accept(Items.CINDER_SANDPAPER.get());
                   output.accept(Items.OBSIDIAN_FIBER_MOLD.get());
                   output.accept(Items.OBSIDIAN_FIBER.get());
@@ -108,20 +116,42 @@ public class ModTabs {
                   output.accept(Items.UNFIRED_ASH_BRICK.get());
                   output.accept(Items.ASH_BRICK.get());
 
-                  output.accept(Items.ASH_BRICK_BLOCK_ITEM.get());
-                  output.accept(Items.ASH_BRICK_SLAB_ITEM.get());
-                  output.accept(Items.ASH_BRICK_STAIRS_ITEM.get());
-                  output.accept(Items.ASH_BRICK_WALL_ITEM.get());
-                  output.accept(Items.ASH_BRICK_PILLAR_ITEM.get());
-                  output.accept(Items.ASHESIL_ITEM.get());
-                  output.accept(Items.ASHESIL_PANE_ITEM.get());
-                  output.accept(Items.TEMPERED_ASHESIL_ITEM.get());
-                  output.accept(Items.TEMPERED_ASHESIL_PANE_ITEM.get());
 
                   output.accept(Items.IMPELLER_BLADE.get());
                   output.accept(Items.SHEATHED_IMPELLER_BLADE.get());
                   output.accept(Items.INFERNAL_IMPELLER.get());
               })
+         .build()
+   );
+
+   @SuppressWarnings("unused")
+   public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CONSTRUCTION_TAB = CREATIVE_MODE_TABS.register(
+      "construction_materials",
+      () -> CreativeModeTab.builder()
+         .title(Component.translatable("itemGroup.sulfuricresonance.construction_materials"))
+         .icon(() -> new ItemStack(Items.WEATHERED_MINERAL_CONCRETE_PILLAR.get()))
+         .displayItems((params, output) -> {
+            output.accept(Items.MINERAL_CONCRETE_MIX.get());
+            output.accept(Items.MINERAL_CONCRETE.get());
+            output.accept(Items.MINERAL_CONCRETE_SLAB.get());
+            output.accept(Items.MINERAL_CONCRETE_STAIRS.get());
+            output.accept(Items.MINERAL_CONCRETE_PILLAR.get());
+            output.accept(Items.MINERAL_CONCRETE_WALL.get());
+            output.accept(Items.WEATHERED_MINERAL_CONCRETE.get());
+            output.accept(Items.WEATHERED_MINERAL_CONCRETE_SLAB.get());
+            output.accept(Items.WEATHERED_MINERAL_CONCRETE_STAIRS.get());
+            output.accept(Items.WEATHERED_MINERAL_CONCRETE_PILLAR.get());
+            output.accept(Items.WEATHERED_MINERAL_CONCRETE_WALL.get());
+            output.accept(Items.ASH_BRICK_BLOCK_ITEM.get());
+            output.accept(Items.ASH_BRICK_SLAB_ITEM.get());
+            output.accept(Items.ASH_BRICK_STAIRS_ITEM.get());
+            output.accept(Items.ASH_BRICK_WALL_ITEM.get());
+            output.accept(Items.ASH_BRICK_PILLAR_ITEM.get());
+            output.accept(Items.ASHESIL_ITEM.get());
+            output.accept(Items.ASHESIL_PANE_ITEM.get());
+            output.accept(Items.TEMPERED_ASHESIL_ITEM.get());
+            output.accept(Items.TEMPERED_ASHESIL_PANE_ITEM.get());
+         })
          .build()
    );
 

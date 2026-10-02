@@ -12,6 +12,7 @@ import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import io.hxneyw.repo.content.blocks.SulfuricAcidBlock;
 import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlock;
 import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlock;
 import io.hxneyw.repo.content.blocks.thermalbattery.ThermalBatteryBlock;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlock;
@@ -204,6 +205,70 @@ public class AllModBlocks {
                             .requiresCorrectToolForDrops()
                             .sound(SoundType.STONE)
             )
+    );
+
+    public static final DeferredBlock<Block> MINERAL_CONCRETE = BLOCKS.register(
+            "mineral_concrete",
+            () -> new Block(
+                    Properties.of()
+                            .mapColor(MapColor.COLOR_GRAY)
+                            .strength(2.0F, 6.0F)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.STONE)
+            )
+    );
+
+    public static final DeferredBlock<ConcretePowderBlock> MINERAL_CONCRETE_MIX = BLOCKS.register(
+            "mineral_concrete_mix",
+            () -> new ConcretePowderBlock(
+                    MINERAL_CONCRETE.get(),
+                    Properties.of()
+                            .mapColor(MapColor.COLOR_GRAY)
+                            .strength(0.6F)
+                            .requiresCorrectToolForDrops()
+                            .sound(SoundType.SAND)
+            )
+    );
+
+    public static final DeferredBlock<Block> WEATHERED_MINERAL_CONCRETE = BLOCKS.register(
+            "weathered_mineral_concrete",
+            () -> new Block(
+                    Properties.ofFullCopy(MINERAL_CONCRETE.get())
+            )
+    );
+
+    public static final DeferredBlock<SlabBlock> MINERAL_CONCRETE_SLAB = BLOCKS.register(
+            "mineral_concrete_slab",
+            () -> new SlabBlock(Properties.ofFullCopy(MINERAL_CONCRETE.get()))
+    );
+    public static final DeferredBlock<StairBlock> MINERAL_CONCRETE_STAIRS = BLOCKS.register(
+            "mineral_concrete_stairs",
+            () -> new StairBlock(MINERAL_CONCRETE.get().defaultBlockState(), Properties.ofFullCopy(MINERAL_CONCRETE.get()))
+    );
+    public static final DeferredBlock<RotatedPillarBlock> MINERAL_CONCRETE_PILLAR = BLOCKS.register(
+            "mineral_concrete_pillar",
+            () -> new RotatedPillarBlock(Properties.ofFullCopy(MINERAL_CONCRETE.get()))
+    );
+    public static final DeferredBlock<WallBlock> MINERAL_CONCRETE_WALL = BLOCKS.register(
+            "mineral_concrete_wall",
+            () -> new WallBlock(Properties.ofFullCopy(MINERAL_CONCRETE.get()))
+    );
+
+    public static final DeferredBlock<SlabBlock> WEATHERED_MINERAL_CONCRETE_SLAB = BLOCKS.register(
+            "weathered_mineral_concrete_slab",
+            () -> new SlabBlock(Properties.ofFullCopy(WEATHERED_MINERAL_CONCRETE.get()))
+    );
+    public static final DeferredBlock<StairBlock> WEATHERED_MINERAL_CONCRETE_STAIRS = BLOCKS.register(
+            "weathered_mineral_concrete_stairs",
+            () -> new StairBlock(WEATHERED_MINERAL_CONCRETE.get().defaultBlockState(), Properties.ofFullCopy(WEATHERED_MINERAL_CONCRETE.get()))
+    );
+    public static final DeferredBlock<RotatedPillarBlock> WEATHERED_MINERAL_CONCRETE_PILLAR = BLOCKS.register(
+            "weathered_mineral_concrete_pillar",
+            () -> new RotatedPillarBlock(Properties.ofFullCopy(WEATHERED_MINERAL_CONCRETE.get()))
+    );
+    public static final DeferredBlock<WallBlock> WEATHERED_MINERAL_CONCRETE_WALL = BLOCKS.register(
+            "weathered_mineral_concrete_wall",
+            () -> new WallBlock(Properties.ofFullCopy(WEATHERED_MINERAL_CONCRETE.get()))
     );
 
     public static final DeferredBlock<AshCeramicCrucibleBlock> ASH_CERAMIC_CRUCIBLE =
@@ -539,5 +604,11 @@ public static final DeferredBlock<ThermochemicalCogwheelBlock>
                                     .noOcclusion()
                     )
             );
+
+    public static final DeferredBlock<RotaryLeacherBlock> ROTARY_LEACHER =
+            BLOCKS.register("rotary_leacher", () -> new RotaryLeacherBlock(
+                    Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)
+                            .requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion()
+            ));
 
 }

@@ -1,0 +1,10 @@
+{
+  "result": {
+    "id": "sulfuricresonance:weathered_mineral_concrete_slab",
+    "count": 2
+  },
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "sulfuricresonance:weathered_mineral_concrete"
+  }
+}

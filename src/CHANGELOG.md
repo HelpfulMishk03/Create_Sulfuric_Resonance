@@ -6,7 +6,26 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
-## 0.5.1
+## 0.6.0 — Second Yield
+
+### Added
+
+- Added the two-block Rotary Leacher, with bulk processing for crushed iron, gold, copper, and zinc ores into Purified Metal Chunks and Mineral Tailings, plus recipe assets and JEI/EMI integration.
+- Added leacher item and fluid handling, Create Mechanical Arm support, stored-content drops, machine readouts, and a Ponder walkthrough.
+- Added Mineral Concrete and Weathered Mineral Concrete, including pillars, walls, stairs, slabs, recipes, loot, tags, and a construction creative tab.
+- Added Cinder Sandpaper support and optional Sulfur/Potent Sulfur recipe compatibility.
+
+### Changed
+
+- Renamed Sulfur Block to Block of Raw Sulfur, organized construction blocks in their own creative tab, and aligned translation keys.
+
+### Existing 0.5.1 Content Updated in 0.6.0
+
+- Added bucket filling and animated acid rendering to the Sulfuric Resonance Chamber.
+- Updated the internal cogwheel texture override to use Create’s runtime cogwheel texture.
+- Precision Spritzer item-list filters can now spray eligible block targets when no transformation recipe exists. Block changes remain recipe-gated; entity targeting is unchanged.
+
+## 0.5.1 - Afterburn Polishes/Fixes
 
 ### Changed
 

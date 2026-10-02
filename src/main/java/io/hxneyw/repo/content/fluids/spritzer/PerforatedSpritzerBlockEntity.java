@@ -427,8 +427,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       }
 
       BlockState targetState = serverLevel.getBlockState(targetPos);
-      if (!this.matchesPrecisionBlock(targetState)
-              || PrecisionSprayingRegistry.getResult(targetState).isEmpty()) {
+      if (this.excludesPrecisionBlock(targetState)) {
          return false;
       }
 
@@ -509,7 +508,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       }
 
       BlockState targetState = serverLevel.getBlockState(targetPos);
-      if (!this.matchesPrecisionBlock(targetState)) {
+      if (this.excludesPrecisionBlock(targetState)) {
          this.resetPrecisionBlockContact();
          return;
       }
@@ -594,7 +593,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          BlockState targetState = serverLevel.getBlockState(targetPos);
          ResourceLocation currentBlockId = BuiltInRegistries.BLOCK.getKey(targetState.getBlock());
          if (!impact.blockId.equals(currentBlockId)
-                 || !this.matchesPrecisionBlock(targetState)) {
+                 || this.excludesPrecisionBlock(targetState)) {
             continue;
          }
 
@@ -745,12 +744,12 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       return this.precisionItemFilters.contains(id);
    }
 
-   private boolean matchesPrecisionBlock(BlockState state) {
+   private boolean excludesPrecisionBlock(BlockState state) {
       if (state.getBlock().asItem() == net.minecraft.world.item.Items.AIR) {
-         return false;
+         return true;
       }
       ResourceLocation id = BuiltInRegistries.ITEM.getKey(state.getBlock().asItem());
-      return this.precisionItemFilters.contains(id);
+      return !this.precisionItemFilters.contains(id);
    }
 
    private boolean matchesPrecisionEntity(EntityType<?> type) {
@@ -889,7 +888,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
 
    public void toggleItemFilterByRegistryId(int registryId) {
       net.minecraft.world.item.Item item = BuiltInRegistries.ITEM.byId(registryId);
-      if (item == null || item == net.minecraft.world.item.Items.AIR) {
+      if (item == net.minecraft.world.item.Items.AIR) {
          return;
       }
       ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
@@ -905,7 +904,7 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
 
    public void toggleEntityFilterByRegistryId(int registryId) {
       EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.byId(registryId);
-      if (type == null) {
+      if (BuiltInRegistries.ENTITY_TYPE.getId(type) != registryId) {
          return;
       }
       ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
@@ -1013,13 +1012,13 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          ListTag entityFilters = compound.getList("PrecisionEntityFilters", Tag.TAG_STRING);
          for (int i = 0; i < entityFilters.size() && this.precisionEntityFilters.size() < MAX_FILTER_ENTRIES; i++) {
             ResourceLocation id = ResourceLocation.tryParse(entityFilters.getString(i));
-            if (id != null && BuiltInRegistries.ENTITY_TYPE.get(id) != null) {
+            if (id != null && BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
                this.precisionEntityFilters.add(id);
             }
          }
       } else if (compound.contains("PrecisionEntityFilter", Tag.TAG_STRING)) {
          ResourceLocation legacy = ResourceLocation.tryParse(compound.getString("PrecisionEntityFilter"));
-         if (legacy != null && BuiltInRegistries.ENTITY_TYPE.get(legacy) != null) {
+         if (legacy != null && BuiltInRegistries.ENTITY_TYPE.containsKey(legacy)) {
             this.precisionEntityFilters.add(legacy);
          }
       }

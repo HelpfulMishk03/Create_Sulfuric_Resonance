@@ -22,6 +22,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -161,8 +162,23 @@ public class SulfuricResonanceChamberBlock
             return ItemInteractionResult.SUCCESS;
         }
 
-        if (stack.getItem() instanceof BlockItem
-                || stack.getItem() instanceof BucketItem) {
+        if (stack.getItem() instanceof BucketItem) {
+            if (level.getBlockEntity(pos)
+                    instanceof SulfuricResonanceChamberBlockEntity chamber) {
+                var fluidHandler = chamber.getFluidCapability(null);
+                if (fluidHandler != null
+                        && FluidUtil.interactWithFluidHandler(
+                                player,
+                                hand,
+                                fluidHandler
+                        )) {
+                    return ItemInteractionResult.SUCCESS;
+                }
+            }
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+
+        if (stack.getItem() instanceof BlockItem) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
 

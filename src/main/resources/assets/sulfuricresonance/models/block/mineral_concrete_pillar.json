@@ -1,0 +1,8 @@
+{
+  "credit": "Made in Blockbench by Hxney",
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "sulfuricresonance:block/mineral_concrete/mineral_concrete_pillar_top",
+    "side": "sulfuricresonance:block/mineral_concrete/mineral_concrete_pillar_side"
+  }
+}

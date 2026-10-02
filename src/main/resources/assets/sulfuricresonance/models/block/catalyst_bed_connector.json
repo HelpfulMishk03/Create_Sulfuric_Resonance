@@ -7,8 +7,8 @@
     64
   ],
   "textures": {
-    "8": "sulfuricresonance:block/catalyst_bed",
-    "particle": "sulfuricresonance:block/catalyst_bed"
+    "8": "sulfuricresonance:block/catalyst_bed/catalyst_bed",
+    "particle": "sulfuricresonance:block/catalyst_bed/catalyst_bed"
   },
   "elements": [
     {
