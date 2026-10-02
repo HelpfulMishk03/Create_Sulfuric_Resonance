@@ -4,6 +4,7 @@ import com.simibubi.create.api.registry.CreateBuiltInRegistries;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlock;
 import io.hxneyw.repo.content.blocks.sulfuricresonancechamber.SulfuricResonanceChamberBlock;
 import io.hxneyw.repo.content.blocks.RubberPaddingBlock;
 import net.minecraft.core.BlockPos;
@@ -31,6 +32,10 @@ public class AllModArmInteractionPoints {
            "sulfuric_resonance_chamber", SulfuricResonanceChamberType::new
    );
 
+   public static final DeferredHolder<ArmInteractionPointType, RotaryLeacherType> ROTARY_LEACHER = ARM_INTERACTION_POINTS.register(
+           "rotary_leacher", RotaryLeacherType::new
+   );
+
    public static void register(IEventBus eventBus) {
       ARM_INTERACTION_POINTS.register(eventBus);
    }
@@ -54,6 +59,19 @@ public class AllModArmInteractionPoints {
       @Override
       public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
          return new SulfuricResonanceChamberArmPoint(this, level, pos, state);
+      }
+   }
+
+   public static class RotaryLeacherType extends ArmInteractionPointType {
+      @Override
+      public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
+         return state.getBlock() instanceof RotaryLeacherBlock
+                 && state.getValue(RotaryLeacherBlock.HALF) == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER;
+      }
+
+      @Override
+      public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
+         return new RotaryLeacherArmPoint(this, level, pos, state);
       }
    }
 

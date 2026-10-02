@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 @SuppressWarnings("unused")
 public final class CompactBlockBreakParticles {
 
-    private static final int DESTROY_PARTICLE_COUNT = 13;
+    private static final int DESTROY_PARTICLE_COUNT = 16;
 
     private CompactBlockBreakParticles() {
     }

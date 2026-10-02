@@ -37,7 +37,7 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
         );
         this.id = ResourceLocation.fromNamespaceAndPath(
                 CreateSulfuricResonance.MODID,
-                "precision_spraying/"
+                "/precision_spraying/"
                         + inputId.getNamespace()
                         + "/"
                         + inputId.getPath()

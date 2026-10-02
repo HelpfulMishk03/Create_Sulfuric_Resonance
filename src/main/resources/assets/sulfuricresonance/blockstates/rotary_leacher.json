@@ -1,183 +1,183 @@
 {
   "variants": {
     "facing=down,half=lower,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower"
+      "model": "sulfuricresonance:block/rotary_leacher_lower"
     },
     "facing=down,half=upper,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper"
+      "model": "sulfuricresonance:block/rotary_leacher_upper"
     },
     "facing=down,half=lower,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 90
     },
     "facing=down,half=upper,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 90
     },
     "facing=down,half=lower,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 180
     },
     "facing=down,half=upper,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 180
     },
     "facing=down,half=lower,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 270
     },
     "facing=down,half=upper,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 270
     },
     "facing=up,half=lower,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower"
+      "model": "sulfuricresonance:block/rotary_leacher_lower"
     },
     "facing=up,half=upper,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper"
+      "model": "sulfuricresonance:block/rotary_leacher_upper"
     },
     "facing=up,half=lower,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 90
     },
     "facing=up,half=upper,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 90
     },
     "facing=up,half=lower,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 180
     },
     "facing=up,half=upper,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 180
     },
     "facing=up,half=lower,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 270
     },
     "facing=up,half=upper,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 270
     },
     "facing=north,half=lower,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower"
+      "model": "sulfuricresonance:block/rotary_leacher_lower"
     },
     "facing=north,half=upper,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper"
+      "model": "sulfuricresonance:block/rotary_leacher_upper"
     },
     "facing=north,half=lower,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 90
     },
     "facing=north,half=upper,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 90
     },
     "facing=north,half=lower,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 180
     },
     "facing=north,half=upper,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 180
     },
     "facing=north,half=lower,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 270
     },
     "facing=north,half=upper,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 270
     },
     "facing=south,half=lower,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower"
+      "model": "sulfuricresonance:block/rotary_leacher_lower"
     },
     "facing=south,half=upper,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper"
+      "model": "sulfuricresonance:block/rotary_leacher_upper"
     },
     "facing=south,half=lower,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 90
     },
     "facing=south,half=upper,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 90
     },
     "facing=south,half=lower,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 180
     },
     "facing=south,half=upper,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 180
     },
     "facing=south,half=lower,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 270
     },
     "facing=south,half=upper,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 270
     },
     "facing=west,half=lower,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower"
+      "model": "sulfuricresonance:block/rotary_leacher_lower"
     },
     "facing=west,half=upper,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper"
+      "model": "sulfuricresonance:block/rotary_leacher_upper"
     },
     "facing=west,half=lower,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 90
     },
     "facing=west,half=upper,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 90
     },
     "facing=west,half=lower,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 180
     },
     "facing=west,half=upper,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 180
     },
     "facing=west,half=lower,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 270
     },
     "facing=west,half=upper,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 270
     },
     "facing=east,half=lower,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower"
+      "model": "sulfuricresonance:block/rotary_leacher_lower"
     },
     "facing=east,half=upper,horizontal_facing=north": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper"
+      "model": "sulfuricresonance:block/rotary_leacher_upper"
     },
     "facing=east,half=lower,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 90
     },
     "facing=east,half=upper,horizontal_facing=east": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 90
     },
     "facing=east,half=lower,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 180
     },
     "facing=east,half=upper,horizontal_facing=south": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 180
     },
     "facing=east,half=lower,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_lower",
+      "model": "sulfuricresonance:block/rotary_leacher_lower",
       "y": 270
     },
     "facing=east,half=upper,horizontal_facing=west": {
-      "model": "sulfuricresonance:block/rotary_leacher/rotary_leacher_upper",
+      "model": "sulfuricresonance:block/rotary_leacher_upper",
       "y": 270
     }
   }

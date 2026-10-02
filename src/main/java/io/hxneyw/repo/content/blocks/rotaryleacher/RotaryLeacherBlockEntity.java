@@ -33,8 +33,10 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
     public static final int BYPRODUCT = 2;
-    public static final int SLOT_COUNT = 3;
-    public static final int ACID_CAPACITY = 3500;
+    public static final int OUTPUT_OVERFLOW = 3;
+    public static final int SLOT_COUNT = 4;
+    public static final int ACID_CAPACITY = 8500;
+    public static final float MAX_ACID_SURFACE_FRACTION = 0.32F;
     private static final float STRESS_PER_RPM = 2.0F;
 
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(SLOT_COUNT, ItemStack.EMPTY);
@@ -43,6 +45,8 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
     private UUID processIdentity = UUID.randomUUID();
     private int processingTicks;
     private int processingTime;
+    private int processingBatchMultiplier;
+    private int processingAcidAmount;
     private @Nullable net.minecraft.resources.ResourceLocation activeRecipeId;
 
     private final IItemHandler itemCapability = new IItemHandler() {
@@ -59,7 +63,7 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
             return stack.copyWithCount(stack.getCount() - accepted);
         }
         @Override public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if ((slot != OUTPUT && slot != BYPRODUCT) || amount <= 0) return ItemStack.EMPTY;
+            if ((slot != OUTPUT && slot != BYPRODUCT && slot != OUTPUT_OVERFLOW) || amount <= 0) return ItemStack.EMPTY;
             ItemStack current = inventory.get(slot);
             if (current.isEmpty()) return ItemStack.EMPTY;
             int count = Math.min(amount, current.getCount());
@@ -105,62 +109,143 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         if (recipe == null || Math.abs(getOperatingSpeed()) < recipe.value().minimumSpeed()) {
             processingTicks = 0;
             processingTime = 0;
+            processingBatchMultiplier = 0;
+            processingAcidAmount = 0;
             activeRecipeId = null;
             return;
         }
         RotaryLeachingRecipe value = recipe.value();
-        if (!outputsFit(value) || inventory.get(INPUT).getCount() < value.inputCount() || !hasAcid(value)) {
-            processingTicks = 0;
-            processingTime = value.processingTime();
+        if (processingTicks == 0) {
+            BatchPlan plan = findBatchPlan(value);
+            if (plan == null) {
+                processingTime = value.processingTime();
+                processingBatchMultiplier = 0;
+                processingAcidAmount = 0;
+                activeRecipeId = null;
+                return;
+            }
             activeRecipeId = recipe.id();
-            return;
-        }
-        if (!recipe.id().equals(activeRecipeId)) {
-            activeRecipeId = recipe.id();
-            processingTicks = 0;
-            processingTime = value.processingTime();
+            processingBatchMultiplier = plan.multiplier();
+            processingAcidAmount = plan.acidAmount();
+            processingTime = plan.processingTime();
         }
         processingTicks++;
-        if (processingTicks >= value.processingTime()) completeBatch(value);
+        if (processingTicks >= processingTime) completeBatch(value);
         if ((level.getGameTime() & 7) == 0) sendData();
     }
 
     private @Nullable RecipeHolder<RotaryLeachingRecipe> findRecipe() {
         if (level == null) return null;
-        return level.getRecipeManager().getAllRecipesFor(RotaryLeachingRecipeRegistry.TYPE.get()).stream()
+        List<RecipeHolder<RotaryLeachingRecipe>> matching = level.getRecipeManager().getAllRecipesFor(RotaryLeachingRecipeRegistry.TYPE.get()).stream()
                 .filter(holder -> holder.value().ingredient().test(inventory.get(INPUT)))
-                .filter(holder -> activeRecipeId == null || activeRecipeId.equals(holder.id()))
-                .findFirst().orElse(null);
+                .toList();
+        if (processingTicks > 0 && activeRecipeId != null) {
+            RecipeHolder<RotaryLeachingRecipe> active = matching.stream()
+                    .filter(holder -> activeRecipeId.equals(holder.id()))
+                    .findFirst().orElse(null);
+            if (active != null) return active;
+        }
+        return matching.stream().findFirst().orElse(null);
     }
 
-    private boolean hasAcid(RotaryLeachingRecipe recipe) {
+    private @Nullable BatchPlan findBatchPlan(RotaryLeachingRecipe recipe) {
         FluidStack fluid = acidTank.getFluid();
-        return fluid.getFluid() == AllModFluids.SULFURIC_ACID.get() && fluid.getAmount() >= recipe.fluidAmount();
+        if (fluid.getFluid() != AllModFluids.SULFURIC_ACID.get()) return null;
+        int maxMultiplier = Math.min(16, inventory.get(INPUT).getCount() / recipe.inputCount());
+        for (int multiplier = maxMultiplier; multiplier >= 1; multiplier--) {
+            int acidAmount = acidCost(multiplier);
+            if (fluid.getAmount() < acidAmount) continue;
+            ItemStack result = scaled(recipe.result(), multiplier);
+            ItemStack byproduct = scaled(recipe.byproduct(), multiplier);
+            if (outputsFit(result, byproduct)) {
+                return new BatchPlan(multiplier, acidAmount, processingTime(multiplier));
+            }
+        }
+        return null;
     }
 
-    private boolean outputsFit(RotaryLeachingRecipe recipe) {
-        return fits(OUTPUT, recipe.result()) && fits(BYPRODUCT, recipe.byproduct());
+    private static ItemStack scaled(ItemStack stack, int multiplier) {
+        return stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(stack.getCount() * multiplier);
     }
 
-    private boolean fits(int slot, ItemStack result) {
-        ItemStack current = inventory.get(slot);
+    private boolean outputsFit(ItemStack result, ItemStack byproduct) {
+        return fitsAcrossOutputSlots(result) && fitsByproduct(byproduct);
+    }
+
+    private int acidCost(int multiplier) {
+        return interpolate(multiplier, new int[] {1, 2, 4, 8, 16}, new int[] {750, 1400, 2600, 4800, 8500});
+    }
+
+    private int processingTime(int multiplier) {
+        return interpolate(multiplier, new int[] {1, 2, 4, 8, 16}, new int[] {180, 320, 560, 960, 1500});
+    }
+
+    private static int interpolate(int multiplier, int[] sizes, int[] values) {
+        for (int i = 1; i < sizes.length; i++) {
+            if (multiplier <= sizes[i]) {
+                float fraction = (float) (multiplier - sizes[i - 1]) / (sizes[i] - sizes[i - 1]);
+                return Math.round(values[i - 1] + fraction * (values[i] - values[i - 1]));
+            }
+        }
+        return values[values.length - 1];
+    }
+
+    private boolean fitsAcrossOutputSlots(ItemStack result) {
+        int remaining = result.getCount();
+        for (int slot : new int[] {OUTPUT, OUTPUT_OVERFLOW}) {
+            ItemStack current = inventory.get(slot);
+            if (current.isEmpty()) {
+                remaining -= result.getMaxStackSize();
+            } else if (ItemStack.isSameItemSameComponents(current, result)) {
+                remaining -= current.getMaxStackSize() - current.getCount();
+            }
+        }
+        return remaining <= 0;
+    }
+
+    private boolean fitsByproduct(ItemStack result) {
+        ItemStack current = inventory.get(BYPRODUCT);
         return current.isEmpty() || ItemStack.isSameItemSameComponents(current, result)
                 && current.getCount() + result.getCount() <= current.getMaxStackSize();
     }
 
     private void completeBatch(RotaryLeachingRecipe recipe) {
-        inventory.get(INPUT).shrink(recipe.inputCount());
+        int multiplier = Math.max(1, processingBatchMultiplier);
+        inventory.get(INPUT).shrink(recipe.inputCount() * multiplier);
         if (inventory.get(INPUT).isEmpty()) inventory.set(INPUT, ItemStack.EMPTY);
-        merge(OUTPUT, recipe.result());
-        merge(BYPRODUCT, recipe.byproduct());
-        acidTank.drain(recipe.fluidAmount(), IFluidHandler.FluidAction.EXECUTE);
+        mergeAcrossOutputSlots(scaled(recipe.result(), multiplier));
+        mergeByproduct(scaled(recipe.byproduct(), multiplier));
+        acidTank.drain(processingAcidAmount, IFluidHandler.FluidAction.EXECUTE);
         processingTicks = 0;
+        processingBatchMultiplier = 0;
+        processingAcidAmount = 0;
+        activeRecipeId = null;
         contentsChanged();
     }
 
-    private void merge(int slot, ItemStack stack) {
+    private void mergeAcrossOutputSlots(ItemStack result) {
+        int remaining = result.getCount();
+        for (int slot : new int[] {OUTPUT, OUTPUT_OVERFLOW}) {
+            ItemStack current = inventory.get(slot);
+            if (!current.isEmpty() && ItemStack.isSameItemSameComponents(current, result)) {
+                int moved = Math.min(remaining, current.getMaxStackSize() - current.getCount());
+                current.grow(moved);
+                remaining -= moved;
+            }
+        }
+        for (int slot : new int[] {OUTPUT, OUTPUT_OVERFLOW}) {
+            if (remaining <= 0) break;
+            if (inventory.get(slot).isEmpty()) {
+                int moved = Math.min(remaining, result.getMaxStackSize());
+                inventory.set(slot, result.copyWithCount(moved));
+                remaining -= moved;
+            }
+        }
+    }
+
+    private void mergeByproduct(ItemStack stack) {
         if (stack.isEmpty()) return;
-        if (inventory.get(slot).isEmpty()) inventory.set(slot, stack.copy()); else inventory.get(slot).grow(stack.getCount());
+        if (inventory.get(BYPRODUCT).isEmpty()) inventory.set(BYPRODUCT, stack.copy()); else inventory.get(BYPRODUCT).grow(stack.getCount());
     }
 
     public @Nullable IItemHandler getItemCapability(@Nullable Direction side) {
@@ -173,6 +258,34 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         return side == null ? createSidedItemCapability(null) : sidedItemCapabilities.computeIfAbsent(side, this::createSidedItemCapability);
     }
     public IItemHandler getManualItemCapability() { return itemCapability; }
+    public void completePonderBatch() {
+        if (level == null || getBlockState().getValue(RotaryLeacherBlock.HALF)
+                != net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) return;
+        RecipeHolder<RotaryLeachingRecipe> recipe = findRecipe();
+        if (recipe == null) return;
+        RotaryLeachingRecipe value = recipe.value();
+        BatchPlan plan = findBatchPlan(value);
+        if (Math.abs(getOperatingSpeed()) < value.minimumSpeed() || plan == null) return;
+        activeRecipeId = recipe.id();
+        processingBatchMultiplier = plan.multiplier();
+        processingAcidAmount = plan.acidAmount();
+        processingTime = plan.processingTime();
+        processingTicks = processingTime;
+        completeBatch(value);
+    }
+    public ItemStack extractInputForManual() {
+        ItemStack input = inventory.get(INPUT);
+        if (input.isEmpty()) return ItemStack.EMPTY;
+        ItemStack extracted = input.copy();
+        inventory.set(INPUT, ItemStack.EMPTY);
+        processingTicks = 0;
+        processingTime = 0;
+        processingBatchMultiplier = 0;
+        processingAcidAmount = 0;
+        activeRecipeId = null;
+        contentsChanged();
+        return extracted;
+    }
     private IItemHandler createSidedItemCapability(@Nullable Direction side) {
         return new IItemHandler() {
             @Override public int getSlots() { return itemCapability.getSlots(); }
@@ -194,12 +307,18 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
     public @Nullable IFluidHandler getFluidCapability(@Nullable Direction side) {
         if (level == null || side == null || !getBlockState().hasProperty(RotaryLeacherBlock.HALF)
                 || getBlockState().getValue(RotaryLeacherBlock.HALF) != net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER
-                || side != getBlockState().getValue(RotaryLeacherBlock.HORIZONTAL_FACING).getClockWise()) return null;
+                || side != getBlockState().getValue(RotaryLeacherBlock.HORIZONTAL_FACING).getCounterClockWise()) return null;
         BlockEntity master = level.getBlockEntity(worldPosition.below());
         return master instanceof RotaryLeacherBlockEntity leacher ? leacher.getInternalFluidCapability() : null;
     }
     public IFluidHandler getInternalFluidCapability() { return fluidCapability; }
     public int getProcessingTime() { return processingTime; }
+    public float getProcessingProgress() { return processingTime <= 0 ? 0 : Math.min(1.0F, (float) processingTicks / processingTime); }
+    public ItemStack getVisibleProcessOutput() {
+        RecipeHolder<RotaryLeachingRecipe> recipe = processingTicks > 0 ? findRecipe() : null;
+        if (recipe != null) return scaled(recipe.value().result(), processingBatchMultiplier);
+        return inventory.get(OUTPUT).isEmpty() ? inventory.get(OUTPUT_OVERFLOW).copy() : inventory.get(OUTPUT).copy();
+    }
     public float getOperatingSpeed() { return getSpeed(); }
 
     @Override public @NotNull ProcessState getProcessState() {
@@ -211,15 +330,13 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
 
         RecipeHolder<RotaryLeachingRecipe> recipe = findRecipe();
         if (recipe != null) {
-            RotaryLeachingRecipe value = recipe.value();
-            boolean canRun = inventory.get(INPUT).getCount() >= value.inputCount()
-                    && hasAcid(value)
-                    && Math.abs(getOperatingSpeed()) >= value.minimumSpeed()
-                    && outputsFit(value);
+            boolean canRun = processingTicks > 0
+                    ? processingBatchMultiplier > 0 && Math.abs(getOperatingSpeed()) >= recipe.value().minimumSpeed()
+                    : findBatchPlan(recipe.value()) != null && Math.abs(getOperatingSpeed()) >= recipe.value().minimumSpeed();
             return canRun ? ProcessState.PROCESSING : ProcessState.BLOCKED;
         }
 
-        return inventory.get(OUTPUT).isEmpty() && inventory.get(BYPRODUCT).isEmpty()
+        return inventory.get(OUTPUT).isEmpty() && inventory.get(OUTPUT_OVERFLOW).isEmpty() && inventory.get(BYPRODUCT).isEmpty()
                 ? ProcessState.IDLE
                 : ProcessState.READY;
     }
@@ -233,7 +350,18 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         return processIdentity;
     }
 
-    public int getStressCost() { return Math.round(Math.abs(getOperatingSpeed()) * STRESS_PER_RPM); }
+    private static int legacyInputCount(@Nullable net.minecraft.resources.ResourceLocation recipeId) {
+        if (recipeId == null) return 4;
+        String path = recipeId.getPath();
+        int separator = path.lastIndexOf('_');
+        if (separator < 0) return 4;
+        try {
+            return Integer.parseInt(path.substring(separator + 1));
+        } catch (NumberFormatException ignored) {
+            return 4;
+        }
+    }
+
     public int getAcidAmount() { return acidTank.getFluidAmount(); }
     public int getAcidCapacity() { return ACID_CAPACITY; }
     public FluidStack getAcidFluid() { return acidTank.getFluid(); }
@@ -245,21 +373,25 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         tooltip.add(Component.translatable("block.sulfuricresonance.rotary_leacher"));
         tooltip.add(Component.translatable("tooltip.sulfuricresonance.rotary_leacher.speed", Math.round(Math.abs(getOperatingSpeed()))));
         tooltip.add(Component.translatable("tooltip.sulfuricresonance.rotary_leacher.acid", getAcidAmount(), ACID_CAPACITY));
-        tooltip.add(Component.translatable("tooltip.sulfuricresonance.rotary_leacher.su_cost", getStressCost()));
         if (processingTime > 0) {
             tooltip.add(Component.translatable("tooltip.sulfuricresonance.rotary_leacher.progress", processingTicks, processingTime));
         }
         return true;
     }
-    public List<ItemStack> getDropsForRemoval() {
+    public List<ItemStack> takeDropsForRemoval() {
         java.util.ArrayList<ItemStack> drops = new java.util.ArrayList<>();
-        for (ItemStack stack : inventory) if (!stack.isEmpty()) drops.add(stack.copy());
+        for (int slot = 0; slot < SLOT_COUNT; slot++) {
+            ItemStack stack = inventory.get(slot);
+            if (stack.isEmpty()) continue;
+            drops.add(stack.copy());
+            inventory.set(slot, ItemStack.EMPTY);
+        }
+        if (!drops.isEmpty()) contentsChanged();
         return drops;
     }
 
     public void clearItemsForCreativeBreak() {
-        for (int slot = 0; slot < SLOT_COUNT; slot++) inventory.set(slot, ItemStack.EMPTY);
-        setChanged();
+        takeDropsForRemoval();
     }
 
     @Override protected void write(CompoundTag tag, Provider provider, boolean clientPacket) {
@@ -268,6 +400,8 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         tag.put("SulfuricAcid", acidTank.writeToNBT(provider, new CompoundTag()));
         tag.putInt("RotaryLeacherProgress", processingTicks);
         tag.putInt("RotaryLeacherTime", processingTime);
+        tag.putInt("RotaryLeacherBatchMultiplier", processingBatchMultiplier);
+        tag.putInt("RotaryLeacherBatchAcid", processingAcidAmount);
         if (activeRecipeId != null) tag.putString("RotaryLeacherRecipe", activeRecipeId.toString());
         tag.putUUID("RotaryLeacherProcessIdentity", processIdentity);
     }
@@ -279,9 +413,27 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         acidTank.readFromNBT(provider, tag.getCompound("SulfuricAcid"));
         processingTicks = Math.max(0, tag.getInt("RotaryLeacherProgress"));
         processingTime = Math.max(0, tag.getInt("RotaryLeacherTime"));
+        processingBatchMultiplier = Math.max(0, tag.getInt("RotaryLeacherBatchMultiplier"));
+        processingAcidAmount = Math.max(0, tag.getInt("RotaryLeacherBatchAcid"));
         activeRecipeId = tag.contains("RotaryLeacherRecipe") ? net.minecraft.resources.ResourceLocation.tryParse(tag.getString("RotaryLeacherRecipe")) : null;
+        if (processingTicks > 0 && processingBatchMultiplier == 0) {
+            int oldTime = processingTime;
+            int legacyInputCount = legacyInputCount(activeRecipeId);
+            processingBatchMultiplier = Math.clamp(legacyInputCount / 4, 1, 16);
+            processingAcidAmount = acidCost(processingBatchMultiplier);
+            processingTime = processingTime(processingBatchMultiplier);
+            if (oldTime > 0) processingTicks = Math.round((float) processingTicks * processingTime / oldTime);
+            if (acidTank.getFluidAmount() < processingAcidAmount) {
+                processingTicks = 0;
+                processingBatchMultiplier = 0;
+                processingAcidAmount = 0;
+                activeRecipeId = null;
+            }
+        }
         if (tag.hasUUID("RotaryLeacherProcessIdentity")) processIdentity = tag.getUUID("RotaryLeacherProcessIdentity");
     }
 
     private void contentsChanged() { setChanged(); if (level != null && !level.isClientSide) sendData(); }
+
+    private record BatchPlan(int multiplier, int acidAmount, int processingTime) {}
 }

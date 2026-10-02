@@ -24,6 +24,7 @@ public final class AllPonderTags {
         helper.registerTag(FLUIDS)
                 .addToIndex()
                 .item(AllModBlocks.PERFORATED_SPRITZER.get(), true, false)
+                .item(AllModBlocks.ROTARY_LEACHER.get(), true, false)
                 .title("Fluid Handling")
                 .description("Move, store, spray, and consume Sulfuric Resonance fluids")
                 .register();
@@ -51,6 +52,7 @@ public final class AllPonderTags {
 
         helper.addToTag(FLUIDS)
                 .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()))
+                .add(blockKey(AllModBlocks.ROTARY_LEACHER.get()))
                 .add(itemKey(Items.PRECISION_SPRITZER.get()))
                 .add(itemKey(Items.SULFURIC_ACID_BUCKET.get()))
                 .add(blockKey(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get()))

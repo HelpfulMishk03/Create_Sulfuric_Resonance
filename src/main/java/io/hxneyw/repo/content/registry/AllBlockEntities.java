@@ -354,6 +354,12 @@ public class AllBlockEntities {
        );
 
        event.registerBlockEntity(
+               Capabilities.ItemHandler.BLOCK,
+               ROTARY_LEACHER_UPPER.get(),
+               RotaryLeacherBlockEntity::getItemCapability
+       );
+
+       event.registerBlockEntity(
                FluidHandler.BLOCK,
                ROTARY_LEACHER.get(),
                RotaryLeacherBlockEntity::getFluidCapability

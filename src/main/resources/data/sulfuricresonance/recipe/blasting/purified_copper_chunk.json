@@ -1,0 +1,11 @@
+{
+  "result": {
+    "id": "minecraft:copper_ingot"
+  },
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "ingredient": {
+    "item": "sulfuricresonance:purified_copper_chunk"
+  },
+  "experience": 0.7
+}

@@ -1,14 +1,14 @@
 {
   "variants": {
     "axis=y": {
-      "model": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete_pillar"
+      "model": "sulfuricresonance:block/weathered_mineral_concrete_pillar"
     },
     "axis=z": {
-      "model": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete_pillar",
+      "model": "sulfuricresonance:block/weathered_mineral_concrete_pillar",
       "x": 90
     },
     "axis=x": {
-      "model": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete_pillar",
+      "model": "sulfuricresonance:block/weathered_mineral_concrete_pillar",
       "x": 90,
       "y": 90
     }

@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete"
+      "model": "sulfuricresonance:block/weathered_mineral_concrete"
     }
   }
 }

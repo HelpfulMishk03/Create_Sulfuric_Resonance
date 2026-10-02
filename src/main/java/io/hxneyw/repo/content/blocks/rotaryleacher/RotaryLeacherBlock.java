@@ -59,8 +59,6 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
     @Override
     protected MapCodec<? extends Block> codec() { return CODEC; }
 
-    public static Direction inputSide(BlockState state) { return state.getValue(HORIZONTAL_FACING).getClockWise(); }
-
     @Override
     public Axis getRotationAxis(BlockState state) { return Axis.Y; }
 
@@ -81,7 +79,7 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
         BlockPos upperPos = context.getClickedPos().above();
         if (upperPos.getY() >= context.getLevel().getMaxBuildHeight()) return null;
         if (!context.getLevel().getBlockState(upperPos).canBeReplaced(context)) return null;
-        Direction horizontalFacing = context.getHorizontalDirection().getOpposite();
+        Direction horizontalFacing = context.getHorizontalDirection().getClockWise();
         Direction inputSide = horizontalFacing.getClockWise();
         return defaultBlockState().setValue(FACING, inputSide).setValue(HALF, DoubleBlockHalf.LOWER)
                 .setValue(HORIZONTAL_FACING, horizontalFacing);
@@ -89,10 +87,14 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
 
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.LivingEntity placer, net.minecraft.world.item.ItemStack stack) {
+        Direction horizontalFacing = state.getValue(HORIZONTAL_FACING);
+        Direction inputSide = horizontalFacing.getClockWise();
+        BlockState lowerState = state.setValue(FACING, inputSide).setValue(HALF, DoubleBlockHalf.LOWER)
+                .setValue(HORIZONTAL_FACING, horizontalFacing);
+        if (!level.getBlockState(pos).equals(lowerState)) level.setBlock(pos, lowerState, Block.UPDATE_CLIENTS);
         BlockPos upperPos = pos.above();
         if (upperPos.getY() < level.getMaxBuildHeight() && level.getBlockState(pos).is(this) && level.getBlockState(upperPos).canBeReplaced()) {
-            level.setBlock(upperPos, defaultBlockState().setValue(FACING, state.getValue(FACING)).setValue(HALF, DoubleBlockHalf.UPPER)
-                    .setValue(HORIZONTAL_FACING, state.getValue(HORIZONTAL_FACING)), Block.UPDATE_ALL);
+            level.setBlock(upperPos, lowerState.setValue(HALF, DoubleBlockHalf.UPPER), Block.UPDATE_ALL);
         }
     }
 
@@ -100,11 +102,21 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         BlockPos otherPos = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos.above() : pos.below();
         BlockState other = level.getBlockState(otherPos);
-        if (!level.isClientSide && player.isCreative()) {
-            BlockEntity source = level.getBlockEntity(pos);
-            if (source instanceof RotaryLeacherBlockEntity leacher) leacher.clearItemsForCreativeBreak();
-            BlockEntity counterpart = level.getBlockEntity(otherPos);
-            if (counterpart instanceof RotaryLeacherBlockEntity leacher) leacher.clearItemsForCreativeBreak();
+        if (!level.isClientSide) {
+            if (player.isCreative()) {
+                BlockEntity source = level.getBlockEntity(pos);
+                if (source instanceof RotaryLeacherBlockEntity leacher) leacher.clearItemsForCreativeBreak();
+                BlockEntity counterpart = level.getBlockEntity(otherPos);
+                if (counterpart instanceof RotaryLeacherBlockEntity leacher) leacher.clearItemsForCreativeBreak();
+            } else {
+                BlockPos inventoryPos = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+                BlockEntity contents = level.getBlockEntity(inventoryPos);
+                if (contents instanceof RotaryLeacherBlockEntity leacher) {
+                    for (ItemStack stack : leacher.takeDropsForRemoval()) {
+                        if (!stack.isEmpty()) Block.popResource(level, inventoryPos, stack);
+                    }
+                }
+            }
         }
         if (other.is(this) && other.getValue(HALF) != state.getValue(HALF)
                 && other.getValue(HORIZONTAL_FACING) == state.getValue(HORIZONTAL_FACING)) {
@@ -153,7 +165,7 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
             if (!level.isClientSide) {
                 BlockEntity removed = level.getBlockEntity(pos);
                 if (removed instanceof RotaryLeacherBlockEntity leacher) {
-                    for (ItemStack stack : leacher.getDropsForRemoval()) {
+                    for (ItemStack stack : leacher.takeDropsForRemoval()) {
                         if (!stack.isEmpty()) Block.popResource(level, pos, stack);
                     }
                 }
@@ -212,7 +224,7 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
             if (remainder.getCount() != offered.getCount()) {
                 if (!level.isClientSide) {
                     int inserted = offered.getCount() - handler.insertItem(RotaryLeacherBlockEntity.INPUT, offered, false).getCount();
-                    if (!player.isCreative()) stack.shrink(inserted);
+                    stack.shrink(inserted);
                 }
                 return ItemInteractionResult.SUCCESS;
             }
@@ -229,9 +241,20 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
         BlockPos masterPos = state.getValue(HALF) == DoubleBlockHalf.UPPER ? pos.below() : pos;
         if (level.getBlockEntity(masterPos) instanceof RotaryLeacherBlockEntity leacher) {
             IItemHandler handler = leacher.getManualItemCapability();
+            ItemStack input = handler.getStackInSlot(RotaryLeacherBlockEntity.INPUT);
+            if (!input.isEmpty()) {
+                if (!level.isClientSide) {
+                    ItemStack extracted = leacher.extractInputForManual();
+                    if (!player.getInventory().add(extracted)) player.drop(extracted, false);
+                }
+                return InteractionResult.SUCCESS;
+            }
             int amount = Integer.MAX_VALUE;
-            int slot = handler.getStackInSlot(RotaryLeacherBlockEntity.OUTPUT).isEmpty()
-                    ? RotaryLeacherBlockEntity.BYPRODUCT : RotaryLeacherBlockEntity.OUTPUT;
+            int slot = !handler.getStackInSlot(RotaryLeacherBlockEntity.OUTPUT).isEmpty()
+                    ? RotaryLeacherBlockEntity.OUTPUT
+                    : !handler.getStackInSlot(RotaryLeacherBlockEntity.OUTPUT_OVERFLOW).isEmpty()
+                        ? RotaryLeacherBlockEntity.OUTPUT_OVERFLOW
+                        : RotaryLeacherBlockEntity.BYPRODUCT;
             if (!handler.getStackInSlot(slot).isEmpty()) {
                 if (!level.isClientSide) {
                     ItemStack extracted = handler.extractItem(slot, amount, false);
@@ -249,7 +272,7 @@ public final class RotaryLeacherBlock extends DirectionalKineticBlock implements
     }
 
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         BlockEntityType<RotaryLeacherBlockEntity> type = state.getValue(HALF) == DoubleBlockHalf.UPPER
                 ? AllBlockEntities.ROTARY_LEACHER_UPPER.get()
                 : AllBlockEntities.ROTARY_LEACHER.get();

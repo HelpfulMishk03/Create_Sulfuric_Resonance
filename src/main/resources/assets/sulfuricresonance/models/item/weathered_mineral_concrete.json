@@ -137,5 +137,5 @@
       ]
     }
   },
-  "parent": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete"
+  "parent": "sulfuricresonance:block/weathered_mineral_concrete"
 }

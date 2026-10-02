@@ -1,7 +1,7 @@
 {
   "textures": {
-    "particle": "sulfuricresonance:block/mineral_concrete/mineral_concrete/mineral_concrete_mix",
-    "all": "sulfuricresonance:block/mineral_concrete/mineral_concrete/mineral_concrete_mix"
+    "particle": "sulfuricresonance:block/mineral_concrete/mineral_concrete_mix",
+    "all": "sulfuricresonance:block/mineral_concrete/mineral_concrete_mix"
   },
   "parent": "minecraft:block/cube_all"
 }

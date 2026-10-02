@@ -31,11 +31,11 @@ public final class AnimatedRotaryLeacher extends AnimatedKinetics {
     public void draw(GuiGraphics graphics, int x, int y) {
         PoseStack pose = graphics.pose();
         pose.pushPose();
-        pose.translate(x, y, 50);
+        pose.translate(x, y, 200.0F);
         pose.mulPose(Axis.XP.rotationDegrees(-15.5F));
         pose.mulPose(Axis.YP.rotationDegrees(205.0F));
 
-        float scale = 38.0F;
+        float scale = 20.0F;
         float time = AnimationTickHolder.getRenderTime();
         float gearAngle = time * recipe.minimumSpeed() * 0.3F;
         float whiskAngle = time * 32.0F * 0.3F;
@@ -49,18 +49,15 @@ public final class AnimatedRotaryLeacher extends AnimatedKinetics {
         blockElement(upper).atLocal(0, -0.5, 0).scale(scale).render(graphics);
         blockElement(ClientModEvents.ROTARY_LEACHER_GEAR).rotateBlock(0, gearAngle, 0)
                 .atLocal(0, 0.5, 0).scale(scale).render(graphics);
-        blockElement(ClientModEvents.ROTARY_LEACHER_WHISK).rotateBlock(0, whiskAngle, 0)
-                .atLocal(0, -0.5, 0).scale(scale).render(graphics);
-        blockElement(ClientModEvents.ROTARY_LEACHER_SLEEVES).rotateBlock(0, whiskAngle, 0)
-                .atLocal(0, -0.5, 0).scale(scale).render(graphics);
-
+        blockElement(ClientModEvents.ROTARY_LEACHER_WHISK_GASKET)
+                .atLocal(0, 0.5, 0).scale(scale).render(graphics);
         float fill = Math.min(1.0F, recipe.fluidAmount() / 3500.0F);
         FluidStack acid = new FluidStack(AllModFluids.SULFURIC_ACID.get(), recipe.fluidAmount());
         DEFAULT_LIGHTING.applyLighting();
         pose.pushPose();
         pose.translate(0, -scale / 2.0F, 0);
         UIRenderHelper.flipForGuiRender(pose);
-        pose.scale(18, 18, 18);
+        pose.scale(scale, scale, scale);
         NeoForgeCatnipServices.FLUID_RENDERER.renderFluidBox(acid, 0.13F, 0.08F, 0.13F,
                 0.87F, 0.08F + 0.70F * fill, 0.87F, graphics.bufferSource(), pose,
                 LightTexture.FULL_BRIGHT, false, true);
@@ -68,8 +65,13 @@ public final class AnimatedRotaryLeacher extends AnimatedKinetics {
         graphics.flush();
         Lighting.setupFor3DItems();
 
+        blockElement(ClientModEvents.ROTARY_LEACHER_WHISK).rotateBlock(0, whiskAngle, 0)
+                .atLocal(0, -0.5, 0).scale(scale).render(graphics);
+
         blockElement(ClientModEvents.ROTARY_LEACHER_GLASS).atLocal(0, -0.5, 0).scale(scale).render(graphics);
+        blockElement(ClientModEvents.ROTARY_LEACHER_GLASS_LEFT).atLocal(0, -0.5, 0).scale(scale).render(graphics);
         pose.popPose();
         graphics.flush();
     }
+
 }

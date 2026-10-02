@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "sulfuricresonance:block/mineral_concrete/mineral_concrete"
+      "model": "sulfuricresonance:block/mineral_concrete"
     }
   }
 }

@@ -1,6 +1,7 @@
 package io.hxneyw.repo.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.simpleRelays.BracketedKineticBlockModel;
 import com.simibubi.create.content.processing.basin.BasinRenderer;
 import com.simibubi.create.foundation.block.connected.GlassPaneCTBehaviour;
@@ -109,14 +110,20 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     public static final PartialModel ROTARY_LEACHER_WHISK =
             partial("block/rotary_leacher_whisk");
 
+    public static final PartialModel ROTARY_LEACHER_WHISK_GASKET =
+            partial("block/rotary_leacher_whisk_gasket");
+
     public static final PartialModel ROTARY_LEACHER_GLASS =
             partial("block/rotary_leacher_glass");
+
+    public static final PartialModel ROTARY_LEACHER_GLASS_LEFT =
+            partial("block/rotary_leacher_glass_left");
 
     public static final PartialModel ROTARY_LEACHER_SLEEVES =
             partial("block/rotary_leacher_sleeves");
 
     public static final PartialModel ROTARY_LEACHER_GEAR =
-            partial("block/rotary_leacher_create_cogwheel");
+            AllPartialModels.COGWHEEL;
 
     public static final PartialModel RESONANCE_CHAMBER_SHAFT =
             partial("block/sulfuric_resonance_chamber_shaft");
@@ -662,9 +669,6 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     ) {
         event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
                 "sulfuricresonance", "block/rotary_leacher_whisk")));
-
-        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
-                "sulfuricresonance", "block/rotary_leacher_gear")));
 
         event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
                 "sulfuricresonance", "block/rotary_leacher_sleeves")));

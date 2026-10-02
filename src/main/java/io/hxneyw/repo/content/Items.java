@@ -75,6 +75,9 @@ public class Items {
    public static final DeferredItem<BlockItem> ROTARY_LEACHER_ITEM = ITEMS.register("rotary_leacher", () -> new BlockItem(AllModBlocks.ROTARY_LEACHER.get(), new Properties().stacksTo(64)));
    public static final DeferredItem<Item> MINERAL_TAILINGS = ITEMS.register("mineral_tailings", () -> new Item(new Properties()));
    public static final DeferredItem<Item> PURIFIED_IRON_CHUNK = ITEMS.register("purified_iron_chunk", () -> new Item(new Properties()));
+   public static final DeferredItem<Item> PURIFIED_GOLD_CHUNK = ITEMS.register("purified_gold_chunk", () -> new Item(new Properties()));
+   public static final DeferredItem<Item> PURIFIED_COPPER_CHUNK = ITEMS.register("purified_copper_chunk", () -> new Item(new Properties()));
+   public static final DeferredItem<Item> PURIFIED_ZINC_CHUNK = ITEMS.register("purified_zinc_chunk", () -> new Item(new Properties()));
    public static final DeferredItem<BlockItem> CATALYST_BED_ITEM = ITEMS.register("catalyst_bed", () -> new BlockItem(AllModBlocks.CATALYST_BED.get(), new Properties()));
    public static final DeferredItem<BlockItem> RESONANT_HEAT_INJECTOR_ITEM = ITEMS.register("resonant_heat_injector", () -> new BlockItem(AllModBlocks.RESONANT_HEAT_INJECTOR.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASHESIL_ITEM = ITEMS.register("ashesil", () -> new BlockItem(AllModBlocks.ASHESIL.get(), new Properties()));

@@ -137,5 +137,5 @@
       ]
     }
   },
-  "parent": "sulfuricresonance:block/mineral_concrete/mineral_concrete/mineral_concrete_mix"
+  "parent": "sulfuricresonance:block/mineral_concrete_mix"
 }

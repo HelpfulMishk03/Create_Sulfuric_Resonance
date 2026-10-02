@@ -1,14 +1,14 @@
 {
   "variants": {
     "axis=y": {
-      "model": "sulfuricresonance:block/mineral_concrete/mineral_concrete_pillar"
+      "model": "sulfuricresonance:block/mineral_concrete_pillar"
     },
     "axis=z": {
-      "model": "sulfuricresonance:block/mineral_concrete/mineral_concrete_pillar",
+      "model": "sulfuricresonance:block/mineral_concrete_pillar",
       "x": 90
     },
     "axis=x": {
-      "model": "sulfuricresonance:block/mineral_concrete/mineral_concrete_pillar",
+      "model": "sulfuricresonance:block/mineral_concrete_pillar",
       "x": 90,
       "y": 90
     }

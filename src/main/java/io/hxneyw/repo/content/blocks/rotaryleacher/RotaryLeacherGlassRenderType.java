@@ -23,5 +23,22 @@ public final class RotaryLeacherGlassRenderType {
                     .createCompositeState(true)
     );
 
+    public static final RenderType GLASS_LEFT_IN_FRONT = RenderType.create(
+            "rotary_leacher_glass_left_front",
+            DefaultVertexFormat.BLOCK,
+            VertexFormat.Mode.QUADS,
+            RenderType.SMALL_BUFFER_SIZE,
+            true,
+            true,
+            RenderType.CompositeState.builder()
+                    .setLightmapState(RenderStateShard.LIGHTMAP)
+                    .setShaderState(RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER)
+                    .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
+                    .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                    .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE)
+                    .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
+                    .createCompositeState(true)
+    );
+
     private RotaryLeacherGlassRenderType() { }
 }

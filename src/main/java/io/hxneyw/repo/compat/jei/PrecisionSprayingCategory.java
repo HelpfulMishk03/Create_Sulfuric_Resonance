@@ -36,8 +36,7 @@ public final class PrecisionSprayingCategory
     private static final int MUTED = 0xD0D0D0;
     private static final int ACID_TEXT = 0x686868;
     private static final int TARGET_X = 8;
-    private static final int FILTER_X = 42;
-    private static final int ACID_X = 76;
+    private static final int ACID_X = 60;
     private static final int OUTPUT_X = 156;
     private static final int SLOT_Y = 22;
     private final Component title = Component.translatable(
@@ -95,15 +94,6 @@ public final class PrecisionSprayingCategory
                         ))
                 );
 
-        builder.addSlot(RecipeIngredientRole.CATALYST, FILTER_X, SLOT_Y)
-                .setBackground(this.slot, -1, -1)
-                .addItemStack(recipe.input().copy())
-                .addRichTooltipCallback((slotView, tooltip) ->
-                        tooltip.add(Component.translatable(
-                                "jei.sulfuricresonance.precision_spraying.filter_field"
-                        ))
-                );
-
         builder.addSlot(RecipeIngredientRole.INPUT, ACID_X, SLOT_Y)
                 .setBackground(this.slot, -1, -1)
                 .addFluidStack(
@@ -131,8 +121,7 @@ public final class PrecisionSprayingCategory
             double mouseY
     ) {
         Font font = Minecraft.getInstance().font;
-        graphics.drawString(font, Component.literal("+"), 31, 27, MUTED, false);
-        graphics.drawString(font, Component.literal("+"), 65, 27, MUTED, false);
+        graphics.drawString(font, Component.literal("+"), 42, 27, MUTED, false);
         this.arrow.draw(graphics, 112, SLOT_Y);
         graphics.drawCenteredString(
                 font,

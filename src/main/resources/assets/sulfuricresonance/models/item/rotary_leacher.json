@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:block/rotary_leacher/rotary_leacher_full",
+  "parent": "sulfuricresonance:block/rotary_leacher_full",
   "display": {
     "gui": {
       "rotation": [

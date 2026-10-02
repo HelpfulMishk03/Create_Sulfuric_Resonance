@@ -393,6 +393,83 @@
           "texture": "#machine"
         }
       }
+    },
+    {
+      "from": [
+        -1,
+        6.5,
+        6.5
+      ],
+      "to": [
+        17,
+        9.5,
+        9.5
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          8,
+          8,
+          8
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            6.5,
+            3.75,
+            8.75,
+            4.125
+          ],
+          "texture": "#machine"
+        },
+        "east": {
+          "uv": [
+            10.75,
+            4,
+            11.125,
+            4.375
+          ],
+          "texture": "#machine"
+        },
+        "south": {
+          "uv": [
+            6.5,
+            5.625,
+            8.75,
+            6
+          ],
+          "texture": "#machine"
+        },
+        "west": {
+          "uv": [
+            4.25,
+            10.75,
+            4.625,
+            11.125
+          ],
+          "texture": "#machine"
+        },
+        "up": {
+          "uv": [
+            9.75,
+            6.375,
+            7.5,
+            6
+          ],
+          "texture": "#machine"
+        },
+        "down": {
+          "uv": [
+            9.75,
+            6.375,
+            7.5,
+            6.75
+          ],
+          "texture": "#machine"
+        }
+      }
     }
   ]
 }

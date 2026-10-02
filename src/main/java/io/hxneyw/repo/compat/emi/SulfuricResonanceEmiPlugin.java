@@ -185,6 +185,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         int beltRecipes = 0;
         int mixingRecipes = 0;
         int chamberRecipes = 0;
+        int leachingRecipes = 0;
 
         for (RecipeHolder<?> holder
                 : registry.getRecipeManager().getRecipes()) {
@@ -213,7 +214,10 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                     );
                     chamberRecipes++;
                 }
-                case RotaryLeachingRecipe leachingRecipe -> registry.addRecipe(new RotaryLeachingEmiRecipe(new RecipeHolder<>(holder.id(), leachingRecipe)));
+                case RotaryLeachingRecipe leachingRecipe -> {
+                    registry.addRecipe(new RotaryLeachingEmiRecipe(new RecipeHolder<>(holder.id(), leachingRecipe)));
+                    leachingRecipes++;
+                }
                 case BasinRecipe basinRecipe -> {
                     if (recipe.getType()
                             == ModRecipeTypes.COMBUSTION_MIXING.get()) {
@@ -234,10 +238,11 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         }
 
         LOGGER.info(
-                "CSR EMI registered {} Combustion Belt recipes, {} Combustion Mixing recipes, and {} Sulfuric Resonance Chamber recipes",
+                "CSR EMI registered {} Combustion Belt recipes, {} Combustion Mixing recipes, {} Sulfuric Resonance Chamber recipes, and {} Rotary Leaching recipes",
                 beltRecipes,
                 mixingRecipes,
-                chamberRecipes
+                chamberRecipes,
+                leachingRecipes
         );
     }
 

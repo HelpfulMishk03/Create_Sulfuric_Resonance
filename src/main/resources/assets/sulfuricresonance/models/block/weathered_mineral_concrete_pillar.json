@@ -2,7 +2,7 @@
   "credit": "Made in Blockbench by Hxney",
   "parent": "minecraft:block/cube_column",
   "textures": {
-    "end": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete/weathered_mineral_concrete_pillar_top",
-    "side": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete/weathered_mineral_concrete_pillar_side"
+    "end": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete_pillar_top",
+    "side": "sulfuricresonance:block/weathered_mineral_concrete/weathered_mineral_concrete_pillar_side"
   }
 }

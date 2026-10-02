@@ -84,6 +84,9 @@ public class ModTabs {
                   output.accept(Items.REINFORCED_CINDER_COMPOUND.get());
                   output.accept(Items.MINERAL_TAILINGS.get());
                   output.accept(Items.PURIFIED_IRON_CHUNK.get());
+                  output.accept(Items.PURIFIED_GOLD_CHUNK.get());
+                  output.accept(Items.PURIFIED_COPPER_CHUNK.get());
+                  output.accept(Items.PURIFIED_ZINC_CHUNK.get());
                   output.accept(Items.CINDER_SANDPAPER.get());
                   output.accept(Items.OBSIDIAN_FIBER_MOLD.get());
                   output.accept(Items.OBSIDIAN_FIBER.get());
@@ -126,7 +129,7 @@ public class ModTabs {
       "construction_materials",
       () -> CreativeModeTab.builder()
          .title(Component.translatable("itemGroup.sulfuricresonance.construction_materials"))
-         .icon(() -> new ItemStack(Items.MINERAL_CONCRETE.get()))
+         .icon(() -> new ItemStack(Items.WEATHERED_MINERAL_CONCRETE_PILLAR.get()))
          .displayItems((params, output) -> {
             output.accept(Items.MINERAL_CONCRETE_MIX.get());
             output.accept(Items.MINERAL_CONCRETE.get());

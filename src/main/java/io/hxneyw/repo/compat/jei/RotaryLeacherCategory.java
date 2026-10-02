@@ -33,19 +33,19 @@ public final class RotaryLeacherCategory implements IRecipeCategory<RotaryLeachi
 
     @Override public @NotNull RecipeType<RotaryLeachingRecipe> getRecipeType() { return RECIPE_TYPE; }
     @Override public @NotNull Component getTitle() { return Component.translatable("recipe.sulfuricresonance.rotary_leaching"); }
-    @Override public int getWidth() { return 160; }
-    @Override public int getHeight() { return 152; }
+    @Override public int getWidth() { return 144; }
+    @Override public int getHeight() { return 154; }
     @Override public @NotNull IDrawable getIcon() { return icon; }
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RotaryLeachingRecipe recipe, @NotNull IFocusGroup focuses) {
         ItemStack[] ingredients = recipe.ingredient().getItems();
-        builder.addSlot(RecipeIngredientRole.INPUT, 4, 30).setBackground(slot, -1, -1).addItemStacks(List.of(ingredients))
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 30).setBackground(slot, -1, -1).addItemStacks(List.of(ingredients))
                 .addRichTooltipCallback((view, tooltip) -> tooltip.add(Component.translatable("jei.sulfuricresonance.rotary_leaching.input_count", recipe.inputCount())));
-        builder.addSlot(RecipeIngredientRole.INPUT, 4, 54).setBackground(slot, -1, -1)
+        builder.addSlot(RecipeIngredientRole.INPUT, 2, 54).setBackground(slot, -1, -1)
                 .addFluidStack(AllModFluids.SULFURIC_ACID.get(), recipe.fluidAmount());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 140, 30).setBackground(slot, -1, -1).addItemStack(recipe.result());
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 140, 54).setBackground(slot, -1, -1).addItemStack(recipe.byproduct());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 122, 30).setBackground(slot, -1, -1).addItemStack(recipe.result());
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 122, 54).setBackground(slot, -1, -1).addItemStack(recipe.byproduct());
     }
 
     @Override
@@ -53,14 +53,26 @@ public final class RotaryLeacherCategory implements IRecipeCategory<RotaryLeachi
         var font = Minecraft.getInstance().font;
         graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.input_count", recipe.inputCount()), 4, 8, 0x303030, false);
 
-        animation.withRecipe(recipe).draw(graphics, 90, 54);
+        animation.withRecipe(recipe).draw(graphics, 84, 52);
+        drawFlowArrow(graphics, 34);
+        drawFlowArrow(graphics, 100);
 
-        graphics.fill(4, 78, 156, 79, 0xFF999999);
-        graphics.fill(4, 85, 12, 93, 0xFFBBA65A);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.acid", recipe.fluidAmount()), 16, 85, 0x67562D, false);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.speed", recipe.minimumSpeed()), 4, 98, 0x303030, false);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.stress", recipe.minimumSpeed() * 2), 4, 112, 0x303030, false);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.whisk", 32), 4, 126, 0x303030, false);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.time", recipe.processingTime() / 20.0), 4, 140, 0x303030, false);
+        graphics.fill(2, 76, 142, 77, 0xFF999999);
+        graphics.fill(2, 83, 10, 91, 0xFFBBA65A);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.acid", recipe.fluidAmount()), 14, 83, 0x67562D, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.speed", recipe.minimumSpeed()), 2, 98, 0x303030, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.stress", recipe.minimumSpeed() * 2), 2, 109, 0x303030, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.whisk", 32), 2, 120, 0x303030, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.base_time", recipe.processingTime() / 20.0), 2, 131, 0x303030, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.bulk"), 2, 143, 0x303030, false);
+    }
+
+    private static void drawFlowArrow(GuiGraphics graphics, int x) {
+        int y = 49;
+        int color = 0xFF777777;
+        graphics.fill(x, y + 4, x + 9, y + 6, color);
+        graphics.fill(x + 7, y, x + 9, y + 10, color);
+        graphics.fill(x + 9, y + 2, x + 11, y + 8, color);
+        graphics.fill(x + 11, y + 4, x + 13, y + 6, color);
     }
 }
