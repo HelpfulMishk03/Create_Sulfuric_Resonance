@@ -14,13 +14,6 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Data-driven Molten Rotor fuel definition.
- *
- * <p>These recipes are intentionally special/non-crafting recipes. Datapacks
- * and KubeJS can add, replace, or remove them through the normal recipe
- * manager without CSR needing a hard dependency on KubeJS.</p>
- */
 public final class MoltenRotorFuelRecipe implements Recipe<SingleRecipeInput> {
 
     private final Ingredient ingredient;

@@ -67,10 +67,7 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
 
     @Override
     public List<EmiIngredient> getCatalysts() {
-        return List.of(
-                SulfuricResonanceEmiPlugin.PRECISION_SPRITZER,
-                this.input
-        );
+        return List.of(SulfuricResonanceEmiPlugin.PRECISION_SPRITZER);
     }
 
     @Override
@@ -97,14 +94,9 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
                 HEIGHT,
                 (graphics, mouseX, mouseY, delta) -> this.draw(graphics)
         );
-        widgets.addSlot(this.input, 12, 31)
+        widgets.addSlot(this.input, 28, 31)
                 .appendTooltip(Component.translatable(
                         "jei.sulfuricresonance.precision_spraying.target"
-                ));
-        widgets.addSlot(this.input, 44, 31)
-                .catalyst(true)
-                .appendTooltip(Component.translatable(
-                        "jei.sulfuricresonance.precision_spraying.filter_field"
                 ));
         widgets.addTank(
                         this.acid,
@@ -124,15 +116,7 @@ public final class PrecisionSprayingEmiRecipe implements EmiRecipe {
 
     private void draw(GuiGraphics graphics) {
         Font font = Minecraft.getInstance().font;
-        graphics.drawCenteredString(
-                font,
-                Component.translatable(
-                        "jei.sulfuricresonance.precision_spraying.fields"
-                ),
-                53,
-                18,
-                MUTED
-        );
+        graphics.drawString(font, Component.literal("+"), 56, 36, MUTED, false);
         graphics.drawString(
                 font,
                 Component.literal("→"),

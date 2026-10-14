@@ -1,0 +1,175 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_post"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_side"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "north": "false"
+          },
+          {
+            "OR": [
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "east": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside_cap"
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_side_alt"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "south": "false"
+          },
+          {
+            "OR": [
+              {
+                "east": "true"
+              },
+              {
+                "west": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside_alt",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "false",
+        "east": "false",
+        "west": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside_alt_cap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_side_alt",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "west": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "false",
+        "north": "false",
+        "south": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside_cap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_side",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "east": "false"
+          },
+          {
+            "OR": [
+              {
+                "north": "true"
+              },
+              {
+                "south": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside_alt"
+      }
+    },
+    {
+      "when": {
+        "east": "false",
+        "north": "false",
+        "south": "false"
+      },
+      "apply": {
+        "model": "sulfuricresonance:block/framed_tempered_ashesil_pane_noside_alt_cap"
+      }
+    }
+  ]
+}

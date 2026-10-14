@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " G ",
+    "GFG",
+    " G "
+  ],
+  "key": {
+    "F": {
+      "item": "sulfuricresonance:obsidian_fiber"
+    },
+    "G": {
+      "item": "sulfuricresonance:tempered_ashesil"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:framed_tempered_ashesil",
+    "count": 4
+  }
+}

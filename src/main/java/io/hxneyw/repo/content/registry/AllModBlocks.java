@@ -41,6 +41,9 @@ import net.neoforged.neoforge.registries.DeferredRegister.Blocks;
 
 public class AllModBlocks {
     public static final Blocks BLOCKS = DeferredRegister.createBlocks("sulfuricresonance");
+    public static final DeferredBlock<IronBarsBlock> RESONANT_IRON_BARS = BLOCKS.register("resonant_iron_bars", () -> new IronBarsBlock(Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.IRON_BARS)));
+    public static final DeferredBlock<IronBarsBlock> RESONANT_COPPER_BARS = BLOCKS.register("resonant_copper_bars", () -> new IronBarsBlock(Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.IRON_BARS)));
+    public static final DeferredBlock<IronBarsBlock> RESONANT_GOLD_BARS = BLOCKS.register("resonant_gold_bars", () -> new IronBarsBlock(Properties.ofFullCopy(net.minecraft.world.level.block.Blocks.IRON_BARS)));
     public static final DeferredBlock<Block> MOLTEN_ROTOR_FURNACE = BLOCKS.register(
             "molten_rotor_furnace",
             () -> new MoltenRotorBlock(
@@ -296,9 +299,35 @@ public class AllModBlocks {
                     )
             );
 
+    public static final DeferredBlock<ConnectedGlassBlock> FRAMED_ASHESIL =
+            BLOCKS.register(
+                    "framed_ashesil",
+                    () -> new ConnectedGlassBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.COLOR_GRAY)
+                                    .strength(0.3F)
+                                    .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
     public static final DeferredBlock<ConnectedGlassPaneBlock> ASHESIL_PANE =
             BLOCKS.register(
                     "ashesil_pane",
+                    () -> new ConnectedGlassPaneBlock(
+                            Properties.ofFullCopy(
+                                            net.minecraft.world.level.block.Blocks.GLASS_PANE
+                                    )
+                                    .mapColor(MapColor.COLOR_GRAY)
+                                    .strength(0.3F)
+                                    .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ConnectedGlassPaneBlock> FRAMED_ASHESIL_PANE =
+            BLOCKS.register(
+                    "framed_ashesil_pane",
                     () -> new ConnectedGlassPaneBlock(
                             Properties.ofFullCopy(
                                             net.minecraft.world.level.block.Blocks.GLASS_PANE
@@ -322,9 +351,35 @@ public class AllModBlocks {
                     )
             );
 
+    public static final DeferredBlock<ConnectedGlassBlock> FRAMED_TEMPERED_ASHESIL =
+            BLOCKS.register(
+                    "framed_tempered_ashesil",
+                    () -> new ConnectedGlassBlock(
+                            Properties.of()
+                                    .mapColor(MapColor.COLOR_GRAY)
+                                    .strength(0.3F, 3_600_000.0F)
+                                    .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
     public static final DeferredBlock<ConnectedGlassPaneBlock> TEMPERED_ASHESIL_PANE =
             BLOCKS.register(
                     "tempered_ashesil_pane",
+                    () -> new ConnectedGlassPaneBlock(
+                            Properties.ofFullCopy(
+                                            net.minecraft.world.level.block.Blocks.GLASS_PANE
+                                    )
+                                    .mapColor(MapColor.COLOR_GRAY)
+                                    .strength(0.3F, 3_600_000.0F)
+                                    .sound(SoundType.GLASS)
+                                    .noOcclusion()
+                    )
+            );
+
+    public static final DeferredBlock<ConnectedGlassPaneBlock> FRAMED_TEMPERED_ASHESIL_PANE =
+            BLOCKS.register(
+                    "framed_tempered_ashesil_pane",
                     () -> new ConnectedGlassPaneBlock(
                             Properties.ofFullCopy(
                                             net.minecraft.world.level.block.Blocks.GLASS_PANE

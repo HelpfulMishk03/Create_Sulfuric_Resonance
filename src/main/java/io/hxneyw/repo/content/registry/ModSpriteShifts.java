@@ -31,6 +31,17 @@ public final class ModSpriteShifts {
                             "block/tempered_ashesil/tempered_ashesil_connected"
                     )
             );
+    public static final CTSpriteShiftEntry FRAMED_ASHESIL = CTSpriteShifter.getCT(
+            AllCTTypes.OMNIDIRECTIONAL,
+            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/framed_ashesil/framed_ashesil"),
+            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/framed_ashesil/framed_ashesil_connected")
+    );
+    public static final CTSpriteShiftEntry FRAMED_TEMPERED_ASHESIL = CTSpriteShifter.getCT(
+            AllCTTypes.OMNIDIRECTIONAL,
+            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/framed_tempered_ashesil/framed_tempered_ashesil"),
+            ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "block/framed_tempered_ashesil/framed_tempered_ashesil_connected")
+    );
+
     private ModSpriteShifts() {
     }
 }

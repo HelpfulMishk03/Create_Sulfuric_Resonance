@@ -17,8 +17,7 @@ public class ModTabs {
       () -> CreativeModeTab.builder()
          .title(Component.translatable("itemGroup.sulfuricresonance.sulfuric_resonance"))
               .icon(() -> new ItemStack(Items.SULFUR.get()))
-              .displayItems((params, output) -> {
-                  output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
+              .displayItems((params, output) -> {                  output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
                   output.accept(Items.SULFUR_BURNER_ITEM.get());
                   output.accept(Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get());
                   output.accept(Items.CATALYST_BED_ITEM.get());
@@ -142,6 +141,9 @@ public class ModTabs {
             output.accept(Items.WEATHERED_MINERAL_CONCRETE_STAIRS.get());
             output.accept(Items.WEATHERED_MINERAL_CONCRETE_PILLAR.get());
             output.accept(Items.WEATHERED_MINERAL_CONCRETE_WALL.get());
+            output.accept(Items.RESONANT_IRON_BARS.get());
+            output.accept(Items.RESONANT_COPPER_BARS.get());
+            output.accept(Items.RESONANT_GOLD_BARS.get());
             output.accept(Items.ASH_BRICK_BLOCK_ITEM.get());
             output.accept(Items.ASH_BRICK_SLAB_ITEM.get());
             output.accept(Items.ASH_BRICK_STAIRS_ITEM.get());
@@ -151,6 +153,10 @@ public class ModTabs {
             output.accept(Items.ASHESIL_PANE_ITEM.get());
             output.accept(Items.TEMPERED_ASHESIL_ITEM.get());
             output.accept(Items.TEMPERED_ASHESIL_PANE_ITEM.get());
+            output.accept(Items.FRAMED_ASHESIL_ITEM.get());
+            output.accept(Items.FRAMED_ASHESIL_PANE_ITEM.get());
+            output.accept(Items.FRAMED_TEMPERED_ASHESIL_ITEM.get());
+            output.accept(Items.FRAMED_TEMPERED_ASHESIL_PANE_ITEM.get());
          })
          .build()
    );

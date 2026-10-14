@@ -16,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.item.BlockItem;
@@ -247,6 +248,15 @@ public class SulfuricResonanceChamberBlock
                         "block.sulfuricresonance.sulfuric_resonance_chamber"
                 )
         );
+    }
+
+    @Override
+    public void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean moved) {
+        if (!state.is(newState.getBlock()) && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof SulfuricResonanceChamberBlockEntity chamber) {
+            Containers.dropContents(level, pos, chamber);
+        }
+        super.onRemove(state, level, pos, newState, moved);
     }
 
     public static Direction heatAndRotationSide(

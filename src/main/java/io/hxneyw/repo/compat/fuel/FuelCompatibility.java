@@ -27,18 +27,10 @@ public final class FuelCompatibility {
     private FuelCompatibility() {
     }
 
-    /**
-     * Built-in-only resolution. Used by recipe-display code that does not have
-     * a level/recipe manager available.
-     */
     public static @Nullable ResolvedFuel resolve(ItemStack stack) {
         return resolveBuiltIn(stack);
     }
 
-    /**
-     * Runtime resolution. Datapack/KubeJS molten_rotor_fuel recipes have
-     * priority over all built-in categories and furnace-fuel fallback.
-     */
     public static @Nullable ResolvedFuel resolve(
             ItemStack stack,
             @Nullable Level level

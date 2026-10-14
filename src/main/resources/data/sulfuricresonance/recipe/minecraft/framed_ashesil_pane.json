@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "   ",
+    "FFF",
+    "FFF"
+  ],
+  "key": {
+    "F": {
+      "item": "sulfuricresonance:framed_ashesil"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:framed_ashesil_pane",
+    "count": 16
+  }
+}

@@ -1,5 +1,7 @@
 package io.hxneyw.repo.compat.emi.animations;
 
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity;
+
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -51,8 +53,8 @@ public final class EmiAnimatedRotaryLeacher extends EmiAnimatedKinetics {
                 .atLocal(0, 0.5, 0).scale(scale).render(graphics);
         blockElement(ClientModEvents.ROTARY_LEACHER_WHISK_GASKET)
                 .atLocal(0, 0.5, 0).scale(scale).render(graphics);
-        float fill = Math.min(1.0F, recipe.fluidAmount() / 3500.0F);
-        FluidStack acid = new FluidStack(AllModFluids.SULFURIC_ACID.get(), recipe.fluidAmount());
+        float fill = Math.min(1.0F, RotaryLeacherBlockEntity.acidCost(1) / (float) RotaryLeacherBlockEntity.ACID_CAPACITY);
+        FluidStack acid = new FluidStack(AllModFluids.SULFURIC_ACID.get(), RotaryLeacherBlockEntity.acidCost(1));
         pose.pushPose();
         pose.translate(0, -scale / 2.0F, 0);
         UIRenderHelper.flipForGuiRender(pose);

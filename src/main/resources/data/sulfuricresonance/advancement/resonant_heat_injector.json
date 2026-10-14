@@ -1,5 +1,5 @@
 {
-  "parent": "sulfuricresonance:routed_reaction",
+  "parent": "sulfuricresonance:thermal_matrix",
   "display": {
     "icon": {
       "id": "sulfuricresonance:resonant_heat_injector"

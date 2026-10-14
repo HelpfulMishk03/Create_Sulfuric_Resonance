@@ -1,6 +1,8 @@
 package io.hxneyw.repo.compat.arm;
 
 import com.simibubi.create.api.registry.CreateBuiltInRegistries;
+import com.simibubi.create.content.kinetics.mechanicalArm.AllArmInteractionPointTypes.DepositOnlyArmInteractionPoint;
+import io.hxneyw.repo.content.blocks.sulfurburner.SulfurBurnerBlock;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPoint;
 import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
@@ -35,6 +37,22 @@ public class AllModArmInteractionPoints {
    public static final DeferredHolder<ArmInteractionPointType, RotaryLeacherType> ROTARY_LEACHER = ARM_INTERACTION_POINTS.register(
            "rotary_leacher", RotaryLeacherType::new
    );
+
+   public static final DeferredHolder<ArmInteractionPointType, SulfurBurnerType> SULFUR_BURNER = ARM_INTERACTION_POINTS.register(
+           "sulfur_burner", SulfurBurnerType::new
+   );
+
+   public static class SulfurBurnerType extends ArmInteractionPointType {
+      @Override
+      public boolean canCreatePoint(Level level, BlockPos pos, BlockState state) {
+         return state.getBlock() instanceof SulfurBurnerBlock;
+      }
+
+      @Override
+      public ArmInteractionPoint createPoint(Level level, BlockPos pos, BlockState state) {
+         return new DepositOnlyArmInteractionPoint(this, level, pos, state);
+      }
+   }
 
    public static void register(IEventBus eventBus) {
       ARM_INTERACTION_POINTS.register(eventBus);
