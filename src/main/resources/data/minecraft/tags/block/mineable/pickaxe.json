@@ -48,6 +48,9 @@
     "sulfuricresonance:weathered_mineral_concrete_stairs",
     "sulfuricresonance:weathered_mineral_concrete_slab",
     "sulfuricresonance:weathered_mineral_concrete_pillar",
-    "sulfuricresonance:weathered_mineral_concrete_wall"
+    "sulfuricresonance:weathered_mineral_concrete_wall",
+    "sulfuricresonance:resonant_iron_bars",
+    "sulfuricresonance:resonant_copper_bars",
+    "sulfuricresonance:resonant_gold_bars"
   ]
 }

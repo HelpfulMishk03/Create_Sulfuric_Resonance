@@ -1,5 +1,7 @@
 package io.hxneyw.repo.compat.emi;
 
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity;
+
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -22,15 +24,17 @@ public final class RotaryLeachingEmiRecipe implements EmiRecipe {
     public RotaryLeachingEmiRecipe(RecipeHolder<RotaryLeachingRecipe> holder) { id = holder.id(); recipe = holder.value(); }
     @Override public EmiRecipeCategory getCategory() { return SulfuricResonanceEmiPlugin.ROTARY_LEACHING; }
     @Override public @Nullable ResourceLocation getId() { return id; }
-    @Override public List<EmiIngredient> getInputs() { return List.of(EmiIngredient.of(recipe.ingredient(), recipe.inputCount()), EmiStack.of(AllModFluids.SULFURIC_ACID.get(), recipe.fluidAmount())); }
+    @Override public List<EmiIngredient> getInputs() { return List.of(EmiIngredient.of(recipe.ingredient(), recipe.inputCount()), EmiStack.of(AllModFluids.SULFURIC_ACID.get(), RotaryLeacherBlockEntity.acidCost(1))); }
     @Override public List<EmiStack> getOutputs() { return List.of(EmiStack.of(recipe.result()), EmiStack.of(recipe.byproduct())); }
     @Override public List<EmiIngredient> getCatalysts() { return List.of(SulfuricResonanceEmiPlugin.ROTARY_LEACHER); }
     @Override public int getDisplayWidth() { return 224; }
     @Override public int getDisplayHeight() { return 154; }
     @Override public void addWidgets(WidgetHolder widgets) {
         widgets.addDrawable(0, 0, 224, 154, (graphics, mouseX, mouseY, delta) -> draw(graphics));
-        widgets.addSlot(EmiIngredient.of(recipe.ingredient(), recipe.inputCount()), 4, 32);
-        widgets.addTank(EmiStack.of(AllModFluids.SULFURIC_ACID.get(), recipe.fluidAmount()), 4, 54, 18, 18, io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity.ACID_CAPACITY);
+                widgets.addSlot(EmiIngredient.of(recipe.ingredient(), recipe.inputCount()), 4, 32)
+                .appendTooltip(Component.translatable("jei.sulfuricresonance.rotary_leaching.input_count", recipe.inputCount()))
+                .appendTooltip(Component.translatable("jei.sulfuricresonance.rotary_leaching.bulk_curve", recipe.inputCount(), recipe.inputCount() * 2, recipe.inputCount() * 4, recipe.inputCount() * 8, recipe.inputCount() * 16));
+        widgets.addTank(EmiStack.of(AllModFluids.SULFURIC_ACID.get(), RotaryLeacherBlockEntity.acidCost(1)), 4, 54, 18, 18, io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity.ACID_CAPACITY);
         widgets.addSlot(EmiStack.of(recipe.result()), 199, 32).recipeContext(this);
         widgets.addSlot(EmiStack.of(recipe.byproduct()), 199, 54).recipeContext(this);
     }
@@ -40,9 +44,10 @@ public final class RotaryLeachingEmiRecipe implements EmiRecipe {
         drawFlowArrow(graphics, 59);
         drawFlowArrow(graphics, 164);
         graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.speed", recipe.minimumSpeed()), 4, 82, 0x303030, false);
-        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.stress", recipe.minimumSpeed() * 2), 4, 98, 0x303030, false);
-        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.base_time", recipe.processingTime() / 20.0), 4, 114, 0x303030, false);
-        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.bulk"), 4, 130, 0x303030, false);
+                graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.stress", recipe.minimumSpeed() * 2), 4, 96, 0x303030, false);
+        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.whisk", 32), 4, 110, 0x303030, false);
+        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.base_time", RotaryLeacherBlockEntity.processingTime(1) / 20.0), 4, 124, 0x303030, false);
+        graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.translatable("jei.sulfuricresonance.rotary_leaching.bulk"), 4, 138, 0x303030, false);
     }
 
     private static void drawFlowArrow(GuiGraphics graphics, int x) {

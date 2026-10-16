@@ -1,0 +1,32 @@
+{
+  "parent": "sulfuricresonance:sulfuric_resonance_chamber",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:thermal_matrix"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.thermal_matrix.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.thermal_matrix.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_thermal_matrix": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:thermal_matrix"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

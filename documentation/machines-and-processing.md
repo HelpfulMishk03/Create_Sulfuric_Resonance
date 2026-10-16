@@ -9,6 +9,7 @@
 | Combustion Belt | `content/blocks/combustionbelt/`, Belt mixins | belt movement plus resolved heat/time/distance requirements |
 | Ash Ceramic Crucible | `content/blocks/crucible/` | Create basin mixing with CSR heat rules |
 | Sulfuric Resonance Chamber | `content/blocks/sulfuricresonancechamber/` | inventory, acid, RPM, heat, process state, output and presentation |
+| Rotary Leacher | `content/blocks/rotaryleacher/`, `content/recipes/rotaryleaching/` | batched acid processing, primary/byproduct outputs, process state and automation |
 | Catalyst Bed | `content/blocks/catalystbed/` | direct Chamber upgrade; changes processing rate without stacking |
 | Resonant Heat Injector | `content/blocks/resonantheatinjector/` | specialized Chamber heat interaction |
 | Spritzers | `content/fluids/spritzer/` | tanked fluid behavior, world/entity/item interaction and optional precision filtering |
@@ -24,6 +25,8 @@ For each machine, keep these ownership layers distinct:
 ## Process state and automation
 
 Process monitoring uses the `content/process/` package and Process Monitor/Gauge content. Process state exists so normal Create-style automation can respond to machine state rather than relying on timers.
+
+The monitor's target contract currently covers the Sulfuric Resonance Chamber and Rotary Leacher: both expose discrete batch states that can change downstream factory behavior. Thermal infrastructure and fuel appliances keep their purpose-specific goggle, gauge, redstone, and indicator feedback; do not add them as monitor targets just for parity. Add another provider when its process state gives automation a meaningful action.
 
 When adding a state, define all of the following together: the authoritative condition, serialization/sync behavior, Goggle/Jade text, redstone behavior, automation interactions, screen/renderer presentation, localization, and Ponder explanation. Do not infer a process state from renderer animation.
 
@@ -48,3 +51,13 @@ All locales must contain the same translation keys as `en_us.json`; localized te
 ## New-content definition of done
 
 A new block/item is not complete when it compiles. Before calling it complete, check registration, creative tab, recipe, tags/tool requirements, loot, models/blockstate, particles/sounds where relevant, all locale keys, advancement, Ponder, Goggle/Jade status, JEI/EMI, automation, dedicated server, and actual in-game appearance.
+
+### Framed Ashesil
+
+The Construction tab includes Framed Ashesil, Framed Ashesil Pane, Framed Tempered Ashesil, and Framed Tempered Ashesil Pane. Surround one Obsidian Fiber with four corresponding glass blocks to frame four blocks, or with eight corresponding panes to frame eight panes. These retain their source glass properties, including tempered blast resistance and Silk Touch drops. The frame uses a narrow obsidian rim around the existing glass.
+
+#### Leaching recipe batching contract
+
+Rotary Leacher batches use sulfuric acid and the documented fixed batch acid/time curve. Custom recipe `fluid`, `fluid_amount`, and `processing_time` fields do not override that curve in the current implementation. Ingredient, input count, result, byproduct, and minimum speed remain recipe driven.
+
+Sulfur Burners are direct deposit-only Mechanical Arm targets. Arm insertion uses the existing fuel handler, including its accepted-fuel rules and queue limit. Fuel extraction remains unavailable.

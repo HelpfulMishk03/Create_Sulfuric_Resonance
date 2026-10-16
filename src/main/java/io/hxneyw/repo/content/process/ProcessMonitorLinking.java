@@ -23,6 +23,12 @@ public final class ProcessMonitorLinking {
             @NotNull Level level,
             @NotNull ProcessMonitorBlockEntity monitor
     ) {
+        if (level.isClientSide || player.isSpectator()
+                || !level.mayInteract(player, monitor.getBlockPos())) {
+            cancel(player);
+            return;
+        }
+
         CompoundTag pending = new CompoundTag();
         pending.put(MONITOR_TAG, monitor.createReference(level).save());
         pending.putInt(CHANNEL_TAG, monitor.getSelectedChannel());
@@ -67,6 +73,14 @@ public final class ProcessMonitorLinking {
 
         ProcessMonitorBlockEntity monitor = resolution.monitor();
         if (monitor == null) {
+            cancel(player);
+            return true;
+        }
+
+        Level monitorLevel = monitor.getLevel();
+        if (player.isSpectator() || monitorLevel == null
+                || !monitorLevel.mayInteract(player, monitor.getBlockPos())
+                || !targetLevel.mayInteract(player, targetPos)) {
             cancel(player);
             return true;
         }

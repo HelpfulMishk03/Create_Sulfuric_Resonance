@@ -6,6 +6,37 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## 0.6.1 — Tied Ends
+
+### Added
+
+- Resonant Iron, Copper, and Gold Bars with vertical rod textures, connected geometry, front-facing inventory icons, crafting recipes, loot, and Construction-tab placement.
+- Framed Ashesil, Framed Ashesil Pane, Framed Tempered Ashesil, and Framed Tempered Ashesil Pane, with wider charcoal borders, a subtle diamond lattice, connected textures, and Obsidian Fiber framing recipes.
+- Italian translations, bringing support to nine locale files with 932 matching keys each.
+- **Thermal Instability** and **Batch Refining** advancements for Thermal Matrix and Rotary Leacher progression.
+- Direct deposit-only Mechanical Arm support for Sulfur Burners through their existing fuel handler.
+
+### Changed
+
+- Refined resonant bar colors using their ingots as references, moderating copper brightness and reducing excessive purple in iron.
+- JEI and EMI Rotary Leacher displays show input counts, batch sizes, acid costs, and processing times. Both display the required whisk speed.
+- Reparented Resonant Heat Injector progression under Thermal Instability.
+- Corrected Leacher Ponder operating information and expanded translations for existing construction and processing content.
+- Updated both public READMEs to describe the current release, with historical changes kept in this changelog.
+- Added material-use and automation audit documentation, clarified Process Monitor coverage for the Resonance Chamber and Rotary Leacher, and documented the Leacher's fixed batch acid/time curve.
+- Aligned documented compatibility minimums with loader metadata and listed current build dependency versions separately.
+
+### Fixed
+
+- Process Monitor arm packets and link completion now reject spectators and recheck interaction permissions at the monitor and target, closing a spawn-protection bypass.
+
+- Resonant bars now use cutout rendering so transparent pixels display correctly, and all three variants have pickaxe mining tags for survival drops.
+- Framed glass connected textures account for diagonal neighbors and inside corners. Pane end caps distinguish exposed ends from continuous runs, replacing overlapping custom frame geometry.
+- JEI/EMI Leacher acid amounts, base times, and fluid animations now use the machine's batch functions and tank capacity instead of ignored custom recipe overrides or outdated capacity values.
+- Resonance Chamber inventory drops when its block is removed, without dropping on same-block state changes.
+- Rotary Leacher active and interrupted progress changes mark persistent state dirty.
+- Custom leaching byproducts cannot overstack an empty output slot; batch planning chooses a size that fits.
+
 ## 0.6.0 — Second Yield
 
 ### Added

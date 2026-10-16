@@ -362,23 +362,34 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                             ModSpriteShifts.ASHESIL
                     )
             ).accept(AllModBlocks.ASHESIL.get());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.RESONANT_IRON_BARS.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.RESONANT_COPPER_BARS.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.RESONANT_GOLD_BARS.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.FRAMED_ASHESIL.get(), RenderType.translucent());
+            CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(ModSpriteShifts.FRAMED_ASHESIL)).accept(AllModBlocks.FRAMED_ASHESIL.get());
 
             CreateRegistrate.connectedTextures(
                     () -> new GlassPaneCTBehaviour(
                             ModSpriteShifts.ASHESIL
                     )
             ).accept(AllModBlocks.ASHESIL_PANE.get());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.FRAMED_ASHESIL_PANE.get(), RenderType.translucent());
+            CreateRegistrate.connectedTextures(() -> new GlassPaneCTBehaviour(ModSpriteShifts.FRAMED_ASHESIL)).accept(AllModBlocks.FRAMED_ASHESIL_PANE.get());
             CreateRegistrate.connectedTextures(
                     () -> new SimpleCTBehaviour(
                             ModSpriteShifts.TEMPERED_ASHESIL
                     )
             ).accept(AllModBlocks.TEMPERED_ASHESIL.get());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.FRAMED_TEMPERED_ASHESIL.get(), RenderType.translucent());
+            CreateRegistrate.connectedTextures(() -> new SimpleCTBehaviour(ModSpriteShifts.FRAMED_TEMPERED_ASHESIL)).accept(AllModBlocks.FRAMED_TEMPERED_ASHESIL.get());
 
             CreateRegistrate.connectedTextures(
                     () -> new GlassPaneCTBehaviour(
                             ModSpriteShifts.TEMPERED_ASHESIL
                     )
             ).accept(AllModBlocks.TEMPERED_ASHESIL_PANE.get());
+            ItemBlockRenderTypes.setRenderLayer(AllModBlocks.FRAMED_TEMPERED_ASHESIL_PANE.get(), RenderType.translucent());
+            CreateRegistrate.connectedTextures(() -> new GlassPaneCTBehaviour(ModSpriteShifts.FRAMED_TEMPERED_ASHESIL)).accept(AllModBlocks.FRAMED_TEMPERED_ASHESIL_PANE.get());
         });
     }
 

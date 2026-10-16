@@ -1,4 +1,5 @@
 import net.neoforged.moddevgradle.dsl.ModModel
+import groovy.json.JsonOutput
 
 plugins {
     id 'java-library'
@@ -58,7 +59,16 @@ repositories {
 
 configurations.configureEach { Configuration configuration ->
     configuration.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'org.apache.logging.log4j') {
+        if (details.requested.group == 'io.netty'
+                && details.requested.name.startsWith('netty-')
+                && !details.requested.name.startsWith('netty-tcnative')
+                && !details.requested.name.startsWith('netty-incubator')) {
+            details.useVersion(netty_security_version.toString())
+            details.because('Align Netty 4.1 modules with the patched security release')
+        } else if (details.requested.group == 'org.jline') {
+            details.useVersion(jline_security_version.toString())
+            details.because('Fix JLine history regular-expression denial of service and later 3.x security advisories')
+        } else if (details.requested.group == 'org.apache.logging.log4j') {
             details.useVersion(log4j_security_version.toString())
         } else if (details.requested.group == 'org.apache.commons'
                 && details.requested.name == 'commons-compress') {
@@ -182,4 +192,48 @@ tasks.withType(JavaCompile).configureEach { JavaCompile compileTask ->
 tasks.named('processResources', ProcessResources).configure { ProcessResources resourceTask ->
     resourceTask.dependsOn(tasks.named('compileJava'))
     resourceTask.from(generatedRefmapDirectory)
+}
+
+tasks.register('verifySecurityDependencies') {
+    group = 'verification'
+    description = 'Verify patched networking and console dependencies on build and development launch paths'
+    notCompatibleWithConfigurationCache('Inspects resolved dependency graphs')
+    doLast {
+        def report = [:]
+        ['runtimeClasspath', 'compileClasspath', 'clientLegacyClasspath', 'serverLegacyClasspath',
+         'neoFormRuntimeDependenciesRuntimeClasspath', 'neoFormRuntimeDependenciesCompileClasspath'].each { name ->
+            def configuration = configurations.findByName(name)
+            if (configuration == null || !configuration.canBeResolved) {
+                throw new GradleException("Missing security-audited configuration: ${name}")
+            }
+            def modules = configuration.incoming.resolutionResult.allComponents.findAll {
+                it.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
+            }.collect { [group: it.id.group, name: it.id.module, version: it.id.version] }.sort { "${it.group}:${it.name}" }
+            modules.each { module ->
+                if (module.group == 'io.netty' && module.name.startsWith('netty-')
+                        && !module.name.startsWith('netty-tcnative')
+                        && !module.name.startsWith('netty-incubator')
+                        && module.version != netty_security_version.toString()) {
+                    throw new GradleException("Unpatched Netty module in ${name}: ${module}")
+                }
+                if (module.group == 'org.jline' && module.version != jline_security_version.toString()) {
+                    throw new GradleException("Unpatched JLine module in ${name}: ${module}")
+                }
+            }
+            modules.each { module ->
+                if (module.group == 'org.lz4' && module.name == 'lz4-java') {
+                    throw new GradleException("Unmaintained LZ4 artifact in " + name)
+                }
+                if (module.group == 'at.yawk.lz4' && module.name == 'lz4-java'
+                        && module.version != lz4_java_security_version.toString()) {
+                    throw new GradleException("Unpatched LZ4 module in " + name)
+                }
+            }
+            report[name] = modules
+        }
+        def output = layout.buildDirectory.file('reports/security/resolved-dependencies.json').get().asFile
+        output.parentFile.mkdirs()
+        output.text = JsonOutput.prettyPrint(JsonOutput.toJson(report))
+        logger.lifecycle("Verified Netty ${netty_security_version} and JLine ${jline_security_version} in ${report.size()} configurations")
+    }
 }

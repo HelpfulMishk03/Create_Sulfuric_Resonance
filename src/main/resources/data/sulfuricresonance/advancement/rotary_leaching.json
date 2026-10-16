@@ -1,0 +1,35 @@
+{
+  "parent": "sulfuricresonance:routed_reaction",
+  "display": {
+    "icon": {
+      "id": "sulfuricresonance:purified_iron_chunk"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.rotary_leaching.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.rotary_leaching.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "obtain_purified_metal": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "sulfuricresonance:purified_iron_chunk",
+              "sulfuricresonance:purified_gold_chunk",
+              "sulfuricresonance:purified_copper_chunk",
+              "sulfuricresonance:purified_zinc_chunk"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

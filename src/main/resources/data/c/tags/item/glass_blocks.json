@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "sulfuricresonance:ashesil",
-    "sulfuricresonance:tempered_ashesil"
+    "sulfuricresonance:tempered_ashesil",
+    "sulfuricresonance:framed_ashesil",
+    "sulfuricresonance:framed_tempered_ashesil"
   ]
 }

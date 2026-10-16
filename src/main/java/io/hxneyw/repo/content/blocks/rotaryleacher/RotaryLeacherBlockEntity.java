@@ -107,6 +107,7 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
                 || getBlockState().getValue(RotaryLeacherBlock.HALF) == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER) return;
         RecipeHolder<RotaryLeachingRecipe> recipe = findRecipe();
         if (recipe == null || Math.abs(getOperatingSpeed()) < recipe.value().minimumSpeed()) {
+            if (processingTicks != 0 || activeRecipeId != null) setChanged();
             processingTicks = 0;
             processingTime = 0;
             processingBatchMultiplier = 0;
@@ -130,6 +131,7 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
             processingTime = plan.processingTime();
         }
         processingTicks++;
+        setChanged();
         if (processingTicks >= processingTime) completeBatch(value);
         if ((level.getGameTime() & 7) == 0) sendData();
     }
@@ -172,11 +174,11 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         return fitsAcrossOutputSlots(result) && fitsByproduct(byproduct);
     }
 
-    private int acidCost(int multiplier) {
+    public static int acidCost(int multiplier) {
         return interpolate(multiplier, new int[] {1, 2, 4, 8, 16}, new int[] {750, 1400, 2600, 4800, 8500});
     }
 
-    private int processingTime(int multiplier) {
+    public static int processingTime(int multiplier) {
         return interpolate(multiplier, new int[] {1, 2, 4, 8, 16}, new int[] {180, 320, 560, 960, 1500});
     }
 
@@ -205,7 +207,8 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
 
     private boolean fitsByproduct(ItemStack result) {
         ItemStack current = inventory.get(BYPRODUCT);
-        return current.isEmpty() || ItemStack.isSameItemSameComponents(current, result)
+        if (result.isEmpty()) return true;
+        return current.isEmpty() ? result.getCount() <= result.getMaxStackSize() : ItemStack.isSameItemSameComponents(current, result)
                 && current.getCount() + result.getCount() <= current.getMaxStackSize();
     }
 

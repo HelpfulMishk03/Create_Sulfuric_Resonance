@@ -24,6 +24,9 @@ public class Items {
    public static final DeferredItem<Item> CINDER_FUEL_BRIQUETTE = ITEMS.register("cinder_fuel_briquette", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<SandPaperItem> CINDER_SANDPAPER = ITEMS.register("cinder_sandpaper", () -> new SandPaperItem(new Properties()));
    public static final DeferredItem<Item> BRIMSTONE_CORE = ITEMS.registerSimpleItem("brimstone_core", new Properties());
+   public static final DeferredItem<BlockItem> RESONANT_IRON_BARS = ITEMS.register("resonant_iron_bars", () -> new BlockItem(AllModBlocks.RESONANT_IRON_BARS.get(), new Properties()));
+   public static final DeferredItem<BlockItem> RESONANT_COPPER_BARS = ITEMS.register("resonant_copper_bars", () -> new BlockItem(AllModBlocks.RESONANT_COPPER_BARS.get(), new Properties()));
+   public static final DeferredItem<BlockItem> RESONANT_GOLD_BARS = ITEMS.register("resonant_gold_bars", () -> new BlockItem(AllModBlocks.RESONANT_GOLD_BARS.get(), new Properties()));
    public static final DeferredItem<Item> ASH_BRICK = ITEMS.register("ash_brick", () -> new Item(new Properties().stacksTo(64)));
    public static final DeferredItem<BlockItem> ASH_BRICK_BLOCK_ITEM = ITEMS.register("ash_brick_block", () -> new BlockItem(AllModBlocks.ASH_BRICK_BLOCK.get(), new Properties()));
    public static final DeferredItem<BlockItem> ASH_BRICK_PILLAR_ITEM = ITEMS.register("ash_brick_pillar", () -> new BlockItem(AllModBlocks.ASH_BRICK_PILLAR.get(), new Properties()));
@@ -63,6 +66,10 @@ public class Items {
    public static final DeferredItem<CinderFlareItem> CINDER_FLARE = ITEMS.register("cinder_flare", () -> new CinderFlareItem(new Properties().stacksTo(16).fireResistant()));
    public static final DeferredItem<LitCinderFlareItem> LIT_CINDER_FLARE = ITEMS.register("lit_cinder_flare", () -> new LitCinderFlareItem(new Properties().stacksTo(16).fireResistant()));
    public static final DeferredItem<Item> REINFORCED_CINDER_COMPOUND = ITEMS.register("reinforced_cinder_compound", () -> new Item(new Properties().stacksTo(64)));
+   public static final DeferredItem<BlockItem> FRAMED_ASHESIL_ITEM = ITEMS.register("framed_ashesil", () -> new BlockItem(AllModBlocks.FRAMED_ASHESIL.get(), new Properties()));
+   public static final DeferredItem<BlockItem> FRAMED_ASHESIL_PANE_ITEM = ITEMS.register("framed_ashesil_pane", () -> new BlockItem(AllModBlocks.FRAMED_ASHESIL_PANE.get(), new Properties()));
+   public static final DeferredItem<BlockItem> FRAMED_TEMPERED_ASHESIL_ITEM = ITEMS.register("framed_tempered_ashesil", () -> new BlockItem(AllModBlocks.FRAMED_TEMPERED_ASHESIL.get(), new Properties()));
+   public static final DeferredItem<BlockItem> FRAMED_TEMPERED_ASHESIL_PANE_ITEM = ITEMS.register("framed_tempered_ashesil_pane", () -> new BlockItem(AllModBlocks.FRAMED_TEMPERED_ASHESIL_PANE.get(), new Properties()));
    public static final DeferredItem<Item> OBSIDIAN_FIBER_MOLD = ITEMS.register("obsidian_fiber_mold", () -> new Item(new Properties().stacksTo(16)));
    @SuppressWarnings("unused")
    public static final DeferredItem<BlockItem> ASH_CERAMIC_CRUCIBLE_ITEM = ITEMS.register("ash_ceramic_crucible", () -> new BlockItem(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get(), new Properties()));

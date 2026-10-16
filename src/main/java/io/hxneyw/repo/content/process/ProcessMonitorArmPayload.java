@@ -56,7 +56,7 @@ public record ProcessMonitorArmPayload(@NotNull BlockPos pos)
         ServerLevel level = player.serverLevel();
         BlockPos pos = payload.pos();
 
-        if (!level.hasChunkAt(pos)) {
+        if (player.isSpectator() || !level.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4) || !level.mayInteract(player, pos)) {
             return;
         }
 

@@ -1,0 +1,31 @@
+name: Dependency security graph
+
+on:
+  push:
+    branches: [master, development/0.6.1]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-submission:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Generate and submit resolved dependency graph
+        uses: gradle/actions/dependency-submission@3f5f9adaf7d9fecd50b5935e54106014257a94e6
+        with:
+          cache-provider: basic
+          dependency-resolution-task: verifySecurityDependencies
+          additional-arguments: --no-configuration-cache
+          dependency-graph: generate-and-submit

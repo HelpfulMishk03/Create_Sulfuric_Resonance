@@ -1,5 +1,7 @@
 package io.hxneyw.repo.compat.jei;
 
+import io.hxneyw.repo.content.blocks.rotaryleacher.RotaryLeacherBlockEntity;
+
 import io.hxneyw.repo.content.recipes.rotaryleaching.RotaryLeachingRecipe;
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import io.hxneyw.repo.content.registry.AllModFluids;
@@ -41,9 +43,12 @@ public final class RotaryLeacherCategory implements IRecipeCategory<RotaryLeachi
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RotaryLeachingRecipe recipe, @NotNull IFocusGroup focuses) {
         ItemStack[] ingredients = recipe.ingredient().getItems();
         builder.addSlot(RecipeIngredientRole.INPUT, 2, 30).setBackground(slot, -1, -1).addItemStacks(List.of(ingredients))
-                .addRichTooltipCallback((view, tooltip) -> tooltip.add(Component.translatable("jei.sulfuricresonance.rotary_leaching.input_count", recipe.inputCount())));
+                                .addRichTooltipCallback((view, tooltip) -> {
+                    tooltip.add(Component.translatable("jei.sulfuricresonance.rotary_leaching.input_count", recipe.inputCount()));
+                    tooltip.add(Component.translatable("jei.sulfuricresonance.rotary_leaching.bulk_curve", recipe.inputCount(), recipe.inputCount() * 2, recipe.inputCount() * 4, recipe.inputCount() * 8, recipe.inputCount() * 16));
+                });
         builder.addSlot(RecipeIngredientRole.INPUT, 2, 54).setBackground(slot, -1, -1)
-                .addFluidStack(AllModFluids.SULFURIC_ACID.get(), recipe.fluidAmount());
+                .addFluidStack(AllModFluids.SULFURIC_ACID.get(), RotaryLeacherBlockEntity.acidCost(1));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 122, 30).setBackground(slot, -1, -1).addItemStack(recipe.result());
         builder.addSlot(RecipeIngredientRole.OUTPUT, 122, 54).setBackground(slot, -1, -1).addItemStack(recipe.byproduct());
     }
@@ -59,11 +64,11 @@ public final class RotaryLeacherCategory implements IRecipeCategory<RotaryLeachi
 
         graphics.fill(2, 76, 142, 77, 0xFF999999);
         graphics.fill(2, 83, 10, 91, 0xFFBBA65A);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.acid", recipe.fluidAmount()), 14, 83, 0x67562D, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.acid", RotaryLeacherBlockEntity.acidCost(1)), 14, 83, 0x67562D, false);
         graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.speed", recipe.minimumSpeed()), 2, 98, 0x303030, false);
         graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.stress", recipe.minimumSpeed() * 2), 2, 109, 0x303030, false);
         graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.whisk", 32), 2, 120, 0x303030, false);
-        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.base_time", recipe.processingTime() / 20.0), 2, 131, 0x303030, false);
+        graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.base_time", RotaryLeacherBlockEntity.processingTime(1) / 20.0), 2, 131, 0x303030, false);
         graphics.drawString(font, Component.translatable("jei.sulfuricresonance.rotary_leaching.bulk"), 2, 143, 0x303030, false);
     }
 
