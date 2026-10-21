@@ -8,6 +8,10 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.block.IBE;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllVoxelShapes;
+import io.hxneyw.repo.content.Items;
+import io.hxneyw.repo.content.items.WeatherShroudingItem;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -28,6 +32,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -35,6 +40,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -135,6 +142,19 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
 
       super.onRemove(state, level, pos, newState, isMoving);
    }
+
+   @Override
+   public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+      List<ItemStack> drops = new ArrayList<>(super.getDrops(state, params));
+      Entity breaker = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
+      BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+      if (!(breaker instanceof Player player && player.isCreative())
+              && blockEntity instanceof MoltenRotorBlockEntity furnace
+              && furnace.hasWeatherShrouding()) {
+         drops.add(new ItemStack(Items.WEATHER_SHROUDING.get()));
+      }
+      return drops;
+   }
    @NotNull
    @Override
    protected ItemInteractionResult useItemOn(
@@ -146,6 +166,22 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
            @NotNull InteractionHand hand,
            @NotNull BlockHitResult hit
    ) {
+      if (!player.isShiftKeyDown() && stack.getItem() instanceof WeatherShroudingItem) {
+         if (!(level.getBlockEntity(pos) instanceof MoltenRotorBlockEntity furnace)) {
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+         }
+         if (furnace.hasWeatherShrouding()) {
+            return ItemInteractionResult.FAIL;
+         }
+         if (!level.isClientSide) {
+            furnace.setWeatherShrouding(true);
+            if (!player.getAbilities().instabuild) {
+               stack.shrink(1);
+            }
+         }
+         return ItemInteractionResult.sidedSuccess(level.isClientSide);
+      }
+
       if (stack.getItem() instanceof WrenchItem) {
          UseOnContext context = new UseOnContext(player, hand, hit);
 
@@ -175,6 +211,18 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
            @NotNull Player player,
            @NotNull BlockHitResult hit
    ) {
+      if (player.isShiftKeyDown()
+              && level.getBlockEntity(pos) instanceof MoltenRotorBlockEntity furnace
+              && furnace.hasWeatherShrouding()) {
+         if (!level.isClientSide) {
+            furnace.setWeatherShrouding(false);
+            ItemStack shrouding = new ItemStack(Items.WEATHER_SHROUDING.get());
+            if (!player.getInventory().add(shrouding)) {
+               player.drop(shrouding, false);
+            }
+         }
+         return InteractionResult.sidedSuccess(level.isClientSide);
+      }
       return InteractionResult.PASS;
    }
 

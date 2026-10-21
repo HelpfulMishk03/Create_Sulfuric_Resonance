@@ -70,6 +70,17 @@ final class MoltenRotorInteractions {
       }
 
       if (tnt) {
+         if (!furnace.isRedlineFuseActive()
+                 && furnace.isRedlineTrigger()) {
+            furnace.startRedlineFuse(player);
+            furnace.tntCooldown = 5;
+            playInsertionSound(level, pos);
+            if (!player.getAbilities().instabuild) {
+               stack.shrink(1);
+            }
+            return ItemInteractionResult.SUCCESS;
+         }
+
          if (Config.TNT_CAN_EXPLODE.get()
                  && furnace.tntCooldown <= 0
                  && level.random.nextFloat() < 0.25F) {

@@ -100,6 +100,10 @@ public class ThermalRelaySwitchBlockEntity
             CLIENT_RELAYS = Collections.newSetFromMap(
             new WeakHashMap<>()
     );
+    private static final Set<ThermalRelaySwitchBlockEntity>
+            SERVER_RELAYS = Collections.newSetFromMap(
+            new WeakHashMap<>()
+    );
 
     @Nullable
     private UUID networkId;
@@ -365,6 +369,7 @@ public class ThermalRelaySwitchBlockEntity
         if (this.level.isClientSide) {
             CLIENT_RELAYS.add(this);
         } else {
+            SERVER_RELAYS.add(this);
             forceImmediateEvaluation();
         }
     }
@@ -372,7 +377,27 @@ public class ThermalRelaySwitchBlockEntity
     @Override
     public void setRemoved() {
         CLIENT_RELAYS.remove(this);
+        SERVER_RELAYS.remove(this);
         super.setRemoved();
+    }
+
+    public static boolean hasActiveLinkedRelay(
+            @NotNull Level level,
+            @NotNull MoltenRotorBlockEntity furnace
+    ) {
+        String dimension = level.dimension().location().toString();
+        for (ThermalRelaySwitchBlockEntity relay : List.copyOf(SERVER_RELAYS)) {
+            ThermalRelaySwitchItem.FurnaceLink link = relay.linkedFurnace;
+            if (relay.level == level
+                    && link != null
+                    && link.position().equals(furnace.getBlockPos())
+                    && link.dimension().equals(dimension)
+                    && link.furnaceIdentity().equals(furnace.getFurnaceIdentity())
+                    && relay.getCurrentPower() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void evaluateOutputs(
@@ -425,11 +450,24 @@ public class ThermalRelaySwitchBlockEntity
                         && qualifyingLowFuel;
 
         if (this.mode == RelayMode.LOW_FUEL) {
+            if (link != null
+                    && ThermochemicalNetworkResolver.resolve(level, link).furnace() instanceof MoltenRotorBlockEntity furnace
+                    && furnace.isRedlineFuseActive()) {
+                applyRedlinePulse(level);
+                return;
+            }
             if (qualifyingLowFuel) {
                 applyLowFuelWarning(level);
             } else {
                 applyOutput(level, 0, 0);
             }
+            return;
+        }
+
+        if (link != null
+                && ThermochemicalNetworkResolver.resolve(level, link).furnace() instanceof MoltenRotorBlockEntity furnace
+                && furnace.isRedlineFuseActive()) {
+            applyRedlinePulse(level);
             return;
         }
 
@@ -441,6 +479,11 @@ public class ThermalRelaySwitchBlockEntity
                 baseOutput.redstone(),
                 baseOutput.glow()
         );
+    }
+
+    private void applyRedlinePulse(@NotNull Level level) {
+        boolean pulseOn = ((level.getGameTime() / 5L) & 1L) == 0L;
+        applyOutput(level, pulseOn ? 15 : 0, pulseOn ? MAX_GLOW : 0);
     }
 
     private void applyLowFuelWarning(

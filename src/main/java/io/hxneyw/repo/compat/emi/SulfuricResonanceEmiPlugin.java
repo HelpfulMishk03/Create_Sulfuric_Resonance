@@ -86,6 +86,15 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
                     SULFURIC_RESONANCE_CHAMBER
             );
 
+    public static final EmiRecipeCategory SULFURIC_CHAMBER_CRAFTING =
+            new EmiRecipeCategory(
+                    ResourceLocation.fromNamespaceAndPath(
+                            CreateSulfuricResonance.MODID,
+                            "sulfuric_chamber_crafting"
+                    ),
+                    EmiStack.of(AllBlocks.MECHANICAL_CRAFTER.get())
+            );
+
     public static final EmiRecipeCategory PRECISION_SPRAYING =
             new EmiRecipeCategory(
                     ResourceLocation.fromNamespaceAndPath(
@@ -112,6 +121,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         registry.addCategory(COMBUSTION_BELT_PROCESSING);
         registry.addCategory(COMBUSTION_MIXING);
         registry.addCategory(SULFURIC_RESONANCE_CHAMBER_PROCESSING);
+        registry.addCategory(SULFURIC_CHAMBER_CRAFTING);
         registry.addCategory(PRECISION_SPRAYING);
         registry.addCategory(ROTARY_LEACHING);
     }
@@ -144,6 +154,10 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
         registry.addWorkstation(
                 SULFURIC_RESONANCE_CHAMBER_PROCESSING,
                 SULFURIC_RESONANCE_CHAMBER
+        );
+        registry.addWorkstation(
+                SULFURIC_CHAMBER_CRAFTING,
+                EmiStack.of(AllBlocks.MECHANICAL_CRAFTER.get())
         );
         registry.addWorkstation(
                 PRECISION_SPRAYING,
@@ -182,6 +196,7 @@ public final class SulfuricResonanceEmiPlugin implements EmiPlugin {
     private static void registerProcessingRecipes(
             EmiRegistry registry
     ) {
+        registry.addRecipe(new SulfuricChamberMechanicalCraftingEmiRecipe());
         int beltRecipes = 0;
         int mixingRecipes = 0;
         int chamberRecipes = 0;

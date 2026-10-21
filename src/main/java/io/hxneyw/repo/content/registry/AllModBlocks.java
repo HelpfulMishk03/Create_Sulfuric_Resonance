@@ -4,6 +4,8 @@ import com.simibubi.create.content.decoration.palettes.ConnectedGlassBlock;
 import com.simibubi.create.content.decoration.palettes.ConnectedGlassPaneBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.CreateSulfuricResonance;
+import io.hxneyw.repo.content.blocks.ScraperBlock;
+import io.hxneyw.repo.content.blocks.BlockCaddyBlock;
 import io.hxneyw.repo.content.blocks.catalystbed.CatalystBedBlock;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlock;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlock;
@@ -149,6 +151,14 @@ public class AllModBlocks {
     );
     public static final DeferredBlock<Block> PERFORATED_SPRITZER = BLOCKS.register(
             "perforated_spritzer", () -> new PerforatedSpritzerBlock(Properties.of().strength(3.0F).sound(SoundType.METAL).noOcclusion().lightLevel(state -> 0))
+    );
+    public static final DeferredBlock<ScraperBlock> SCRAPER = BLOCKS.register(
+            "scraper", () -> new ScraperBlock(Properties.of().noOcclusion().strength(1.5F).sound(SoundType.METAL))
+    );
+    public static final DeferredBlock<BlockCaddyBlock> BLOCK_CADDY = BLOCKS.register(
+            "block_caddy", () -> new BlockCaddyBlock(
+                    Properties.of().mapColor(MapColor.METAL).strength(1.0F).sound(SoundType.METAL).noOcclusion()
+            )
     );
 
     public static void register(IEventBus eventBus) {

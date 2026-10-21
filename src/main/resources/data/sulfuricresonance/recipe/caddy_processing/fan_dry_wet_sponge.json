@@ -1,0 +1,7 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "fan_smoking",
+  "ingredient": { "item": "minecraft:wet_sponge" },
+  "result": { "id": "minecraft:sponge", "count": 1 },
+  "processing_time": 100
+}

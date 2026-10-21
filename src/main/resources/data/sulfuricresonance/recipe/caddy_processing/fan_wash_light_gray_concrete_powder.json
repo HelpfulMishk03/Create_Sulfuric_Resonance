@@ -1,0 +1,12 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "fan_splashing",
+  "ingredient": {
+    "item": "minecraft:light_gray_concrete_powder"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:light_gray_concrete"
+  },
+  "processing_time": 60
+}

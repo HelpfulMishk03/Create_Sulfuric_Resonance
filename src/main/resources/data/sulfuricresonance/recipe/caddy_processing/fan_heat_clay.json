@@ -1,0 +1,7 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "fan_blasting",
+  "ingredient": { "item": "minecraft:clay" },
+  "result": { "id": "minecraft:terracotta", "count": 1 },
+  "processing_time": 100
+}

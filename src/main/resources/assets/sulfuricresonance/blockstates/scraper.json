@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "sulfuricresonance:block/scraper", "y": 180 },
+    "facing=south": { "model": "sulfuricresonance:block/scraper" },
+    "facing=west": { "model": "sulfuricresonance:block/scraper", "y": 90 },
+    "facing=east": { "model": "sulfuricresonance:block/scraper", "y": 270 }
+  }
+}

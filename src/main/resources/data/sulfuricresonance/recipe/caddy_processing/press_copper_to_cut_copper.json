@@ -1,0 +1,7 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "press",
+  "ingredient": { "item": "minecraft:copper_block" },
+  "result": { "id": "minecraft:cut_copper", "count": 1 },
+  "processing_time": 20
+}

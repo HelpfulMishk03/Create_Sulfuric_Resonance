@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class MoltenRotorTemperatureController {
     private static final float AMBIENT_TEMPERATURE = 20.0F;
-    private static final float MAXIMUM_TEMPERATURE = 2000.0F;
+    private static final float MAXIMUM_TEMPERATURE = 2000.0F;
     private static final float AFTERBURN_THRESHOLD = 1599.0F;
     private static final float AFTERBURN_COOLING_MULTIPLIER = 0.8F;
     private static final float NORMAL_COOLING_PER_TICK = 0.1F;
@@ -46,6 +46,7 @@ public final class MoltenRotorTemperatureController {
             Level level = this.furnace.getLevel();
             if (level != null
                     && Config.RAIN_AFFECTS_MOLTEN_ROTOR.get()
+                    && !this.furnace.hasWeatherShrouding()
                     && level.isRainingAt(this.furnace.getBlockPos().above())) {
                 heatingPerTick *= 0.5F;
             }
@@ -188,6 +189,7 @@ public final class MoltenRotorTemperatureController {
 
         if (level != null
                 && Config.RAIN_AFFECTS_MOLTEN_ROTOR.get()
+                && !this.furnace.hasWeatherShrouding()
                 && level.isRainingAt(this.furnace.getBlockPos().above())) {
             coolingPerTick *= 2.0F;
         }

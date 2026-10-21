@@ -1,0 +1,154 @@
+CREATE: SULFURIC RESONANCE 0.7.0 CONTRAPTION TEST GUIDE
+Minecraft 1.21.1 / Create 6.x
+
+IMPORTANT TEST STATUS
+---------------------
+The two files are genuine gzip-compressed 1.21.1 StructureTemplate NBT files
+made for Create's Schematic Table workflow. Their NBT structure and registered
+CSR block IDs were checked. I could not launch the Minecraft/Create UI here,
+so the assembly, powered motion, placement controls, renderer output, save/load,
+and disassembly have not yet been verified in-game. This is a careful first
+test, not a claim that the layouts are runtime-proven.
+
+FILES
+-----
+CSR_070_Moving_Contraption_Demo.nbt
+    A compact rotating payload with a Scraper, empty Block Caddy, and Perforated
+    Spritzer attached to a sticky radial chassis above a Mechanical Bearing.
+    A Creative Motor, shaft, and bearing share one vertical axis.
+
+CSR_070_Full_Machine_Contraption_Test.nbt
+    A larger checkerboard payload built from every registered non-fluid CSR
+    block. It contains the machines and construction blocks with empty machine
+    inventories. Sulfuric Acid is intentionally excluded because it is a fluid
+    block with PushReaction.DESTROY and is not safe cargo for a rigid carriage.
+
+COPY THE SCHEMATICS INTO CREATE'S FOLDER
+----------------------------------------
+1. Close Minecraft if it is open.
+2. Open the game directory for the Minecraft instance you are testing. For the
+   project development run, the folder is:
+       sulfuricresonance-0.4.0/runs/client-0.0.2.5-beta-dev/schematics
+   For another launcher instance, use that instance's game directory instead.
+3. Copy both .nbt files into its `schematics` folder. Create creates this folder
+   the first time it is needed. Do not put them in `schematics/uploaded`.
+4. Start the game with Create 6.x and the CSR 0.7.0 development build installed.
+
+UPLOAD THROUGH CREATE'S SCHEMATIC TABLE
+---------------------------------------
+1. In Creative, place a Create Schematic Table on a clear, flat area.
+2. Open the table. Click its folder button if you need to open the folder Create
+   reads, or click refresh after copying the NBT files while the game is open.
+3. Select `CSR_070_Moving_Contraption_Demo.nbt` in the schematic list and click
+   the checkmark/upload button.
+4. Take the resulting Schematic from the table output slot.
+5. Hold Shift and right-click with the Schematic to open Create's placement
+   screen. Choose a flat spot with clear space around the rotating assembly.
+   Confirm the placement preview.
+6. The full regression layout uses the same steps with
+   `CSR_070_Full_Machine_Contraption_Test.nbt`. Place it in a large, empty area.
+
+DEMO LAYOUT AND CONTROLS
+------------------------
+The demo's moving part is the radial-chassis assembly. The Scraper, Block Caddy,
+and Perforated Spritzer rotate together around a vertical axis. Below the payload
+are a Mechanical Bearing, shaft, and Creative Motor connected in one vertical
+kinetic line. The motor uses Create's default 16 RPM setting.
+
+To start the demo, right-click the Mechanical Bearing with an empty main hand.
+Create schedules the assembly on the next tick. The bearing rotates while it
+has speed. Use a wrench on the Creative Motor to change speed or direction. To
+stop, set the motor to 0 RPM and empty-hand right-click the bearing again; its
+running-state interaction disassembles the contraption. Do not break the bearing,
+shaft, or payload while it is assembled.
+
+If it does not assemble or rotate:
+
+- Confirm the motor faces up, its shaft is directly above it, the bearing is
+  directly above the shaft, and the radial chassis touches the bearing's top.
+- Check that the Creative Motor has nonzero speed and that the connected shaft
+  and bearing show rotation.
+- Check that nothing obstructs the rotating payload's clearance around the
+  bearing axis.
+- Right-click the bearing again with an empty main hand after correcting the
+  setup. Read the bearing's assembly tooltip for any reported obstruction.
+
+ASSEMBLY, STOPPING, AND DISASSEMBLY
+----------------------------------
+The demo uses Create's Mechanical Bearing, not a decorative moving platform.
+The bearing collects the radial chassis and its attached blocks; the connected
+motor supplies rotation. The full regression layout retains a separate piston
+controller for testing the wider CSR block payload.
+
+1. Inspect the assembled layout before starting. The bearing, shaft, and motor
+   remain stationary while the radial chassis and attached CSR blocks rotate.
+2. Right-click the bearing with an empty main hand and watch the payload rotate.
+3. Set the Creative Motor to 0 RPM and right-click the bearing again to
+   disassemble safely.
+4. Wait until the bearing is stopped and disassembled before breaking any part.
+5. To stop a stalled test safely, restore nonzero motor speed if needed, let the
+   bearing respond, set it to 0 RPM, then use the bearing's normal disassembly
+   interaction. Do not break individual chassis blocks while assembled.
+
+CHECKING CSR STATE
+------------------
+Create captures block-entity NBT in a moving contraption. This should preserve
+state across assembly/disassembly, but confirm it with the test:
+
+- Block Caddy: before assembly, load one placeable block into the demo Caddy.
+  Check its cargo before movement, after movement, and again after disassembly.
+- Empty Caddy: keep a second empty Caddy nearby for comparison. It should remain
+  empty throughout the same procedure.
+- Weather Shrouding: install it on a Molten Rotor Furnace before assembly in the
+  full test. Check that it stays attached and renders after motion and after
+  disassembly. The small demo does not include a furnace.
+- Stored heat/fuel: load a small known amount into a furnace/burner, note the
+  tooltip, then compare after disassembly. Avoid TNT or overload testing here.
+- Inventory/fluid: record counts/amounts on the Chamber, Crucible, Spritzer, and
+  Leacher before movement. Compare after disassembly and check for duplicates.
+- Rotation: use a wrench to rotate an unpowered component before assembly and
+  verify its final orientation after disassembly.
+- Save/reload: save while the contraption is moving, exit to title, reload, then
+  stop and disassemble. Compare state again.
+
+TESTING ANOTHER MACHINE
+-----------------------
+Use the full test structure as a block inventory. For a focused test, remove
+one payload block while the contraption is fully disassembled, replace it with
+the CSR machine you want to test, and reattach it to a Create chassis with
+Super Glue or chassis adhesion. Keep the movement controller stationary. Test
+one machine at a time first, then multiple machines. The full layout's CSR
+machine inventories start empty to prevent schematic placement from duplicating
+items or fluids.
+
+WHAT SHOULD NOT BE ASSUMED
+-------------------------
+This setup tests carrying saved blocks. It does not make CSR machines run their
+normal processing while moving. The Chamber, Leacher, Spritzer, Scraper, Caddy
+belt processing, burners, and thermal networks use stationary world/tick or
+adjacency logic. Fluid pipes and stationary storage do not become connected to
+a moving machine. For the exact status of every registered CSR block, see
+`docs/contraptions/CSR_070_CONTRAPTION_COMPATIBILITY.md`.
+
+TROUBLESHOOTING
+---------------
+- Schematic missing from the list: confirm the file ends in `.nbt`, is in the
+  correct instance's `schematics` folder, and press refresh in the table.
+- Table says no schematics: close and reopen the table after refresh; check that
+  the filename is not `...nbt.nbt` and that Windows did not append `.txt`.
+- Placement preview is clipped: choose a flat area with at least 15 blocks of
+  clear room in every direction, and rotate the preview before confirming.
+- Bearing refuses to assemble: remove blocks touching the moving chassis that
+  are not attached by its sticky sides, check the bearing assembly tooltip, and
+  make sure no block is outside the loaded area.
+- Bearing assembles but does not rotate: verify motor speed, motor/shaft/bearing
+  alignment, and clear space around the entire rotating payload.
+- Machine model or attachment disappears while moving: take a screenshot and
+  record which block, controller, and movement direction were used. Rendering
+  is not runtime-verified yet.
+- Data changed or duplicated: stop immediately, save a copy of the world, and
+  compare the block entity state before attempting another run.
+
+Create build compatibility is based on the project dependency currently pinned
+to Create 6.0.10-281. The user-facing project scope mentions Create 6.0.7+;
+these schematics and API assumptions still need a runtime check against 6.0.7.

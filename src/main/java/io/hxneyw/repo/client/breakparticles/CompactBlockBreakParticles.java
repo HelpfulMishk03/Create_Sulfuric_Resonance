@@ -70,7 +70,9 @@ public final class CompactBlockBreakParticles {
                 AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get(),
                 AllModBlocks.CATALYST_BED.get(),
                 AllModBlocks.THERMAL_BATTERY.get(),
-                AllModBlocks.ROTARY_LEACHER.get()
+                AllModBlocks.ROTARY_LEACHER.get(),
+                AllModBlocks.BLOCK_CADDY.get(),
+                AllModBlocks.SCRAPER.get()
         );
     }
 

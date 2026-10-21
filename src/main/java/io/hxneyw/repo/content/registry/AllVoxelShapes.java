@@ -147,4 +147,85 @@ public class AllVoxelShapes {
          return Shapes.join(shape, Shapes.box(0.9375, 0.0, 0.0625, 1.0, 0.25, 0.9375), BooleanOp.OR);
       }
    }
+
+   /** Voxel approximation of the Scraper Blockbench model in all four facings. */
+   public static class Scraper {
+      private static final Map<Direction, VoxelShape> SHAPES = new HashMap<>();
+
+      // Element bounds are in Blockbench pixels. Values after the rotation are
+      // the X/Y/Z pivot; keep the Y and Z pivot indices aligned with Blockbench.
+      private static final double[][] ELEMENTS = {
+         {0, -2, 14.4, 16, 13.5, 16, 0, 0, 0, 0},
+         {0.025, -2, 15.2, 1.025, 12.55, 16.425, 0, 0, 0, 0},
+         {1.025, 12.525, 15.2, 15.025, 13.525, 16.425, 0, 0, 0, 0},
+         {15, -2, 15.2, 15.875, 12.525, 16.425, 0, 0, 0, 0},
+         {0, -1.6, 13, 0.5, 13.2, 14.4, 0, 0, 0, 0},
+         {0.5, 12.1, 14, 1.6, 13.2, 14.4, 0, 0, 0, 0},
+         {0.5, 13.2, 12.5, 15.5, 13.5, 14.4, 0, 0, 0, 0},
+         {14.4, 12.1, 14, 15.5, 13.2, 14.4, 0, 0, 0, 0},
+         {15.5, -1.6, 13, 16, 13.2, 14.4, 0, 0, 0, 0},
+         {0.025, -4.4, 10.4, 15.975, -4.1, 15.4, -22.5, 0, -3.9, 10.4},
+         {0.025, -4.575, 8.925, 15.975, -4.375, 10.425, -22.5, 0, -4.075, 9.925},
+         {0.025, -4.55, 8.65, 15.975, -4.5, 8.9, -22.5, 0, -4.05, 9.7},
+         {-0.1, -5.55, 15.225, 0.2, -1.5, 16, 0, 0, 0, 0},
+         {-0.1, -5.55, 11.225, 0.2, -2.7, 12, 0, 0, 0, 0},
+         {15.8, -5.55, 11.225, 16.1, -2.7, 12, 0, 0, 0, 0},
+         {15.8, -5.55, 15.225, 16.1, -1.5, 16, 0, 0, 0, 0},
+         {15.55, -5.75, 11.225, 16.1, -5.55, 12, 0, 0, 0, 0},
+         {15.55, -5.75, 15.225, 16.1, -5.55, 16, 0, 0, 0, 0},
+         {-0.1, -5.75, 15.225, 0.45, -5.55, 16, 0, 0, 0, 0},
+         {-0.1, -5.75, 11.225, 0.45, -5.55, 12, 0, 0, 0, 0}
+      };
+
+      public static VoxelShape getShape(Direction facing) {
+         return SHAPES.getOrDefault(facing, SHAPES.get(Direction.SOUTH));
+      }
+
+      private static VoxelShape makeShape() {
+         VoxelShape shape = Shapes.empty();
+         for (double[] element : ELEMENTS) {
+            double[] bounds = rotatedBounds(element);
+            shape = Shapes.join(shape, Shapes.box(
+                  bounds[0] / 16.0, bounds[1] / 16.0, bounds[2] / 16.0,
+                  bounds[3] / 16.0, bounds[4] / 16.0, bounds[5] / 16.0
+            ), BooleanOp.OR);
+         }
+         return shape;
+      }
+
+      private static double[] rotatedBounds(double[] element) {
+         double angle = Math.toRadians(element[6]);
+         if (angle == 0) {
+            return new double[] {element[0], element[1], element[2], element[3], element[4], element[5]};
+         }
+
+         double cos = Math.cos(angle);
+         double sin = Math.sin(angle);
+         double minY = Double.POSITIVE_INFINITY;
+         double minZ = Double.POSITIVE_INFINITY;
+         double maxY = Double.NEGATIVE_INFINITY;
+         double maxZ = Double.NEGATIVE_INFINITY;
+         for (int y = 0; y < 2; y++) {
+            for (int z = 0; z < 2; z++) {
+               double sourceY = element[y == 0 ? 1 : 4] - element[8];
+               double sourceZ = element[z == 0 ? 2 : 5] - element[9];
+               double rotatedY = element[8] + cos * sourceY - sin * sourceZ;
+               double rotatedZ = element[9] + sin * sourceY + cos * sourceZ;
+               minY = Math.min(minY, rotatedY);
+               minZ = Math.min(minZ, rotatedZ);
+               maxY = Math.max(maxY, rotatedY);
+               maxZ = Math.max(maxZ, rotatedZ);
+            }
+         }
+         return new double[] {element[0], minY, minZ, element[3], maxY, maxZ};
+      }
+
+      static {
+         VoxelShape baseShape = makeShape();
+         SHAPES.put(Direction.SOUTH, baseShape);
+         SHAPES.put(Direction.NORTH, AllVoxelShapes.rotateHorizontal(baseShape, 180));
+         SHAPES.put(Direction.WEST, AllVoxelShapes.rotateHorizontal(baseShape, 90));
+         SHAPES.put(Direction.EAST, AllVoxelShapes.rotateHorizontal(baseShape, 270));
+      }
+   }
 }

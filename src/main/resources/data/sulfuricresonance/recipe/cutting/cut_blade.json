@@ -1,0 +1,6 @@
+{
+  "type": "create:cutting",
+  "ingredients": [{ "item": "create:iron_sheet" }],
+  "processing_time": 100,
+  "results": [{ "id": "sulfuricresonance:cut_blade", "count": 2 }]
+}

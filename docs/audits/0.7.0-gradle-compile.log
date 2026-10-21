@@ -1,0 +1,37 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.6.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not connect to the Gradle daemon.
+Daemon uid: d6a93357-9567-49fa-926f-ae26497f1cfc with diagnostics:
+Daemon pid: 3956
+  log file: C:\Users\slith\.gradle\daemon\9.6.0\daemon-3956.out.log
+----- Last 20 lines from daemon log file - daemon-3956.out.log -----
+2026-10-18T17:00:58.287-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (IKEv2)
+2026-10-18T17:00:58.287-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2026-10-18T17:00:58.287-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (L2TP)
+2026-10-18T17:00:58.287-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2026-10-18T17:00:58.287-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Adding IP addresses for network interface WAN Miniport (PPTP)
+2026-10-18T17:00:58.287-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.InetAddresses] Is this a loopback interface? false
+2026-10-18T17:00:58.306-0400 [INFO] [org.gradle.launcher.daemon.server.Daemon] start() called on daemon - DefaultDaemonContext[uid=d6a93357-9567-49fa-926f-ae26497f1cfc,javaHome=C:\Program Files\JetBrains\IntelliJ IDEA 2026.2.0.1\jbr,javaVersion=25,javaVendor=JetBrains s.r.o.,daemonRegistryDir=C:\Users\slith\.gradle\daemon,pid=3956,idleTimeout=120000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+2026-10-18T17:00:58.322-0400 [DEBUG] [org.gradle.internal.remote.internal.inet.TcpIncomingConnector] Listening on [f9aa281e-1ad0-4615-851c-873f086f9d7a port:50649, addresses:[localhost/127.0.0.1]].
+2026-10-18T17:00:58.325-0400 [DEBUG] [org.gradle.launcher.daemon.server.Daemon] Daemon starting at: Sun Oct 18 17:00:58 EDT 2026, with address: [f9aa281e-1ad0-4615-851c-873f086f9d7a port:50649, addresses:[localhost/127.0.0.1]]
+2026-10-18T17:00:58.325-0400 [INFO] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Advertising the daemon address to the clients: [f9aa281e-1ad0-4615-851c-873f086f9d7a port:50649, addresses:[localhost/127.0.0.1]]
+2026-10-18T17:00:58.325-0400 [DEBUG] [org.gradle.launcher.daemon.server.DaemonRegistryUpdater] Advertised daemon context: DefaultDaemonContext[uid=d6a93357-9567-49fa-926f-ae26497f1cfc,javaHome=C:\Program Files\JetBrains\IntelliJ IDEA 2026.2.0.1\jbr,javaVersion=25,javaVendor=JetBrains s.r.o.,daemonRegistryDir=C:\Users\slith\.gradle\daemon,pid=3956,idleTimeout=120000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+2026-10-18T17:00:58.325-0400 [DEBUG] [org.gradle.launcher.daemon.registry.PersistentDaemonRegistry] Storing daemon address: [f9aa281e-1ad0-4615-851c-873f086f9d7a port:50649, addresses:[localhost/127.0.0.1]], context: DefaultDaemonContext[uid=d6a93357-9567-49fa-926f-ae26497f1cfc,javaHome=C:\Program Files\JetBrains\IntelliJ IDEA 2026.2.0.1\jbr,javaVersion=25,javaVendor=JetBrains s.r.o.,daemonRegistryDir=C:\Users\slith\.gradle\daemon,pid=3956,idleTimeout=120000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+2026-10-18T17:00:58.330-0400 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Waiting to acquire exclusive lock on daemon addresses registry.
+2026-10-18T17:00:58.332-0400 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Lock acquired on daemon addresses registry.
+2026-10-18T17:00:58.335-0400 [DEBUG] [org.gradle.cache.internal.DefaultFileLockManager] Releasing lock on daemon addresses registry.
+2026-10-18T17:00:58.335-0400 [LIFECYCLE] [org.gradle.launcher.daemon.server.Daemon] Daemon server started.
+2026-10-18T17:00:58.336-0400 [DEBUG] [org.gradle.launcher.daemon.bootstrap.DaemonStartupCommunication] Completed writing the daemon greeting. Closing streams...
+2026-10-18T17:00:58.340-0400 [DEBUG] [org.gradle.launcher.daemon.server.Daemon] stopOnExpiration() called on daemon
+2026-10-18T17:00:58.341-0400 [DEBUG] [org.gradle.launcher.daemon.server.Daemon] awaitExpiration() called on daemon
+2026-10-18T17:00:58.341-0400 [DEBUG] [org.gradle.launcher.daemon.server.DaemonStateCoordinator] daemon is running. Sleeping until state changes.----- End of the daemon log -----
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.

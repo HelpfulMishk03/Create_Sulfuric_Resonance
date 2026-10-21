@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "IPI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_bars"
+    },
+    "P": {
+      "item": "create:iron_sheet"
+    }
+  },
+  "result": {
+    "id": "sulfuricresonance:block_caddy",
+    "count": 1
+  }
+}

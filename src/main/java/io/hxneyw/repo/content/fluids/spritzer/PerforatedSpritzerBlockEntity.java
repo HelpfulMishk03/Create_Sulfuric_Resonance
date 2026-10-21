@@ -4,13 +4,17 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.fluid.SmartFluidTank;
+import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
+import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.AllModEffects;
 import io.hxneyw.repo.content.registry.AllModFluids;
 import io.hxneyw.repo.content.registry.ModParticles;
+import io.hxneyw.repo.content.items.BlockCaddyItem;
 import io.hxneyw.repo.content.recipes.precisionspraying.PrecisionSprayingRegistry;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.animation.LerpedFloat.Chaser;
 import net.minecraft.ChatFormatting;
@@ -421,6 +425,10 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          }
       }
 
+      if (this.hasPrecisionCaddyTarget(serverLevel, fluid)) {
+         return true;
+      }
+
       BlockPos targetPos = this.getExposedPrecisionBlockTarget(serverLevel);
       if (targetPos == null) {
          return false;
@@ -501,6 +509,10 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
          return;
       }
 
+      if (this.applyPrecisionCaddyEffect(serverLevel, fluid)) {
+         return;
+      }
+
       BlockPos targetPos = this.getExposedPrecisionBlockTarget(serverLevel);
       if (targetPos == null) {
          this.resetPrecisionBlockContact();
@@ -532,6 +544,106 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
                       this.getPrecisionBlockImpactDelay(targetPos)
               )
       );
+   }
+
+   private boolean hasPrecisionCaddyTarget(
+           ServerLevel serverLevel,
+           FluidStack fluid
+   ) {
+      if (!PrecisionSprayingRegistry.isSulfuricAcid(fluid)
+              || this.precisionItemFilters.isEmpty()) {
+         return false;
+      }
+
+      for (int offset = 1; offset <= 3; offset++) {
+         BlockPos beltPos = this.worldPosition.below(offset);
+         if (!(serverLevel.getBlockEntity(beltPos) instanceof BeltBlockEntity segment)) {
+            continue;
+         }
+         BeltBlockEntity controller = segment.getControllerBE();
+         if (controller == null || controller.getInventory() == null) {
+            continue;
+         }
+
+         AtomicBoolean found = new AtomicBoolean(false);
+         controller.getInventory().applyToEachWithin(
+                 segment.index + .5f,
+                 .55f,
+                 transported -> {
+                    if (transported.stack.getItem() instanceof BlockCaddyItem) {
+                       ItemStack cargoStack = BlockCaddyItem.getCargoStack(transported.stack);
+                       if (!cargoStack.isEmpty()) {
+                          // A selected cargo item is a valid spray target even without a conversion.
+                          // The effect phase applies a registered conversion only when one exists.
+                          if (this.matchesPrecisionItem(cargoStack)) {
+                             found.set(true);
+                          }
+                       }
+                    }
+                    return TransportedResult.doNothing();
+                 }
+         );
+         if (found.get()) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private boolean applyPrecisionCaddyEffect(
+           ServerLevel serverLevel,
+           FluidStack fluid
+   ) {
+      if (!PrecisionSprayingRegistry.isSulfuricAcid(fluid)
+              || this.precisionItemFilters.isEmpty()) {
+         return false;
+      }
+
+      for (int offset = 1; offset <= 3; offset++) {
+         BlockPos beltPos = this.worldPosition.below(offset);
+         if (!(serverLevel.getBlockEntity(beltPos) instanceof BeltBlockEntity segment)) {
+            continue;
+         }
+         BeltBlockEntity controller = segment.getControllerBE();
+         if (controller == null || controller.getInventory() == null) {
+            continue;
+         }
+
+         AtomicBoolean converted = new AtomicBoolean(false);
+         controller.getInventory().applyToEachWithin(
+                 segment.index + .5f,
+                 .55f,
+                 transported -> {
+                    if (converted.get()
+                            || !(transported.stack.getItem() instanceof BlockCaddyItem)) {
+                       return TransportedResult.doNothing();
+                    }
+                    ItemStack input = BlockCaddyItem.getCargoStack(transported.stack);
+                    if (input.isEmpty()) {
+                       return TransportedResult.doNothing();
+                    }
+                    if (!this.matchesPrecisionItem(input)) {
+                       return TransportedResult.doNothing();
+                    }
+                    java.util.Optional<ItemStack> result =
+                            PrecisionSprayingRegistry.getResult(input, fluid);
+                    if (result.isEmpty()) {
+                       return TransportedResult.doNothing();
+                    }
+
+                    BlockCaddyItem.setCargoStack(transported.stack, result.get());
+                    converted.set(true);
+                    return TransportedResult.convertTo(transported.copy());
+                 }
+         );
+         if (converted.get()) {
+            controller.setChanged();
+            controller.sendData();
+            this.emitPrecisionReaction(serverLevel, beltPos);
+            return true;
+         }
+      }
+      return false;
    }
 
    private BlockPos getExposedPrecisionBlockTarget(ServerLevel serverLevel) {

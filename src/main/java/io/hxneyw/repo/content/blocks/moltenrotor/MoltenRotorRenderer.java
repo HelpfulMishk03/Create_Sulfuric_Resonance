@@ -6,6 +6,8 @@ import com.mojang.math.Axis;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.client.ClientModEvents;
 import io.hxneyw.repo.content.Items;
@@ -85,6 +87,21 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
 
       this.renderHeatGaugeNeedle(furnace, ms, buffer, actualLight, overlay, facing
       );
+
+      if (furnace.hasWeatherShrouding()) {
+         SuperByteBuffer shrouding = CachedBuffers.partial(
+                 ClientModEvents.ROTOR_WEATHER_SHROUDING,
+                 state
+         );
+         ms.pushPose();
+         ms.translate(0.5, 0.5, 0.5);
+         rotateToFacing(ms, facing);
+         ms.translate(-0.5, -0.5, -0.5);
+         shrouding.light(actualLight)
+                 .overlay(overlay)
+                 .renderInto(ms, buffer.getBuffer(RenderType.cutout()));
+         ms.popPose();
+      }
    }
 
    static void rotateToFacing(PoseStack ms, Direction facing) {

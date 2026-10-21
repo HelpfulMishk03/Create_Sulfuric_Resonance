@@ -1,5 +1,6 @@
 {
   "type": "create:mechanical_crafting",
+  "category": "misc",
   "accept_mirrored": false,
   "key": {
     "C": {

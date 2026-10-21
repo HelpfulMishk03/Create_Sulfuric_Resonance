@@ -33,6 +33,13 @@ public final class AnimatedSulfuricResonanceChamber extends AnimatedKinetics {
                 .scale(scale)
                 .render(graphics);
 
+        double platformLift = 0.5D + 0.5D * Math.sin(Math.toRadians(getCurrentAngle()));
+        double platformY = 1.65D - 1.0D / 16.0D - 0.35D / 16.0D * (1.0D - platformLift);
+        blockElement(ClientModEvents.RESONANCE_CHAMBER_PLATFORM)
+                .atLocal(0.0, platformY, 0.0)
+                .scale(scale)
+                .render(graphics);
+
         blockElement(ClientModEvents.RESONANCE_CHAMBER_RING_BOTTOM)
                 .rotateBlock(0.0F, ringAngle, 0.0F)
                 .atLocal(0.0, 1.65, 0.0)

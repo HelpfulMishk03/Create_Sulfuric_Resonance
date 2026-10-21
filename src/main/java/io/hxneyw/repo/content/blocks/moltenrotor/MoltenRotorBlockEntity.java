@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import io.hxneyw.repo.content.blocks.behaviour.CombustionHeatingBehaviour;
+import io.hxneyw.repo.content.blocks.thermalrelay.ThermalRelaySwitchBlockEntity;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import io.hxneyw.repo.content.registry.ModParticles;
 import java.util.List;
@@ -18,7 +19,10 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,6 +32,9 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity implements IHaveGoggleInformation {
+   public static final int REDLINE_FUSE_TICKS = 5 * 20;
+   private static final ResourceLocation REDLINE_ADVANCEMENT =
+           ResourceLocation.fromNamespaceAndPath("sulfuricresonance", "redline");
    private static final String FURNACE_IDENTITY_TAG = "FurnaceIdentity";
    private static final String THERMAL_NETWORK_ID_TAG = "ThermalNetworkId";
 
@@ -40,10 +47,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
            RotorHeatLevel.NONE;
    private boolean creativeMode = false;
    private boolean kineticsInitialized = false;
+   private boolean weatherShrouded;
    private UUID furnaceIdentity = UUID.randomUUID();
    @Nullable
    private UUID thermalNetworkId;
    public int tntCooldown = 0;
+   private int redlineFuseTicks;
 
    private final MoltenRotorFuelController fuelController =
            new MoltenRotorFuelController(this);
@@ -130,6 +139,23 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.creativeMode;
    }
 
+   public boolean hasWeatherShrouding() {
+      return this.weatherShrouded;
+   }
+
+   public boolean setWeatherShrouding(boolean installed) {
+      if (this.weatherShrouded == installed) {
+         return false;
+      }
+      this.weatherShrouded = installed;
+      this.setChanged();
+      if (this.level != null) {
+         this.sendData();
+         this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
+      }
+      return true;
+   }
+
    public @NotNull UUID getFurnaceIdentity() {
       return this.furnaceIdentity;
    }
@@ -177,6 +203,37 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
        return temperatureController.isAfterburning();
 
+   }
+
+   public boolean isRedlineTrigger() {
+      return this.level != null
+              && !this.level.isClientSide
+              && this.getExactTemperature() >= 2000.0F
+              && this.isAfterburning()
+              && ThermalRelaySwitchBlockEntity.hasActiveLinkedRelay(
+                      this.level,
+                      this
+              );
+   }
+
+   public boolean isRedlineFuseActive() {
+      return this.redlineFuseTicks > 0;
+   }
+
+   public void startRedlineFuse(@NotNull Player player) {
+      if (this.level == null || this.level.isClientSide || this.redlineFuseTicks > 0) {
+         return;
+      }
+      this.redlineFuseTicks = REDLINE_FUSE_TICKS;
+      this.setChanged();
+      this.sendData();
+
+      if (player instanceof ServerPlayer serverPlayer) {
+         var advancement = serverPlayer.getServer().getAdvancements().get(REDLINE_ADVANCEMENT);
+         if (advancement != null) {
+            serverPlayer.getAdvancements().award(advancement, "redline_tnt_inserted");
+         }
+      }
    }
 
 
@@ -293,6 +350,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
 
       if (this.level != null) {
+         this.tickRedlineFuse();
          if (this.tntCooldown > 0) {
             this.tntCooldown--;
          }
@@ -309,6 +367,30 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
             this.tickTemperatureSystem();
          }
       }
+   }
+
+   private void tickRedlineFuse() {
+      if (this.redlineFuseTicks <= 0 || !(this.level instanceof ServerLevel serverLevel)) {
+         return;
+      }
+      this.redlineFuseTicks--;
+      if (this.redlineFuseTicks > 0) {
+         if (serverLevel.getGameTime() % 5L == 0L) {
+            this.sendData();
+         }
+         return;
+      }
+
+      BlockPos pos = this.worldPosition.immutable();
+      serverLevel.removeBlock(pos, false);
+      serverLevel.explode(
+              null,
+              pos.getX() + 0.5,
+              pos.getY() + 0.5,
+              pos.getZ() + 0.5,
+              1.5F,
+              net.minecraft.world.level.Level.ExplosionInteraction.BLOCK
+      );
    }
 
    private void tickTemperatureSystem() {
@@ -665,7 +747,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       }
       tag.putBoolean("KineticsInit", this.kineticsInitialized);
       tag.putBoolean("CreativeMode", this.creativeMode);
+      tag.putBoolean("WeatherShrouded", this.weatherShrouded);
       tag.putInt("LastNotifiedFuel", this.lastNotifiedFuelCount);
+      tag.putInt("RedlineFuseTicks", this.redlineFuseTicks);
    }
 
    protected void read(@NotNull CompoundTag tag, @NotNull Provider provider, boolean clientPacket) {
@@ -682,7 +766,13 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
               : null;
       this.kineticsInitialized = tag.getBoolean("KineticsInit");
       this.creativeMode = tag.getBoolean("CreativeMode");
+      this.weatherShrouded = tag.getBoolean("WeatherShrouded");
       this.lastNotifiedFuelCount = tag.getInt("LastNotifiedFuel");
+      this.redlineFuseTicks = Math.clamp(
+              tag.getInt("RedlineFuseTicks"),
+              0,
+              REDLINE_FUSE_TICKS
+      );
 
       if (clientPacket) {
          this.lastSentHeatTier = this.getCurrentHeatTier();

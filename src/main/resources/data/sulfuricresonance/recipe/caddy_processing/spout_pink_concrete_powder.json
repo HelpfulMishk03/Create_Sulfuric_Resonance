@@ -1,0 +1,14 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "spout",
+  "ingredient": {
+    "item": "minecraft:pink_concrete_powder"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:pink_concrete"
+  },
+  "processing_time": 20,
+  "fluid": "minecraft:water",
+  "fluid_amount": 1000
+}

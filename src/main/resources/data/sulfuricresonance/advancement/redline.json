@@ -1,0 +1,23 @@
+{
+  "parent": "sulfuricresonance:the_switch",
+  "display": {
+    "icon": {
+      "id": "minecraft:tnt"
+    },
+    "title": {
+      "translate": "advancements.sulfuricresonance.redline.title"
+    },
+    "description": {
+      "translate": "advancements.sulfuricresonance.redline.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "criteria": {
+    "redline_tnt_inserted": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

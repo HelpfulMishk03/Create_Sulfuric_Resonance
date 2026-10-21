@@ -1,7 +1,12 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import io.hxneyw.repo.content.items.BlockCaddyItem;
+import io.hxneyw.repo.content.transport.CaddyBeltTransition;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltExposure;
@@ -11,6 +16,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
@@ -18,12 +27,16 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(
         value = BeltBlockEntity.class,
         remap = false
 )
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BeltBlockEntityMixin
         implements CombustionBeltAccessor {
 
@@ -78,6 +91,26 @@ public abstract class BeltBlockEntityMixin
 
     @Unique
     private boolean sulfuricresonance$heatFromConduit;
+
+    @Inject(method = "tryInsertingFromSide", at = @At("HEAD"), remap = false)
+    private void sulfuricresonance$recordCaddyTransfer(TransportedItemStack transported, Direction side, boolean simulate, CallbackInfoReturnable<ItemStack> cir) {
+        BeltBlockEntity target = sulfuricresonance$belt();
+        if (simulate || target.getLevel() == null || !(transported.stack.getItem() instanceof BlockCaddyItem)) return;
+        BlockPos sourcePos = target.getBlockPos().relative(side.getOpposite());
+        BeltBlockEntity sourceSegment = BeltHelper.getSegmentBE(target.getLevel(), sourcePos);
+        if (sourceSegment == null || sourceSegment.getControllerBE() == null) return;
+        BeltBlockEntity source = sourceSegment.getControllerBE();
+        var from = BeltHelper.getVectorForOffset(source, transported.beltPosition);
+        if (transported instanceof CaddyBeltTransition transition) {
+            transition.sulfuricresonance$setTransition(
+                    from,
+                    target.getLevel().getGameTime()
+            );
+        }
+        // Remove transition tags written by earlier development builds so
+        // Caddies can merge with otherwise identical stacks after transfer.
+        BlockCaddyItem.clearBeltTransition(transported.stack);
+    }
 
     @Unique
     private CombustionBeltHeatResolver.Result

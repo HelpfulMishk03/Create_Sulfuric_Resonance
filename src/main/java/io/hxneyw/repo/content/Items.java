@@ -118,6 +118,11 @@ public class Items {
    public static final DeferredItem<BlockItem> PROCESS_MONITOR_ITEM = ITEMS.register("process_monitor", () -> new BlockItem(AllModBlocks.PROCESS_MONITOR.get(), new Properties()));
    public static final DeferredItem<ProcessGaugeItem> PROCESS_GAUGE_ITEM = ITEMS.register("process_gauge", () -> new ProcessGaugeItem(AllModBlocks.PROCESS_GAUGE.get(), new Properties()));
    public static final DeferredItem<CombustionBeltConnectorItem> COMBUSTION_BELT_CONNECTOR = ITEMS.register("combustion_belt_connector", () -> new CombustionBeltConnectorItem(new Properties().stacksTo(64)));
+   public static final DeferredItem<BlockCaddyItem> BLOCK_CADDY = ITEMS.register("block_caddy", () -> new BlockCaddyItem(AllModBlocks.BLOCK_CADDY.get(), new Properties()));
+   public static final DeferredItem<BlockItem> SCRAPER_ITEM = ITEMS.register("scraper", () -> new BlockItem(AllModBlocks.SCRAPER.get(), new Properties()));
+   public static final DeferredItem<Item> CUT_BLADE = ITEMS.registerSimpleItem("cut_blade", new Properties());
+   public static final DeferredItem<WeatherShroudingItem> WEATHER_SHROUDING = ITEMS.register(
+         "weather_shrouding", () -> new WeatherShroudingItem(new Properties().stacksTo(16)));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_CONDUIT_ITEM = ITEMS.register("thermochemical_conduit", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_CONDUIT.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_SHAFT_ITEM = ITEMS.register("thermochemical_shaft", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_SHAFT.get(), new Properties()));
    public static final DeferredItem<BlockItem> THERMOCHEMICAL_BOILER_INTERFACE_ITEM = ITEMS.register("thermochemical_boiler_interface", () -> new BlockItem(AllModBlocks.THERMOCHEMICAL_BOILER_INTERFACE.get(), new Properties()));

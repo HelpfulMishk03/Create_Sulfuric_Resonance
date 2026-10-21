@@ -6,6 +6,45 @@ All notable changes to **Create: Sulfuric Resonance** are documented here.
 
 Older entries are reconstructed from surviving builds, development notes, testing records, and restored source history. They describe the major development progression rather than claiming a perfectly complete commit-by-commit record.
 
+## 0.7.0 — Moving With Purpose
+
+### Added
+
+- Added a Create Mechanical Bearing rotation demo and full CSR block test schematic, plus a first-time placement guide and a compatibility matrix covering all 58 registered CSR blocks.
+- Documented which machine state is carried by Create's normal contraption capture and which CSR processing or thermal-network behaviors pause while assembled.
+- Added the reusable Block Caddy system: carry placeable blocks on belts, load them by hand or with a Use-mode Deployer, and park them on Depots.
+- Added decorative placement for empty and filled Caddies; cargo is preserved when placed and picked back up.
+- Added the Scraper and Cut Metal, including crafting and sawing recipes. The Scraper separates ordinary cargo from its Caddy, keeps storage blocks loaded, and waits when connected storage cannot accept its output.
+- Added block-only processing for Caddies at Create presses, saws, Spouts, and Encased Fans, plus heat treatment on Combustion Belts. A matching Caddy pauses for one block's recipe time while the belt keeps moving, then continues with its transformed cargo.
+- Added Caddy recipes for pressing Stone into Stone Bricks and Copper Blocks into Cut Copper; sawing Oak Logs into stripped logs while preserving axis; washing Concrete Powder into Concrete at Spouts or fans; heating Clay and Stone in fan airflow; drying Wet Sponges; and tempering Ashesil on a sufficiently heated Combustion Belt.
+- Added removable Rotor Weather Shrouding for the Molten Rotor Furnace, blocking rain exposure and shedding visible runoff droplets during storms.
+- Added Precision Spritzer processing for selected cargo blocks carried inside belt-mounted Caddies when a sulfuric acid conversion is registered.
+- Added Ponder walkthroughs for hand loading, Deployer loading on a moving belt, chest storage, and Scraper output handling.
+- Added the hidden Redline advancement: inserting TNT at 2000°C with an active linked Thermal Relay Switch starts a five-second overload fuse, even when the normal TNT explosion option is disabled.
+
+### Changed
+
+- Retextured the Caddy and refined its belt movement, cargo fit and centering, held and inventory scale, and lighting for consistent presentation.
+- Caddy processing now triggers Create's press stroke, saw feedback, and Spout filling animation; cargo changes as soon as the press stroke ends.
+- Caddy processing queues same-station carriers in Create's belt travel order so carriers sharing the same belt position do not lose priority ties.
+- Reworked the Caddy Ponder scenes to show the example blocks clearly, with shorter instructions timed to avoid overlap.
+- Clarified Caddy tooltips and instructions.
+- Refined Rotor Weather Shrouding with a consistent gunmetal shade across the back, left, and right outer panels, removing copper, yellow, and orange accents.
+- Updated the Scraper crafting recipe to use dried kelp.
+
+### Fixed
+
+- Fixed cargo alignment in Caddy GUI and belt renders by using the same block-local model coordinates as the carrier.
+- Fixed Caddies passing a busy processing station and every-other-carrier misses by holding matching carriers in a retrying queue; each advances after the previous operation completes.
+- Corrected the Scraper scoop voxel outline to use the model's actual rotation pivot.
+- Restored the Resonance Chamber's moving reaction platform in JEI and EMI previews, and made its Audio OFF setting suppress the completion chime.
+- Fixed Resonance Chamber shift-click insertion for valid recipe ingredients.
+
+
+-----------------
+
+
+
 ## 0.6.1 — Tied Ends
 
 ### Added
@@ -37,6 +76,11 @@ Older entries are reconstructed from surviving builds, development notes, testin
 - Rotary Leacher active and interrupted progress changes mark persistent state dirty.
 - Custom leaching byproducts cannot overstack an empty output slot; batch planning chooses a size that fits.
 
+
+-----------------
+
+
+
 ## 0.6.0 — Second Yield
 
 ### Added
@@ -55,6 +99,11 @@ Older entries are reconstructed from surviving builds, development notes, testin
 - Added bucket filling and animated acid rendering to the Sulfuric Resonance Chamber.
 - Updated the internal cogwheel texture override to use Create’s runtime cogwheel texture.
 - Precision Spritzer item-list filters can now spray eligible block targets when no transformation recipe exists. Block changes remain recipe-gated; entity targeting is unchanged.
+
+
+-----------------
+
+
 
 ## 0.5.1 - Afterburn Polishes/Fixes
 
@@ -82,6 +131,8 @@ Older entries are reconstructed from surviving builds, development notes, testin
 * Continued dependency and compatibility cleanup for the 0.5.x release line.
 * Cleaned up Thermal Battery source formatting and release resources.
 * Corrected the documented custom Molten Rotor fuel recipe type to `sulfuricresonance:molten_rotor_fuel`.
+
+
 
 -----------------
 

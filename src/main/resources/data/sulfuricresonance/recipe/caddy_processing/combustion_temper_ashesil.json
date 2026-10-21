@@ -1,0 +1,8 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "combustion_belt",
+  "ingredient": { "item": "sulfuricresonance:ashesil" },
+  "result": { "id": "sulfuricresonance:tempered_ashesil", "count": 1 },
+  "processing_time": 103,
+  "minimum_heat_rank": 3
+}

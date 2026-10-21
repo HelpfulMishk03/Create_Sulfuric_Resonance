@@ -12,6 +12,7 @@ import io.hxneyw.repo.content.entities.ModEntities;
 import io.hxneyw.repo.content.recipes.ModRecipeTypes;
 import io.hxneyw.repo.content.recipes.rotaryleaching.RotaryLeachingRecipeRegistry;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
+import io.hxneyw.repo.content.recipes.caddyprocessing.CaddyProcessingRecipeRegistry;
 import io.hxneyw.repo.content.recipes.moltenrotorfuel.MoltenRotorFuelRecipeRegistry;
 import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import io.hxneyw.repo.content.process.ProcessMonitorArmPayload;
@@ -43,6 +44,7 @@ public class CreateSulfuricResonance {
       ModRecipeTypes.register(modEventBus);
       RotaryLeachingRecipeRegistry.register(modEventBus);
       CombustionBeltRecipeRegistry.register(modEventBus);
+      CaddyProcessingRecipeRegistry.register(modEventBus);
       MoltenRotorFuelRecipeRegistry.register(modEventBus);
       SulfuricResonanceChamberRecipeRegistry.register(modEventBus);
       AllModArmInteractionPoints.register(modEventBus);

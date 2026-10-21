@@ -10,6 +10,8 @@ import com.simibubi.create.foundation.data.CreateRegistrate;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import io.hxneyw.repo.client.gui.SulfuricResonanceChamberScreen;
+import io.hxneyw.repo.content.blocks.BlockCaddyBlockEntityRenderer;
+import io.hxneyw.repo.content.blocks.ScraperBlockEntityRenderer;
 import io.hxneyw.repo.client.animation.CinderFlareAnimationHandler;
 import io.hxneyw.repo.client.animation.CinderFlareClientEnumParams;
 import io.hxneyw.repo.client.screen.PrecisionSpritzerScreen;
@@ -64,11 +66,24 @@ public class ClientModEvents {
     public static final PartialModel ROTOR_SHAFT_LEFT =
             partial("block/rotor_shaft_left");
 
+    public static final PartialModel[] SCRAPER_FLAPS = {
+            partial("block/scraper_flaps_0"),
+            partial("block/scraper_flaps_1"),
+            partial("block/scraper_flaps_2"),
+            partial("block/scraper_flaps_3")
+    };
+
+    public static final PartialModel SCRAPER_CHEST_CONNECTOR =
+            partial("block/scraper_chest_connector");
+
     public static final PartialModel ROTOR_SHAFT_RIGHT =
             partial("block/rotor_shaft_right");
 
     public static final PartialModel ROTOR_HEAT_NEEDLE =
             partial("block/molten_rotor_needle");
+
+    public static final PartialModel ROTOR_WEATHER_SHROUDING =
+            partial("block/weather_shrouding");
 
     public static final PartialModel THERMOCHEMICAL_CONDUIT_SHAFT =
             partial("block/thermochemical_conduit_shaft");
@@ -398,6 +413,16 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
             EntityRenderersEvent.RegisterRenderers event
     ) {
         event.registerBlockEntityRenderer(
+                AllBlockEntities.BLOCK_CADDY.get(),
+                BlockCaddyBlockEntityRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
+                AllBlockEntities.SCRAPER.get(),
+                ScraperBlockEntityRenderer::new
+        );
+
+        event.registerBlockEntityRenderer(
                 AllBlockEntities.ASH_CERAMIC_CRUCIBLE.get(),
                 BasinRenderer::new
         );
@@ -514,6 +539,7 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get(),
                 Items.THERMAL_WARNING_ALARM_ITEM.get()
         );
+
 
         IClientItemExtensions cinderFlareExtensions = new IClientItemExtensions() {
             @Override
@@ -678,6 +704,14 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
     private static void registerStandalone(
             RegisterAdditional event
     ) {
+        for (int segment = 0; segment < SCRAPER_FLAPS.length; segment++) {
+            event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                    "sulfuricresonance", "block/scraper_flaps_" + segment)));
+        }
+        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                "sulfuricresonance", "block/scraper_chest_connector")));
+        event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
+                "sulfuricresonance", "block/weather_shrouding")));
         event.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(
                 "sulfuricresonance", "block/rotary_leacher_whisk")));
 

@@ -308,8 +308,16 @@ public final class RotaryLeacherBlockEntity extends KineticBlockEntity implement
         return side != getBlockState().getValue(RotaryLeacherBlock.FACING);
     }
     public @Nullable IFluidHandler getFluidCapability(@Nullable Direction side) {
-        if (level == null || side == null || !getBlockState().hasProperty(RotaryLeacherBlock.HALF)
-                || getBlockState().getValue(RotaryLeacherBlock.HALF) != net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER
+        if (level == null || !getBlockState().hasProperty(RotaryLeacherBlock.HALF)) return null;
+        net.minecraft.world.level.block.state.properties.DoubleBlockHalf half = getBlockState().getValue(RotaryLeacherBlock.HALF);
+        if (side == null) {
+            if (half == net.minecraft.world.level.block.state.properties.DoubleBlockHalf.LOWER) {
+                return getInternalFluidCapability();
+            }
+            BlockEntity master = level.getBlockEntity(worldPosition.below());
+            return master instanceof RotaryLeacherBlockEntity leacher ? leacher.getInternalFluidCapability() : null;
+        }
+        if (half != net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER
                 || side != getBlockState().getValue(RotaryLeacherBlock.HORIZONTAL_FACING).getCounterClockWise()) return null;
         BlockEntity master = level.getBlockEntity(worldPosition.below());
         return master instanceof RotaryLeacherBlockEntity leacher ? leacher.getInternalFluidCapability() : null;

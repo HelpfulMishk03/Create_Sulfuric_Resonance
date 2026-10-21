@@ -3,6 +3,8 @@ package io.hxneyw.repo.content.registry;
 import com.simibubi.create.AllBlocks;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
+import io.hxneyw.repo.content.blocks.ScraperBlockEntity;
+import io.hxneyw.repo.content.blocks.BlockCaddyBlockEntity;
 import io.hxneyw.repo.content.blocks.livingemberlamp.LivingEmberLampBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlockEntity;
@@ -38,6 +40,13 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("DataFlowIssue")
 public class AllBlockEntities {
    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "sulfuricresonance");
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ScraperBlockEntity>> SCRAPER = BLOCK_ENTITIES.register(
+            "scraper", () -> Builder.of(ScraperBlockEntity::new, AllModBlocks.SCRAPER.get()).build(null)
+    );
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BlockCaddyBlockEntity>> BLOCK_CADDY = BLOCK_ENTITIES.register(
+            "block_caddy", () -> Builder.of(BlockCaddyBlockEntity::new, AllModBlocks.BLOCK_CADDY.get()).build(null)
+    );
 
     public static final DeferredHolder<
             BlockEntityType<?>,

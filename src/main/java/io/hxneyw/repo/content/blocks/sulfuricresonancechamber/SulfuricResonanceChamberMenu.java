@@ -2,7 +2,6 @@ package io.hxneyw.repo.content.blocks.sulfuricresonancechamber;
 
 import io.hxneyw.repo.content.registry.AllModBlocks;
 import io.hxneyw.repo.content.registry.AllModMenus;
-import io.hxneyw.repo.content.recipes.sulfuricresonancechamber.SulfuricResonanceChamberRecipeRegistry;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -266,9 +265,6 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
                 if (pass == 1 && target.hasItem()) {
                     continue;
                 }
-                if (!isValidRecipePlacement(machineSlot, stack)) {
-                    continue;
-                }
                 if (moveItemStackTo(
                         stack,
                         machineSlot,
@@ -281,48 +277,6 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         }
 
         return false;
-    }
-
-    @SuppressWarnings("resource")
-    private boolean isValidRecipePlacement(int slot, ItemStack stack) {
-        ItemStack input1 = getMachineStack(0).copy();
-        ItemStack input2 = getMachineStack(1).copy();
-        ItemStack input3 = getMachineStack(2).copy();
-        ItemStack current = getMachineStack(slot);
-
-        if (!current.isEmpty()
-                && !ItemStack.isSameItemSameComponents(current, stack)) {
-            return false;
-        }
-
-        ItemStack candidate = current.isEmpty()
-                ? stack.copyWithCount(1)
-                : current.copy();
-
-        switch (slot) {
-            case 0 -> input1 = candidate;
-            case 1 -> input2 = candidate;
-            case 2 -> input3 = candidate;
-            default -> {
-                return false;
-            }
-        }
-
-        ItemStack finalInput1 = input1;
-        ItemStack finalInput2 = input2;
-        ItemStack finalInput3 = input3;
-        
-        return playerInventory.player.level()
-                .getRecipeManager()
-                .getAllRecipesFor(
-                        SulfuricResonanceChamberRecipeRegistry.TYPE.get()
-                )
-                .stream()
-                .anyMatch(holder -> holder.value().matchesPresentInputs(
-                        finalInput1,
-                        finalInput2,
-                        finalInput3
-                ));
     }
 
     public ItemStack getMachineStack(int slot) {

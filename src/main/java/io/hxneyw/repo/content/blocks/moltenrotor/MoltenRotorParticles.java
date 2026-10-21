@@ -61,15 +61,18 @@ public final class MoltenRotorParticles {
     ) {
         Level level = furnace.getLevel();
 
-        if (level == null
-                || !level.isClientSide
-                || furnace.getDisplayFuelTime() <= 0) {
+        if (level == null || !level.isClientSide) {
             return;
         }
 
         BlockPos pos = furnace.getBlockPos();
         Direction facing = furnace.getBlockState()
                 .getValue(MoltenRotorBlock.FACING);
+        tickWeatherRunoff(furnace, level, pos, facing);
+        if (furnace.getDisplayFuelTime() <= 0) {
+            return;
+        }
+
         float temperature = furnace.getDisplayTemperature();
         long gameTime = level.getGameTime();
         long phase = Math.floorMod(pos.asLong(), 4096L);
@@ -244,6 +247,44 @@ public final class MoltenRotorParticles {
                     false
             );
         }
+    }
+
+    private static void tickWeatherRunoff(
+            MoltenRotorBlockEntity furnace,
+            Level level,
+            BlockPos pos,
+            Direction facing
+    ) {
+        if (!furnace.hasWeatherShrouding()
+                || !level.isRainingAt(pos.above())
+                || Math.floorMod(level.getGameTime() + pos.asLong(), 5L) != 0L) {
+            return;
+        }
+
+        // Eaves of the canopy in the same local coordinates used by its renderer.
+        double[][] eaves = {
+                {0.04, 0.82, 0.18}, {0.04, 0.82, 0.50}, {0.04, 0.82, 0.82},
+                {0.96, 0.82, 0.18}, {0.96, 0.82, 0.50}, {0.96, 0.82, 0.82}
+        };
+        RandomSource random = level.random;
+        double[] eave = eaves[random.nextInt(eaves.length)];
+        double angle = Math.toRadians(180.0 - facing.toYRot());
+        double localX = eave[0] - 0.5;
+        double localZ = eave[2] - 0.5;
+        double x = pos.getX() + 0.5 + Math.cos(angle) * localX + Math.sin(angle) * localZ;
+        double z = pos.getZ() + 0.5 - Math.sin(angle) * localX + Math.cos(angle) * localZ;
+        double outwardX = Math.cos(angle) * (eave[0] < 0.5 ? -1 : 1);
+        double outwardZ = -Math.sin(angle) * (eave[0] < 0.5 ? -1 : 1);
+
+        level.addParticle(
+                ParticleTypes.FALLING_WATER,
+                x,
+                pos.getY() + eave[1],
+                z,
+                outwardX * 0.015,
+                -0.015,
+                outwardZ * 0.015
+        );
     }
 
     private static void tickKindling(

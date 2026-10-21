@@ -1,0 +1,7 @@
+{
+  "type": "sulfuricresonance:caddy_processing",
+  "processor": "press",
+  "ingredient": { "item": "minecraft:stone" },
+  "result": { "id": "minecraft:stone_bricks", "count": 1 },
+  "processing_time": 20
+}

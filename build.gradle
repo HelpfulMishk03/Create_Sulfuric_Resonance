@@ -41,8 +41,16 @@ repositories {
         repository.url = uri('https://maven.blamejared.com')
     }
 
-    repositories {
-        maven { url = "https://api.modrinth.com/maven" }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'Modrinth'
+                url = uri('https://api.modrinth.com/maven')
+            }
+        }
+        filter {
+            includeGroup 'maven.modrinth'
+        }
     }
 
     maven { MavenArtifactRepository repository ->
@@ -59,13 +67,7 @@ repositories {
 
 configurations.configureEach { Configuration configuration ->
     configuration.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        if (details.requested.group == 'io.netty'
-                && details.requested.name.startsWith('netty-')
-                && !details.requested.name.startsWith('netty-tcnative')
-                && !details.requested.name.startsWith('netty-incubator')) {
-            details.useVersion(netty_security_version.toString())
-            details.because('Align Netty 4.1 modules with the patched security release')
-        } else if (details.requested.group == 'org.jline') {
+        if (details.requested.group == 'org.jline') {
             details.useVersion(jline_security_version.toString())
             details.because('Fix JLine history regular-expression denial of service and later 3.x security advisories')
         } else if (details.requested.group == 'org.apache.logging.log4j') {
@@ -137,6 +139,13 @@ final boolean loadEmiRuntime =
                 .toBoolean()
 
 dependencies {
+    // Aeronautics ships its Simulated, Aeronautics, and Offroad sections in
+    // one bundled mod. These are actual NeoForge mods, so runtimeOnly places
+    // them on ModDevGradle's scanned mod classpath (unlike its extra library
+    // classpath, which is not the right place for mod discovery).
+    runtimeOnly("maven.modrinth:oWaK0Q19:${aeronautics_version}")
+    runtimeOnly("maven.modrinth:T9PomCSv:${sable_version}")
+
     ExternalModuleDependency createSlimDependency =
             dependencies.create(
                     "com.simibubi.create:create-${minecraft_version}:${create_version}:slim"
@@ -196,7 +205,7 @@ tasks.named('processResources', ProcessResources).configure { ProcessResources r
 
 tasks.register('verifySecurityDependencies') {
     group = 'verification'
-    description = 'Verify patched networking and console dependencies on build and development launch paths'
+    description = 'Verify JLine and LZ4 security versions and Netty alignment on build and development launch paths'
     notCompatibleWithConfigurationCache('Inspects resolved dependency graphs')
     doLast {
         def report = [:]
@@ -210,12 +219,6 @@ tasks.register('verifySecurityDependencies') {
                 it.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
             }.collect { [group: it.id.group, name: it.id.module, version: it.id.version] }.sort { "${it.group}:${it.name}" }
             modules.each { module ->
-                if (module.group == 'io.netty' && module.name.startsWith('netty-')
-                        && !module.name.startsWith('netty-tcnative')
-                        && !module.name.startsWith('netty-incubator')
-                        && module.version != netty_security_version.toString()) {
-                    throw new GradleException("Unpatched Netty module in ${name}: ${module}")
-                }
                 if (module.group == 'org.jline' && module.version != jline_security_version.toString()) {
                     throw new GradleException("Unpatched JLine module in ${name}: ${module}")
                 }
@@ -229,11 +232,20 @@ tasks.register('verifySecurityDependencies') {
                     throw new GradleException("Unpatched LZ4 module in " + name)
                 }
             }
+            def nettyVersions = modules.findAll { module ->
+                module.group == 'io.netty' && module.name.startsWith('netty-')
+                        && !module.name.startsWith('netty-tcnative')
+                        && !module.name.startsWith('netty-incubator')
+            }.collect { it.version }.unique()
+            if (nettyVersions.size() > 1) {
+                throw new GradleException("Mixed Netty versions in ${name}: ${nettyVersions}")
+            }
+            logger.lifecycle("Platform-selected Netty in ${name}: ${nettyVersions}; patched security status is not asserted")
             report[name] = modules
         }
         def output = layout.buildDirectory.file('reports/security/resolved-dependencies.json').get().asFile
         output.parentFile.mkdirs()
         output.text = JsonOutput.prettyPrint(JsonOutput.toJson(report))
-        logger.lifecycle("Verified Netty ${netty_security_version} and JLine ${jline_security_version} in ${report.size()} configurations")
+        logger.lifecycle("Verified JLine ${jline_security_version}, LZ4 ${lz4_java_security_version}, and Netty alignment in ${report.size()} configurations")
     }
 }

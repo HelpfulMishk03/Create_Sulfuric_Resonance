@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " K ",
+    " H ",
+    " C "
+  ],
+  "key": {
+    "H": { "item": "minecraft:hopper" },
+    "K": { "item": "minecraft:dried_kelp" },
+    "C": { "item": "sulfuricresonance:cut_blade" }
+  },
+  "result": { "id": "sulfuricresonance:scraper", "count": 1 }
+}

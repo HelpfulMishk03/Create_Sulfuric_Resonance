@@ -279,7 +279,7 @@ public class SulfuricResonanceChamberBlock
             BlockState state,
             @Nullable Direction side
     ) {
-        return side == Direction.UP || side == itemBackSide(state);
+        return side == Direction.UP || side == itemBackSide(state) || side == Direction.DOWN;
     }
 
     @Override

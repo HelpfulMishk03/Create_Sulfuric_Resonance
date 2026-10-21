@@ -17,7 +17,9 @@ public class ModTabs {
       () -> CreativeModeTab.builder()
          .title(Component.translatable("itemGroup.sulfuricresonance.sulfuric_resonance"))
               .icon(() -> new ItemStack(Items.SULFUR.get()))
-              .displayItems((params, output) -> {                  output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
+              .displayItems((params, output) -> {
+                  output.accept(Items.MOLTEN_ROTOR_FURNACE.get());
+                  output.accept(Items.WEATHER_SHROUDING.get());
                   output.accept(Items.SULFUR_BURNER_ITEM.get());
                   output.accept(Items.SULFURIC_RESONANCE_CHAMBER_ITEM.get());
                   output.accept(Items.CATALYST_BED_ITEM.get());
@@ -27,6 +29,8 @@ public class ModTabs {
                   output.accept(Items.PERFORATED_SPRITZER.get());
                   output.accept(Items.PRECISION_SPRITZER.get());
                   output.accept(Items.COMBUSTION_BELT_CONNECTOR.get());
+                  output.accept(Items.BLOCK_CADDY.get());
+                  output.accept(Items.SCRAPER_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_SHAFT_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_BOILER_INTERFACE_ITEM.get());
                   output.accept(Items.THERMOCHEMICAL_CONDUIT_ITEM.get());
@@ -119,6 +123,7 @@ public class ModTabs {
                   output.accept(Items.IMPELLER_BLADE.get());
                   output.accept(Items.SHEATHED_IMPELLER_BLADE.get());
                   output.accept(Items.INFERNAL_IMPELLER.get());
+                  output.accept(Items.CUT_BLADE.get());
               })
          .build()
    );

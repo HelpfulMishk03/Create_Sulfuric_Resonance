@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.simibubi.create.AllBlocks;
@@ -8,8 +10,12 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltBlock;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltPart;
+import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import com.simibubi.create.content.kinetics.belt.item.BeltConnectorItem;
+import com.simibubi.create.content.kinetics.belt.behaviour.TransportedItemStackHandlerBehaviour.TransportedResult;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import io.hxneyw.repo.content.Items;
+import io.hxneyw.repo.content.items.BlockCaddyItem;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.thermochemicalshaft.ThermochemicalShaftBlock;
 import java.util.ArrayDeque;
@@ -18,6 +24,7 @@ import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +57,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
         value = BeltBlock.class,
         remap = false
 )
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BeltBlockMixin {
 
     @Unique
@@ -158,6 +168,129 @@ public abstract class BeltBlockMixin {
         }
 
         cir.setReturnValue(ItemInteractionResult.SUCCESS);
+    }
+
+    @Inject(
+            method = "useItemOn",
+            at = @At("HEAD"),
+            cancellable = true,
+            remap = false
+    )
+    private void sulfuricresonance$loadBlockCaddyOnBelt(
+            ItemStack stack,
+            BlockState state,
+            Level level,
+            BlockPos pos,
+            Player player,
+            InteractionHand hand,
+            BlockHitResult hitResult,
+            CallbackInfoReturnable<ItemInteractionResult> cir
+    ) {
+        if (stack.getItem() instanceof BlockCaddyItem
+                && AllBlocks.BELT.has(state)
+                && !player.isShiftKeyDown()
+                && player.mayBuild()) {
+            BeltBlockEntity segment = BeltHelper.getSegmentBE(level, pos);
+            if (segment == null) {
+                return;
+            }
+
+            BeltBlockEntity controller = segment.getControllerBE();
+            if (controller == null || controller.getInventory() == null) {
+                return;
+            }
+
+            AtomicBoolean caddyAlreadyOnSegment = new AtomicBoolean(false);
+            controller.getInventory().applyToEachWithin(
+                    segment.index + .5f,
+                    .5f,
+                    transported -> {
+                        if (transported.stack.getItem() instanceof BlockCaddyItem) {
+                            caddyAlreadyOnSegment.set(true);
+                        }
+                        return TransportedResult.doNothing();
+                    }
+            );
+            if (caddyAlreadyOnSegment.get()) {
+                cir.setReturnValue(ItemInteractionResult.SUCCESS);
+                return;
+            }
+
+            if (!level.isClientSide()) {
+                TransportedItemStack transported =
+                        new TransportedItemStack(stack.copyWithCount(1));
+                transported.beltPosition = segment.index + .5f;
+                transported.prevBeltPosition = transported.beltPosition;
+                transported.insertedAt = segment.index;
+                transported.sideOffset = 0;
+                transported.prevSideOffset = 0;
+                controller.getInventory().addItem(transported);
+                controller.setChanged();
+                controller.sendData();
+
+                if (!player.isCreative()) {
+                    stack.shrink(1);
+                }
+            }
+
+            cir.setReturnValue(ItemInteractionResult.SUCCESS);
+            return;
+        }
+
+        if (!(stack.getItem() instanceof BlockItem)
+                || !AllBlocks.BELT.has(state)) {
+            return;
+        }
+
+        BeltBlockEntity segment = BeltHelper.getSegmentBE(level, pos);
+        if (segment == null) {
+            return;
+        }
+
+        BeltBlockEntity controller = segment.getControllerBE();
+        if (controller == null || controller.getInventory() == null) {
+            return;
+        }
+
+        AtomicBoolean loaded = new AtomicBoolean(false);
+        controller.getInventory().applyToEachWithin(
+                segment.index + .5f,
+                .55f,
+                transported -> {
+                    if (loaded.get()
+                            || !(transported.stack.getItem()
+                            instanceof BlockCaddyItem)) {
+                        return TransportedResult.doNothing();
+                    }
+
+                    if (level.isClientSide()) {
+                        loaded.set(true);
+                        return TransportedResult.doNothing();
+                    }
+
+                    if (!BlockCaddyItem.tryLoadFromBlockItem(
+                            transported.stack,
+                            stack
+                    )) {
+                        return TransportedResult.doNothing();
+                    }
+
+                    if (!player.isCreative()) {
+                        stack.shrink(1);
+                    }
+
+                    loaded.set(true);
+                    return TransportedResult.convertTo(transported.copy());
+                }
+        );
+
+        if (loaded.get()) {
+            if (!level.isClientSide()) {
+                controller.setChanged();
+                controller.sendData();
+            }
+            cir.setReturnValue(ItemInteractionResult.SUCCESS);
+        }
     }
 
     @Inject(

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["IAI", "C C", "A A"],
+  "key": {
+    "I": { "item": "create:iron_sheet" },
+    "A": { "item": "create:andesite_alloy" },
+    "C": { "item": "sulfuricresonance:cut_blade" }
+  },
+  "result": { "id": "sulfuricresonance:weather_shrouding", "count": 1 }
+}

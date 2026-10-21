@@ -14,6 +14,7 @@ public final class AllPonderTags {
     public static final ResourceLocation REACTIVE_HEAT = id("reactive_heat");
     public static final ResourceLocation SULFUR_CHEMISTRY = id("sulfur_chemistry");
     public static final ResourceLocation INTELLIGENT_INDUSTRY = id("intelligent_industry");
+    public static final ResourceLocation FACTORY_LOGISTICS = id("factory_logistics");
 
     private AllPonderTags() {
     }
@@ -48,6 +49,13 @@ public final class AllPonderTags {
                 .item(AllModBlocks.PROCESS_MONITOR.get(), true, false)
                 .title("Intelligent Industry")
                 .description("Observe factory state, link devices, and turn conditions into action")
+                .register();
+
+        helper.registerTag(FACTORY_LOGISTICS)
+                .addToIndex()
+                .item(AllModBlocks.BLOCK_CADDY.get(), true, false)
+                .title("Factory Logistics")
+                .description("Load, move, unload, and store block cargo with reusable Caddies")
                 .register();
 
         helper.addToTag(FLUIDS)
@@ -100,6 +108,9 @@ public final class AllPonderTags {
                 .add(blockKey(AllModBlocks.THERMOCHEMICAL_LINK_DRIVE.get()))
                 .add(blockKey(AllModBlocks.THERMOCHEMICAL_CLUTCH.get()))
                 .add(blockKey(AllModBlocks.SULFURIC_RESONANCE_CHAMBER.get()));
+
+        helper.addToTag(FACTORY_LOGISTICS)
+                .add(blockKey(AllModBlocks.BLOCK_CADDY.get()));
 
         helper.addToTag(ResourceLocation.parse("create:fluids"))
                 .add(blockKey(AllModBlocks.PERFORATED_SPRITZER.get()))

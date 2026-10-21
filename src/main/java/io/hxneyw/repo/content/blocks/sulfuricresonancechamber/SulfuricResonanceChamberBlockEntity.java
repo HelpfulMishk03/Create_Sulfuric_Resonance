@@ -30,6 +30,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +44,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity implements Container, IProcessStateProvider {
+public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity implements WorldlyContainer, IProcessStateProvider {
 
     public static final int ACID_CAPACITY = 1500;
     public static final int INPUT_1 = 0;
@@ -202,6 +203,38 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         }
     };
 
+    private final IItemHandler outputItemCapability = new IItemHandler() {
+        @Override
+        public int getSlots() {
+            return 1;
+        }
+
+        @Override
+        public @NotNull ItemStack getStackInSlot(int slot) {
+            return slot == 0 ? inventory.get(OUTPUT) : ItemStack.EMPTY;
+        }
+
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            return stack;
+        }
+
+        @Override
+        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return slot == 0 ? itemCapability.extractItem(OUTPUT, amount, simulate) : ItemStack.EMPTY;
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return slot == 0 ? itemCapability.getSlotLimit(OUTPUT) : 0;
+        }
+
+        @Override
+        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+            return false;
+        }
+    };
+
     @Override
     public int getContainerSize() {
         return SLOT_COUNT;
@@ -300,6 +333,30 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return isInputSlot(slot)
                 && !isInputLocked()
                 && canInsertIntoInput(slot, stack);
+    }
+
+    @Override
+    public int[] getSlotsForFace(@NotNull Direction side) {
+        if (side == Direction.DOWN) {
+            return new int[] {OUTPUT};
+        }
+        if (SulfuricResonanceChamberBlock.isItemAutomationSide(getBlockState(), side)) {
+            return new int[] {INPUT_1, INPUT_2, INPUT_3, OUTPUT};
+        }
+        return new int[0];
+    }
+
+    @Override
+    public boolean canPlaceItemThroughFace(int slot, @NotNull ItemStack stack, @Nullable Direction side) {
+        return side != null
+                && side != Direction.DOWN
+                && SulfuricResonanceChamberBlock.isItemAutomationSide(getBlockState(), side)
+                && canPlaceItem(slot, stack);
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slot, @NotNull ItemStack stack, @NotNull Direction side) {
+        return slot == OUTPUT && getSlotsForFace(side).length > 0;
     }
 
     @Override
@@ -1014,14 +1071,16 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         double y = worldPosition.getY() + 0.45D;
         double z = worldPosition.getZ() + 0.5D;
 
-        serverLevel.playSound(
-                null,
-                worldPosition,
-                SoundEvents.AMETHYST_BLOCK_CHIME,
-                SoundSource.BLOCKS,
-                0.9F,
-                0.72F
-        );
+        if (audioEnabled) {
+            serverLevel.playSound(
+                    null,
+                    worldPosition,
+                    SoundEvents.AMETHYST_BLOCK_CHIME,
+                    SoundSource.BLOCKS,
+                    0.9F,
+                    0.72F
+            );
+        }
 
         serverLevel.sendParticles(
                 ModParticles.COMBUSTION_PURPLE_FLAME.get(),
@@ -1215,11 +1274,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         if (side == null) {
             return itemCapability;
         }
-
-        return SulfuricResonanceChamberBlock.isItemAutomationSide(
-                getBlockState(),
-                side
-        ) ? itemCapability : null;
+        if (!SulfuricResonanceChamberBlock.isItemAutomationSide(getBlockState(), side)) {
+            return null;
+        }
+        return side == Direction.DOWN ? outputItemCapability : itemCapability;
     }
 
     public ContainerData getMenuData() {

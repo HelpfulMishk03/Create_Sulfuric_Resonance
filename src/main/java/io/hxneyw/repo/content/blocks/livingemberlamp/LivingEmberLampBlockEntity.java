@@ -39,6 +39,9 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     private static final int LOW_FUEL_PULSE_MIN_LIGHT = 9;
     private static final int LOW_FUEL_PULSE_MAX_LIGHT = 15;
     private static final int LOW_FUEL_PULSE_HALF_PERIOD = 10;
+    private static final int REDLINE_PULSE_HALF_PERIOD = 5;
+    private static final int REDLINE_PULSE_MIN_LIGHT = 9;
+    private static final int REDLINE_PULSE_MAX_LIGHT = 15;
 
     @Nullable
     private BlockPos linkedFurnacePos;
@@ -50,6 +53,7 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     private int validationCountdown;
     private int lightStepCountdown;
     private boolean lowFuelWarning;
+    private boolean redlineWarning;
 
     public LivingEmberLampBlockEntity(
             BlockPos pos,
@@ -153,6 +157,7 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     }
 
     private int findTargetLight(Level level) {
+        this.redlineWarning = false;
         BlockPos linkedPos = this.linkedFurnacePos;
         String linkedDimension = this.linkedFurnaceDimension;
         UUID linkedIdentity = this.linkedFurnaceIdentity;
@@ -177,6 +182,7 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         }
 
         this.lowFuelWarning = false;
+        this.redlineWarning = false;
         MoltenRotorBlockEntity furnace = resolution.furnace();
         if (furnace == null) {
             return 0;
@@ -188,6 +194,11 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
             case KINDLED, SEETHING -> 11;
             case RADIANT -> 13;
         };
+
+        if (furnace.isRedlineFuseActive()) {
+            this.redlineWarning = true;
+            return this.getRedlinePulseTarget(level);
+        }
 
         int remainingFuel = furnace.getDisplayFuelTime();
         int remainingHeatedTime = furnace.getDisplayCooldownTime();
@@ -227,9 +238,11 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         int currentLight = currentState.getValue(
                 LivingEmberLampBlock.LIGHT_LEVEL
         );
-        int effectiveTargetLight = this.lowFuelWarning
-                ? this.getLowFuelPulseTarget(level)
-                : this.targetLight;
+        int effectiveTargetLight = this.redlineWarning
+                ? this.targetLight
+                : this.lowFuelWarning
+                        ? this.getLowFuelPulseTarget(level)
+                        : this.targetLight;
 
         if (currentLight == effectiveTargetLight) {
             return;
@@ -255,6 +268,14 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         return pulsePhase == 0L
                 ? LOW_FUEL_PULSE_MAX_LIGHT
                 : LOW_FUEL_PULSE_MIN_LIGHT;
+    }
+
+    private int getRedlinePulseTarget(Level level) {
+        long pulsePhase = (level.getGameTime()
+                / REDLINE_PULSE_HALF_PERIOD) & 1L;
+        return pulsePhase == 0L
+                ? REDLINE_PULSE_MAX_LIGHT
+                : REDLINE_PULSE_MIN_LIGHT;
     }
 
     private void markAndSync() {

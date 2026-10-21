@@ -1,0 +1,326 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "sulfuricresonance:block/scraper_rubber",
+    "metal": "sulfuricresonance:block/scraper_rubber"
+  },
+  "elements": [
+    {
+      "name": "rubber_flaps7",
+      "from": [
+        8.5,
+        1.2,
+        12.7
+      ],
+      "to": [
+        9.5,
+        13.2,
+        13
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          7.5,
+          11.2,
+          12.7
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "east": {
+          "uv": [
+            1.7,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "south": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            0.3,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "up": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            0.3
+          ],
+          "texture": "#metal"
+        },
+        "down": {
+          "uv": [
+            1.0,
+            1.7,
+            2.0,
+            2.0
+          ],
+          "texture": "#metal"
+        }
+      }
+    },
+    {
+      "name": "rubber_flaps8",
+      "from": [
+        7.5,
+        1.2,
+        12.7
+      ],
+      "to": [
+        8.5,
+        13.2,
+        13
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          6.5,
+          11.2,
+          12.7
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "east": {
+          "uv": [
+            1.7,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "south": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            0.3,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "up": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            0.3
+          ],
+          "texture": "#metal"
+        },
+        "down": {
+          "uv": [
+            1.0,
+            1.7,
+            2.0,
+            2.0
+          ],
+          "texture": "#metal"
+        }
+      }
+    },
+    {
+      "name": "rubber_flaps6",
+      "from": [
+        9.5,
+        1.2,
+        12.7
+      ],
+      "to": [
+        10.5,
+        13.2,
+        13
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          8.5,
+          11.2,
+          12.7
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "east": {
+          "uv": [
+            1.7,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "south": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            0.3,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "up": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            0.3
+          ],
+          "texture": "#metal"
+        },
+        "down": {
+          "uv": [
+            1.0,
+            1.7,
+            2.0,
+            2.0
+          ],
+          "texture": "#metal"
+        }
+      }
+    },
+    {
+      "name": "rubber_flaps5",
+      "from": [
+        10.5,
+        1.2,
+        12.7
+      ],
+      "to": [
+        11.5,
+        13.2,
+        13
+      ],
+      "rotation": {
+        "angle": 0,
+        "axis": "y",
+        "origin": [
+          9.5,
+          11.2,
+          12.7
+        ]
+      },
+      "faces": {
+        "north": {
+          "uv": [
+            0.0,
+            0.0,
+            1.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "east": {
+          "uv": [
+            1.7,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "south": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "west": {
+          "uv": [
+            0.0,
+            0.0,
+            0.3,
+            12.0
+          ],
+          "texture": "#metal"
+        },
+        "up": {
+          "uv": [
+            1.0,
+            0.0,
+            2.0,
+            0.3
+          ],
+          "texture": "#metal"
+        },
+        "down": {
+          "uv": [
+            1.0,
+            1.7,
+            2.0,
+            2.0
+          ],
+          "texture": "#metal"
+        }
+      }
+    }
+  ],
+  "texture_size": [
+    16,
+    16
+  ]
+}
