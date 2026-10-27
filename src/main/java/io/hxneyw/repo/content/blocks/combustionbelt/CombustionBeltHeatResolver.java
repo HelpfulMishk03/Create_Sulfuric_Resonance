@@ -49,6 +49,35 @@ public final class CombustionBeltHeatResolver {
         );
     }
 
+    /**
+     * Resolves a source attached directly to this belt's thermochemical
+     * pulley. This is also used by goggles as a local fallback when Sable's
+     * moving plot has not synchronized the connected belt component yet.
+     */
+    public static Result resolveLocalSource(
+            Level level,
+            BeltBlockEntity controller
+    ) {
+        if (!isValidController(controller)) {
+            return Result.NONE;
+        }
+
+        SourceCandidate best = null;
+        for (SourceCandidate candidate : resolveDirectSources(level, controller, null).values()) {
+            if (best == null
+                    || candidate.heatTier().rank > best.heatTier().rank
+                    || (candidate.heatTier().rank == best.heatTier().rank
+                    && candidate.distance() < best.distance())) {
+                best = candidate;
+            }
+        }
+
+        return best == null
+                ? Result.NONE
+                : new Result(best.heatTier(), best.furnacePosition(),
+                best.fromConduit(), best.distance());
+    }
+
     public static Result resolveRelaySource(
             Level level,
             BeltBlockEntity controller,
@@ -66,7 +95,7 @@ public final class CombustionBeltHeatResolver {
             BeltBlockEntity targetController,
             @Nullable BlockPos excludedThermalNode
     ) {
-        if (!isValidController(level, targetController)) {
+        if (!isValidController(targetController)) {
             return Result.NONE;
         }
 
@@ -180,10 +209,7 @@ public final class CombustionBeltHeatResolver {
 
         BlockEntity blockEntity = level.getBlockEntity(position);
         return blockEntity != registered.controller()
-                || !isValidController(
-                level,
-                registered.controller()
-        );
+                || !isValidController(registered.controller());
     }
 
     private static Component discoverRegisteredComponents(
@@ -202,7 +228,7 @@ public final class CombustionBeltHeatResolver {
                 : registeredControllers) {
             BeltBlockEntity controller = registered.controller();
 
-            if (!isValidController(level, controller)) {
+            if (!isValidController(controller)) {
                 continue;
             }
 
@@ -1018,7 +1044,7 @@ public final class CombustionBeltHeatResolver {
                         pulley
                 );
 
-        return isValidController(level, controller)
+        return isValidController(controller)
                 ? controller
                 : null;
     }
@@ -1035,7 +1061,7 @@ public final class CombustionBeltHeatResolver {
                 level.getBlockEntity(controllerPosition);
 
         return blockEntity instanceof BeltBlockEntity controller
-                && isValidController(level, controller)
+                && isValidController(controller)
                 ? controller
                 : null;
     }
@@ -1130,12 +1156,8 @@ public final class CombustionBeltHeatResolver {
         )));
     }
 
-    private static boolean isValidController(
-            Level level,
-            @Nullable BeltBlockEntity controller
-    ) {
-        return !level.isClientSide()
-                && controller != null
+    private static boolean isValidController(@Nullable BeltBlockEntity controller) {
+        return controller != null
                 && controller.isController()
                 && controller.beltLength > 0;
     }

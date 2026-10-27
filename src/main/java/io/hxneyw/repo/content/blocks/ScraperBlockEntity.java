@@ -15,7 +15,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -33,6 +32,7 @@ public class ScraperBlockEntity extends BlockEntity {
     private static final String FLAP_TAG = "ScraperFlap";
     private final Set<TransportedItemStack> triggeredFlaps =
             Collections.newSetFromMap(new WeakHashMap<>());
+
     private final LerpedFloat flap = LerpedFloat.linear()
             .startWithValue(0)
             .chase(0, .05f, Chaser.EXP);
@@ -43,19 +43,45 @@ public class ScraperBlockEntity extends BlockEntity {
 
     public static void tick(Level level, BlockPos pos, BlockState state, ScraperBlockEntity scraper) {
         scraper.flap.tickChaser();
-        if (level.isClientSide || level.getGameTime() % 2 != 0) return;
+        if (level.isClientSide) return;
         BeltBlockEntity segment = BeltHelper.getSegmentBE(level, pos.below());
         if (segment == null) return;
         BeltBlockEntity controller = segment.getControllerBE();
         if (controller == null || controller.getInventory() == null) return;
+        // Belt inventories are controller-wide. Confirm that this segment index
+        // resolves to the belt block directly beneath the Scraper before looking
+        // at carriers, or a stale/mismatched segment can capture remote cargo.
+        if (!BeltHelper.getPositionForOffset(controller, segment.index).equals(pos.below())) return;
 
         Direction facing = state.getValue(net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING);
         BlockPos storagePos = pos.relative(facing);
         Direction storageSide = facing.getOpposite();
         IItemHandler storage = level.getCapability(Capabilities.ItemHandler.BLOCK, storagePos, storageSide);
-        controller.getInventory().applyToEachWithin(segment.index + .5f, .36f, transported -> {
+        float movement = controller.getDirectionAwareBeltMovementSpeed();
+        if (movement == 0) return;
+        float scoopPosition = segment.index + (movement > 0 ? .875f : .125f);
+        // Belt positions are controller-wide offsets. Inspect the whole segment
+        // occupied by the Scraper, then require the Caddy's live position to be
+        // at or to have crossed the scoop center. The wider candidate window is
+        // only an inventory lookup; it never pulls or captures a remote Caddy.
+        float crossingWindow = controller.beltLength;
+        controller.getInventory().applyToEachWithin(scoopPosition, crossingWindow, transported -> {
             if (!(transported.stack.getItem() instanceof BlockCaddyItem)) return TransportedResult.doNothing();
+            // Use the same world-space belt position as rendering. No historical
+            // crossing is required: carriers inserted nearby must be detected too.
+            net.minecraft.world.phys.Vec3 center = BeltHelper.getVectorForOffset(
+                    controller, transported.beltPosition);
+            double dx = Math.abs(center.x - (pos.getX() + .5));
+            double dz = Math.abs(center.z - (pos.getZ() + .5));
+            boolean alongX = controller.getBlockState().getValue(com.simibubi.create.content.kinetics.belt.BeltBlock.HORIZONTAL_FACING).getAxis() == Direction.Axis.X;
+            if (dx > (alongX ? .20 : .50) || dz > (alongX ? .50 : .20)) {
+                return TransportedResult.doNothing();
+            }
             if (scraper.triggeredFlaps.add(transported)) scraper.openFlaps();
+            io.hxneyw.repo.CreateSulfuricResonance.LOGGER.info(
+                    "CSR_PICKUP scraper={} controller={} index={} beltOffset={} carrierWorld={} previousOffset={}",
+                    pos, controller.getBlockPos(), segment.index, transported.beltPosition,
+                    center, transported.prevBeltPosition);
             ItemStack cargo = BlockCaddyItem.getCargoStack(transported.stack);
             ItemStack output = transported.stack.copyWithCount(transported.stack.getCount());
             BlockCaddyItem.clearBeltTransition(output);
@@ -112,7 +138,7 @@ public class ScraperBlockEntity extends BlockEntity {
         level.addFreshEntity(itemEntity);
     }
 
-    private void openFlaps() {
+    public void openFlaps() {
         flap.setValue(-1);
         if (level != null) {
             setChanged();
@@ -145,7 +171,7 @@ public class ScraperBlockEntity extends BlockEntity {
             }
             int limit = Math.min(handler.getSlotLimit(slot), remainder.getMaxStackSize());
             int existingCount = existing.isEmpty() ? 0 : existing.getCount();
-            int inserted = Math.min(remainder.getCount(), Math.max(0, limit - existingCount));
+            int inserted = Math.min(remainder.getCount(), Math.clamp(limit - existingCount, 0, limit));
             if (inserted == 0) {
                 continue;
             }

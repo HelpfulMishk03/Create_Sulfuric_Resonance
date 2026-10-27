@@ -18,6 +18,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
         modid = CreateSulfuricResonance.MODID,
         value = Dist.CLIENT
 )
+@SuppressWarnings("unused")
 public final class ProcessMonitorClientInteractionHandler {
 
     private ProcessMonitorClientInteractionHandler() {
@@ -51,7 +52,7 @@ public final class ProcessMonitorClientInteractionHandler {
 
         ProcessMonitorLinking.begin(player, level, monitor);
         PacketDistributor.sendToServer(
-                new ProcessMonitorArmPayload(blockHitResult.getBlockPos().immutable())
+                new ProcessMonitorArmPayload(monitor.getBlockPos().immutable())
         );
         event.setCanceled(true);
     }

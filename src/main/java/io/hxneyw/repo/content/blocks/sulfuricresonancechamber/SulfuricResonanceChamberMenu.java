@@ -27,7 +27,6 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
 
     private final ContainerData data;
     private final ContainerLevelAccess access;
-    private final Inventory playerInventory;
     private final @Nullable SulfuricResonanceChamberBlockEntity chamber;
 
     public SulfuricResonanceChamberMenu(
@@ -77,7 +76,6 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         super(AllModMenus.SULFURIC_RESONANCE_CHAMBER.get(), containerId);
         this.data = data;
         this.access = access;
-        this.playerInventory = playerInventory;
         this.chamber = chamber;
 
         checkContainerDataCount(
@@ -172,7 +170,10 @@ public class SulfuricResonanceChamberMenu extends AbstractContainerMenu {
         boolean handled = switch (buttonId) {
             case BUTTON_TOGGLE_MODE -> chamber.toggleOperatingMode();
             case BUTTON_MANUAL_START -> chamber.requestManualStart();
-            case BUTTON_TOGGLE_AUDIO -> chamber.toggleAudioEnabled();
+            case BUTTON_TOGGLE_AUDIO -> {
+                chamber.toggleAudioEnabled();
+                yield true;
+            }
             default -> false;
         };
 

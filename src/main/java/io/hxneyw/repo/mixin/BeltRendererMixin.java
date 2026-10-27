@@ -6,25 +6,22 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import dev.engine_room.flywheel.lib.transform.TransformStack;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
-import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import com.simibubi.create.content.kinetics.belt.BeltRenderer;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
-import io.hxneyw.repo.client.BlockCaddyBeltRenderer;
 import io.hxneyw.repo.client.CombustionBeltClientAssets;
+import io.hxneyw.repo.client.BlockCaddyBeltRenderer;
 import io.hxneyw.repo.content.items.BlockCaddyItem;
-import io.hxneyw.repo.content.transport.CaddyBeltTransition;
 import net.createmod.catnip.render.SpriteShiftEntry;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -104,10 +101,18 @@ public abstract class BeltRendererMixin {
         if (!(stack.getItem() instanceof BlockCaddyItem)) {
             return;
         }
+        net.minecraft.world.level.Level level = belt.getLevel();
+        if (level == null) {
+            ci.cancel();
+            return;
+        }
 
         float offset = belt.getSpeed() == 0
                 ? transported.beltPosition
                 : Mth.lerp(partialTicks, transported.prevBeltPosition, transported.beltPosition);
+        float sideOffset = belt.getSpeed() == 0
+                ? transported.sideOffset
+                : Mth.lerp(partialTicks, transported.prevSideOffset, transported.sideOffset);
         float verticalMovement = offset < 0.5f
                 ? 0
                 : verticality * (Math.min(offset, belt.beltLength - 0.5f) - 0.5f);
@@ -127,24 +132,13 @@ public abstract class BeltRendererMixin {
         float slopeAngle = onSlope ? tiltForward ? -45 : 45 : 0;
 
         poseStack.pushPose();
+        TransformStack.of(poseStack).nudge(transported.angle);
         poseStack.translate(offsetVec.x, offsetVec.y, offsetVec.z);
-        if (transported instanceof CaddyBeltTransition transition
-                && belt.getLevel() != null) {
-            Vec3 previousPosition = transition.sulfuricresonance$getPreviousWorldPosition();
-            if (previousPosition != null) {
-                long age = belt.getLevel().getGameTime()
-                        - transition.sulfuricresonance$getTransitionTick();
-                if (age >= 0 && age < 3) {
-                Vec3 current = BeltHelper.getVectorForOffset(belt, offset);
-                double amount = 1 - Mth.clamp((age + partialTicks) / 2f, 0, 1);
-                poseStack.translate(
-                        (previousPosition.x - current.x) * amount,
-                        (previousPosition.y - current.y) * amount,
-                        (previousPosition.z - current.z) * amount
-                );
-                }
-            }
+        boolean alongX = beltFacing.getClockWise().getAxis() == Direction.Axis.X;
+        if (!alongX) {
+            sideOffset *= -1;
         }
+        poseStack.translate(alongX ? sideOffset : 0, 0, alongX ? 0 : sideOffset);
         if (onSlope) {
             poseStack.mulPose((slopeAlongX ? Axis.ZP : Axis.XP)
                     .rotationDegrees(slopeAngle));
@@ -152,45 +146,53 @@ public abstract class BeltRendererMixin {
         }
 
         var minecraft = net.minecraft.client.Minecraft.getInstance();
-        var itemRenderer = minecraft.getItemRenderer();
-        BakedModel model = itemRenderer.getModel(
+        // A cargo block is carried by the Caddy, so sample light from the
+        // cargo itself rather than the changing block light along the Belt.
+        // Full sky light keeps it consistent by day and night; a small block
+        // light floor preserves readable colors for non-emissive cargo.
+        var cargoState = BlockCaddyItem.getCargoBlockState(stack);
+        int cargoLight = LightTexture.pack(
+                Math.max(cargoState.getLightEmission(level, belt.getBlockPos()), 8),
+                15
+        );
+        poseStack.pushPose();
+        var caddyModel = minecraft.getItemRenderer().getModel(
                 stack,
-                belt.getLevel(),
+                level,
                 null,
                 0
         );
-
-        int cargoLight = light;
-        if (!onContraption) {
-            int segment = (int) Math.floor(offset);
-            net.minecraft.core.BlockPos.MutableBlockPos lightPos =
-                    new net.minecraft.core.BlockPos.MutableBlockPos();
-            lightPos.set(belt.getBlockPos()).move(
-                    directionVec.getX() * segment,
-                    verticality * segment,
-                    directionVec.getZ() * segment
-            );
-            cargoLight = net.minecraft.client.renderer.LevelRenderer.getLightColor(
-                    belt.getLevel(),
-                    lightPos
-            );
-        }
-        poseStack.pushPose();
-        // Lower the carrier so its belt grips seat into the belt surface.
+        // Preserve the original carrier scale and seating height. The Caddy
+        // block model occupies block space, so Create's generic half-scale
+        // item transform makes it visibly smaller than its established belt size.
         poseStack.translate(0, 0.375f, 0);
-        // ItemRenderer recenters item-model coordinates around the pose origin.
-        // Scale directly so the Caddy stays centered over the belt segment.
         poseStack.scale(15f / 16f, 1, 15f / 16f);
-        itemRenderer.render(
-                stack,
-                ItemDisplayContext.FIXED,
-                false,
-                poseStack,
-                buffer,
-                cargoLight,
-                overlay,
-                model
-        );
+        BlockCaddyBeltRenderer.setBeltCaddyRender(true);
+        int cargoRendersBeforeItem = BlockCaddyBeltRenderer.cargoRenderCount();
+        try {
+            minecraft.getItemRenderer().render(
+                    stack,
+                    ItemDisplayContext.NONE,
+                    false,
+                    poseStack,
+                    buffer,
+                    light,
+                    overlay,
+                    caddyModel
+            );
+        } finally {
+            BlockCaddyBeltRenderer.setBeltCaddyRender(false);
+        }
+        // Some model paths invoke the registered custom renderer; others
+        // render only the baked shell. Fall back only when cargo was not drawn.
+        if (BlockCaddyBeltRenderer.cargoRenderCount() == cargoRendersBeforeItem) {
+            poseStack.pushPose();
+            caddyModel.applyTransform(ItemDisplayContext.NONE, poseStack, false);
+            poseStack.translate(-0.5f, -0.5f, -0.5f);
+            BlockCaddyBeltRenderer.renderCargoItem(
+                    stack, poseStack, buffer, cargoLight, overlay, partialTicks);
+            poseStack.popPose();
+        }
         poseStack.popPose();
 
         poseStack.popPose();

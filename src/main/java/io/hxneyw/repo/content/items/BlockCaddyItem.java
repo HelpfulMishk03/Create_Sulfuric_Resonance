@@ -14,6 +14,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.BlockItemStateProperties;
@@ -39,6 +40,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 public final class BlockCaddyItem extends BlockItem {
     private static final String CARGO_ITEM_KEY = "sulfuricresonance:BlockCaddyItem";
     private static final String CARGO_STATE_KEY = "sulfuricresonance:CargoState";
+    private static final String CARGO_OPEN_KEY = "sulfuricresonance:CargoOpen";
     static final String CARGO_BLOCK_ENTITY_KEY = "sulfuricresonance:CargoBlockEntity";
 
     public BlockCaddyItem(Block block, Properties properties) {
@@ -83,7 +85,8 @@ public final class BlockCaddyItem extends BlockItem {
 
             if (isChestCargo(caddy)) {
                 if (!level.isClientSide) {
-                    BlockCaddyInventory.openForCaddy(player, caddy);
+                    BlockCaddyInventory.openForCaddy(player, caddy,
+                            stack -> player.getInventory().setChanged());
                 }
                 return InteractionResultHolder.sidedSuccess(caddy, level.isClientSide);
             }
@@ -138,7 +141,7 @@ public final class BlockCaddyItem extends BlockItem {
                         ? "item.sulfuricresonance.block_caddy.load_hint"
                         : "item.sulfuricresonance.block_caddy.unload_hint"
         ));
-        if (isChestCargo(stack)) {
+        if (isStorageCargo(stack)) {
             appendChestContentsPreview(stack, tooltipComponents);
         }
     }
@@ -156,7 +159,9 @@ public final class BlockCaddyItem extends BlockItem {
         tooltipComponents.add(Component.translatable(
                 "item.sulfuricresonance.block_caddy.chest_preview"));
         for (int i = 0; i < items.size() && i < 9; i++) {
-            CompoundTag serialized = items.getCompound(i).getCompound("Stack");
+            CompoundTag entry = items.getCompound(i);
+            CompoundTag serialized = entry.contains("Stack", Tag.TAG_COMPOUND)
+                    ? entry.getCompound("Stack") : entry;
             ResourceLocation itemId = ResourceLocation.tryParse(serialized.getString("id"));
             if (itemId == null || !BuiltInRegistries.ITEM.containsKey(itemId)) {
                 continue;
@@ -188,7 +193,15 @@ public final class BlockCaddyItem extends BlockItem {
         }
 
         Item item = BuiltInRegistries.ITEM.get(id);
-        return item instanceof BlockItem ? item : null;
+        return isSupportedCargoItem(item) ? item : null;
+    }
+
+    public static boolean isSupportedCargoStack(ItemStack stack) {
+        return !stack.isEmpty() && isSupportedCargoItem(stack.getItem());
+    }
+
+    private static boolean isSupportedCargoItem(Item item) {
+        return item instanceof BlockItem || item == net.minecraft.world.item.Items.REDSTONE;
     }
 
     public static void setCargoItem(ItemStack caddy, @Nullable Item item) {
@@ -214,7 +227,12 @@ public final class BlockCaddyItem extends BlockItem {
     }
 
     public static void setCargoStack(ItemStack caddy, @Nullable ItemStack cargo) {
-        if (cargo == null || cargo.isEmpty() || !(cargo.getItem() instanceof BlockItem)) {
+        setCargoStack(caddy, cargo, null);
+    }
+
+    public static void setCargoStack(ItemStack caddy, @Nullable ItemStack cargo,
+            @Nullable BlockState placedState) {
+        if (cargo == null || !isSupportedCargoStack(cargo)) {
             setCargoItem(caddy, null);
             return;
         }
@@ -224,7 +242,11 @@ public final class BlockCaddyItem extends BlockItem {
         CompoundTag tag = data == null ? new CompoundTag() : data.copyTag();
         tag.remove(CARGO_STATE_KEY);
         BlockItemStateProperties properties = cargo.get(DataComponents.BLOCK_STATE);
-        if (properties != null && !properties.properties().isEmpty()) {
+        if (placedState != null) {
+            CompoundTag state = serializeState(placedState);
+            tag.put(CARGO_STATE_KEY, state);
+            caddy.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        } else if (properties != null && !properties.properties().isEmpty()) {
             CompoundTag state = new CompoundTag();
             properties.properties().forEach(state::putString);
             tag.put(CARGO_STATE_KEY, state);
@@ -240,10 +262,32 @@ public final class BlockCaddyItem extends BlockItem {
         }
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static CompoundTag serializeState(BlockState state) {
+        CompoundTag tag = new CompoundTag();
+        for (var entry : state.getValues().entrySet()) {
+            net.minecraft.world.level.block.state.properties.Property property =
+                    entry.getKey();
+            Comparable value = entry.getValue();
+            tag.putString(property.getName(), property.getName(value));
+        }
+        return tag;
+    }
+
     public static BlockState getCargoBlockState(ItemStack caddy) {
         Item item = getCargoItem(caddy);
-        if (!(item instanceof BlockItem blockItem)) return net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
-        BlockState state = blockItem.getBlock().defaultBlockState();
+        BlockState state;
+        if (item == net.minecraft.world.item.Items.REDSTONE) {
+            state = net.minecraft.world.level.block.Blocks.REDSTONE_WIRE.defaultBlockState();
+            for (String direction : List.of("north", "east", "south", "west")) {
+                var property = state.getBlock().getStateDefinition().getProperty(direction);
+                if (property != null) state = applyProperty(state, property, "side");
+            }
+        } else if (item instanceof BlockItem blockItem) {
+            state = blockItem.getBlock().defaultBlockState();
+        } else {
+            return net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+        }
         CustomData data = caddy.get(DataComponents.CUSTOM_DATA);
         if (data == null) return state;
         CompoundTag properties = data.copyTag().getCompound(CARGO_STATE_KEY);
@@ -282,12 +326,12 @@ public final class BlockCaddyItem extends BlockItem {
 
     /** Repairs legacy chest cargo data and ensures new cargo stacks have valid BE component data. */
     public static void ensureCargoBlockEntityDataId(ItemStack cargo) {
-        if (cargo.isEmpty() || cargo.get(DataComponents.BLOCK_ENTITY_DATA) == null
+        CustomData current = cargo.get(DataComponents.BLOCK_ENTITY_DATA);
+        if (cargo.isEmpty() || current == null
                 || !(cargo.getItem() instanceof BlockItem blockItem)
                 || !(blockItem.getBlock() instanceof EntityBlock entityBlock)) {
             return;
         }
-        CustomData current = cargo.get(DataComponents.BLOCK_ENTITY_DATA);
         CompoundTag blockEntityData = current.copyTag();
         if (blockEntityData.contains("id", CompoundTag.TAG_STRING)) {
             return;
@@ -342,9 +386,7 @@ public final class BlockCaddyItem extends BlockItem {
     }
 
     public static boolean isChestCargo(ItemStack caddy) {
-        Item item = getCargoItem(caddy);
-        return item instanceof BlockItem blockItem
-                && blockItem.getBlock() instanceof net.minecraft.world.level.block.ChestBlock;
+        return isStorageCargo(caddy);
     }
 
     /** Storage cargo keeps its inventory-bearing block attached to the Caddy. */
@@ -374,6 +416,21 @@ public final class BlockCaddyItem extends BlockItem {
         return path.contains("vault");
     }
 
+    public static void setStorageCargoOpen(ItemStack caddy, boolean open) {
+        CustomData current = caddy.get(DataComponents.CUSTOM_DATA);
+        CompoundTag root = current == null ? new CompoundTag() : current.copyTag();
+        if (open) root.putBoolean(CARGO_OPEN_KEY, true);
+        else root.remove(CARGO_OPEN_KEY);
+        caddy.set(DataComponents.CUSTOM_DATA, root.isEmpty() ? null : CustomData.of(root));
+    }
+
+    public static boolean isStorageCargoOpen(ItemStack caddy) {
+        CustomData rootData = caddy.get(DataComponents.CUSTOM_DATA);
+        if (rootData != null && rootData.copyTag().getBoolean(CARGO_OPEN_KEY)) return true;
+        CustomData cargoData = getCargoStack(caddy).get(DataComponents.BLOCK_ENTITY_DATA);
+        return cargoData != null && cargoData.copyTag().getBoolean("CSRStorageOpen");
+    }
+
     public static void clearBeltTransition(ItemStack caddy) {
         CustomData data = caddy.get(DataComponents.CUSTOM_DATA);
         if (data == null) return;
@@ -389,13 +446,31 @@ public final class BlockCaddyItem extends BlockItem {
             ItemStack caddy,
             ItemStack blockStack
     ) {
+        return tryLoadFromBlockItem(caddy, blockStack, null);
+    }
+
+    public static boolean tryLoadFromBlockItem(ItemStack caddy, ItemStack blockStack,
+            @Nullable BlockState placedState) {
         if (!(caddy.getItem() instanceof BlockCaddyItem)
                 || getCargoItem(caddy) != null
-                || !(blockStack.getItem() instanceof BlockItem blockItem)) {
+                || !isSupportedCargoStack(blockStack)) {
             return false;
         }
 
-        setCargoStack(caddy, blockStack);
+        setCargoStack(caddy, blockStack, placedState);
         return true;
     }
+
+    @Nullable
+    public static BlockState getPlacementState(Level level, Player player,
+            InteractionHand hand, ItemStack stack, net.minecraft.world.phys.BlockHitResult hit) {
+        if (stack.getItem() == net.minecraft.world.item.Items.REDSTONE) {
+            return getCargoBlockState(createStack(stack));
+        }
+        if (!(stack.getItem() instanceof BlockItem blockItem)) return null;
+        BlockPlaceContext context = new BlockPlaceContext(
+                new UseOnContext(level, player, hand, stack, hit));
+        return blockItem.getBlock().getStateForPlacement(context);
+    }
+
 }

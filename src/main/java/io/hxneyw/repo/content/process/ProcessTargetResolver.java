@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +34,34 @@ public final class ProcessTargetResolver {
             );
         }
 
-        if (!(observerLevel instanceof ServerLevel serverLevel)) {
+        if (observerLevel.dimension().location().toString()
+                .equals(target.dimension())
+                && observerLevel.isLoaded(target.position())) {
+            Resolution local = resolveLoadedEntity(
+                    observerLevel.getBlockEntity(target.position()),
+                    target
+            );
+            if (local.provider() != null) {
+                return local;
+            }
+        }
+        if (observerLevel.dimension().location().toString()
+                .equals(target.dimension())) {
+            Resolution plotResolution = resolveLoadedEntity(
+                    SablePlotBlockEntityLookup.find(observerLevel, target.position()),
+                    target
+            );
+            if (plotResolution.provider() != null) {
+                return plotResolution;
+            }
+        }
+
+        ServerLevel serverLevel = observerLevel instanceof ServerLevel directLevel
+                ? directLevel
+                : observerLevel instanceof ServerLevelAccessor accessor
+                ? accessor.getLevel()
+                : null;
+        if (serverLevel == null) {
             return Resolution.invalid();
         }
 

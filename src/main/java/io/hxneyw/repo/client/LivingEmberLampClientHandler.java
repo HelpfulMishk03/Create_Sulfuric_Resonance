@@ -16,6 +16,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
         modid = CreateSulfuricResonance.MODID,
         value = Dist.CLIENT
 )
+@SuppressWarnings("unused")
 public final class LivingEmberLampClientHandler {
 
     private LivingEmberLampClientHandler() {
@@ -28,6 +29,8 @@ public final class LivingEmberLampClientHandler {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
         ClientLevel level = minecraft.level;
+
+        SableLivingEmberLampLightMap.tick(level);
 
         if (player == null || level == null) {
             return;

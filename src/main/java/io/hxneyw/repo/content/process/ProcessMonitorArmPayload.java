@@ -10,6 +10,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -55,19 +56,24 @@ public record ProcessMonitorArmPayload(@NotNull BlockPos pos)
 
         ServerLevel level = player.serverLevel();
         BlockPos pos = payload.pos();
-
-        if (player.isSpectator() || !level.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4) || !level.mayInteract(player, pos)) {
+        if (player.isSpectator()) {
             return;
         }
 
-        double dx = player.getX() - (pos.getX() + 0.5D);
-        double dy = player.getY() - (pos.getY() + 0.5D);
-        double dz = player.getZ() - (pos.getZ() + 0.5D);
-        if (dx * dx + dy * dy + dz * dz > 64.0D) {
+        BlockEntity target = level.getBlockEntity(pos);
+        if (!(target instanceof ProcessMonitorBlockEntity)) {
+            target = SablePlotBlockEntityLookup.find(level, pos);
+        }
+        if (!(target instanceof ProcessMonitorBlockEntity monitor)) {
             return;
         }
 
-        if (!(level.getBlockEntity(pos) instanceof ProcessMonitorBlockEntity monitor)) {
+        boolean subLevelTarget = monitor.getLevel() != level;
+        if (!level.mayInteract(player, pos)
+                || (!subLevelTarget
+                && (!level.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4)
+                || player.distanceToSqr(pos.getX() + 0.5D, pos.getY() + 0.5D,
+                pos.getZ() + 0.5D) > 64.0D))) {
             return;
         }
 

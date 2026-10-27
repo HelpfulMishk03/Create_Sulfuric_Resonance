@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.fluids.tank.BoilerData;
@@ -16,6 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = BoilerData.class, remap = false)
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BoilerDataBoilerInterfaceMixin
         implements ThermochemicalBoilerBonusAccess {
 

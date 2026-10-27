@@ -10,6 +10,10 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.core.component.DataComponents;
@@ -20,6 +24,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 /** A chest inventory persisted directly on the carried Caddy or chest cargo stack. */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@SuppressWarnings("resource")
 public final class BlockCaddyInventory extends SimpleContainer {
     private static final int SIZE = 27;
     private static final String ITEMS_KEY = "Items";
@@ -41,12 +46,12 @@ public final class BlockCaddyInventory extends SimpleContainer {
         loading = false;
     }
 
-    public static void openForCaddy(Player player, ItemStack caddy) {
+    public static void openForCaddy(Player player, ItemStack caddy, Consumer<ItemStack> onSave) {
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return;
         }
         open(serverPlayer, new BlockCaddyInventory(
-                caddy, serverPlayer.registryAccess(), true, stack -> {}));
+                caddy, serverPlayer.registryAccess(), true, onSave));
     }
 
     public static void openForCargo(Player player, ItemStack cargo, Consumer<ItemStack> onSave) {
@@ -58,11 +63,57 @@ public final class BlockCaddyInventory extends SimpleContainer {
     }
 
     private static void open(ServerPlayer player, BlockCaddyInventory inventory) {
+        inventory.setStorageOpen(true);
         player.openMenu(new SimpleMenuProvider(
                 (containerId, playerInventory, opener) ->
-                        ChestMenu.threeRows(containerId, playerInventory, inventory),
+                        new StorageCargoMenu(containerId, playerInventory, inventory),
                 Component.translatable("container.chest")
         ));
+        inventory.playStorageSound(player, true);
+    }
+
+    private void playStorageSound(Player player, boolean opening) {
+        ItemStack cargo = backingCaddy
+                ? BlockCaddyItem.getCargoStack(backingStack)
+                : backingStack;
+        if (!(cargo.getItem() instanceof net.minecraft.world.item.BlockItem blockItem)) return;
+        var block = blockItem.getBlock();
+        var sound = block instanceof ShulkerBoxBlock
+                ? (opening ? SoundEvents.SHULKER_BOX_OPEN : SoundEvents.SHULKER_BOX_CLOSE)
+                : (opening ? SoundEvents.CHEST_OPEN : SoundEvents.CHEST_CLOSE);
+        player.level().playSound(null, player.blockPosition(), sound,
+                SoundSource.BLOCKS, 0.5f, 1.0f);
+    }
+
+    private static final class StorageCargoMenu extends ChestMenu {
+        private final BlockCaddyInventory cargo;
+
+        private StorageCargoMenu(int containerId, net.minecraft.world.entity.player.Inventory playerInventory,
+                BlockCaddyInventory cargo) {
+            super(MenuType.GENERIC_9x3, containerId, playerInventory, cargo, 3);
+            this.cargo = cargo;
+        }
+
+        @Override
+        public void removed(Player player) {
+            super.removed(player);
+            cargo.setStorageOpen(false);
+            cargo.playStorageSound(player, false);
+        }
+    }
+
+    private void setStorageOpen(boolean open) {
+        if (backingCaddy) {
+            BlockCaddyItem.setStorageCargoOpen(backingStack, open);
+        } else {
+            CustomData current = backingStack.get(DataComponents.BLOCK_ENTITY_DATA);
+            CompoundTag data = current == null ? new CompoundTag() : current.copyTag();
+            if (open) data.putBoolean("CSRStorageOpen", true);
+            else data.remove("CSRStorageOpen");
+            backingStack.set(DataComponents.BLOCK_ENTITY_DATA,
+                    data.isEmpty() ? null : CustomData.of(data));
+        }
+        onSave.accept(backingStack);
     }
 
     private void loadContents() {
@@ -72,7 +123,9 @@ public final class BlockCaddyInventory extends SimpleContainer {
             CompoundTag entry = items.getCompound(i);
             int slot = Byte.toUnsignedInt(entry.getByte("Slot"));
             if (slot < getContainerSize()) {
-                ItemStack.parse(registries, entry.getCompound("Stack"))
+                CompoundTag stackData = entry.contains("Stack", Tag.TAG_COMPOUND)
+                        ? entry.getCompound("Stack") : entry;
+                ItemStack.parse(registries, stackData)
                         .ifPresent(stack -> super.setItem(slot, stack));
             }
         }
@@ -114,9 +167,8 @@ public final class BlockCaddyInventory extends SimpleContainer {
             if (stack.isEmpty()) {
                 continue;
             }
-            CompoundTag entry = new CompoundTag();
+            CompoundTag entry = (CompoundTag) stack.save(registries);
             entry.putByte("Slot", (byte) slot);
-            entry.put("Stack", stack.save(registries));
             items.add(entry);
         }
         cargoData.put(ITEMS_KEY, items);

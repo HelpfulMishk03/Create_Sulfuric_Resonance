@@ -17,9 +17,11 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.lighting.LevelLightEngine;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,6 +54,7 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     private int targetLight;
     private int validationCountdown;
     private int lightStepCountdown;
+    private int plotLightRefreshCountdown;
     private boolean lowFuelWarning;
     private boolean redlineWarning;
 
@@ -120,6 +123,12 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     }
 
     @Override
+    public void setLevel(@NotNull Level level) {
+        super.setLevel(level);
+        if (level.isClientSide) CLIENT_LAMPS.add(this);
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
 
@@ -138,8 +147,17 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     public static void serverTick(
             Level level,
             BlockPos pos,
-            BlockState state,
             LivingEmberLampBlockEntity lamp
+    ) {
+        serverTick(level, level, pos, lamp, level.getLightEngine());
+    }
+
+    public static void serverTick(
+            Level level,
+            LevelAccessor blockLevel,
+            BlockPos pos,
+            LivingEmberLampBlockEntity lamp,
+            LevelLightEngine lightEngine
     ) {
         if (level.isClientSide) {
             return;
@@ -152,7 +170,7 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
 
         if (--lamp.lightStepCountdown <= 0) {
             lamp.lightStepCountdown = LIGHT_STEP_INTERVAL;
-            lamp.stepLightTowardTarget(level, pos, state);
+            lamp.stepLightTowardTarget(level, blockLevel, pos, lightEngine);
         }
     }
 
@@ -177,6 +195,10 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
                         linkedIdentity
                 );
 
+        MoltenRotorBlockEntity relocated = MoltenRotorBlockEntity.findLoadedFurnace(level, linkedIdentity);
+        if (!resolution.isResolved() && relocated != null) {
+            resolution = ThermochemicalNetworkResolver.Resolution.resolved(relocated);
+        }
         if (resolution.isLinkedButUnavailable()) {
             return this.targetLight;
         }
@@ -185,7 +207,10 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         this.redlineWarning = false;
         MoltenRotorBlockEntity furnace = resolution.furnace();
         if (furnace == null) {
-            return 0;
+            furnace = MoltenRotorBlockEntity.findLoadedFurnace(level, linkedIdentity);
+        }
+        if (furnace == null) {
+            return this.targetLight;
         }
 
         int normalLight = switch (furnace.getCurrentHeatTier()) {
@@ -227,12 +252,13 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
     }
     private void stepLightTowardTarget(
             Level level,
+            LevelAccessor blockLevel,
             BlockPos pos,
-            BlockState fallbackState
+            LevelLightEngine lightEngine
     ) {
-        BlockState currentState = level.getBlockState(pos);
+        BlockState currentState = blockLevel.getBlockState(pos);
         if (!currentState.hasProperty(LivingEmberLampBlock.LIGHT_LEVEL)) {
-            currentState = fallbackState;
+            return;
         }
 
         int currentLight = currentState.getValue(
@@ -245,20 +271,44 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
                         : this.targetLight;
 
         if (currentLight == effectiveTargetLight) {
+            // A lamp can enter a Sable plot already at its target light level.
+            // In that case no state change fires the light engine, so refresh
+            // the owning-level source periodically while the plot actor ticks.
+            if (blockLevel != level && --this.plotLightRefreshCountdown <= 0) {
+                this.plotLightRefreshCountdown = 20;
+                // Sable plots share the parent level's light engine and its
+                // block positions remain at the plot-grid coordinates. The
+                // embedded accessor needs a local position for get/set, but
+                // the shared light engine must be refreshed at the stored
+                // parent-level position.
+                lightEngine.checkBlock(this.worldPosition);
+            }
             return;
         }
 
         int nextLight = currentLight
                 + Integer.signum(effectiveTargetLight - currentLight);
 
-        level.setBlock(
-                pos,
-                currentState.setValue(
-                        LivingEmberLampBlock.LIGHT_LEVEL,
-                        nextLight
-                ),
-                Block.UPDATE_ALL
+        BlockState litState = currentState.setValue(
+                LivingEmberLampBlock.LIGHT_LEVEL,
+                nextLight
         );
+        blockLevel.setBlock(pos, litState, Block.UPDATE_ALL);
+
+        // EmbeddedPlotLevelAccessor maps local plot positions into the owning
+        // level. The shared light engine uses the owning level's plot-grid
+        // coordinates, so refresh at the block entity's stored position.
+        BlockPos sourcePos = this.worldPosition;
+        if (!pos.equals(sourcePos) || blockLevel != level) {
+            BlockState sourceState = level.getBlockState(sourcePos);
+            if (sourceState.hasProperty(LivingEmberLampBlock.LIGHT_LEVEL)
+                    && sourceState.getValue(LivingEmberLampBlock.LIGHT_LEVEL) != nextLight) {
+                level.setBlock(sourcePos,
+                        sourceState.setValue(LivingEmberLampBlock.LIGHT_LEVEL, nextLight),
+                        Block.UPDATE_ALL);
+            }
+        }
+        lightEngine.checkBlock(sourcePos);
     }
 
     private int getLowFuelPulseTarget(Level level) {
@@ -330,6 +380,9 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
             @NotNull HolderLookup.Provider registries
     ) {
         super.saveAdditional(tag, registries);
+        int retainedLight = getBlockState().getValue(LivingEmberLampBlock.LIGHT_LEVEL);
+        tag.putInt("RetainedLampLight", retainedLight);
+        tag.putInt("TargetLampLight", this.targetLight);
 
         BlockPos linkedPos = this.linkedFurnacePos;
         String linkedDimension = this.linkedFurnaceDimension;
@@ -352,6 +405,11 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
             @NotNull HolderLookup.Provider registries
     ) {
         super.loadAdditional(tag, registries);
+        int retainedLight = tag.contains("RetainedLampLight")
+                ? tag.getInt("RetainedLampLight")
+                : getBlockState().getValue(LivingEmberLampBlock.LIGHT_LEVEL);
+        this.targetLight = tag.contains("TargetLampLight") ? tag.getInt("TargetLampLight") : retainedLight;
+        restoreRetainedLightState(retainedLight);
 
         if (tag.contains(LINKED_POSITION_TAG)
                 && tag.contains(LINKED_DIMENSION_TAG)
@@ -372,5 +430,12 @@ public class LivingEmberLampBlockEntity extends BlockEntity {
         }
 
         this.validationCountdown = 0;
+    }
+
+    // The block entity is being deserialized before its world state is available;
+    // update its cached state so renderers and light queries see the saved level.
+    @SuppressWarnings("deprecation")
+    private void restoreRetainedLightState(int retainedLight) {
+        setBlockState(getBlockState().setValue(LivingEmberLampBlock.LIGHT_LEVEL, retainedLight));
     }
 }

@@ -143,9 +143,9 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       return this.weatherShrouded;
    }
 
-   public boolean setWeatherShrouding(boolean installed) {
+   public void setWeatherShrouding(boolean installed) {
       if (this.weatherShrouded == installed) {
-         return false;
+         return;
       }
       this.weatherShrouded = installed;
       this.setChanged();
@@ -153,9 +153,18 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
          this.sendData();
          this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 3);
       }
-      return true;
    }
 
+   private static final java.util.Set<MoltenRotorBlockEntity> LOADED_FURNACES = java.util.Collections.newSetFromMap(new java.util.WeakHashMap<>());
+    @Override public void setLevel(@NotNull net.minecraft.world.level.Level level) {
+      super.setLevel(level); LOADED_FURNACES.add(this);
+   }
+   public static MoltenRotorBlockEntity findLoadedFurnace(net.minecraft.world.level.Level level, UUID identity) {
+      for (MoltenRotorBlockEntity furnace : java.util.List.copyOf(LOADED_FURNACES)) {
+         if (!furnace.isRemoved() && furnace.getLevel() == level && identity.equals(furnace.getFurnaceIdentity())) return furnace;
+      }
+      return null;
+   }
    public @NotNull UUID getFurnaceIdentity() {
       return this.furnaceIdentity;
    }
@@ -229,9 +238,12 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.sendData();
 
       if (player instanceof ServerPlayer serverPlayer) {
-         var advancement = serverPlayer.getServer().getAdvancements().get(REDLINE_ADVANCEMENT);
-         if (advancement != null) {
-            serverPlayer.getAdvancements().award(advancement, "redline_tnt_inserted");
+         var server = serverPlayer.getServer();
+         if (server != null) {
+            var advancement = server.getAdvancements().get(REDLINE_ADVANCEMENT);
+            if (advancement != null) {
+               serverPlayer.getAdvancements().award(advancement, "redline_tnt_inserted");
+            }
          }
       }
    }
@@ -331,10 +343,22 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
        };
    }
 
+   @Override
+   public void onLoad() {
+      super.onLoad();
+      if (this.level != null && !this.level.isClientSide) {
+         // Defer until captured contraption NBT has been restored.
+         this.level.scheduleTick(this.worldPosition, this.getBlockState().getBlock(), 1);
+      }
+   }
+
    public void initializeKinetics() {
       if (!this.kineticsInitialized && this.level != null && !this.level.isClientSide) {
          this.kineticsInitialized = true;
          this.attachKinetics();
+         // Contraption restoration can retain the heat tier while resetting speed.
+         // Reapply generation now; a later tier change must not be required.
+         super.updateGeneratedRotation();
          this.level.updateNeighborsAt(this.worldPosition, this.getBlockState().getBlock());
          this.setChanged();
       }
@@ -342,6 +366,7 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
 
    public void tick() {
       super.tick();
+      this.initializeKinetics();
 
       if (this.level != null && this.level.isClientSide) {
          clientSoundTick.accept(this);
@@ -764,7 +789,10 @@ public class MoltenRotorBlockEntity extends GeneratingKineticBlockEntity impleme
       this.thermalNetworkId = tag.hasUUID(THERMAL_NETWORK_ID_TAG)
               ? tag.getUUID(THERMAL_NETWORK_ID_TAG)
               : null;
-      this.kineticsInitialized = tag.getBoolean("KineticsInit");
+      // Kinetic attachments belong to a live Level, not saved machine state.
+      // Create contraption assembly serializes this BE and restores it on
+      // disassembly; carrying a stale true flag skips attachKinetics() there.
+      this.kineticsInitialized = false;
       this.creativeMode = tag.getBoolean("CreativeMode");
       this.weatherShrouded = tag.getBoolean("WeatherShrouded");
       this.lastNotifiedFuelCount = tag.getInt("LastNotifiedFuel");

@@ -540,6 +540,19 @@ public static final PartialModel THERMOCHEMICAL_COGWHEEL =
                 Items.THERMAL_WARNING_ALARM_ITEM.get()
         );
 
+        event.registerItem(
+                new IClientItemExtensions() {
+                    private final BlockEntityWithoutLevelRenderer renderer =
+                            new BlockCaddyItemRenderer();
+
+                    @Override
+                    public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                        return renderer;
+                    }
+                },
+                Items.BLOCK_CADDY.get()
+        );
+
 
         IClientItemExtensions cinderFlareExtensions = new IClientItemExtensions() {
             @Override

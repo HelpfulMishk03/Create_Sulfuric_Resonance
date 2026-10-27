@@ -6,6 +6,7 @@ import com.simibubi.create.content.kinetics.belt.transport.BeltInventory;
 import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
 import io.hxneyw.repo.CreateSulfuricResonance;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.items.BlockCaddyItem;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipe;
 import io.hxneyw.repo.content.recipes.combustionbelt.CombustionBeltRecipeRegistry;
 import java.util.List;
@@ -176,8 +177,9 @@ public final class CombustionBeltExposure {
 
         boolean persistentDataChanged = false;
 
+        ItemStack processingInput = combustionInput(stack);
         RecipeHolder<CombustionBeltRecipe> holder =
-                findMatchingRecipe(level, stack);
+                findMatchingRecipe(level, processingInput);
 
         CombustionBeltRecipe recipe =
                 holder == null
@@ -273,7 +275,7 @@ public final class CombustionBeltExposure {
                         controller,
                         transported,
                         gameTime,
-                        stack
+                        processingInput
                 );
             } else if (heatMeetsRecipe) {
                 persistentDataChanged |=
@@ -319,14 +321,14 @@ public final class CombustionBeltExposure {
                         level,
                         controller,
                         transported,
-                        stack
+                        processingInput
                 );
 
                 boolean completed = completeRecipe(
                         level,
                         transported,
                         recipe,
-                        stack
+                        processingInput
                 );
 
                 if (completed) {
@@ -464,6 +466,21 @@ public final class CombustionBeltExposure {
                 .orElse(null);
     }
 
+    /** Combustion belts process the cargo while the carrier keeps moving. */
+    private static ItemStack combustionInput(ItemStack transportedStack) {
+        if (!(transportedStack.getItem() instanceof BlockCaddyItem)) {
+            return transportedStack;
+        }
+
+        ItemStack cargo = BlockCaddyItem.getCargoStack(transportedStack);
+        if (cargo.isEmpty() || BlockCaddyItem.isStorageCargo(transportedStack)
+                || cargo.get(DataComponents.BLOCK_ENTITY_DATA) != null) {
+            return ItemStack.EMPTY;
+        }
+        cargo.setCount(transportedStack.getCount());
+        return cargo;
+    }
+
     private static boolean completeRecipe(
             Level level,
             TransportedItemStack transported,
@@ -490,7 +507,21 @@ public final class CombustionBeltExposure {
         output.setCount((int) totalOutputCount);
         clearCombustionBeltExposure(output);
 
-        transported.stack = output;
+        if (transported.stack.getItem() instanceof BlockCaddyItem) {
+            // The belt recipe transforms the block carried by a Caddy. Keep
+            // the carrier on the belt and replace only its cargo.
+            if (!(output.getItem() instanceof net.minecraft.world.item.BlockItem)) {
+                return false;
+            }
+            ItemStack transformedCaddy = transported.stack.copy();
+            BlockCaddyItem.setCargoStack(
+                    transformedCaddy,
+                    output.copyWithCount(1)
+            );
+            transported.stack = transformedCaddy;
+        } else {
+            transported.stack = output;
+        }
         transported.prevBeltPosition = transported.beltPosition;
 
 

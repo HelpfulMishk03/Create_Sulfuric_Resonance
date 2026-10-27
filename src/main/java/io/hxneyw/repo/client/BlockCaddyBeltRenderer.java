@@ -1,247 +1,256 @@
 package io.hxneyw.repo.client;
 
-import java.util.Map;
-import java.util.WeakHashMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
-import dev.engine_room.flywheel.api.visualization.VisualizationManager;
 import io.hxneyw.repo.content.items.BlockCaddyItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.block.entity.ShulkerBoxBlockEntity;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.BakedModel;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import io.hxneyw.repo.mixin.ShulkerBoxAnimationAccessor;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import net.minecraft.util.RandomSource;
 
+/** Renders carried cargo using its placed block model, including multipart blocks. */
 public final class BlockCaddyBeltRenderer {
-    private record ModelCenter(float x, float z) {}
+    private static final ThreadLocal<Boolean> BELT_CADDY_RENDER =
+            ThreadLocal.withInitial(() -> false);
+    private static final ThreadLocal<Integer> CARGO_RENDER_COUNT =
+            ThreadLocal.withInitial(() -> 0);
+    private static final Map<Object, CargoRendererState> CARGO_RENDERERS = new IdentityHashMap<>();
+    private static long lastRendererSweep;
 
-    private static final Map<BakedModel, ModelCenter> STANDALONE_MODEL_CENTERS = new WeakHashMap<>();
-
+    @SuppressWarnings("unused")
     private BlockCaddyBeltRenderer() {}
 
-    public static void renderCargo(
-            ItemStack caddy,
-            PoseStack poseStack,
-            MultiBufferSource buffer,
-            int light,
-            int overlay
-    ) {
-        // Fill the 15-pixel opening between the tray walls.
-        renderCargo(caddy, poseStack, buffer, light, overlay, 15f / 16f, true);
+    public static void setBeltCaddyRender(boolean rendering) {
+        BELT_CADDY_RENDER.set(rendering);
     }
 
-    public static void renderCargoItem(
-            ItemStack caddy,
-            PoseStack poseStack,
-            MultiBufferSource buffer,
-            int light,
-            int overlay
-    ) {
-        // ItemRendererMixin reproduces ItemRenderer's display transform and
-        // its -0.5 model-origin shift. Cargo must stay in block-local [0, 1]
-        // coordinates so that shared shift centers it exactly with the Caddy.
-        renderCargo(caddy, poseStack, buffer, light, overlay, 15f / 16f, false);
+    public static int cargoRenderCount() {
+        return CARGO_RENDER_COUNT.get();
     }
 
-    public static void renderCargoOnBlock(
-            ItemStack caddy,
-            PoseStack poseStack,
-            MultiBufferSource buffer,
-            int light,
-            int overlay
-    ) {
-        renderCargo(caddy, poseStack, buffer, light, overlay, 15f / 16f, false);
+    public static void renderCargoItem(ItemStack caddy, PoseStack poseStack,
+            MultiBufferSource buffer, int light, int overlay) {
+        renderCargoItem(caddy, poseStack, buffer, light, overlay,
+                Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false));
     }
 
-    private static void renderCargo(
-            ItemStack caddy,
-            PoseStack poseStack,
-            MultiBufferSource buffer,
-            int light,
-            int overlay,
-            float cargoSize,
-            boolean centeredOnOrigin
-    ) {
+    public static void renderCargoItem(ItemStack caddy, PoseStack poseStack,
+            MultiBufferSource buffer, int light, int overlay, float partialTick) {
+        CARGO_RENDER_COUNT.set(CARGO_RENDER_COUNT.get() + 1);
+        if (BELT_CADDY_RENDER.get()) {
+            BlockState cargoState = BlockCaddyItem.getCargoBlockState(caddy);
+            var level = Minecraft.getInstance().level;
+            if (level != null) {
+                light = LightTexture.pack(Math.max(
+                        cargoState.getLightEmission(level, BlockPos.ZERO), 8), 15);
+            }
+        }
+        renderCargo(caddy, poseStack, buffer, light, overlay, partialTick, caddy);
+    }
+
+    public static void renderCargoOnBlock(ItemStack caddy, PoseStack poseStack,
+            MultiBufferSource buffer, int light, int overlay, float partialTick,
+            Object rendererKey) {
+        renderCargo(caddy, poseStack, buffer, light, overlay, partialTick, rendererKey);
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    private static void renderCargo(ItemStack caddy, PoseStack poseStack,
+            MultiBufferSource buffer, int light, int overlay,
+            float partialTick, Object rendererKey) {
         BlockState state = BlockCaddyItem.getCargoBlockState(caddy);
-        if (state.isAir()) {
-            return;
-        }
+        if (state.isAir()) return;
 
-        poseStack.pushPose();
+        var renderer = Minecraft.getInstance().getBlockRenderer();
+        float cargoSize = 15f / 16f;
         float inset = (1f - cargoSize) / 2f;
-        // Seat the cargo above the tray floor, whose rim is 1.1 model pixels tall.
-        poseStack.translate(centeredOnOrigin ? -cargoSize / 2f : inset, 1.1f / 16f,
-                centeredOnOrigin ? -cargoSize / 2f : inset);
-        // The carrier bed is 1.1 pixels above the block base. A 14-pixel
-        // vertical cargo span leaves the top flush with the one-pixel rim
-        // instead of letting a full 15-pixel cube poke above the frame.
-        poseStack.scale(cargoSize, 14f / 16f, cargoSize);
-        Minecraft minecraft = Minecraft.getInstance();
-        boolean renderedByEntity = state.getRenderShape()
-                == net.minecraft.world.level.block.RenderShape.ENTITYBLOCK_ANIMATED;
-        ItemStack cargoStack = BlockCaddyItem.getCargoStack(caddy);
-        BlockEntity cargoEntity = null;
-        BlockEntityRenderer<BlockEntity> cargoRenderer = null;
-        if (minecraft.level != null && state.hasBlockEntity()
-                && state.getBlock() instanceof EntityBlock entityBlock) {
-            cargoEntity = entityBlock.newBlockEntity(BlockPos.ZERO, state);
-            if (cargoEntity != null) {
-                cargoEntity.setLevel(minecraft.level);
-                cargoRenderer = getRenderer(cargoEntity);
-            }
-        }
-        boolean hasDynamicModel = renderedByEntity && cargoRenderer != null;
-        // Use each BlockItem's baked item model for cargo. Rendering every
-        // blockstate with ModelData.EMPTY loses multipart/model-data-driven
-        // geometry (notably Create's unattached fluid pipe) and can leave cargo
-        // invisible with alternate renderers such as Sodium. Entity-rendered
-        // blocks use their BER in-world, but still need this item-model fallback
-        // for inventory/GUI previews where no level or block entity exists.
-        if (!hasDynamicModel) {
-            var itemRenderer = minecraft.getItemRenderer();
-            BakedModel cargoModel = itemRenderer.getModel(cargoStack, minecraft.level, null, 0);
-            centerStandaloneModel(cargoModel, poseStack);
-            // ItemRenderer shifts item-model vertices by -0.5 on every axis.
-            // Cargo is already positioned in the Caddy's block-local space, so
-            // cancel that shift before asking ItemRenderer to draw pipe models.
-            poseStack.translate(0.5f, 0.5f, 0.5f);
-            itemRenderer.render(
-                    cargoStack,
-                    ItemDisplayContext.NONE,
-                    false,
-                    poseStack,
-                    buffer,
-                    light,
-                    overlay,
-                    cargoModel
-            );
-        }
+        poseStack.pushPose();
+        poseStack.translate(inset, 1.1f / 16f, inset);
 
-        // Kinetic blocks use their baked item model plus the dynamic entity renderer.
-        if (cargoEntity != null && cargoRenderer != null) {
-            cargoRenderer.render(cargoEntity, 0.0F, poseStack, buffer, light, overlay);
-            if (cargoRenderer instanceof KineticBlockEntityRenderer<?>
-                    && VisualizationManager.supportsVisualization(minecraft.level)) {
-                renderFlywheelShaft(state, cargoEntity, poseStack, buffer, light, overlay);
+        if (state.hasProperty(BlockStateProperties.DOUBLE_BLOCK_HALF)) {
+            BlockState lower = state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF,
+                    DoubleBlockHalf.LOWER);
+            BlockState upper = state.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF,
+                    DoubleBlockHalf.UPPER);
+            poseStack.pushPose();
+            poseStack.scale(cargoSize, 7f / 16f, cargoSize);
+            renderer.renderSingleBlock(lower, poseStack, buffer, light, overlay, ModelData.EMPTY, null);
+            poseStack.translate(0, 1, 0);
+            renderer.renderSingleBlock(upper, poseStack, buffer, light, overlay, ModelData.EMPTY, null);
+            poseStack.popPose();
+        } else {
+            poseStack.scale(cargoSize, 14f / 16f, cargoSize);
+            if (state.getRenderShape() != RenderShape.ENTITYBLOCK_ANIMATED) {
+                renderer.renderSingleBlock(state, poseStack, buffer, light, overlay, ModelData.EMPTY, null);
             }
         }
+        // Entity-animated blocks (for example chests and shulker boxes) have
+        // no baked block model. Kinetic cargo also needs its Create renderer
+        // so shafts and moving parts remain visible while carried.
+        renderCargoBlockEntity(caddy, state, poseStack, buffer, light, overlay,
+                partialTick, rendererKey);
         poseStack.popPose();
     }
 
-    private static void centerStandaloneModel(BakedModel model, PoseStack poseStack) {
-        ModelCenter center = STANDALONE_MODEL_CENTERS.computeIfAbsent(
-                model,
-                BlockCaddyBeltRenderer::findStandaloneModelCenter
-        );
-        poseStack.translate(0.5f - center.x(), 0, 0.5f - center.z());
-    }
-
-    private static ModelCenter findStandaloneModelCenter(BakedModel model) {
-        return findModelCenter(model, null);
-    }
-
-    private static ModelCenter findModelCenter(BakedModel model, BlockState state) {
-        float minX = Float.POSITIVE_INFINITY;
-        float maxX = Float.NEGATIVE_INFINITY;
-        float minZ = Float.POSITIVE_INFINITY;
-        float maxZ = Float.NEGATIVE_INFINITY;
-        RandomSource random = RandomSource.create(0);
-        RenderType[] renderTypes = {
-                RenderType.solid(),
-                RenderType.cutout(),
-                RenderType.cutoutMipped(),
-                RenderType.translucent()
-        };
-
-        for (RenderType renderType : renderTypes) {
-            for (Direction direction : Direction.values()) {
-                for (var quad : model.getQuads(state, direction, random, ModelData.EMPTY, renderType)) {
-                    int[] vertices = quad.getVertices();
-                    for (int vertex = 0; vertex < 4; vertex++) {
-                        int offset = vertex * 8;
-                        float x = Float.intBitsToFloat(vertices[offset]);
-                        float z = Float.intBitsToFloat(vertices[offset + 2]);
-                        minX = Math.min(minX, x);
-                        maxX = Math.max(maxX, x);
-                        minZ = Math.min(minZ, z);
-                        maxZ = Math.max(maxZ, z);
+    @SuppressWarnings("DataFlowIssue")
+    private static void renderCargoBlockEntity(ItemStack caddy, BlockState state,
+            PoseStack poseStack, MultiBufferSource buffer, int light, int overlay,
+            float partialTick, Object rendererKey) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!(state.getBlock() instanceof EntityBlock entityBlock)
+                || !state.hasBlockEntity()) return;
+        long gameTime = minecraft.level == null ? System.nanoTime() / 50_000_000L
+                : minecraft.level.getGameTime();
+        if (minecraft.level != null && gameTime - lastRendererSweep >= 200) {
+            lastRendererSweep = gameTime;
+            long staleBefore = gameTime - 1200;
+            CARGO_RENDERERS.values().removeIf(renderer -> renderer.lastUsedTick < staleBefore);
+        }
+        CargoRendererState cached = CARGO_RENDERERS.get(rendererKey);
+        if (cached == null || !cached.state.equals(state)) {
+            BlockEntity cargoEntity = entityBlock.newBlockEntity(BlockPos.ZERO, state);
+            if (cargoEntity == null) return;
+            if (minecraft.level != null
+                    && !(cargoEntity instanceof ChestBlockEntity)
+                    && !(cargoEntity instanceof ShulkerBoxBlockEntity)) {
+                cargoEntity.setLevel(minecraft.level);
+            }
+            ItemStack cargo = BlockCaddyItem.getCargoStack(caddy);
+            CustomData data = cargo.get(DataComponents.BLOCK_ENTITY_DATA);
+            if (data != null && minecraft.level != null) {
+                cargoEntity.loadWithComponents(data.copyTag(), minecraft.level.registryAccess());
+            }
+            cached = new CargoRendererState(state, cargoEntity);
+            CARGO_RENDERERS.put(rendererKey, cached);
+        }
+        cached.lastUsedTick = gameTime;
+        BlockEntity cargoEntity = cached.entity;
+        updateStorageAnimation(caddy, state, cached, gameTime, minecraft);
+        BlockEntityRenderer<BlockEntity> blockEntityRenderer = getRenderer(cargoEntity);
+        if (blockEntityRenderer == null) return;
+        if (state.getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED) {
+            blockEntityRenderer.render(cargoEntity, partialTick, poseStack, buffer, light, overlay);
+            return;
+        }
+        if (state.getRenderShape() == RenderShape.MODEL
+                && !cached.hasBakedGeometry(minecraft)) {
+            blockEntityRenderer.render(cargoEntity, partialTick, poseStack, buffer, light, overlay);
+            return;
+        }
+        if (state.getBlock() instanceof IRotate kineticBlock
+                && cargoEntity instanceof com.simibubi.create.content.kinetics.base.KineticBlockEntity
+        ) {
+            if (blockEntityRenderer instanceof KineticBlockEntityRenderer<?>) {
+                blockEntityRenderer.render(cargoEntity, partialTick, poseStack, buffer, light, overlay);
+                if (minecraft.level == null) return;
+                Direction.Axis axis = kineticBlock.getRotationAxis(state);
+                boolean shaftPresent = false;
+                for (Direction direction : Direction.values()) {
+                    if (direction.getAxis() == axis
+                            && kineticBlock.hasShaftTowards(minecraft.level, BlockPos.ZERO, state, direction)) {
+                        shaftPresent = true;
+                        break;
                     }
                 }
-            }
-
-            for (var quad : model.getQuads(state, null, random, ModelData.EMPTY, renderType)) {
-                int[] vertices = quad.getVertices();
-                for (int vertex = 0; vertex < 4; vertex++) {
-                    int offset = vertex * 8;
-                    float x = Float.intBitsToFloat(vertices[offset]);
-                    float z = Float.intBitsToFloat(vertices[offset + 2]);
-                    minX = Math.min(minX, x);
-                    maxX = Math.max(maxX, x);
-                    minZ = Math.min(minZ, z);
-                    maxZ = Math.max(maxZ, z);
+                if (shaftPresent) {
+                    minecraft.getBlockRenderer().renderSingleBlock(
+                            KineticBlockEntityRenderer.shaft(axis), poseStack, buffer, light, overlay,
+                            ModelData.EMPTY, null);
                 }
+            } else {
+                // CSR's custom shaft renderers are regular block-entity renderers.
+                blockEntityRenderer.render(cargoEntity, partialTick, poseStack, buffer, light, overlay);
             }
         }
-
-        if (!Float.isFinite(minX) || !Float.isFinite(minZ)) {
-            return new ModelCenter(0.5f, 0.5f);
-        }
-        return new ModelCenter((minX + maxX) / 2f, (minZ + maxZ) / 2f);
     }
 
-    private static void renderFlywheelShaft(
-            BlockState state,
-            BlockEntity cargoEntity,
-            PoseStack poseStack,
-            MultiBufferSource buffer,
-            int light,
-            int overlay
-    ) {
-        if (!(state.getBlock() instanceof IRotate kineticBlock)) {
-            return;
-        }
-
-        Direction.Axis axis = kineticBlock.getRotationAxis(state);
-        boolean shaftPresent = false;
-        for (Direction direction : Direction.values()) {
-            if (direction.getAxis() == axis
-                    && kineticBlock.hasShaftTowards(
-                            cargoEntity.getLevel(),
-                            BlockPos.ZERO,
-                            state,
-                            direction
-                    )) {
-                shaftPresent = true;
-                break;
+    private static void updateStorageAnimation(ItemStack caddy, BlockState state,
+            CargoRendererState cached, long gameTime, Minecraft minecraft) {
+        if (cached.lastAnimationTick == gameTime) return;
+        cached.lastAnimationTick = gameTime;
+        boolean open = BlockCaddyItem.isStorageCargoOpen(caddy);
+        if (cached.entity instanceof ChestBlockEntity chest) {
+            if (cached.open != open) {
+                chest.triggerEvent(1, open ? 1 : 0);
+                cached.open = open;
+            }
+            ChestBlockEntity.lidAnimateTick(minecraft.level, BlockPos.ZERO, state, chest);
+        } else if (cached.entity instanceof ShulkerBoxBlockEntity shulker) {
+            if (cached.open != open) {
+                shulker.triggerEvent(1, open ? 1 : 0);
+                cached.open = open;
+            }
+            ShulkerBoxAnimationAccessor animation =
+                    (ShulkerBoxAnimationAccessor) shulker;
+            float progress = shulker.getProgress(1);
+            float next = open ? Math.min(1, progress + 0.1f) : Math.max(0, progress - 0.1f);
+            animation.sulfuricresonance$setProgressOld(progress);
+            animation.sulfuricresonance$setProgress(next);
+            if (next >= 1) {
+                animation.sulfuricresonance$setAnimationStatus(
+                        ShulkerBoxBlockEntity.AnimationStatus.OPENED);
+            } else if (next <= 0) {
+                animation.sulfuricresonance$setAnimationStatus(
+                        ShulkerBoxBlockEntity.AnimationStatus.CLOSED);
             }
         }
-        if (!shaftPresent) {
-            return;
-        }
-
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(
-                KineticBlockEntityRenderer.shaft(axis),
-                poseStack,
-                buffer,
-                light,
-                overlay
-        );
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unused")
+    private static final class CargoRendererState {
+        private final BlockState state;
+        private final BlockEntity entity;
+        private long lastUsedTick;
+        private long lastAnimationTick = Long.MIN_VALUE;
+        private boolean open;
+        private Boolean hasBakedGeometry;
+
+        private CargoRendererState(BlockState state, BlockEntity entity) {
+            this.state = state;
+            this.entity = entity;
+        }
+
+        private boolean hasBakedGeometry(Minecraft minecraft) {
+            if (hasBakedGeometry == null) {
+                BakedModel model = minecraft.getBlockRenderer().getBlockModelShaper()
+                        .getBlockModel(state);
+                RandomSource random = RandomSource.create(42L);
+                boolean found = !model.getQuads(state, null, random, ModelData.EMPTY, null).isEmpty();
+                if (!found) {
+                    for (Direction direction : Direction.values()) {
+                        if (!model.getQuads(state, direction, random, ModelData.EMPTY, null).isEmpty()) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                hasBakedGeometry = found;
+            }
+            return hasBakedGeometry;
+        }
+    }
+
     private static BlockEntityRenderer<BlockEntity> getRenderer(BlockEntity blockEntity) {
-        return (BlockEntityRenderer<BlockEntity>) Minecraft.getInstance()
-                .getBlockEntityRenderDispatcher()
-                .getRenderer(blockEntity);
+        return Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(blockEntity);
     }
 }

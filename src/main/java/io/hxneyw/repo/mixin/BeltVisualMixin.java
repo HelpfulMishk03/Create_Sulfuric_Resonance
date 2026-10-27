@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
@@ -19,6 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
         value = BeltVisual.class,
         remap = false
 )
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BeltVisualMixin {
 
     @Unique

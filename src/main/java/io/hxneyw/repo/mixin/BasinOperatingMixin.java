@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinOperatingBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
@@ -21,6 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
    value = {BasinOperatingBlockEntity.class},
    remap = false
 )
+@SuppressWarnings({"unused", "DataFlowIssue"})
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BasinOperatingMixin {
    @Inject(
            method = {"getMatchingRecipes"},

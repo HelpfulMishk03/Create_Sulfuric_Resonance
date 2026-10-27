@@ -4,7 +4,6 @@ import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import io.hxneyw.repo.content.Items;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
-import io.hxneyw.repo.content.registry.AllModBlocks;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
 import net.createmod.ponder.api.scene.SceneBuilder;
@@ -79,7 +78,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(120)
                 .text(
-                        "Radiant remains the highest normal heat range, ending at 1599\u00b0C"
+                        "Radiant remains the highest normal heat range, ending at 1599°C"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
@@ -106,7 +105,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(130)
                 .text(
-                        "Thermite Charge is CSR's built-in Afterburn fuel, capable of pushing the Furnace to 2000\u00b0C"
+                        "Thermite Charge is CSR's built-in Afterburn fuel, capable of pushing the Furnace to 2000°C"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.INPUT)
@@ -118,7 +117,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(125)
                 .text(
-                        "Any data-driven Molten Rotor fuel must explicitly support temperatures above 1599\u00b0C before it can enter Afterburn"
+                        "Any data-driven Molten Rotor fuel must explicitly support temperatures above 1599°C before it can enter Afterburn"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.INPUT)
@@ -139,7 +138,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(125)
                 .text(
-                        "The moment temperature rises above 1599\u00b0C, the Furnace enters Afterburn; its operating range extends from 1600\u00b0C to 2000\u00b0C"
+                        "The moment temperature rises above 1599°C, the Furnace enters Afterburn; its operating range extends from 1600°C to 2000°C"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.RED)
@@ -199,7 +198,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(140)
                 .text(
-                        "When fuel ends above 1599\u00b0C, the Furnace cools at 80% of its normal rate, holding the Afterburn range longer"
+                        "When fuel ends above 1599°C, the Furnace cools at 80% of its normal rate, holding the Afterburn range longer"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.BLUE)
@@ -211,7 +210,7 @@ public final class MoltenRotorAfterburnScenes {
         scene.overlay()
                 .showText(125)
                 .text(
-                        "At 1599\u00b0C and below, Afterburn ends and normal Radiant cooling behavior resumes"
+                        "At 1599°C and below, Afterburn ends and normal Radiant cooling behavior resumes"
                 )
                 .attachKeyFrame()
                 .colored(PonderPalette.MEDIUM)

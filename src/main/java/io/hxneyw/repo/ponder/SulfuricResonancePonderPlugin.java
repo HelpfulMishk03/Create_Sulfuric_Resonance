@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class SulfuricResonancePonderPlugin implements PonderPlugin {
 
-    private static final int REGISTERED_SCENES = 37;
+    private static final int REGISTERED_SCENES = 38;
 
     @NotNull
     @Override
@@ -435,10 +435,16 @@ public final class SulfuricResonancePonderPlugin implements PonderPlugin {
                     BlockCaddyScenes::factoryLoading, AllPonderTags.FACTORY_LOGISTICS);
             helper.addStoryBoard(blockCaddyId, "block_caddy/chest_cargo",
                     BlockCaddyScenes::chestCargo, AllPonderTags.FACTORY_LOGISTICS);
+            helper.addStoryBoard(blockCaddyId, "block_caddy/precision_spritzer",
+                    BlockCaddyScenes::precisionSpritzer, AllPonderTags.FACTORY_LOGISTICS);
+            helper.addStoryBoard(blockCaddyId, "block_caddy/saw_spout",
+                    BlockCaddyScenes::sawAndSpout, AllPonderTags.FACTORY_LOGISTICS);
 
             ResourceLocation scraperId = BuiltInRegistries.ITEM.getKey(Items.SCRAPER_ITEM.get());
             helper.addStoryBoard(scraperId, "scraper/operation",
                     ScraperScenes::operation, AllPonderTags.FACTORY_LOGISTICS);
+            helper.addStoryBoard(scraperId, "scraper/non_caddy",
+                    ScraperScenes::ignoresOrdinaryItems, AllPonderTags.FACTORY_LOGISTICS);
 
             CreateSulfuricResonance.LOGGER.info(
                     "Loaded {} Ponder scenes",

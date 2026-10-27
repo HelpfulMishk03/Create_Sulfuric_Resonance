@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.logistics.factoryBoard.FactoryPanelBlock;
 import io.hxneyw.repo.content.blocks.thermalgauge.ThermalGaugeBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -18,6 +20,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = FactoryPanelBlock.class, remap = false)
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class FactoryPanelBlockMixin {
 
     @Inject(method = "onDestroyedByPlayer", at = @At("HEAD"), cancellable = true)

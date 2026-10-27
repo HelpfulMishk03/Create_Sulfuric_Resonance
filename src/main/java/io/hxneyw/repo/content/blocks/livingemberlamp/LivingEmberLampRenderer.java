@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.hxneyw.repo.content.Items;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -64,10 +65,21 @@ public class LivingEmberLampRenderer
                 0.45F
         );
 
+        // Use the same heat-derived brightness in placed and assembled modes.
+        // LIGHT_LEVEL already includes the furnace tier, fades, and warning pulses.
+        // Retain ambient light so an unpowered core still responds to its surroundings.
+        int emittedLight = blockEntity.getBlockState().getValue(LivingEmberLampBlock.LIGHT_LEVEL);
+        // Sable's assembled renderer can pass a zero block-light component
+        // for plot actors even while their LIGHT_LEVEL state is positive.
+        // Render the ember emissively from that heat-derived state so the
+        // lamp core stays visibly lit in both ordinary and assembled worlds.
+        int coreLight = emittedLight > 0
+                ? LightTexture.FULL_BRIGHT
+                : packedLight;
         itemRenderer.renderStatic(
                 embersol,
                 ItemDisplayContext.FIXED,
-                packedLight,
+                coreLight,
                 packedOverlay,
                 poseStack,
                 buffer,

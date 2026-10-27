@@ -2,6 +2,7 @@ package io.hxneyw.repo.content.network;
 
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
 import io.hxneyw.repo.content.items.ThermalRelaySwitchItem;
+import io.hxneyw.repo.content.process.SablePlotBlockEntityLookup;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +54,26 @@ public final class ThermochemicalNetworkResolver {
             return Resolution.invalid();
         }
 
-        if (!(observerLevel instanceof ServerLevel serverLevel)) {
+        if (observerLevel.dimension().location().toString().equals(dimension)
+                && observerLevel.isLoaded(position)) {
+            if (observerLevel.getBlockEntity(position) instanceof MoltenRotorBlockEntity furnace
+                    && furnaceIdentity.equals(furnace.getFurnaceIdentity())) {
+                return Resolution.resolved(furnace);
+            }
+        }
+        if (observerLevel.dimension().location().toString().equals(dimension)
+                && SablePlotBlockEntityLookup.find(observerLevel, position)
+                instanceof MoltenRotorBlockEntity furnace
+                && furnaceIdentity.equals(furnace.getFurnaceIdentity())) {
+            return Resolution.resolved(furnace);
+        }
+
+        ServerLevel serverLevel = observerLevel instanceof ServerLevel directLevel
+                ? directLevel
+                : observerLevel instanceof ServerLevelAccessor accessor
+                ? accessor.getLevel()
+                : null;
+        if (serverLevel == null) {
             return Resolution.invalid();
         }
 

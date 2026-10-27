@@ -1,8 +1,10 @@
 {
   "required": true,
+  "plugin": "io.hxneyw.repo.mixin.OptionalSableMixinPlugin",
   "package": "io.hxneyw.repo.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "SableCaddyCollisionMixin",
     "BasinRecipeMixin",
     "BasinHeatSourceMixin",
     "BasinOperatingMixin",
@@ -10,8 +12,6 @@
     "BeltInventoryMixin",
     "TransportedItemStackMixin",
     "BeltBlockMixin",
-    "DeployerHandlerMixin",
-    "DeployerBlockEntityMixin",
     "BeltDeployerCallbacksMixin",
     "DeployerBlockEntityAccessor",
     "SawBlockEntityAccessor",
@@ -19,12 +19,19 @@
     "FactoryPanelBlockMixin",
     "RotationPropagatorMixin",
     "BoilerDataBoilerInterfaceMixin",
-    "SteamEngineBlockEntityThermochemicalMixin"
+    "SteamEngineBlockEntityThermochemicalMixin",
+    "SableThermalBatteryActorMixin",
+    "SableThermalRelayActorMixin",
+    "SableThermochemicalBoilerInterfaceActorMixin",
+    "SableLivingEmberLampActorMixin",
+    "SableBeltBlockEntityActorMixin",
+    "SableProcessMonitorActorMixin"
   ],
   "client": [
+    "ShulkerBoxAnimationAccessor",
+    "LivingEmberLampLightMixin",
     "BeltRendererMixin",
     "DeployerRendererMixin",
-    "ItemRendererMixin",
     "BeltVisualMixin"
   ],
   "injectors": {

@@ -3,6 +3,7 @@ package io.hxneyw.repo.client;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlock;
 import io.hxneyw.repo.content.registry.AllModBlocks;
+import io.hxneyw.repo.content.process.SablePlayerPositionResolver;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -12,8 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-@SuppressWarnings("resource")
 @EventBusSubscriber(modid = "sulfuricresonance")
+@SuppressWarnings("unused")
 public final class OccupationalHazardHandler {
 
     private static final ResourceLocation ADVANCEMENT_ID =
@@ -36,24 +37,22 @@ public final class OccupationalHazardHandler {
             return;
         }
 
-        BlockPos feetPos = BlockPos.containing(
-                player.getX(),
-                player.getY() + 0.01D,
-                player.getZ()
-        );
+        SablePlayerPositionResolver.Context context =
+                SablePlayerPositionResolver.resolve(player);
+        BlockPos feetPos = context.blockPosition();
 
-        BlockPos cruciblePos = findCrucible(player, feetPos);
+        BlockPos cruciblePos = findCrucible(context.level(), feetPos);
 
         if (cruciblePos == null) {
             return;
         }
 
-        if (!isInsideCrucible(player, cruciblePos)) {
+        if (!isInsideCrucible(context.precisePosition(), cruciblePos)) {
             return;
         }
 
         BlockState furnaceState =
-                player.level().getBlockState(cruciblePos.below());
+                context.level().getBlockState(cruciblePos.below());
 
         if (!furnaceState.is(AllModBlocks.MOLTEN_ROTOR_FURNACE.get())) {
             return;
@@ -72,19 +71,17 @@ public final class OccupationalHazardHandler {
     }
 
     private static BlockPos findCrucible(
-            ServerPlayer player,
+            net.minecraft.world.level.LevelAccessor level,
             BlockPos feetPos
     ) {
-        if (player.level()
-                .getBlockState(feetPos)
+        if (level.getBlockState(feetPos)
                 .is(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get())) {
             return feetPos;
         }
 
         BlockPos belowFeet = feetPos.below();
 
-        if (player.level()
-                .getBlockState(belowFeet)
+        if (level.getBlockState(belowFeet)
                 .is(AllModBlocks.ASH_CERAMIC_CRUCIBLE.get())) {
             return belowFeet;
         }
@@ -93,12 +90,12 @@ public final class OccupationalHazardHandler {
     }
 
     private static boolean isInsideCrucible(
-            ServerPlayer player,
+            net.minecraft.world.phys.Vec3 playerPosition,
             BlockPos cruciblePos
     ) {
-        double localX = player.getX() - cruciblePos.getX();
-        double localY = player.getY() - cruciblePos.getY();
-        double localZ = player.getZ() - cruciblePos.getZ();
+        double localX = playerPosition.x - cruciblePos.getX();
+        double localY = playerPosition.y - cruciblePos.getY();
+        double localZ = playerPosition.z - cruciblePos.getZ();
 
         double innerMinimum = 2.0D / 16.0D;
         double innerMaximum = 14.0D / 16.0D;

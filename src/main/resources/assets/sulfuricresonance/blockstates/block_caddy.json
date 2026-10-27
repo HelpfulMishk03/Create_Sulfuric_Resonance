@@ -1,6 +1,9 @@
 {
   "variants": {
-    "": {
+    "has_cargo=false": {
+      "model": "sulfuricresonance:block/block_caddy"
+    },
+    "has_cargo=true": {
       "model": "sulfuricresonance:block/block_caddy"
     }
   }

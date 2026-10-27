@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock.HeatLevel;
 import io.hxneyw.repo.content.blocks.resonantheatinjector.ResonantHeatInjectorBlockEntity;
@@ -11,6 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = BasinBlockEntity.class, remap = false)
+@SuppressWarnings({"unused", "DataFlowIssue"})
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BasinHeatSourceMixin {
 
     @Inject(

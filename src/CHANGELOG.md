@@ -8,37 +8,54 @@ Older entries are reconstructed from surviving builds, development notes, testin
 
 ## 0.7.0 — Moving With Purpose
 
+*Block Logistics, Create Contraptions & SABLE Compatibility*
+
+Reusable block transport and processing, decorative cargo displays, and expanded support for CSR machinery on SABLE airships.
+
 ### Added
 
-- Added a Create Mechanical Bearing rotation demo and full CSR block test schematic, plus a first-time placement guide and a compatibility matrix covering all 58 registered CSR blocks.
-- Documented which machine state is carried by Create's normal contraption capture and which CSR processing or thermal-network behaviors pause while assembled.
-- Added the reusable Block Caddy system: carry placeable blocks on belts, load them by hand or with a Use-mode Deployer, and park them on Depots.
-- Added decorative placement for empty and filled Caddies; cargo is preserved when placed and picked back up.
-- Added the Scraper and Cut Metal, including crafting and sawing recipes. The Scraper separates ordinary cargo from its Caddy, keeps storage blocks loaded, and waits when connected storage cannot accept its output.
-- Added block-only processing for Caddies at Create presses, saws, Spouts, and Encased Fans, plus heat treatment on Combustion Belts. A matching Caddy pauses for one block's recipe time while the belt keeps moving, then continues with its transformed cargo.
-- Added Caddy recipes for pressing Stone into Stone Bricks and Copper Blocks into Cut Copper; sawing Oak Logs into stripped logs while preserving axis; washing Concrete Powder into Concrete at Spouts or fans; heating Clay and Stone in fan airflow; drying Wet Sponges; and tempering Ashesil on a sufficiently heated Combustion Belt.
-- Added removable Rotor Weather Shrouding for the Molten Rotor Furnace, blocking rain exposure and shedding visible runoff droplets during storms.
-- Added Precision Spritzer processing for selected cargo blocks carried inside belt-mounted Caddies when a sulfuric acid conversion is registered.
-- Added Ponder walkthroughs for hand loading, Deployer loading on a moving belt, chest storage, and Scraper output handling.
-- Added the hidden Redline advancement: inserting TNT at 2000°C with an active linked Thermal Relay Switch starts a five-second overload fuse, even when the normal TNT explosion option is disabled.
+- **Block Caddies:** Carry blocks on Create belts, load them by hand or Use-mode Deployers, and park them on Depots. Empty and filled Caddies can also be placed decoratively to display blocks and items while preserving their cargo.
+- **Block Processing:** Process Caddy cargo with Mechanical Presses, Saws, Spouts, Encased Fans, Deployers, CSR Combustion Belts, and Precision Spritzers. Includes pressing, stripping, washing, drying, heat treatment, and registered acid conversions.
+- **Scraper & Cut Metal:** A belt extraction machine and crafting material. The Scraper separates ordinary cargo from empty Caddies, preserves loaded storage cargo, and waits when connected storage cannot accept the complete output.
+- **Storage Cargo:** Open supported chest and shulker cargo inventories with sneak-right-click, with opening and closing sounds and animated lids.
+- **Rotor Weather Shrouding:** Removable rain protection for the Molten Rotor Furnace, with visible runoff during storms.
+- **Combustion Belt Goggles:** Read Unheated, Heated, Superheated, or Combustion heat directly from the belt's received heat tier.
+- **Thermal Battery Kinetics:** Thermal Batteries can provide rotation to ordinary Create shafts and can operate without a thermochemical shaft attached.
+- **SABLE Compatibility:** Expanded support for thermal machinery, thermochemical networks, processing, controls, monitoring, cargo collision, and mobile Ember Lamp illumination.
+- **Ponder Tutorials:** Five Caddy scenes covering loading, processing, storage, Precision Spritzer, and Saw/Spout use; Scraper scenes demonstrate extraction and intentional pass-through of ordinary items.
+- **Hidden Redline Advancement:** A high-temperature Rotor Furnace challenge and overload sequence.
+- **Polish Localization:** Added `pl_pl` support for all 987 English entries. All ten language files share the same keys, including names, tooltips, recipe displays, messages, advancements, and Ponder text.
 
-### Changed
+### Improved
 
-- Retextured the Caddy and refined its belt movement, cargo fit and centering, held and inventory scale, and lighting for consistent presentation.
-- Caddy processing now triggers Create's press stroke, saw feedback, and Spout filling animation; cargo changes as soon as the press stroke ends.
-- Caddy processing queues same-station carriers in Create's belt travel order so carriers sharing the same belt position do not lose priority ties.
-- Reworked the Caddy Ponder scenes to show the example blocks clearly, with shorter instructions timed to avoid overlap.
-- Clarified Caddy tooltips and instructions.
-- Refined Rotor Weather Shrouding with a consistent gunmetal shade across the back, left, and right outer panels, removing copper, yellow, and orange accents.
-- Updated the Scraper crafting recipe to use dried kelp.
+- Refined Caddy textures, full-size belt models, peg-foot placement, cargo alignment, GUI centering and scale, and held-item presentation.
+- Cargo uses its saved placed block state and facing where available, including redstone dust, doors, and multipart blocks. Restored dynamic shafts and block-entity-rendered cargo details while correcting duplicate and offset models.
+- Improved cargo rendering in GUI slots, on belts, and in modded item browsers, including ATM10 compatibility. Belt cargo lighting remains readable through changing ambient light.
+- Cargo collision and selection outlines follow the carried block's saved shape and data, including taller and multipart cargo. Cached shape calculations reduce repeated work while hovering over complex models.
+- Caddies arrive at processors with normal belt movement, queue at busy stations, and remain held through the complete machine cycle. Press transformations occur at contact; Precision Spritzer transformations occur after the recipe's required spray contacts.
+- Combustion processing preserves the Caddy, replaces its cargo in place, and lets it continue moving with the belt.
+- Storage cargo lid animations interpolate smoothly between ticks.
+- Rotor Furnace heat and fuel survive assembly, with generated rotation reapplied after disassembly.
+- Expanded Process Monitor guidance for the Sulfuric Resonance Chamber and Rotary Leacher, and refined Caddy instructions, Weather Shrouding colors, and Scraper model details.
 
 ### Fixed
 
-- Fixed cargo alignment in Caddy GUI and belt renders by using the same block-local model coordinates as the carrier.
-- Fixed Caddies passing a busy processing station and every-other-carrier misses by holding matching carriers in a retrying queue; each advances after the previous operation completes.
-- Corrected the Scraper scoop voxel outline to use the model's actual rotation pivot.
-- Restored the Resonance Chamber's moving reaction platform in JEI and EMI previews, and made its Audio OFF setting suppress the completion chime.
-- Fixed Resonance Chamber shift-click insertion for valid recipe ingredients.
+- Fixed Caddies snapping toward processors and being picked up before reaching the Scraper scoop. Moving Caddies are collected reliably at the Scraper's own belt segment.
+- Fixed empty Caddies failing to stop under Deployers for loading, including in ATM10 and the development client.
+- Restricted manual belt loading to the Caddy being clicked, rather than allowing interaction with an arbitrary belt segment.
+- Fixed Spout processing holds when the required fluid is unavailable and retained cargo through processing and output changes.
+- Fixed missing GUI cargo, incorrect cargo model placement, missing dynamic details, and cargo shape regressions.
+- Prevented a stack overflow when a Caddy carries another Caddy. Filled Caddies use the cargo block's break sound.
+- Added the optional Carry On blacklist for empty and filled Caddies to prevent pickup from losing their cargo renderer.
+- Fixed Combustion Belt heat synchronization during chunk loading and ordinary Create updates. Goggles now report the correct heat on SABLE airships; confirmed in player testing.
+- Fixed mobile Ember Lamp illumination across the surrounding world and nearby SABLE plots. Brightness follows the linked Rotor Furnace's heat tier, fades, and warning states; confirmed in player testing. Moving Create train functionality is also player-confirmed.
+- Fixed Occupational Hazard and What Are You Doing advancement checks on SABLE airships by resolving the player's position in the appropriate sublevel.
+- Fixed Thermal Battery shaft placement without sneaking or opening its GUI, and matched its underside geometry to its top.
+- Corrected Boiler Interface array shaft-face visibility and refresh behavior when arrays are built, resized, or assembled in SABLE physics.
+- Restored serialized Ponder demonstration blocks, Caddy cargo, and block-entity data. Preserved CSR's checkerboard floors, removed duplicate reveals and premature break particles, and corrected Scraper outputs, flap animation, and overlapping captions.
+- Fixed animated items drawing over hover text in Combustion Belt recipe displays.
+- Restored the Resonance Chamber JEI/EMI reaction platform animation, respected its Audio OFF setting, and corrected shift-click ingredient insertion.
+- Removed the incompatible development Netty override that disrupted single-player connections.
 
 
 -----------------
@@ -1341,7 +1358,8 @@ Reactive Heat introduces a complete thermochemical transmission system centered 
 
 ## [0.2.1-betaA through 0.2.1-betaE] - Source Restoration Baseline
 
-### Added and restored
+### Added
+
 
 - Reconstructed the active development source from the author's surviving compiled release and project materials after an extended hiatus.
 - Restored core registrations for blocks, items, block entities, fluids, effects, entities, sounds, particles, recipes, creative tabs, and Ponder.

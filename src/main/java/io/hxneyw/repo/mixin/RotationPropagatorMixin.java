@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.kinetics.RotationPropagator;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
@@ -11,6 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = RotationPropagator.class, remap = false)
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class RotationPropagatorMixin {
 
     @Inject(

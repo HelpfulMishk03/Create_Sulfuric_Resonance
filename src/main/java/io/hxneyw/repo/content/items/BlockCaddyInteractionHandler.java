@@ -8,12 +8,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import java.util.HashSet;
-import java.util.Set;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -21,6 +17,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.hxneyw.repo.content.blocks.BlockCaddyBlockEntity;
 
 @EventBusSubscriber(modid = "sulfuricresonance")
+@SuppressWarnings("unused")
 public final class BlockCaddyInteractionHandler {
     private BlockCaddyInteractionHandler() {}
 
@@ -34,63 +31,55 @@ public final class BlockCaddyInteractionHandler {
         }
 
         ItemStack held = event.getEntity().getMainHandItem();
-        if (!(held.getItem() instanceof BlockItem)) {
+        if (!BlockCaddyItem.isSupportedCargoStack(held)) {
             return;
         }
 
         Level level = event.getLevel();
         BlockPos clickedPos = event.getPos();
-        Set<BlockPos> checkedControllers = new HashSet<>();
+        if (!AllBlocks.BELT.has(level.getBlockState(clickedPos))) {
+            return;
+        }
+        BeltBlockEntity segment = BeltHelper.getSegmentBE(level, clickedPos);
+        BeltBlockEntity controller = segment == null ? null : segment.getControllerBE();
+        if (controller == null || controller.getInventory() == null) {
+            return;
+        }
+
         TransportedItemStack nearest = null;
-        BeltBlockEntity nearestController = null;
-        double nearestDistance = 25.0;
-
-        // A belt funnel can cover the belt's click target. Check the clicked
-        // block and its immediate neighbors so loading still works when the
-        // player aims at that attached Create block.
-        for (Direction direction : Direction.values()) {
-            BlockPos beltPos = clickedPos.relative(direction);
-            if (!AllBlocks.BELT.has(level.getBlockState(beltPos))) {
+        float clickedSegmentCenter = segment.index + .5f;
+        double nearestDistance = Double.MAX_VALUE;
+        for (TransportedItemStack transported : controller.getInventory().getTransportedItems()) {
+            if (!(transported.stack.getItem() instanceof BlockCaddyItem)
+                    || BlockCaddyItem.getCargoItem(transported.stack) != null
+                    || Math.abs(transported.beltPosition - clickedSegmentCenter) > .5f) {
                 continue;
             }
 
-            BeltBlockEntity segment = BeltHelper.getSegmentBE(level, beltPos);
-            BeltBlockEntity controller = segment == null ? null : segment.getControllerBE();
-            if (controller == null
-                    || controller.getInventory() == null
-                    || !checkedControllers.add(controller.getBlockPos())) {
-                continue;
-            }
-
-            for (TransportedItemStack transported : controller.getInventory().getTransportedItems()) {
-                if (!(transported.stack.getItem() instanceof BlockCaddyItem)
-                        || BlockCaddyItem.getCargoItem(transported.stack) != null) {
-                    continue;
-                }
-
-                Vec3 caddyPosition = BeltHelper.getVectorForOffset(controller, transported.beltPosition);
-                double distance = caddyPosition.distanceToSqr(event.getEntity().position());
-                if (distance < nearestDistance) {
-                    nearestDistance = distance;
-                    nearest = transported;
-                    nearestController = controller;
-                }
+            Vec3 caddyPosition = BeltHelper.getVectorForOffset(controller, transported.beltPosition);
+            double distance = caddyPosition.distanceToSqr(event.getEntity().position());
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = transported;
             }
         }
 
-        if (nearest == null || nearestController == null) {
+        if (nearest == null) {
             return;
         }
 
         if (!level.isClientSide()) {
-            if (!BlockCaddyItem.tryLoadFromBlockItem(nearest.stack, held)) {
+            net.minecraft.world.level.block.state.BlockState placedState =
+                    BlockCaddyItem.getPlacementState(level, event.getEntity(),
+                            event.getHand(), held, event.getHitVec());
+            if (!BlockCaddyItem.tryLoadFromBlockItem(nearest.stack, held, placedState)) {
                 return;
             }
             if (!event.getEntity().isCreative()) {
                 held.shrink(1);
             }
-            nearestController.setChanged();
-            nearestController.sendData();
+            controller.setChanged();
+            controller.sendData();
         }
 
         event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide()));
@@ -106,7 +95,7 @@ public final class BlockCaddyInteractionHandler {
 
         Level level = event.getLevel();
         if (level.getBlockEntity(event.getPos()) instanceof BlockCaddyBlockEntity placedCaddy
-                && BlockCaddyItem.isChestCargo(BlockCaddyItem.createStack(placedCaddy.getCargo()))) {
+                && BlockCaddyItem.isStorageCargo(BlockCaddyItem.createStack(placedCaddy.getCargo()))) {
             if (!level.isClientSide) {
                 BlockCaddyInventory.openForCargo(
                         event.getEntity(), placedCaddy.getCargo(), placedCaddy::setCargo);
@@ -130,7 +119,7 @@ public final class BlockCaddyInteractionHandler {
         float segmentCenter = segment.index + .5f;
         for (TransportedItemStack transported : controller.getInventory().getTransportedItems()) {
             if (Math.abs(transported.beltPosition - segmentCenter) > .5f
-                    || !BlockCaddyItem.isChestCargo(transported.stack)) {
+                    || !BlockCaddyItem.isStorageCargo(transported.stack)) {
                 continue;
             }
             Vec3 position = BeltHelper.getVectorForOffset(controller, transported.beltPosition);
@@ -145,7 +134,10 @@ public final class BlockCaddyInteractionHandler {
         }
 
         if (!level.isClientSide) {
-            BlockCaddyInventory.openForCaddy(event.getEntity(), nearest.stack);
+            BlockCaddyInventory.openForCaddy(event.getEntity(), nearest.stack, stack -> {
+                controller.setChanged();
+                controller.sendData();
+            });
         }
         event.setCancellationResult(InteractionResult.sidedSuccess(level.isClientSide));
         event.setCanceled(true);

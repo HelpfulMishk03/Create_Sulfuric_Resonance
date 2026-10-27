@@ -69,7 +69,7 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
     ) {
         PoseStack matrixStack = graphics.pose();
         matrixStack.pushPose();
-        matrixStack.translate(xOffset - 10.2F, yOffset + 9.2F, 200.0F);
+        matrixStack.translate(xOffset - 10.2F, yOffset + 9.2F, 80.0F);
         matrixStack.mulPose(Axis.XP.rotationDegrees(-26.5F));
         matrixStack.mulPose(Axis.YP.rotationDegrees(15.0F));
         matrixStack.scale(17.8F, 17.8F, 17.8F);
@@ -276,7 +276,8 @@ public final class AnimatedCombustionBelt extends AnimatedKinetics {
 
         PoseStack matrixStack = graphics.pose();
         matrixStack.pushPose();
-        matrixStack.translate(itemX, itemY, 350.0F);
+        // Keep the preview item below JEI's hover tooltip layer.
+        matrixStack.translate(itemX, itemY, 120.0F);
         matrixStack.scale(0.58F, 0.58F, 0.58F);
         graphics.renderItem(transportedStack, -8, -8);
         matrixStack.popPose();

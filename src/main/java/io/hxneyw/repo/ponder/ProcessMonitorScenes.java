@@ -160,7 +160,7 @@ public final class ProcessMonitorScenes {
         scene.world().modifyBlockEntityNBT(
                 monitor,
                 ProcessMonitorBlockEntity.class,
-                nbt -> configureLinkedChannel(nbt, monitorIdentity, 2, target)
+                nbt -> configureLinkedChannel(nbt, monitorIdentity, target)
         );
         scene.overlay().showOutline(
                 PonderPalette.BLUE,
@@ -212,16 +212,24 @@ public final class ProcessMonitorScenes {
                 .pointAt(util.vector().centerOf(monitorPos))
                 .placeNearTarget();
         scene.idle(135);
+
+        scene.overlay().showText(140)
+                .text("Currently supported machines: the Sulfuric Resonance Chamber and Rotary Leacher")
+                .attachKeyFrame()
+                .colored(PonderPalette.OUTPUT)
+                .pointAt(util.vector().centerOf(monitorPos))
+                .placeNearTarget();
+        scene.idle(150);
         scene.markAsFinished();
     }
 
     private static void configureLinkedChannel(
             CompoundTag nbt,
             UUID monitorIdentity,
-            int selectedChannel,
             ProcessTargetRef target
     ) {
         nbt.putUUID("MonitorIdentity", monitorIdentity);
+        int selectedChannel = 2;
         nbt.putInt("SelectedChannel", selectedChannel);
 
         ListTag channels = new ListTag();

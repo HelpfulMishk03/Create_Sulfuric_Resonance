@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.kinetics.chainDrive.ChainDriveBlock;
 import io.hxneyw.repo.content.blocks.thermochemicallinkdrive.ThermochemicalLinkDriveBlock;
 import net.minecraft.core.Direction;
@@ -12,6 +14,9 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ChainDriveBlock.class, remap = false)
+@SuppressWarnings({"unused", "ConstantValue"})
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class ChainDriveBlockMixin {
     @ModifyVariable(
             method = "updateShape",

@@ -28,7 +28,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Player;
@@ -336,6 +335,7 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public int[] getSlotsForFace(@NotNull Direction side) {
         if (side == Direction.DOWN) {
             return new int[] {OUTPUT};
@@ -1236,11 +1236,10 @@ public class SulfuricResonanceChamberBlockEntity extends KineticBlockEntity impl
         return true;
     }
 
-    public boolean toggleAudioEnabled() {
+    public void toggleAudioEnabled() {
         audioEnabled = !audioEnabled;
         setChanged();
         sendData();
-        return true;
     }
 
     public boolean isAudioEnabled() {

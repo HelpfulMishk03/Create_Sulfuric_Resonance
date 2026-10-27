@@ -279,8 +279,12 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
 
          boolean wasSpraying = this.spraying;
          int currentAmount = this.tankInventory.getFluidAmount();
+         boolean parkedCaddyNeedsSpray = this.isPrecision()
+                 && this.level instanceof ServerLevel serverLevel
+                 && currentAmount >= FLUID_PER_SPRAY
+                 && this.hasPrecisionCaddyTarget(serverLevel, this.tankInventory.getFluid());
          boolean shouldSpray =
-                 (this.spraying || currentAmount >= SPRAY_START_THRESHOLD)
+                 (this.spraying || currentAmount >= SPRAY_START_THRESHOLD || parkedCaddyNeedsSpray)
                          && currentAmount >= FLUID_PER_SPRAY
                          && this.canSprayFluid()
                          && this.canSprayCurrentMode();
@@ -575,7 +579,11 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
                        if (!cargoStack.isEmpty()) {
                           // A selected cargo item is a valid spray target even without a conversion.
                           // The effect phase applies a registered conversion only when one exists.
-                          if (this.matchesPrecisionItem(cargoStack)) {
+                          if (transported.locked
+                                  && io.hxneyw.repo.content.transport.CaddyBeltProcessing
+                                          .isPrecisionProcessing(transported.stack)
+                                  && this.matchesPrecisionItem(cargoStack)
+                                  && PrecisionSprayingRegistry.getResult(cargoStack, fluid).isPresent()) {
                              found.set(true);
                           }
                        }
@@ -622,7 +630,10 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
                     if (input.isEmpty()) {
                        return TransportedResult.doNothing();
                     }
-                    if (!this.matchesPrecisionItem(input)) {
+                    if (!transported.locked
+                            || !io.hxneyw.repo.content.transport.CaddyBeltProcessing
+                                    .isPrecisionProcessing(transported.stack)
+                            || !this.matchesPrecisionItem(input)) {
                        return TransportedResult.doNothing();
                     }
                     java.util.Optional<ItemStack> result =
@@ -631,8 +642,17 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
                        return TransportedResult.doNothing();
                     }
 
+                     int spraysReceived =
+                             io.hxneyw.repo.content.transport.CaddyBeltProcessing
+                                     .recordPrecisionSpray(transported.stack);
+                     converted.set(true);
+                     if (spraysReceived < PrecisionSprayingRegistry.SPRAY_CONTACTS_REQUIRED) {
+                        return TransportedResult.doNothing();
+                     }
+
                     BlockCaddyItem.setCargoStack(transported.stack, result.get());
-                    converted.set(true);
+                    io.hxneyw.repo.content.transport.CaddyBeltProcessing
+                            .markPrecisionTransformed(transported.stack);
                     return TransportedResult.convertTo(transported.copy());
                  }
          );
@@ -854,6 +874,23 @@ public class PerforatedSpritzerBlockEntity extends SmartBlockEntity implements I
       }
       ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
       return this.precisionItemFilters.contains(id);
+   }
+
+   public boolean isPrecisionMode() {
+      return this.isPrecision();
+   }
+
+   public boolean isSpraying() {
+      return this.spraying || this.isPerformingSpray;
+   }
+
+   public boolean hasPrecisionResult(ItemStack stack) {
+      return this.isPrecision()
+              && this.matchesPrecisionItem(stack)
+              && PrecisionSprayingRegistry.getResult(
+                      stack,
+                      new FluidStack(AllModFluids.SULFURIC_ACID.get(), FLUID_PER_SPRAY)
+              ).isPresent();
    }
 
    private boolean excludesPrecisionBlock(BlockState state) {

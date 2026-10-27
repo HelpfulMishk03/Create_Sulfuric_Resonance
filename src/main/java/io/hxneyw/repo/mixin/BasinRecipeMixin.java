@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.processing.basin.BasinBlockEntity;
 import com.simibubi.create.content.processing.basin.BasinRecipe;
 import io.hxneyw.repo.content.blocks.crucible.AshCeramicCrucibleBlockEntity;
@@ -19,6 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
    value = {BasinRecipe.class},
    remap = false
 )
+@SuppressWarnings("unused")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class BasinRecipeMixin {
    @Inject(
            method = {

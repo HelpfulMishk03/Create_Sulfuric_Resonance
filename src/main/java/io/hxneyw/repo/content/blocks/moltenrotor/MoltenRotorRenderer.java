@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
+import com.simibubi.create.content.kinetics.RotationPropagator;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
@@ -324,7 +325,8 @@ public class MoltenRotorRenderer extends SafeBlockEntityRenderer<MoltenRotorBloc
                  instanceof KineticBlockEntity adjacentKinetic
                  && KineticBlockEntityRenderer
                  .getRotationAxisOf(adjacentKinetic)
-                 == shaftAxis) {
+                 == shaftAxis
+                 && RotationPropagator.isConnected(furnace, adjacentKinetic)) {
             return KineticBlockEntityRenderer.getAngleForBe(
                     adjacentKinetic,
                     adjacentKinetic.getBlockPos(),

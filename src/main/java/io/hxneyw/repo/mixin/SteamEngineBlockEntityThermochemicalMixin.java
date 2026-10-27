@@ -1,5 +1,7 @@
 package io.hxneyw.repo.mixin;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.steamEngine.SteamEngineBlockEntity;
 import io.hxneyw.repo.compat.create.ThermochemicalBoilerInterfaceCompat;
@@ -15,6 +17,9 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = SteamEngineBlockEntity.class, remap = false)
+@SuppressWarnings({"unused", "DataFlowIssue", "ConstantValue"})
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class SteamEngineBlockEntityThermochemicalMixin {
 
     @Shadow

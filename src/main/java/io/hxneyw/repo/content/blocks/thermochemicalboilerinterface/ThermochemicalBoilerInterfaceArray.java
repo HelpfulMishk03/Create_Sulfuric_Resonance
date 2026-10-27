@@ -14,6 +14,7 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,6 +71,9 @@ public final class ThermochemicalBoilerInterfaceArray {
         PortSelection configuredPort = selected == null
                 ? findConfiguredPort(level, members, bounds)
                 : new PortSelection(selected.position(), selected.side());
+        if (configuredPort == null) {
+            configuredPort = findDefaultNorthPort(level, members, bounds);
+        }
         MoltenRotorBlockEntity.RotorHeatLevel heatTier = selected == null
                 ? MoltenRotorBlockEntity.RotorHeatLevel.NONE
                 : selected.heatTier();
@@ -111,6 +115,48 @@ public final class ThermochemicalBoilerInterfaceArray {
             return false;
         }
         return isPortEligible(level, members, bounds, position, side);
+    }
+
+    /** Keeps a north-facing shaft port visible on boiler-interface arrays in Sable physics plots. */
+    public static void exposePhysicsNorthShaft(LevelAccessor level, BlockPos position) {
+        List<BlockPos> members = collectMembers(level, position);
+        if (members.isEmpty() || members.size() > MAX_MEMBERS) {
+            return;
+        }
+        Bounds bounds = bounds(members);
+        if (bounds.width() > MAX_SPAN || bounds.depth() > MAX_SPAN) {
+            return;
+        }
+        BlockPos northPort = members.stream()
+                .filter(member -> member.getZ() == bounds.minZ())
+                .min(Comparator
+                        .comparingDouble((BlockPos member) -> Math.abs(
+                                member.getX() - (bounds.minX() + bounds.maxX()) / 2.0))
+                        .thenComparingInt(BlockPos::getX))
+                .orElse(null);
+        if (!position.equals(northPort)) return;
+
+        for (BlockPos member : members) {
+            BlockState state = level.getBlockState(member);
+            if (!(state.getBlock() instanceof ThermochemicalBoilerInterfaceBlock)) {
+                continue;
+            }
+            BlockState updated = ThermochemicalBoilerInterfaceBlock.updateConnections(
+                    state,
+                    level,
+                    member
+            );
+            if (member.equals(northPort)) {
+                updated = ThermochemicalBoilerInterfaceBlock.setPort(
+                        updated,
+                        Direction.NORTH,
+                        true
+                );
+            }
+            if (updated != state) {
+                level.setBlock(member, updated, Block.UPDATE_ALL);
+            }
+        }
     }
 
     public static void selectPort(
@@ -438,6 +484,23 @@ public final class ThermochemicalBoilerInterfaceArray {
         return null;
     }
 
+    private static @Nullable PortSelection findDefaultNorthPort(
+            LevelReader level,
+            List<BlockPos> members,
+            Bounds bounds
+    ) {
+        int centerX = bounds.minX() + bounds.maxX();
+        return members.stream()
+                .filter(member -> member.getZ() == bounds.minZ())
+                .filter(member -> isPortEligible(
+                        level, members, bounds, member, Direction.NORTH))
+                .min(Comparator
+                        .comparingInt((BlockPos member) -> Math.abs(member.getX() * 2 - centerX))
+                        .thenComparingInt(BlockPos::getX))
+                .map(member -> new PortSelection(member, Direction.NORTH))
+                .orElse(null);
+    }
+
     private static boolean isFullThreeByThree(
             List<BlockPos> members,
             Bounds bounds
@@ -454,7 +517,7 @@ public final class ThermochemicalBoilerInterfaceArray {
         int heat = Math.round(
                 temperature * MAX_CREATE_HEAT / (float) MAX_TEMPERATURE
         );
-        return Math.max(1, Math.min(MAX_CREATE_HEAT, heat));
+        return Math.clamp(heat, 1, MAX_CREATE_HEAT);
     }
 
     private static List<BlockPos> collectMembers(LevelReader level, BlockPos start) {

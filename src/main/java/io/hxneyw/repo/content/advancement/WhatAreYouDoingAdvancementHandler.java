@@ -5,6 +5,7 @@ import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltAccessor;
 import io.hxneyw.repo.content.blocks.combustionbelt.CombustionBeltHeatResolver;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
+import io.hxneyw.repo.content.process.SablePlayerPositionResolver;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @EventBusSubscriber(modid = "sulfuricresonance")
+@SuppressWarnings({"resource", "unused"})
 public final class WhatAreYouDoingAdvancementHandler {
 
     private static final int REQUIRED_TICKS = 600;
@@ -84,8 +86,10 @@ public final class WhatAreYouDoingAdvancementHandler {
             return;
         }
 
+        SablePlayerPositionResolver.Context playerContext =
+                SablePlayerPositionResolver.resolve(player);
         BeltContext beltContext =
-                findCombustionBelt(player, level);
+                findCombustionBelt(playerContext);
 
         if (beltContext == null) {
             PROGRESS.remove(player);
@@ -128,27 +132,27 @@ public final class WhatAreYouDoingAdvancementHandler {
     }
 
     private static BeltContext findCombustionBelt(
-            ServerPlayer player,
-            ServerLevel level
+            SablePlayerPositionResolver.Context playerContext
     ) {
+        var level = playerContext.level();
         Set<BlockPos> candidates = new LinkedHashSet<>();
 
-        candidates.add(player.getOnPos());
+        candidates.add(playerContext.blockPosition());
 
         candidates.add(BlockPos.containing(
-                player.getX(),
-                player.getY() - 0.05D,
-                player.getZ()
+                playerContext.precisePosition().x,
+                playerContext.precisePosition().y - 0.05D,
+                playerContext.precisePosition().z
         ));
 
         candidates.add(BlockPos.containing(
-                player.getX(),
-                player.getY() - 0.5D,
-                player.getZ()
+                playerContext.precisePosition().x,
+                playerContext.precisePosition().y - 0.5D,
+                playerContext.precisePosition().z
         ));
 
         for (BlockPos position : candidates) {
-            if (!level.isLoaded(position)) {
+            if (!level.hasChunk(position.getX() >> 4, position.getZ() >> 4)) {
                 continue;
             }
 
@@ -165,19 +169,20 @@ public final class WhatAreYouDoingAdvancementHandler {
 
             BeltBlockEntity controller =
                     BeltHelper.getControllerBE(
-                            level,
+                            playerContext.level(),
                             position
                     );
 
             if (controller == null
                     || !controller.isController()
-                    || controller.beltLength <= 0) {
+                    || controller.beltLength <= 0
+                    || controller.getLevel() == null) {
                 continue;
             }
 
             CombustionBeltHeatResolver.Result result =
                     CombustionBeltHeatResolver.resolveChain(
-                            level,
+                            controller.getLevel(),
                             controller
                     );
 

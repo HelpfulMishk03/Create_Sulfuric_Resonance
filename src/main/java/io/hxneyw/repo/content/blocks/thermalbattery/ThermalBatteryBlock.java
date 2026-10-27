@@ -22,6 +22,8 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -315,6 +317,22 @@ return level.getBlockEntity(position)
     }
 
     @Override
+    protected @NotNull ItemInteractionResult useItemOn(
+            @NotNull ItemStack stack,
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull net.minecraft.world.InteractionHand hand,
+            @NotNull BlockHitResult hit
+    ) {
+        if (stack.getItem() instanceof BlockItem) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hit);
+    }
+
+    @Override
     protected @NotNull InteractionResult useWithoutItem(
             @NotNull BlockState state,
             @NotNull Level level,
@@ -322,6 +340,10 @@ return level.getBlockEntity(position)
             @NotNull Player player,
             @NotNull BlockHitResult hit
     ) {
+        if (isShaftItem(player.getMainHandItem())
+                || isShaftItem(player.getOffhandItem())) {
+            return InteractionResult.PASS;
+        }
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             MenuProvider provider = getMenuProvider(state, level, pos);
             if (provider != null
@@ -337,6 +359,10 @@ return level.getBlockEntity(position)
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
+    }
+
+    private static boolean isShaftItem(ItemStack stack) {
+        return stack.getItem() instanceof BlockItem;
     }
 
     @Override

@@ -6,6 +6,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +30,32 @@ public final class ProcessMonitorResolver {
             return resolveLoaded(observerLevel, reference);
         }
 
-        if (!(observerLevel instanceof ServerLevel serverLevel)) {
+        if (observerLevel.dimension().location().toString()
+                .equals(reference.dimension())
+                && observerLevel.isLoaded(reference.position())) {
+            Resolution local = resolveLoaded(observerLevel, reference);
+            if (local.isResolved()) {
+                return local;
+            }
+        }
+        if (observerLevel.dimension().location().toString()
+                .equals(reference.dimension())) {
+            BlockEntity plotEntity = SablePlotBlockEntityLookup.find(
+                    observerLevel,
+                    reference.position()
+            );
+            Resolution plotResolution = resolveEntity(plotEntity, reference);
+            if (plotResolution.isResolved()) {
+                return plotResolution;
+            }
+        }
+
+        ServerLevel serverLevel = observerLevel instanceof ServerLevel directLevel
+                ? directLevel
+                : observerLevel instanceof ServerLevelAccessor accessor
+                ? accessor.getLevel()
+                : null;
+        if (serverLevel == null) {
             return Resolution.invalid();
         }
 
@@ -57,8 +84,14 @@ public final class ProcessMonitorResolver {
             @NotNull Level level,
             @NotNull ProcessMonitorRef reference
     ) {
-        if (level.getBlockEntity(reference.position())
-                instanceof ProcessMonitorBlockEntity monitor
+        return resolveEntity(level.getBlockEntity(reference.position()), reference);
+    }
+
+    private static @NotNull Resolution resolveEntity(
+            @Nullable net.minecraft.world.level.block.entity.BlockEntity blockEntity,
+            @NotNull ProcessMonitorRef reference
+    ) {
+        if (blockEntity instanceof ProcessMonitorBlockEntity monitor
                 && reference.identity().equals(monitor.getMonitorIdentity())) {
             return Resolution.resolved(monitor);
         }

@@ -14,7 +14,18 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class BlockCaddyBlockEntityRenderer implements BlockEntityRenderer<BlockCaddyBlockEntity> {
+    @SuppressWarnings("unused")
     public BlockCaddyBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
+
+    @Override
+    public boolean shouldRenderOffScreen(BlockCaddyBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 256;
+    }
 
     @Override
     public void render(
@@ -30,6 +41,7 @@ public class BlockCaddyBlockEntityRenderer implements BlockEntityRenderer<BlockC
         }
         ItemStack caddy = new ItemStack(Items.BLOCK_CADDY.get());
         BlockCaddyItem.setCargoStack(caddy, blockEntity.getCargo());
-        BlockCaddyBeltRenderer.renderCargoOnBlock(caddy, poseStack, buffer, light, overlay);
+        BlockCaddyBeltRenderer.renderCargoOnBlock(
+                caddy, poseStack, buffer, light, overlay, partialTick, blockEntity);
     }
 }

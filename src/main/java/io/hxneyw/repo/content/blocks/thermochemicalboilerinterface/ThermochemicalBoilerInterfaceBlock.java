@@ -75,16 +75,6 @@ public final class ThermochemicalBoilerInterfaceBlock
     }
 
     @Override
-    public boolean hasShaftTowards(
-            LevelReader level,
-            BlockPos position,
-            BlockState state,
-            Direction face
-    ) {
-        return false;
-    }
-
-    @Override
     public boolean doesNotHaveThermochemicalConnection(
             BlockState state,
             Direction face
@@ -232,7 +222,7 @@ public final class ThermochemicalBoilerInterfaceBlock
         }
     }
 
-    private BlockState updateConnections(
+    public static BlockState updateConnections(
             BlockState state,
             LevelReader level,
             BlockPos position

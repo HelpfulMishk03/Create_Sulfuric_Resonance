@@ -237,7 +237,7 @@ public abstract class BeltBlockMixin {
             return;
         }
 
-        if (!(stack.getItem() instanceof BlockItem)
+        if (!BlockCaddyItem.isSupportedCargoStack(stack)
                 || !AllBlocks.BELT.has(state)) {
             return;
         }
@@ -268,10 +268,10 @@ public abstract class BeltBlockMixin {
                         return TransportedResult.doNothing();
                     }
 
+                    BlockState placedCargoState = BlockCaddyItem.getPlacementState(
+                            level, player, hand, stack, hitResult);
                     if (!BlockCaddyItem.tryLoadFromBlockItem(
-                            transported.stack,
-                            stack
-                    )) {
+                            transported.stack, stack, placedCargoState)) {
                         return TransportedResult.doNothing();
                     }
 
