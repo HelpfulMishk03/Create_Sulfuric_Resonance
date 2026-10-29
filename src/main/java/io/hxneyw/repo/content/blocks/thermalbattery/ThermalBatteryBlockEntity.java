@@ -317,7 +317,7 @@ public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntit
         boolean unableToMeetDemand = isRedstoneEnabled()
                 && demandGrace > 0
                 && !canSupply();
-        return !interfaceConnected || overstressed || unableToMeetDemand;
+        return overstressed || unableToMeetDemand;
     }
 
     private boolean updateIndicatorBlockState() {
@@ -348,7 +348,7 @@ public final class ThermalBatteryBlockEntity extends GeneratingKineticBlockEntit
     }
 
     public boolean canSupply() {
-        if (!interfaceConnected || !isRedstoneEnabled()) {
+        if (!isRedstoneEnabled()) {
             return false;
         }
         return outputMode == OutputMode.SUPERHEATED

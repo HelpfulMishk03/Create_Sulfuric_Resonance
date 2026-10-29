@@ -144,7 +144,10 @@ public class MoltenRotorBlock extends DirectionalKineticBlock implements IBE<Mol
    }
 
    @Override
-   public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
+    public @NotNull List<ItemStack> getDrops(
+            @NotNull BlockState state,
+            @NotNull LootParams.Builder params
+    ) {
       List<ItemStack> drops = new ArrayList<>(super.getDrops(state, params));
       Entity breaker = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
       BlockEntity blockEntity = params.getOptionalParameter(LootContextParams.BLOCK_ENTITY);

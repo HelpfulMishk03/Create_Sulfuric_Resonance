@@ -188,6 +188,7 @@ public final class PyroclastBombDetonation {
       }
    }
 
+   @SuppressWarnings("DataFlowIssue")
    private static boolean canDestroy(ServerLevel level, BlockPos pos, BlockState state) {
       if (state.isAir() || !state.getFluidState().isEmpty()) {
          return false;
@@ -197,7 +198,7 @@ public final class PyroclastBombDetonation {
          return false;
       }
 
-      return state.getBlock().getExplosionResistance() <= MAX_BREAKABLE_RESISTANCE;
+      return state.getExplosionResistance(level, pos, null) <= MAX_BREAKABLE_RESISTANCE;
    }
 
    private static void createParticles(ServerLevel level, Vec3 center) {

@@ -403,7 +403,6 @@ public class ThermalRelaySwitchBlock
         };
     }
 
-    @SuppressWarnings("DuplicatedCode")
     @Override
     public BlockState getRotatedBlockState(
             BlockState originalState,
@@ -415,7 +414,6 @@ public class ThermalRelaySwitchBlock
         );
     }
 
-    @SuppressWarnings("DuplicatedCode")
     @Override
     public @NotNull BlockState rotate(
             @NotNull BlockState state,
@@ -427,7 +425,6 @@ public class ThermalRelaySwitchBlock
         );
     }
 
-    @SuppressWarnings("DuplicatedCode")
     @Override
     public @NotNull BlockState mirror(
             @NotNull BlockState state,

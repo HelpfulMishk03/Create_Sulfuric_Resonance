@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
+@SuppressWarnings("unused")
 public final class EmiAnimatedSulfuricResonanceChamber
         extends EmiAnimatedKinetics {
 

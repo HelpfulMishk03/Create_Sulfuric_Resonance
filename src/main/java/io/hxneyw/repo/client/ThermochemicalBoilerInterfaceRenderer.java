@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class ThermochemicalBoilerInterfaceRenderer
         extends KineticBlockEntityRenderer<ThermochemicalBoilerInterfaceBlockEntity> {
 
+    @SuppressWarnings("unused")
     public ThermochemicalBoilerInterfaceRenderer(
             BlockEntityRendererProvider.Context context
     ) {

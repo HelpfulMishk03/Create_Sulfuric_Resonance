@@ -69,6 +69,7 @@ public class SulfuricResonanceChamberRenderer
         };
     }
 
+    @SuppressWarnings("unused")
     public SulfuricResonanceChamberRenderer(
             BlockEntityRendererProvider.Context context
     ) {
@@ -1346,6 +1347,7 @@ public class SulfuricResonanceChamberRenderer
         }
     }
 
+    @SuppressWarnings("unused")
     public record RingGlowProfile(
             float bottomStart,
             float topStart,

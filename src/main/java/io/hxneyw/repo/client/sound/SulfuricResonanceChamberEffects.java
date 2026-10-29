@@ -35,6 +35,7 @@ public final class SulfuricResonanceChamberEffects {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unused")
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() ->
                 SulfuricResonanceChamberBlockEntity.setClientEffectsTick(
@@ -410,6 +411,7 @@ public final class SulfuricResonanceChamberEffects {
         }
     }
 
+    @SuppressWarnings("unused")
     private static final class VisualState {
         private boolean initialized;
         private boolean wasProcessing;

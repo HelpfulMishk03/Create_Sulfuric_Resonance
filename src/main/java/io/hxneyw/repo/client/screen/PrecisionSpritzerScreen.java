@@ -339,7 +339,7 @@ public final class PrecisionSpritzerScreen
     }
 
     private void clampScroll() {
-        this.scrollOffset = Math.max(0, Math.min(this.scrollOffset, this.maxScroll()));
+        this.scrollOffset = Math.clamp(this.scrollOffset, 0, this.maxScroll());
     }
 
     private int scrollbarTrackHeight() {
@@ -398,7 +398,7 @@ public final class PrecisionSpritzerScreen
             return;
         }
         double handleTop = mouseY - this.scrollbarGrabOffset - this.scrollbarTop();
-        handleTop = Math.max(0.0D, Math.min(handleTop, travel));
+        handleTop = Math.clamp(handleTop, 0.0D, (double) travel);
         this.scrollOffset = (int) Math.round(handleTop * maxScroll / travel);
         this.clampScroll();
     }

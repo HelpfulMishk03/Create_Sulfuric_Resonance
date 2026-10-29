@@ -146,7 +146,7 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
                 : condensedIngredients) {
             EmiIngredient ingredient = EmiIngredient.of(
                     pair.getFirst(),
-                    pair.getSecond().getValue()
+                    pair.getSecond().intValue()
             );
 
             widgets.addSlot(
@@ -308,7 +308,7 @@ public final class CombustionMixingEmiRecipe implements EmiRecipe {
             inputs.add(
                     EmiIngredient.of(
                             pair.getFirst(),
-                            pair.getSecond().getValue()
+                            pair.getSecond().intValue()
                     )
             );
         }

@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("resource")
 public class SulfuricAcidFlaskEntity extends ThrowableItemProjectile {
     private static final double SPLASH_RADIUS = 2.75D;
     private static final int ACID_BURN_DURATION_TICKS = 100;

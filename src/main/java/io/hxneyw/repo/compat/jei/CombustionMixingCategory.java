@@ -68,7 +68,7 @@ public class CombustionMixingCategory extends BasinCategory {
 
          for (ItemStack itemStack : pair.getFirst().getItems()) {
             ItemStack copy = itemStack.copy();
-            copy.setCount(pair.getSecond().getValue());
+            copy.setCount(pair.getSecond().intValue());
             stacks.add(copy);
          }
 
@@ -80,7 +80,7 @@ public class CombustionMixingCategory extends BasinCategory {
                  .setBackground(getRenderedSlot(), -1, -1)
                  .addItemStacks(stacks)
                  .addRichTooltipCallback((view, tooltip) -> {
-                    int count = pair.getSecond().getValue();
+                    int count = pair.getSecond().intValue();
                     if (count > 1) {
                        tooltip.add(Component.literal("x" + count));
                     }

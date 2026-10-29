@@ -101,18 +101,6 @@ public final class SulfuricResonanceChamberRecipe
                 || auxiliary.filter(value -> value.test(input3)).isPresent());
     }
 
-    public boolean acceptsInput(int slot, ItemStack stack) {
-        if (stack.isEmpty()) {
-            return false;
-        }
-        return switch (slot) {
-            case 0 -> substrate.test(stack);
-            case 1 -> catalyst.filter(value -> value.test(stack)).isPresent();
-            case 2 -> auxiliary.filter(value -> value.test(stack)).isPresent();
-            default -> false;
-        };
-    }
-
     private static boolean matchesOptionalSlot(
             Optional<Ingredient> ingredient,
             ItemStack stack

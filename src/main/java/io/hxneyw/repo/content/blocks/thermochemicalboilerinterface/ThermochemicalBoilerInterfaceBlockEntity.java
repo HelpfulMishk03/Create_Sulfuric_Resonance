@@ -3,12 +3,10 @@ package io.hxneyw.repo.content.blocks.thermochemicalboilerinterface;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import io.hxneyw.repo.content.blocks.moltenrotor.MoltenRotorBlockEntity;
-import io.hxneyw.repo.content.blocks.thermochemicalconduit.ThermochemicalHeatResolver;
 import io.hxneyw.repo.content.registry.AllBlockEntities;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -57,28 +55,6 @@ public final class ThermochemicalBoilerInterfaceBlockEntity extends KineticBlock
         }
     }
 
-    public ThermochemicalHeatResolver.Result resolveDirectInput() {
-        if (level == null
-                || level.isClientSide
-                || !getBlockState().getValue(
-                ThermochemicalBoilerInterfaceBlock.INPUT_ACTIVE
-        )
-                || !ThermochemicalBoilerInterfaceBlock.hasValidInputNeighbour(
-                level,
-                worldPosition,
-                ThermochemicalBoilerInterfaceBlock.inputSide(getBlockState())
-        )) {
-            return ThermochemicalHeatResolver.Result.NONE;
-        }
-        Direction inputSide = ThermochemicalBoilerInterfaceBlock.inputSide(
-                getBlockState()
-        );
-        return ThermochemicalHeatResolver.resolveNetworkOnly(
-                level,
-                worldPosition.relative(inputSide)
-        );
-    }
-
     public void requestImmediateRefresh() {
         refreshCooldown = 0;
     }
@@ -102,13 +78,13 @@ public final class ThermochemicalBoilerInterfaceBlockEntity extends KineticBlock
                 : getSnapshot().temperature();
     }
 
-    public boolean hasDisplayedBoiler() {
+    public boolean isMissingDisplayedBoiler() {
         if (level == null) {
-            return false;
+            return true;
         }
         return level.isClientSide
-                ? cachedBoiler
-                : ThermochemicalBoilerInterfaceArray.hasBoilerTarget(
+                ? !cachedBoiler
+                : !ThermochemicalBoilerInterfaceArray.hasBoilerTarget(
                 level,
                 getSnapshot()
         );
@@ -172,15 +148,19 @@ public final class ThermochemicalBoilerInterfaceBlockEntity extends KineticBlock
     }
 
     private void notifyBoiler(ThermochemicalBoilerInterfaceArray.Snapshot current) {
+        net.minecraft.world.level.Level currentLevel = level;
+        if (currentLevel == null) {
+            return;
+        }
         FluidTankBlockEntity controller =
-                ThermochemicalBoilerInterfaceArray.findBoilerController(level, current);
+                ThermochemicalBoilerInterfaceArray.findBoilerController(currentLevel, current);
         if (controller != null) {
             controller.boiler.needsHeatLevelUpdate = true;
             controller.updateBoilerTemperature();
             controller.notifyUpdate();
         }
         for (BlockPos member : current.members()) {
-            BlockEntity above = level.getBlockEntity(member.above());
+            BlockEntity above = currentLevel.getBlockEntity(member.above());
             if (above instanceof FluidTankBlockEntity tank) {
                 FluidTankBlockEntity memberController = tank.getControllerBE();
                 if (memberController != null) {

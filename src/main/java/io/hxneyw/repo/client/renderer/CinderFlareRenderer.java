@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.jetbrains.annotations.NotNull;
 
 public class CinderFlareRenderer extends ThrownItemRenderer<CinderFlareEntity> {
     private final ItemRenderer itemRenderer;
@@ -26,11 +27,11 @@ public class CinderFlareRenderer extends ThrownItemRenderer<CinderFlareEntity> {
 
     @Override
     public void render(
-            CinderFlareEntity entity,
+            @NotNull CinderFlareEntity entity,
             float entityYaw,
             float partialTick,
-            PoseStack poseStack,
-            MultiBufferSource bufferSource,
+            @NotNull PoseStack poseStack,
+            @NotNull MultiBufferSource bufferSource,
             int packedLight
     ) {
         poseStack.pushPose();
@@ -55,7 +56,10 @@ public class CinderFlareRenderer extends ThrownItemRenderer<CinderFlareEntity> {
     }
 
     @Override
-    protected int getBlockLightLevel(CinderFlareEntity entity, BlockPos pos) {
+    protected int getBlockLightLevel(
+            @NotNull CinderFlareEntity entity,
+            @NotNull BlockPos pos
+    ) {
         return 15;
     }
 

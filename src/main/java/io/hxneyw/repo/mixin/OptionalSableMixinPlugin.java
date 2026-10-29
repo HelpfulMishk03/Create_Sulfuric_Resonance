@@ -15,8 +15,6 @@ public final class OptionalSableMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
-        org.slf4j.LoggerFactory.getLogger("CSRDiagnostics").info(
-                "CSR_DIAGNOSTICS revision=scene-light-4-full-nbt mixin package={}", mixinPackage);
     }
 
     @Override
@@ -32,10 +30,7 @@ public final class OptionalSableMixinPlugin implements IMixinConfigPlugin {
         String api = mixinClassName.endsWith("SableCaddyCollisionMixin")
                 ? SABLE_COLLISION
                 : SABLE_ACTOR;
-        boolean available = getClass().getClassLoader().getResource(api.replace('.', '/') + ".class") != null;
-        org.slf4j.LoggerFactory.getLogger("CSRDiagnostics").info(
-                "CSR_MIXIN {} enabled={}", mixinClassName, available);
-        return available;
+        return getClass().getClassLoader().getResource(api.replace('.', '/') + ".class") != null;
     }
 
     @Override

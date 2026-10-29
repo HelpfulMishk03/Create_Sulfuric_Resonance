@@ -28,7 +28,6 @@ public final class ThermochemicalGearboxScenes {
     private ThermochemicalGearboxScenes() {
     }
 
-    @SuppressWarnings("DuplicatedCode")
     public static void operation(
             SceneBuilder builder,
             SceneBuildingUtil util

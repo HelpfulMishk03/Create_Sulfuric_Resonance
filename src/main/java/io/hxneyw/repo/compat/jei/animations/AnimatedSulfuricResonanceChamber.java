@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused")
 public final class AnimatedSulfuricResonanceChamber extends AnimatedKinetics {
 
     @Override

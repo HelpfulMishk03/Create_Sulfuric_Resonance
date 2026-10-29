@@ -161,7 +161,7 @@ public class PerforatedSpritzerBlock extends Block implements IWrenchable, IBE<P
       }
 
       if (!FluidStack.isSameFluidSameComponents(fluidInTank, prevFluidInTank)) {
-         if (level.isClientSide && fluidState != null) {
+         if (level.isClientSide) {
             BlockParticleOption particleData = new BlockParticleOption(ParticleTypes.BLOCK, fluidState);
             Vec3 vec = hitResult.getLocation();
             Vec3 motion = player.position().subtract(vec).scale(0.05F);

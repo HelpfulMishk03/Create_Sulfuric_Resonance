@@ -84,8 +84,6 @@ public final class ThermochemicalLinkDriveScenes {
                 firstDrivePos,
                 lastDrivePos
         );
-        Selection firstDriveSelection =
-                util.select().position(firstDrivePos);
         Selection middleDriveSelection =
                 util.select().position(middleDrivePos);
         Selection lastDriveSelection =

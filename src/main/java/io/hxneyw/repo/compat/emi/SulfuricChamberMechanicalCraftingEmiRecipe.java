@@ -11,7 +11,6 @@ import java.util.List;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import com.simibubi.create.AllBlocks;
-import org.jetbrains.annotations.Nullable;
 
 public final class SulfuricChamberMechanicalCraftingEmiRecipe
         implements EmiRecipe {
@@ -38,7 +37,7 @@ public final class SulfuricChamberMechanicalCraftingEmiRecipe
     }
 
     @Override
-    public @Nullable ResourceLocation getId() {
+    public ResourceLocation getId() {
         return ResourceLocation.fromNamespaceAndPath(
                 "sulfuricresonance",
                 "sulfuric_chamber_mechanical"

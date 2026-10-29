@@ -19,6 +19,7 @@ import net.minecraft.world.phys.Vec3;
 public final class SulfuricResonanceChamberArmPoint
         extends ArmInteractionPoint {
 
+    @SuppressWarnings("unused")
     public SulfuricResonanceChamberArmPoint(
             ArmInteractionPointType type,
             Level level,

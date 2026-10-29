@@ -30,6 +30,7 @@ public final class ThermochemicalBoilerInterfaceCompat {
         );
     }
 
+    @SuppressWarnings("unused")
     public static float getHeat(
             Level level,
             BlockPos position,
@@ -67,7 +68,7 @@ public final class ThermochemicalBoilerInterfaceCompat {
 
                 BlockEntity heaterEntity = level.getBlockEntity(tankPos.below());
                 if (!(heaterEntity instanceof ThermochemicalBoilerInterfaceBlockEntity interfaceEntity)
-                        || !interfaceEntity.hasDisplayedBoiler()) {
+                        || interfaceEntity.isMissingDisplayedBoiler()) {
                     continue;
                 }
 
@@ -102,7 +103,7 @@ public final class ThermochemicalBoilerInterfaceCompat {
 
                 BlockEntity heaterEntity = level.getBlockEntity(tankPos.below());
                 if (!(heaterEntity instanceof ThermochemicalBoilerInterfaceBlockEntity interfaceEntity)
-                        || !interfaceEntity.hasDisplayedBoiler()) {
+                        || interfaceEntity.isMissingDisplayedBoiler()) {
                     continue;
                 }
 

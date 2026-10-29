@@ -11,6 +11,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 
 @EventBusSubscriber
+@SuppressWarnings("resource")
 public class PotatoCannonExplosionHandler {
    @SubscribeEvent
    public static void onProjectileImpact(ProjectileImpactEvent event) {
